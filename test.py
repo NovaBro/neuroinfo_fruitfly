@@ -1,31 +1,43 @@
 import os
-# Force PyImageJ to use Conda's Java 21, ignoring Mac system defaults
+# Force PyImageJ to use Conda's Java, ignoring system defaults
 if "CONDA_PREFIX" in os.environ:
     os.environ["JAVA_HOME"] = os.environ["CONDA_PREFIX"]
 
 import imagej
 import numpy as np
+import scyjava
 
-# 1. Initialize headless PyImageJ
 print("Initializing headless Fiji environment...")
-ij = imagej.init('/Applications/Fiji', mode='headless')
+ij = imagej.init('/home/william-zheng/Downloads/Fiji.app', mode='headless')
+print(f"ImageJ version: {ij.getVersion()}")
 
-# ... the rest of your script stays exactly the same ...
+file_path = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "R78H12-20190409_62_D3-m-40x-central-GAL4-unaligned_stack.h5j",
+)
 
-# Define your file path
-file_path = "/Users/williamzheng/Documents/2025_stuff/NewYork/NYU/neuroinfomatics/R78H12-20190409_62_D3-m-40x-central-GAL4-unaligned_stack.h5j"
-
-# 2. Open the h5j file using ImageJ's SCIFIO / Bio-Formats wrapper
+# The H5J format is Janelia's HDF5 + JPEG2000 container. It is handled by
+# the H5J_Loader_Plugin (an IJ1 plugin), not by the SciJava IO service.
+# Route through the legacy IJ.openImage so the plugin is invoked.
 print(f"Opening {file_path}...")
-j_image = ij.io().open(file_path)
+IJ = scyjava.jimport("ij.IJ")
+imp = IJ.openImage(file_path)
+if imp is None:
+    raise RuntimeError(
+        f"IJ.openImage returned null for {file_path}. "
+        "Check that the H5J_Loader_Plugin jar is present in Fiji.app/plugins."
+    )
 
-# 3. Convert the Java image object directly into a Python NumPy array
-# ij.py.from_java returns an xarray DataArray; adding .values extracts the raw NumPy array
-print("Converting Java image to NumPy array...")
-np_image = ij.py.from_java(j_image).values
+print(f"Opened ImagePlus: title={imp.getTitle()}, "
+      f"dims={imp.getWidth()}x{imp.getHeight()}x{imp.getNSlices()} "
+      f"channels={imp.getNChannels()} frames={imp.getNFrames()}")
 
-# 4. Check the metadata layout to ensure it fits your model's target input shape
-print(f"Extraction successful!")
+print("Converting ImagePlus to NumPy array...")
+np_image = ij.py.from_java(imp)
+if hasattr(np_image, "values"):
+    np_image = np_image.values
+
+print("Extraction successful!")
 print(f"Array Type: {type(np_image)}")
 print(f"Data Type (dtype): {np_image.dtype}")
 print(f"Array Shape: {np_image.shape}")

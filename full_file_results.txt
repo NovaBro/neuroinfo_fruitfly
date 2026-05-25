@@ -1,0 +1,315 @@
+(pyimagej) william-zheng@william-zheng-B650-EAGLE-AX:~/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly$ ./s3_download.sh filelist.txt
+
+📋  File list: 310 entries → 295 unique
+    (removed 15 duplicate(s))
+
+📡  Fetching top-level folders ...
+    Found 53 top-level folder(s)
+
+📡  Fetching subfolders (depth 2) ...
+    Found 61698 total subfolders across all top-level folders
+
+🔍  Matching folders and calculating sizes ...
+────────────────────────────────────────────────────────
+  ✅  MB485B        Split-GAL4 Omnibus Rescreen/MB485B/                  53 file(s)  657.24 MB
+  ✅  OL0022B       LC Paper/OL0022B/                                   125 file(s)  8.62 GB
+  ✅  OL0027B       LC Paper/OL0027B/                                   487 file(s)  40.74 GB
+  ✅  SS00313       Split-GAL4 Omnibus Broad/SS00313/                   348 file(s)  21.13 GB
+  ✅  SS00320       Optic lobe TAPIN-Seq 2020/SS00320/                   54 file(s)  1.20 GB
+  ✅  SS00324       Split-GAL4 Omnibus Broad/SS00324/                   163 file(s)  5.47 GB
+  ✅  SS00342       Split-GAL4 Omnibus Broad/SS00342/                   454 file(s)  30.17 GB
+  ✅  SS00698       Split-GAL4 Omnibus Broad/SS00698/                   279 file(s)  15.68 GB
+  ✅  SS00700       Split-GAL4 Omnibus Broad/SS00700/                   351 file(s)  14.58 GB
+  ✅  SS00730       Descending Neurons 2018/SS00730/                     28 file(s)  481.28 MB
+  ✅  SS00771       Split-GAL4 Omnibus Broad/SS00771/                   291 file(s)  20.79 GB
+  ✅  SS00772       Split-GAL4 Omnibus Broad/SS00772/                   121 file(s)  7.80 GB
+  ✅  SS00783       Split-GAL4 Omnibus Broad/SS00783/                   213 file(s)  11.56 GB
+  ✅  SS00808       Split-GAL4 Omnibus Rescreen/SS00808/                 53 file(s)  612.04 MB
+  ✅  SS00898       Descending Neurons 2018/SS00898/                     28 file(s)  508.19 MB
+  ✅  SS00938       LC Paper/SS00938/                                    27 file(s)  172.03 MB
+  ✅  SS01001       Split-GAL4 Omnibus Broad/SS01001/                   954 file(s)  62.70 GB
+  ✅  SS01049       Descending Neurons 2018/SS01049/                     28 file(s)  406.87 MB
+  ✅  SS01052       Descending Neurons 2018/SS01052/                     28 file(s)  419.01 MB
+  ✅  SS01076       Descending Neurons 2018/SS01076/                     28 file(s)  490.31 MB
+  ✅  SS01078       Descending Neurons 2018/SS01078/                     28 file(s)  620.00 MB
+  ✅  SS01565       Descending Neurons 2018/SS01565/                     28 file(s)  482.13 MB
+  ✅  SS01587       Descending Neurons 2018/SS01587/                     28 file(s)  479.79 MB
+  ✅  SS02099       LC6 downstream 2020/SS02099/                         97 file(s)  11.21 GB
+  ✅  SS02406       Isaacson et al 2023/SS02406/                        634 file(s)  35.24 GB
+  ✅  SS02592       Optic lobe TAPIN-Seq 2020/SS02592/                  141 file(s)  8.50 GB
+  ✅  SS02665       LC Paper/SS02665/                                    27 file(s)  81.42 MB
+  ✅  SS02951       Split-GAL4 Omnibus Broad/SS02951/                   130 file(s)  3.16 GB
+  ✅  SS02978       R7R8 targets 2021/SS02978/                          241 file(s)  16.49 GB
+  ✅  SS04723       Split-GAL4 Omnibus Broad/SS04723/                   1643 file(s)  57.09 GB
+  ✅  SS04726       Split-GAL4 Omnibus Broad/SS04726/                    79 file(s)  836.08 MB
+  ✅  SS04728       Split-GAL4 Omnibus Broad/SS04728/                   1782 file(s)  63.77 GB
+  ✅  SS04730       Split-GAL4 Omnibus Broad/SS04730/                   993 file(s)  36.89 GB
+  ✅  SS04732       Split-GAL4 Omnibus Broad/SS04732/                    73 file(s)  813.44 MB
+  ✅  SS04733       Split-GAL4 Omnibus Broad/SS04733/                    79 file(s)  876.34 MB
+  ✅  SS04736       Split-GAL4 Omnibus Broad/SS04736/                   1435 file(s)  59.95 GB
+  ✅  SS04738       Split-GAL4 Omnibus Broad/SS04738/                    53 file(s)  650.00 MB
+  ✅  SS04739       Split-GAL4 Omnibus Broad/SS04739/                   1639 file(s)  51.26 GB
+  ✅  SS04741       Split-GAL4 Omnibus Broad/SS04741/                    79 file(s)  725.81 MB
+  ✅  SS04742       Split-GAL4 Omnibus Broad/SS04742/                   1350 file(s)  53.74 GB
+  ✅  SS04744       Split-GAL4 Omnibus Broad/SS04744/                    73 file(s)  695.12 MB
+  ✅  SS04745       Split-GAL4 Omnibus Broad/SS04745/                   569 file(s)  8.08 GB
+  ✅  SS04746       Split-GAL4 Omnibus Broad/SS04746/                    79 file(s)  785.21 MB
+  ✅  SS04747       Split-GAL4 Omnibus Broad/SS04747/                   491 file(s)  7.01 GB
+  ✅  SS04748       Split-GAL4 Omnibus Broad/SS04748/                   1372 file(s)  46.22 GB
+  ✅  SS04749       Split-GAL4 Omnibus Broad/SS04749/                   1372 file(s)  51.92 GB
+  ✅  SS04750       Split-GAL4 Omnibus Broad/SS04750/                    79 file(s)  779.95 MB
+  ✅  SS05037       Klapoetke_et_al_2021/SS05037/                       193 file(s)  12.00 GB
+  ✅  SS14728       Split-GAL4 Omnibus Broad/SS14728/                    79 file(s)  710.00 MB
+  ✅  SS20257       Split-GAL4 Omnibus Broad/SS20257/                   974 file(s)  29.58 GB
+  ✅  SS20268       Split-GAL4 Omnibus Broad/SS20268/                    79 file(s)  976.72 MB
+  ✅  SS20301       Split-GAL4 Omnibus Broad/SS20301/                   857 file(s)  29.04 GB
+  ✅  SS20733       Split-GAL4 Omnibus Broad/SS20733/                   1498 file(s)  60.04 GB
+  ✅  SS20738       Split-GAL4 Omnibus Broad/SS20738/                   237 file(s)  9.21 GB
+  ✅  SS20743       Split-GAL4 Omnibus Broad/SS20743/                    79 file(s)  894.57 MB
+  ✅  SS20745       Split-GAL4 Omnibus Broad/SS20745/                   214 file(s)  6.32 GB
+  ✅  SS20751       Split-GAL4 Omnibus Broad/SS20751/                   857 file(s)  23.50 GB
+  ✅  SS20752       Split-GAL4 Omnibus Broad/SS20752/                   1276 file(s)  48.53 GB
+  ✅  SS20790       Split-GAL4 Omnibus Broad/SS20790/                    79 file(s)  981.31 MB
+  ✅  SS20791       Split-GAL4 Omnibus Broad/SS20791/                    79 file(s)  786.41 MB
+  ✅  SS20806       Split-GAL4 Omnibus Broad/SS20806/                    79 file(s)  957.06 MB
+  ✅  SS20834       Split-GAL4 Omnibus Broad/SS20834/                   346 file(s)  5.97 GB
+  ✅  SS20846       Split-GAL4 Omnibus Broad/SS20846/                   2110 file(s)  47.27 GB
+  ✅  SS20847       Split-GAL4 Omnibus Broad/SS20847/                   1389 file(s)  38.73 GB
+  ✅  SS20857       Split-GAL4 Omnibus Broad/SS20857/                   1202 file(s)  37.80 GB
+  ✅  SS22035       Split-GAL4 Omnibus Broad/SS22035/                   741 file(s)  34.50 GB
+  ✅  SS22242       Split-GAL4 Omnibus Broad/SS22242/                   578 file(s)  26.52 GB
+  ✅  SS23858       Split-GAL4 Omnibus Rescreen/SS23858/                 53 file(s)  746.83 MB
+  ✅  SS23879       Split-GAL4 Omnibus Broad/SS23879/                   767 file(s)  33.81 GB
+  ✅  SS25451       Ascending Neurons 2023/SS25451/                      27 file(s)  385.69 MB
+  ✅  SS25469       Ascending Neurons 2023/SS25469/                      27 file(s)  408.69 MB
+  ✅  SS25470       Ascending Neurons 2023/SS25470/                      27 file(s)  425.74 MB
+  ✅  SS25473       Split-GAL4 Omnibus Broad/SS25473/                   471 file(s)  14.18 GB
+  ✅  SS25480       Split-GAL4 Omnibus Broad/SS25480/                   685 file(s)  26.82 GB
+  ✅  SS25504       Split-GAL4 Omnibus Broad/SS25504/                   1462 file(s)  57.41 GB
+  ✅  SS25516       Split-GAL4 Omnibus Broad/SS25516/                   1575 file(s)  68.43 GB
+  ✅  SS25564       Split-GAL4 Omnibus Broad/SS25564/                   575 file(s)  21.09 GB
+  ✅  SS25575       Split-GAL4 Omnibus Broad/SS25575/                    66 file(s)  858.29 MB
+  ✅  SS25576       Split-GAL4 Omnibus Broad/SS25576/                   622 file(s)  20.83 GB
+  ✅  SS25577       Split-GAL4 Omnibus Broad/SS25577/                   1483 file(s)  55.54 GB
+  ✅  SS25587       Split-GAL4 Omnibus Broad/SS25587/                    79 file(s)  885.06 MB
+  ✅  SS25868       Isaacson et al 2023/SS25868/                        575 file(s)  22.05 GB
+  ✅  SS26953       Split-GAL4 Omnibus Broad/SS26953/                    79 file(s)  1.01 GB
+  ✅  SS26968       Split-GAL4 Omnibus Broad/SS26968/                   1500 file(s)  55.55 GB
+  ✅  SS26973       Split-GAL4 Omnibus Broad/SS26973/                    79 file(s)  814.29 MB
+  ✅  SS26974       Split-GAL4 Omnibus Broad/SS26974/                   1383 file(s)  50.71 GB
+  ✅  SS26977       Split-GAL4 Omnibus Broad/SS26977/                   1814 file(s)  68.40 GB
+  ✅  SS27416       MDN Downstream 2020/SS27416/                         27 file(s)  501.62 MB
+  ✅  SS27422       Split-GAL4 Omnibus Broad/SS27422/                   642 file(s)  23.96 GB
+  ✅  SS27425       Split-GAL4 Omnibus Broad/SS27425/                   234 file(s)  11.47 GB
+  ✅  SS28003       Split-GAL4 Omnibus Broad/SS28003/                    77 file(s)  974.22 MB
+  ✅  SS28035       Split-GAL4 Omnibus Broad/SS28035/                   1611 file(s)  64.33 GB
+  ✅  SS28453       Split-GAL4 Omnibus Broad/SS28453/                   1088 file(s)  46.20 GB
+  ✅  SS28958       Split-GAL4 Omnibus Broad/SS28958/                    79 file(s)  930.13 MB
+  ✅  SS28977       Split-GAL4 Omnibus Broad/SS28977/                   1105 file(s)  30.55 GB
+  ✅  SS28980       Split-GAL4 Omnibus Broad/SS28980/                   510 file(s)  16.48 GB
+  ✅  SS29243       Split-GAL4 Omnibus Broad/SS29243/                   576 file(s)  31.68 GB
+  ✅  SS29258       Split-GAL4 Omnibus Broad/SS29258/                   423 file(s)  14.06 GB
+  ✅  SS29662       Split-GAL4 Omnibus Broad/SS29662/                   959 file(s)  40.09 GB
+  ✅  SS29857       Split-GAL4 Omnibus Broad/SS29857/                   718 file(s)  26.01 GB
+  ✅  SS29882       Split-GAL4 Omnibus Broad/SS29882/                   717 file(s)  30.55 GB
+  ✅  SS29886       Split-GAL4 Omnibus Broad/SS29886/                   1377 file(s)  60.34 GB
+  ✅  SS29892       Split-GAL4 Omnibus Broad/SS29892/                   658 file(s)  26.21 GB
+  ✅  SS29893       Ascending Neurons 2023/SS29893/                      27 file(s)  402.83 MB
+  ✅  SS30185       Split-GAL4 Omnibus Broad/SS30185/                    79 file(s)  742.98 MB
+  ✅  SS30804       Split-GAL4 Omnibus Broad/SS30804/                    79 file(s)  862.35 MB
+  ✅  SS30815       Split-GAL4 Omnibus Broad/SS30815/                   105 file(s)  1.14 GB
+  ✅  SS31219       Ascending Neurons 2023/SS31219/                      27 file(s)  319.65 MB
+  ✅  SS31266       Split-GAL4 Omnibus Broad/SS31266/                   155 file(s)  5.06 GB
+  ✅  SS31305       Split-GAL4 Omnibus Broad/SS31305/                   638 file(s)  25.24 GB
+  ✅  SS31450       Split-GAL4 Omnibus Broad/SS31450/                   480 file(s)  17.64 GB
+  ✅  SS31465       Split-GAL4 Omnibus Broad/SS31465/                   976 file(s)  34.21 GB
+  ✅  SS31466       Split-GAL4 Omnibus Broad/SS31466/                   855 file(s)  28.42 GB
+  ✅  SS31522       Split-GAL4 Omnibus Broad/SS31522/                    99 file(s)  3.80 GB
+  ✅  SS31872       Split-GAL4 Omnibus Broad/SS31872/                   1191 file(s)  44.18 GB
+  ✅  SS32300       Split-GAL4 Omnibus Broad/SS32300/                   718 file(s)  26.44 GB
+  ✅  SS32343       Split-GAL4 Omnibus Broad/SS32343/                   701 file(s)  29.31 GB
+  ✅  SS32346       Split-GAL4 Omnibus Broad/SS32346/                   968 file(s)  43.83 GB
+  ✅  SS32370       Split-GAL4 Omnibus Broad/SS32370/                   352 file(s)  7.07 GB
+  ✅  SS32427       Split-GAL4 Omnibus Broad/SS32427/                   436 file(s)  20.13 GB
+  ✅  SS32454       Split-GAL4 Omnibus Broad/SS32454/                   876 file(s)  36.61 GB
+  ✅  SS32496       MDN Downstream 2020/SS32496/                         27 file(s)  390.01 MB
+  ✅  SS32792       Split-GAL4 Omnibus Broad/SS32792/                   180 file(s)  8.45 GB
+  ✅  SS33343       MDN Downstream 2020/SS33343/                         27 file(s)  344.49 MB
+  ✅  SS33368       Split-GAL4 Omnibus Broad/SS33368/                   856 file(s)  38.55 GB
+  ✅  SS33467       Split-GAL4 Omnibus Broad/SS33467/                   854 file(s)  31.18 GB
+  ✅  SS33510       MDN Downstream 2020/SS33510/                         27 file(s)  409.03 MB
+  ✅  SS33542       MDN Downstream 2020/SS33542/                         27 file(s)  353.06 MB
+  ✅  SS33920       Aso 2021/SS33920/                                   242 file(s)  16.48 GB
+  ✅  SS34478       Split-GAL4 Omnibus Broad/SS34478/                   1526 file(s)  77.95 GB
+  ✅  SS34537       Split-GAL4 Omnibus Broad/SS34537/                   711 file(s)  30.09 GB
+  ✅  SS34547       Split-GAL4 Omnibus Broad/SS34547/                   733 file(s)  25.64 GB
+  ✅  SS34574       Ascending Neurons 2023/SS34574/                      27 file(s)  335.96 MB
+  ✅  SS34614       Split-GAL4 Omnibus Broad/SS34614/                   619 file(s)  21.92 GB
+  ✅  SS34621       Split-GAL4 Omnibus Broad/SS34621/                   958 file(s)  47.47 GB
+  ✅  SS34668       Split-GAL4 Omnibus Broad/SS34668/                   758 file(s)  30.52 GB
+  ✅  SS34687       Split-GAL4 Omnibus Broad/SS34687/                   866 file(s)  21.95 GB
+  ✅  SS34692       Split-GAL4 Omnibus Broad/SS34692/                    20 file(s)  40.6 KB
+  ✅  SS35560       MDN Downstream 2020/SS35560/                         27 file(s)  311.38 MB
+  ✅  SS35605       Split-GAL4 Omnibus Broad/SS35605/                   976 file(s)  47.45 GB
+  ✅  SS35987       Split-GAL4 Omnibus Broad/SS35987/                   690 file(s)  30.39 GB
+  ✅  SS36134       Split-GAL4 Omnibus Broad/SS36134/                   664 file(s)  28.35 GB
+  ✅  SS37296       Dorsal VNC 2023/SS37296/                            1237 file(s)  46.64 GB
+  ✅  SS37632       Split-GAL4 Omnibus Broad/SS37632/                   447 file(s)  11.92 GB
+  ✅  SS37633       Split-GAL4 Omnibus Broad/SS37633/                   331 file(s)  9.83 GB
+  ✅  SS37641       Split-GAL4 Omnibus Broad/SS37641/                   1917 file(s)  78.49 GB
+  ✅  SS37648       Split-GAL4 Omnibus Broad/SS37648/                   551 file(s)  15.21 GB
+  ✅  SS37652       Ascending Neurons 2023/SS37652/                      27 file(s)  339.78 MB
+  ✅  SS37659       Split-GAL4 Omnibus Broad/SS37659/                   1079 file(s)  53.94 GB
+  ✅  SS37671       Split-GAL4 Omnibus Broad/SS37671/                   741 file(s)  30.99 GB
+  ✅  SS38013       Split-GAL4 Omnibus Broad/SS38013/                   796 file(s)  34.62 GB
+  ✅  SS38021       Split-GAL4 Omnibus Broad/SS38021/                   745 file(s)  32.71 GB
+  ✅  SS38113       SEZ 2021/SS38113/                                   128 file(s)  2.26 GB
+  ✅  SS38723       Split-GAL4 Omnibus Broad/SS38723/                   1200 file(s)  50.41 GB
+  ✅  SS38727       Split-GAL4 Omnibus Broad/SS38727/                   635 file(s)  23.01 GB
+  ✅  SS39782       Split-GAL4 Omnibus Broad/SS39782/                   269 file(s)  12.68 GB
+  ✅  SS40261       Split-GAL4 Omnibus Broad/SS40261/                    66 file(s)  728.37 MB
+  ✅  SS40265       Split-GAL4 Omnibus Broad/SS40265/                    66 file(s)  798.09 MB
+  ✅  SS40619       Ascending Neurons 2023/SS40619/                      27 file(s)  421.82 MB
+  ✅  SS40645       Split-GAL4 Omnibus Broad/SS40645/                   681 file(s)  27.29 GB
+  ✅  SS40657       Split-GAL4 Omnibus Broad/SS40657/                   694 file(s)  28.33 GB
+  ✅  SS41518       Split-GAL4 Omnibus Broad/SS41518/                    93 file(s)  1.40 GB
+  ✅  SS41811       Split-GAL4 Omnibus Broad/SS41811/                   1373 file(s)  54.42 GB
+  ✅  SS41862       Split-GAL4 Omnibus Broad/SS41862/                   634 file(s)  28.07 GB
+  ✅  SS41970       Split-GAL4 Omnibus Broad/SS41970/                   609 file(s)  27.32 GB
+  ✅  SS42740       Ascending Neurons 2023/SS42740/                      27 file(s)  373.76 MB
+  ✅  SS43542       Split-GAL4 Omnibus Broad/SS43542/                   734 file(s)  29.96 GB
+  ✅  SS44233       Split-GAL4 Omnibus Broad/SS44233/                   579 file(s)  22.13 GB
+  ✅  SS44254       MDN Downstream 2020/SS44254/                         27 file(s)  395.55 MB
+  ✅  SS44448       Split-GAL4 Omnibus Broad/SS44448/                    14 file(s)  29.5 KB
+  ✅  SS45404       Split-GAL4 Omnibus Broad/SS45404/                   1099 file(s)  52.79 GB
+  ✅  SS45413       Split-GAL4 Omnibus Broad/SS45413/                   291 file(s)  6.25 GB
+  ✅  SS45446       Split-GAL4 Omnibus Broad/SS45446/                   391 file(s)  9.87 GB
+  ✅  SS45463       Split-GAL4 Omnibus Broad/SS45463/                    14 file(s)  32.8 KB
+  ✅  SS45635       Ascending Neurons 2023/SS45635/                      27 file(s)  274.01 MB
+  ✅  SS45680       SEZ 2021/SS45680/                                   216 file(s)  5.74 GB
+  ✅  SS46229       MDN Downstream 2020/SS46229/                         27 file(s)  327.13 MB
+  ✅  SS46233       Ascending Neurons 2023/SS46233/                      27 file(s)  317.37 MB
+  ✅  SS46507       Split-GAL4 Omnibus Broad/SS46507/                   278 file(s)  3.59 GB
+  ✅  SS46716       Split-GAL4 Omnibus Broad/SS46716/                   366 file(s)  9.54 GB
+  ✅  SS46730       MDN Downstream 2020/SS46730/                         27 file(s)  352.03 MB
+  ✅  SS47863       MDN Downstream 2020/SS47863/                         27 file(s)  345.77 MB
+  ✅  SS47887       Split-GAL4 Omnibus Broad/SS47887/                   766 file(s)  38.14 GB
+  ✅  SS48376       MDN Downstream 2020/SS48376/                         27 file(s)  362.60 MB
+  ✅  SS48406       Ascending Neurons 2023/SS48406/                      27 file(s)  373.35 MB
+  ✅  SS48413       Split-GAL4 Omnibus Broad/SS48413/                   469 file(s)  17.40 GB
+  ✅  SS48616       Split-GAL4 Omnibus Broad/SS48616/                   449 file(s)  13.12 GB
+  ✅  SS48635       Split-GAL4 Omnibus Broad/SS48635/                   1053 file(s)  24.63 GB
+  ✅  SS48636       Split-GAL4 Omnibus Broad/SS48636/                   552 file(s)  16.16 GB
+  ✅  SS48638       Split-GAL4 Omnibus Broad/SS48638/                   921 file(s)  45.44 GB
+  ✅  SS48648       Split-GAL4 Omnibus Broad/SS48648/                   1431 file(s)  57.69 GB
+  ✅  SS48649       Split-GAL4 Omnibus Broad/SS48649/                   345 file(s)  9.83 GB
+  ✅  SS49172       Ascending Neurons 2023/SS49172/                      27 file(s)  263.01 MB
+  ✅  SS49190       Split-GAL4 Omnibus Broad/SS49190/                   796 file(s)  34.06 GB
+  ✅  SS49220       Split-GAL4 Omnibus Broad/SS49220/                   681 file(s)  31.82 GB
+  ✅  SS49978       Split-GAL4 Omnibus Broad/SS49978/                   758 file(s)  32.59 GB
+  ✅  SS50022       Split-GAL4 Omnibus Broad/SS50022/                   920 file(s)  35.49 GB
+  ✅  SS50195       Split-GAL4 Omnibus Broad/SS50195/                    39 file(s)  384.43 MB
+  ✅  SS50207       Split-GAL4 Omnibus Broad/SS50207/                    20 file(s)  40.4 KB
+  ✅  SS50245       Lillvis 2023/SS50245/                               292 file(s)  9.69 GB
+  ✅  SS50281       Split-GAL4 Omnibus Broad/SS50281/                   377 file(s)  10.99 GB
+  ✅  SS50329       Split-GAL4 Omnibus Broad/SS50329/                   425 file(s)  15.46 GB
+  ✅  SS50814       Split-GAL4 Omnibus Broad/SS50814/                   514 file(s)  17.52 GB
+  ✅  SS50965       Split-GAL4 Omnibus Broad/SS50965/                   494 file(s)  20.97 GB
+  ✅  SS50975       MDN Downstream 2020/SS50975/                         27 file(s)  317.55 MB
+  ✅  SS50996       MDN Downstream 2020/SS50996/                         27 file(s)  270.84 MB
+  ✅  SS51006       Split-GAL4 Omnibus Broad/SS51006/                   1124 file(s)  53.04 GB
+  ✅  SS51017       Ascending Neurons 2023/SS51017/                      27 file(s)  302.46 MB
+  ✅  SS51038       Ascending Neurons 2023/SS51038/                      27 file(s)  372.61 MB
+  ✅  SS51734       Split-GAL4 Omnibus Broad/SS51734/                    33 file(s)  326.88 MB
+  ✅  SS51817       MDN Downstream 2020/SS51817/                         27 file(s)  399.82 MB
+  ✅  SS51874       Split-GAL4 Omnibus Broad/SS51874/                   381 file(s)  11.41 GB
+  ✅  SS51877       MDN Downstream 2020/SS51877/                         27 file(s)  405.69 MB
+  ✅  SS51893       Split-GAL4 Omnibus Broad/SS51893/                   808 file(s)  36.33 GB
+  ✅  SS52179       Split-GAL4 Omnibus Broad/SS52179/                   500 file(s)  22.49 GB
+  ✅  SS53029       MDN Downstream 2020/SS53029/                         27 file(s)  326.76 MB
+  ✅  SS53030       MDN Downstream 2020/SS53030/                         27 file(s)  322.10 MB
+  ✅  SS53050       MDN Downstream 2020/SS53050/                         27 file(s)  358.82 MB
+  ✅  SS53141       Split-GAL4 Omnibus Broad/SS53141/                   174 file(s)  5.32 GB
+  ✅  SS53493       Split-GAL4 Omnibus Broad/SS53493/                   715 file(s)  32.15 GB
+  ✅  SS53822       Split-GAL4 Omnibus Broad/SS53822/                   653 file(s)  27.91 GB
+  ✅  SS53940       Split-GAL4 Omnibus Broad/SS53940/                   571 file(s)  24.45 GB
+  ✅  SS54102       Split-GAL4 Omnibus Broad/SS54102/                    39 file(s)  318.48 MB
+  ✅  SS54144       Split-GAL4 Omnibus Broad/SS54144/                    41 file(s)  382.86 MB
+  ✅  SS54173       Split-GAL4 Omnibus Broad/SS54173/                   133 file(s)  1.03 GB
+  ✅  SS54183       Split-GAL4 Omnibus Broad/SS54183/                    35 file(s)  377.01 MB
+  ✅  SS54203       Split-GAL4 Omnibus Broad/SS54203/                   305 file(s)  8.32 GB
+  ✅  SS56994       Split-GAL4 Omnibus Broad/SS56994/                   736 file(s)  33.35 GB
+  ✅  SS57877       Split-GAL4 Omnibus Broad/SS57877/                   703 file(s)  31.32 GB
+  ✅  SS57878       Split-GAL4 Omnibus Broad/SS57878/                   534 file(s)  18.23 GB
+  ✅  SS57941       MDN Downstream 2020/SS57941/                         27 file(s)  329.50 MB
+  ✅  SS57948       Split-GAL4 Omnibus Broad/SS57948/                   614 file(s)  27.67 GB
+  ✅  SS57954       MDN Downstream 2020/SS57954/                         27 file(s)  362.12 MB
+  ✅  SS58002       MDN Downstream 2020/SS58002/                         27 file(s)  376.46 MB
+  ✅  SS58839       Split-GAL4 Omnibus Broad/SS58839/                   607 file(s)  28.54 GB
+  ✅  SS59173       Split-GAL4 Omnibus Broad/SS59173/                   664 file(s)  31.19 GB
+  ✅  SS59229       MDN Downstream 2020/SS59229/                         27 file(s)  380.88 MB
+  ✅  SS59230       MDN Downstream 2020/SS59230/                         27 file(s)  323.46 MB
+  ✅  SS59903       Split-GAL4 Omnibus Broad/SS59903/                     8 file(s)  19.6 KB
+  ✅  SS60231       Split-GAL4 Omnibus Broad/SS60231/                   660 file(s)  22.19 GB
+  ✅  SS60232       MDN Downstream 2020/SS60232/                         27 file(s)  1.08 GB
+  ✅  SS60234       MDN Downstream 2020/SS60234/                         27 file(s)  378.59 MB
+  ✅  SS60240       Split-GAL4 Omnibus Broad/SS60240/                   745 file(s)  31.45 GB
+  ✅  SS60607       Split-GAL4 Omnibus Broad/SS60607/                   1554 file(s)  59.44 GB
+  ✅  SS60624       Split-GAL4 Omnibus Broad/SS60624/                   1452 file(s)  58.25 GB
+  ✅  SS61350       Split-GAL4 Omnibus Broad/SS61350/                    44 file(s)  313.96 MB
+  ✅  SS61810       Split-GAL4 Omnibus Broad/SS61810/                    39 file(s)  349.88 MB
+  ✅  SS61836       Split-GAL4 Omnibus Broad/SS61836/                   139 file(s)  2.07 GB
+  ✅  SS62120       Split-GAL4 Omnibus Broad/SS62120/                   133 file(s)  2.33 GB
+  ✅  SS62706       Split-GAL4 Omnibus Broad/SS62706/                   649 file(s)  24.41 GB
+  ✅  SS63845       Split-GAL4 Omnibus Broad/SS63845/                   699 file(s)  22.58 GB
+  ✅  SS64190       MDN Downstream 2020/SS64190/                         27 file(s)  326.57 MB
+  ✅  SS65285       Split-GAL4 Omnibus Broad/SS65285/                    27 file(s)  281.17 MB
+  ✅  SS65331       Split-GAL4 Omnibus Broad/SS65331/                    27 file(s)  262.81 MB
+  ✅  SS65397       Split-GAL4 Omnibus Broad/SS65397/                   296 file(s)  14.39 GB
+  ✅  SS65693       Split-GAL4 Omnibus Broad/SS65693/                   481 file(s)  17.81 GB
+  ✅  SS66145       Split-GAL4 Omnibus Broad/SS66145/                    27 file(s)  298.98 MB
+  ✅  SS66754       Split-GAL4 Omnibus Broad/SS66754/                   340 file(s)  17.78 GB
+  ✅  SS67323       MDN Downstream 2020/SS67323/                         27 file(s)  1.08 GB
+  ✅  SS67324       MDN Downstream 2020/SS67324/                         27 file(s)  316.29 MB
+  ✅  SS67325       Split-GAL4 Omnibus Broad/SS67325/                   306 file(s)  11.73 GB
+  ✅  SS67423       MDN Downstream 2020/SS67423/                         27 file(s)  374.52 MB
+  ✅  SS67451       Split-GAL4 Omnibus Broad/SS67451/                   763 file(s)  28.13 GB
+  ✅  SS67466       MDN Downstream 2020/SS67466/                         27 file(s)  327.19 MB
+  ✅  SS67473       Split-GAL4 Omnibus Broad/SS67473/                   498 file(s)  17.62 GB
+  ✅  SS67476       Split-GAL4 Omnibus Broad/SS67476/                   664 file(s)  24.51 GB
+  ✅  SS67641       Split-GAL4 Omnibus Broad/SS67641/                   554 file(s)  17.42 GB
+  ✅  SS68285       Split-GAL4 Omnibus Broad/SS68285/                   546 file(s)  16.35 GB
+  ✅  SS68443       Split-GAL4 Omnibus Broad/SS68443/                   206 file(s)  5.64 GB
+  ✅  SS68544       Split-GAL4 Omnibus Broad/SS68544/                   489 file(s)  18.56 GB
+  ✅  SS68719       Split-GAL4 Omnibus Broad/SS68719/                    27 file(s)  225.42 MB
+  ✅  SS69586       Split-GAL4 Omnibus Broad/SS69586/                   601 file(s)  22.10 GB
+  ✅  SS69904       Split-GAL4 Omnibus Broad/SS69904/                    27 file(s)  345.07 MB
+  ✅  SS70425       Split-GAL4 Omnibus Broad/SS70425/                    21 file(s)  225.40 MB
+  ✅  SS70902       Split-GAL4 Omnibus Broad/SS70902/                    27 file(s)  323.08 MB
+  ✅  SS74639       Split-GAL4 Omnibus Rescreen/SS74639/                 53 file(s)  742.41 MB
+  ✅  SS75751       Split-GAL4 Omnibus Rescreen/SS75751/                 53 file(s)  629.46 MB
+  ✅  SS75840       Split-GAL4 Omnibus Rescreen/SS75840/                 53 file(s)  652.36 MB
+  ✅  SS76692       Split-GAL4 Omnibus Rescreen/SS76692/                 53 file(s)  652.58 MB
+  ✅  SS79279       Split-GAL4 Omnibus Rescreen/SS79279/                 53 file(s)  646.35 MB
+  ✅  SS79321       Split-GAL4 Omnibus Rescreen/SS79321/                 53 file(s)  680.73 MB
+  ✅  SS79461       Split-GAL4 Omnibus Rescreen/SS79461/                 53 file(s)  713.47 MB
+  ✅  SS79515       Split-GAL4 Omnibus Rescreen/SS79515/                 53 file(s)  629.37 MB
+  ✅  SS80093       Split-GAL4 Omnibus Rescreen/SS80093/                 53 file(s)  648.90 MB
+  ✅  SS80251       Split-GAL4 Omnibus Rescreen/SS80251/                 53 file(s)  611.37 MB
+  ✅  SS80260       Split-GAL4 Omnibus Rescreen/SS80260/                 53 file(s)  592.07 MB
+  ✅  SS80940       Split-GAL4 Omnibus Broad/SS80940/                    27 file(s)  352.44 MB
+  ✅  SS81722       Split-GAL4 Omnibus Rescreen/SS81722/                 53 file(s)  636.21 MB
+  ✅  SS83414       Split-GAL4 Omnibus Rescreen/SS83414/                105 file(s)  1.58 GB
+  ✅  SS83695       Split-GAL4 Omnibus Rescreen/SS83695/                 53 file(s)  688.81 MB
+  ✅  SS84628       Split-GAL4 Omnibus Rescreen/SS84628/                 53 file(s)  633.06 MB
+  ✅  SS87242       Split-GAL4 Omnibus Rescreen/SS87242/                 53 file(s)  612.90 MB
+  ✅  SS87668       Split-GAL4 Omnibus Rescreen/SS87668/                 53 file(s)  648.66 MB
+  ✅  SS89292       Split-GAL4 Omnibus Rescreen/SS89292/                 53 file(s)  717.80 MB
+  ✅  SS96120       Descending Neurons 2025/SS96120/                     51 file(s)  640.03 MB
+────────────────────────────────────────────────────────
+
+  📦  Folders found   : 295
+  ❌  Folders missing : 0
+  💾  Total size      : 4885.54 GB
+
+  Proceed with downloading 295 folder(s) (4885.54 GB) to './downloads'? [y/N] 
