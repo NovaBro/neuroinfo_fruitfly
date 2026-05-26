@@ -16,6 +16,7 @@
 #  Requirements: aws CLI installed
 # ============================================================
 
+# s3://janelia-flylight-imagery.s3.amazonaws.com
 BUCKET="janelia-flylight-imagery"
 FILE_LIST="${1:-filelist.txt}"
 LOCAL_DIR="${2:-./downloads}"
