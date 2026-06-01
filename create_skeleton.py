@@ -29,7 +29,8 @@ scyjava.config.add_option("-Djava.awt.headless=true")
 import imagej
 
 
-DEFAULT_FIJI_APP = "/home/william-zheng/Downloads/Fiji.app"
+# DEFAULT_FIJI_APP = "/home/william-zheng/Downloads/Fiji.app"
+DEFAULT_FIJI_APP = "/Users/vuhepola/Desktop/Fiji"
 
 # Default directory for skeleton/projection outputs. Lives next to this script
 # so the source `downloads/` tree (populated by s3_download_fast.sh) is never
@@ -456,7 +457,9 @@ def main(output_dir: Union[str, os.PathLike, None] = None) -> None:
 
     file_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        "downloads/Descending Neurons 2018/SS01076/SS01076-20140623_33_J1-f-20x-ventral_nerve_cord-Split_GAL4-unaligned_stack.h5j",
+        # "downloads/Descending Neurons 2018/SS01076/SS01076-20140623_33_J1-f-20x-ventral_nerve_cord-Split_GAL4-unaligned_stack.h5j",
+        "/Users/vuhepola/GitHub/Repos/neuroinfo_fruitfly/data/SS00771-20131227_32_H2-f-20x-ventral_nerve_cord-Split_GAL4-unaligned_stack.h5j",
+        
     )
 
     output_dir = os.fspath(output_dir) if output_dir is not None else DEFAULT_OUTPUT_DIR
