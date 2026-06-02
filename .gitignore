@@ -1,0 +1,4 @@
+# .gitignore
+downloads/
+*.h5j
+*.tif
