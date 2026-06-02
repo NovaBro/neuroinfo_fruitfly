@@ -9,3 +9,6 @@ scyjava
 imagej
 h5py
 av
+
+napari
+PyQt6
