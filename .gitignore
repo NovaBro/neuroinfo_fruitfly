@@ -1,3 +1,8 @@
+# .gitignore
+downloads/
+*.h5j
+*.tif
+
 /data
 /skeletons
 /__pycache__
