@@ -1,4 +1,18 @@
 # .gitignore
+.vscode/
 downloads/
+fisbe/
 *.h5j
 *.tif
+
+/data
+/skeletons
+/__pycache__
+__pycache__
+*.DS_Store
+
+/.vscode
+
+
+# PatchPerPix
+PatchPerPix/experiments/ppp_experiments/

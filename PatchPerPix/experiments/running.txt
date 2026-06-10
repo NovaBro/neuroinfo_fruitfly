@@ -1,0 +1,518 @@
+nohup: ignoring input
+no tensorflow found! (losses.py, might be ok if torch is used)
+INFO:__main__:attention: using config file ['flylight/setups/setup01/default_train_code.toml']
+INFO:__main__:CUDA_VISIBILE_DEVICES already set, device 0
+INFO:__main__:used config: {'general': {'logging': 'INFO', 'debug': False, 'overwrite': False}, 'data': {'fisbe_root': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe', 'train_data': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train', 'val_data': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val', 'test_data': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/test', 'overlap_csv_folder': '', 'fg_csv_folder': '', 'voxel_size': [1, 1, 1], 'input_format': 'zarr', 'num_channels': 3, 'gt_key': 'volumes/gt_instances_rm_5', 'raw_key': 'volumes/raw_normalized', 'numinst_key': 'volumes/gt_numinst', 'sample_mask_key': 'volumes/gt_fg_rm_5', 'validate_on_train': False, 'shift_intensity': False, 'add_partly': False, 'sample_fg_points': False, 'max_train_samples': 3, 'max_val_samples': 2, 'cross_val_folders': ['val_data', 'test_data'], 'test_on_train': False}, 'model': {'train_net_name': 'train_net', 'test_net_name': 'test_net', 'train_input_shape_valid': [140, 140, 140], 'test_input_shape_valid': [156, 156, 156], 'train_input_shape_same': [104, 104, 104], 'test_input_shape_same': [104, 104, 104], 'patchshape': [7, 7, 7], 'patchstride': [1, 1, 1], 'max_num_inst': 2, 'fmap_inc_factors': [3, 3, 3], 'fmap_dec_factors': [1.2, 1.2, 1.2], 'downsample_factors': [[2, 2, 2], [2, 2, 2], [2, 2, 2]], 'activation': 'relu', 'val_padding': 'valid', 'train_padding': 'valid', 'kernel_size': 3, 'num_repetitions': 2, 'upsampling': 'transposed_conv', 'overlapping_inst': True, 'train_code': True, 'patch_activation': 'sigmoid', 'code_units': 176, 'autoencoder_chkpt': 'this', 'network_style': 'unet', 'num_fmaps': 20, 'decode_batch_size': 1024, 'autoencoder': {'train_net_name': 'train_net', 'test_net_name': 'test_net', 'train_input_shape': [7, 7, 7], 'test_input_shape': [7, 7, 7], 'patchshape': [7, 7, 7], 'patchstride': [1, 1, 1], 'network_type': 'conv', 'activation': 'relu', 'num_fmaps': [64, 128], 'downsample_factors': [[2, 2, 2], [2, 2, 2]], 'upsampling': 'nearest', 'kernel_size': 3, 'num_repetitions': 2, 'padding': 'same', 'code_method': 'conv1x1_b', 'code_activation': 'sigmoid', 'code_fmaps': 22, 'regularizer': 'l2', 'regularizer_weight': 0.0001, 'num_code_samples': 1024}}, 'preprocessing': {'clipmax': 1500}, 'training': {'len_epoch': 100, 'batch_size': 4, 'num_gpus': 1, 'num_workers': 1, 'cache_size': 8, 'max_iterations': 2000, 'checkpoints': 250, 'snapshots': 250, 'profiling': 100, 'probability_hue': 0.3, 'hue_max_change': 0.5, 'probability_permute': 0.5, 'use_auto_mixed_precision': True, 'add_affinities': 'loss', 'mask_bg_weight': 0.01, 'use_gt_extra': False, 'init_ssl': False, 'oversample_complete': 3, 'sampling': {'min_masked': 0.0001, 'probability_random': 0.05, 'probability_fg': 0.75, 'probability_overlap': 0.0, 'point_balance_radius_overlap': 3}, 'augmentation': {'intensity': {'scale': [0.9, 1.1], 'shift': [-0.1, 0.1]}, 'simple': {}, 'elastic': {'control_point_spacing': [20, 20, 20], 'jitter_sigma': [1, 1, 1], 'rotation_min': -45, 'rotation_max': 45, 'subsample': 4}, 'overlay': {'probability_overlay': 0.3}}}, 'prediction': {'output_format': 'zarr', 'num_workers': 5, 'cache_size': 40, 'aff_key': 'volumes/pred_affs', 'code_key': 'volumes/pred_code', 'numinst_key': 'volumes/pred_numinst', 'mask_folder': '', 'clean_mask': 600, 'fg_thresh': 0.5, 'overlap': [5, 5, 5]}, 'validation': {'params_product': ['mws', 'skeletonize_foreground', 'numinst_threshs'], 'params_zip': ['patch_threshold', 'fc_threshold'], 'mws': [False], 'skeletonize_foreground': [True], 'patch_threshold': [0.5], 'fc_threshold': [0.5], 'numinst_threshs': [[0.9, 0.1]], 'checkpoints': [250, 500, 750, 1000, 1250, 1500, 1750, 2000]}, 'testing': {'num_workers': 5}, 'vote_instances': {'patch_threshold': 0.5, 'fc_threshold': 0.5, 'cuda': True, 'blockwise': True, 'only_bb': True, 'ignore_small_comps': 200, 'num_parallel_samples': 1, 'num_parallel_blocks': 1, 'num_workers': 8, 'chunksize': [92, 92, 92], 'sampling': 1.0, 'debug': False, 'select_patches_for_sparse_data': True, 'save_no_intermediates': True, 'output_format': 'hdf', 'includeSinglePatchCCS': True, 'one_instance_per_channel': False, 'sample': 1.0, 'removeIntersection': True, 'mws': True, 'isbiHack': False, 'mask_fg_border': False, 'graphToInst': False, 'skipLookup': False, 'skipConsensus': False, 'skipRanking': False, 'skipThinCover': False, 'affinity_graph_voting': False, 'affinity_graph_voting_selected': False, 'termAfterThinCover': False, 'add_suffix': False, 'consensus_without_overlap': False, 'pad_with_ps': False, 'fg_thresh_vi': -1.0, 'consensus_interleaved_cnt': False, 'consensus_norm_prob_product': True, 'consensus_prob_product': True, 'consensus_norm_aff': True, 'vi_bg_use_inv_th': False, 'vi_bg_use_half_th': False, 'vi_bg_use_less_than_th': True, 'rank_norm_patch_score': True, 'rank_int_counter': False, 'patch_graph_norm_aff': True, 'blockwise_old_stitch_fn': False, 'flip_cons_arr_axes': False, 'use_score_oracle': False, 'store_scores': False, 'shuffle_patches': False, 'return_intermediates': True, 'remove_small_comps': 0, 'do_nms': False, 'skeletonize_foreground': True, 'prob_based_consensus': False, 'numinst_threshs': [0.9, 0.1]}, 'evaluation': {'num_workers': 5, 'from_scratch': False, 'res_key': 'vote_instances', 'metric': 'general.avg_f1_cov_score', 'localization_criterion': 'cldice', 'assignment_strategy': 'greedy', 'remove_small_components': 500, 'keep_gt_shape': True, 'evaluate_false_labels': True, 'add_general_metrics': ['avg_gt_skel_coverage', 'avg_f1_cov_score'], 'add_multi_thresh_metrics': ['avg_tp_skel_coverage'], 'average_over_samples': False, 'summary': ['general.Num GT', 'general.Num Pred', 'general.avg_f1_cov_score', 'confusion_matrix.avFscore', 'general.avg_gt_skel_coverage', 'confusion_matrix.th_0_5.avg_tp_skel_coverage', 'confusion_matrix.th_0_1.fscore', 'confusion_matrix.th_0_2.fscore', 'confusion_matrix.th_0_3.fscore', 'confusion_matrix.th_0_4.fscore', 'confusion_matrix.th_0_5.fscore', 'confusion_matrix.th_0_6.fscore', 'confusion_matrix.th_0_7.fscore', 'confusion_matrix.th_0_8.fscore', 'confusion_matrix.th_0_9.fscore', 'confusion_matrix.th_0_5.AP_TP', 'confusion_matrix.th_0_5.AP_FP', 'confusion_matrix.th_0_5.AP_FN', 'confusion_matrix.th_0_5.false_split', 'confusion_matrix.th_0_5.false_merge'], 'prediction': {'eval_numinst_prediction': False, 'max_numinst': 2, 'eval_fg_prediction': False, 'eval_patch_prediction': False}}, 'visualize': {'save_mip': True}, 'optimizer': {'optimizer': {'optimizer': 'Adam', 'lr': 0.0001}}, 'postprocessing': {'watershed': {'output_format': 'hdf'}}, 'base': 'ppp_experiments/flylight_setup01_260610_095057_694001'}
+INFO:__main__:limiting training files to 3 of 18
+INFO:__main__:limiting validation files to 2 of 5
+INFO:flylight.setups.setup01.train:GPU: NVIDIA GeForce RTX 3060
+UNet(
+  (l_conv): ModuleList(
+    (0): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(3, 20, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(20, 20, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+    (1): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(20, 60, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(60, 60, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+    (2): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(60, 180, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(180, 180, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+    (3): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(180, 540, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(540, 540, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+  )
+  (l_down): ModuleList(
+    (0-2): 3 x Downsample(
+      (down): MaxPool3d(kernel_size=[2, 2, 2], stride=[2, 2, 2], padding=0, dilation=1, ceil_mode=False)
+    )
+  )
+  (r_up): ModuleList(
+    (0): ModuleList(
+      (0): Upsample(
+        (up): ConvTranspose3d(375, 312, kernel_size=(2, 2, 2), stride=(2, 2, 2))
+        (activation): ReLU()
+      )
+      (1): Upsample(
+        (up): ConvTranspose3d(450, 375, kernel_size=(2, 2, 2), stride=(2, 2, 2))
+        (activation): ReLU()
+      )
+      (2): Upsample(
+        (up): ConvTranspose3d(540, 450, kernel_size=(2, 2, 2), stride=(2, 2, 2))
+        (activation): ReLU()
+      )
+    )
+  )
+  (r_conv): ModuleList(
+    (0): ModuleList(
+      (0): ConvPass(
+        (conv_pass): Sequential(
+          (0): Conv3d(332, 312, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+          (1): ReLU()
+          (2): Conv3d(312, 312, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+          (3): ReLU()
+        )
+      )
+      (1): ConvPass(
+        (conv_pass): Sequential(
+          (0): Conv3d(435, 375, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+          (1): ReLU()
+          (2): Conv3d(375, 375, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+          (3): ReLU()
+        )
+      )
+      (2): ConvPass(
+        (conv_pass): Sequential(
+          (0): Conv3d(630, 450, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+          (1): ReLU()
+          (2): Conv3d(450, 450, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+          (3): ReLU()
+        )
+      )
+    )
+  )
+)
+===============================================================================================
+Layer (type:depth-idx)                        Output Shape              Param #
+===============================================================================================
+UNet                                          [4, 312, 52, 52, 52]      --
+├─ModuleList: 1-7                             --                        (recursive)
+│    └─ConvPass: 2-1                          [4, 20, 136, 136, 136]    --
+│    │    └─Sequential: 3-1                   [4, 20, 136, 136, 136]    --
+│    │    │    └─Conv3d: 4-1                  [4, 20, 138, 138, 138]    1,640
+│    │    │    └─ReLU: 4-2                    [4, 20, 138, 138, 138]    --
+│    │    │    └─Conv3d: 4-3                  [4, 20, 136, 136, 136]    10,820
+│    │    │    └─ReLU: 4-4                    [4, 20, 136, 136, 136]    --
+├─ModuleList: 1-6                             --                        --
+│    └─Downsample: 2-2                        [4, 20, 68, 68, 68]       --
+│    │    └─MaxPool3d: 3-2                    [4, 20, 68, 68, 68]       --
+├─ModuleList: 1-7                             --                        (recursive)
+│    └─ConvPass: 2-3                          [4, 60, 64, 64, 64]       --
+│    │    └─Sequential: 3-3                   [4, 60, 64, 64, 64]       --
+│    │    │    └─Conv3d: 4-5                  [4, 60, 66, 66, 66]       32,460
+│    │    │    └─ReLU: 4-6                    [4, 60, 66, 66, 66]       --
+│    │    │    └─Conv3d: 4-7                  [4, 60, 64, 64, 64]       97,260
+│    │    │    └─ReLU: 4-8                    [4, 60, 64, 64, 64]       --
+├─ModuleList: 1-6                             --                        --
+│    └─Downsample: 2-4                        [4, 60, 32, 32, 32]       --
+│    │    └─MaxPool3d: 3-4                    [4, 60, 32, 32, 32]       --
+├─ModuleList: 1-7                             --                        (recursive)
+│    └─ConvPass: 2-5                          [4, 180, 28, 28, 28]      --
+│    │    └─Sequential: 3-5                   [4, 180, 28, 28, 28]      --
+│    │    │    └─Conv3d: 4-9                  [4, 180, 30, 30, 30]      291,780
+│    │    │    └─ReLU: 4-10                   [4, 180, 30, 30, 30]      --
+│    │    │    └─Conv3d: 4-11                 [4, 180, 28, 28, 28]      874,980
+│    │    │    └─ReLU: 4-12                   [4, 180, 28, 28, 28]      --
+├─ModuleList: 1-6                             --                        --
+│    └─Downsample: 2-6                        [4, 180, 14, 14, 14]      --
+│    │    └─MaxPool3d: 3-6                    [4, 180, 14, 14, 14]      --
+├─ModuleList: 1-7                             --                        (recursive)
+│    └─ConvPass: 2-7                          [4, 540, 10, 10, 10]      --
+│    │    └─Sequential: 3-7                   [4, 540, 10, 10, 10]      --
+│    │    │    └─Conv3d: 4-13                 [4, 540, 12, 12, 12]      2,624,940
+│    │    │    └─ReLU: 4-14                   [4, 540, 12, 12, 12]      --
+│    │    │    └─Conv3d: 4-15                 [4, 540, 10, 10, 10]      7,873,740
+│    │    │    └─ReLU: 4-16                   [4, 540, 10, 10, 10]      --
+├─ModuleList: 1-12                            --                        (recursive)
+│    └─ModuleList: 2-12                       --                        (recursive)
+│    │    └─Upsample: 3-8                     [4, 630, 20, 20, 20]      180
+│    │    │    └─ConvTranspose3d: 4-17        [4, 450, 20, 20, 20]      1,944,450
+│    │    │    └─ReLU: 4-18                   [4, 450, 20, 20, 20]      --
+├─ModuleList: 1-13                            --                        (recursive)
+│    └─ModuleList: 2-13                       --                        (recursive)
+│    │    └─ConvPass: 3-9                     [4, 450, 16, 16, 16]      --
+│    │    │    └─Sequential: 4-19             [4, 450, 16, 16, 16]      --
+│    │    │    │    └─Conv3d: 5-1             [4, 450, 18, 18, 18]      7,654,950
+│    │    │    │    └─ReLU: 5-2               [4, 450, 18, 18, 18]      --
+│    │    │    │    └─Conv3d: 5-3             [4, 450, 16, 16, 16]      5,467,950
+│    │    │    │    └─ReLU: 5-4               [4, 450, 16, 16, 16]      --
+├─ModuleList: 1-12                            --                        (recursive)
+│    └─ModuleList: 2-12                       --                        (recursive)
+│    │    └─Upsample: 3-10                    [4, 435, 32, 32, 32]      60
+│    │    │    └─ConvTranspose3d: 4-20        [4, 375, 32, 32, 32]      1,350,375
+│    │    │    └─ReLU: 4-21                   [4, 375, 32, 32, 32]      --
+├─ModuleList: 1-13                            --                        (recursive)
+│    └─ModuleList: 2-13                       --                        (recursive)
+│    │    └─ConvPass: 3-11                    [4, 375, 28, 28, 28]      --
+│    │    │    └─Sequential: 4-22             [4, 375, 28, 28, 28]      --
+│    │    │    │    └─Conv3d: 5-5             [4, 375, 30, 30, 30]      4,404,750
+│    │    │    │    └─ReLU: 5-6               [4, 375, 30, 30, 30]      --
+│    │    │    │    └─Conv3d: 5-7             [4, 375, 28, 28, 28]      3,797,250
+│    │    │    │    └─ReLU: 5-8               [4, 375, 28, 28, 28]      --
+├─ModuleList: 1-12                            --                        (recursive)
+│    └─ModuleList: 2-12                       --                        (recursive)
+│    │    └─Upsample: 3-12                    [4, 332, 56, 56, 56]      20
+│    │    │    └─ConvTranspose3d: 4-23        [4, 312, 56, 56, 56]      936,312
+│    │    │    └─ReLU: 4-24                   [4, 312, 56, 56, 56]      --
+├─ModuleList: 1-13                            --                        (recursive)
+│    └─ModuleList: 2-13                       --                        (recursive)
+│    │    └─ConvPass: 3-13                    [4, 312, 52, 52, 52]      --
+│    │    │    └─Sequential: 4-25             [4, 312, 52, 52, 52]      --
+│    │    │    │    └─Conv3d: 5-9             [4, 312, 54, 54, 54]      2,797,080
+│    │    │    │    └─ReLU: 5-10              [4, 312, 54, 54, 54]      --
+│    │    │    │    └─Conv3d: 5-11            [4, 312, 52, 52, 52]      2,628,600
+│    │    │    │    └─ReLU: 5-12              [4, 312, 52, 52, 52]      --
+===============================================================================================
+Total params: 42,789,597
+Trainable params: 42,789,597
+Non-trainable params: 0
+Total mult-adds (T): 5.64
+===============================================================================================
+Input size (MB): 131.71
+Forward/backward pass size (MB): 10644.37
+Params size (MB): 171.16
+Estimated Total Size (MB): 10947.24
+===============================================================================================
+Autoencoder(
+  (down): ModuleList(
+    (0-1): 2 x Downsample(
+      (down): MaxPool3d(kernel_size=[2, 2, 2], stride=[2, 2, 2], padding=0, dilation=1, ceil_mode=False)
+    )
+  )
+  (down_conv): ModuleList(
+    (0): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(1, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+    (1): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(64, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(128, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+  )
+  (to_code): ConvPass(
+    (conv_pass): Sequential(
+      (0): Conv3d(128, 22, kernel_size=(1, 1, 1), stride=(1, 1, 1))
+      (1): Sigmoid()
+    )
+  )
+  (from_code): ConvPass(
+    (conv_pass): Sequential(
+      (0): Conv3d(22, 128, kernel_size=(1, 1, 1), stride=(1, 1, 1))
+      (1): ReLU()
+    )
+  )
+  (up): ModuleList(
+    (0): Upsample(
+      (up): Sequential(
+        (0): Upsample(scale_factor=(2.0, 2.0, 2.0), mode='trilinear')
+        (1): Conv3d(128, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1))
+      )
+      (activation): ReLU()
+    )
+    (1): Upsample(
+      (up): Sequential(
+        (0): Upsample(scale_factor=(2.0, 2.0, 2.0), mode='trilinear')
+        (1): Conv3d(64, 1, kernel_size=(1, 1, 1), stride=(1, 1, 1))
+      )
+      (activation): ReLU()
+    )
+  )
+  (up_conv): ModuleList(
+    (0): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+    (1): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(1, 1, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (1): Conv3d(1, 1, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+      )
+    )
+  )
+)
+==========================================================================================
+Layer (type:depth-idx)                   Output Shape              Param #
+==========================================================================================
+Autoencoder                              [4, 1, 7, 7, 7]           779,094
+├─ConvPass: 1-1                          [4, 128, 2, 2, 2]         --
+│    └─Sequential: 2-1                   [4, 128, 2, 2, 2]         --
+│    │    └─Conv3d: 3-1                  [4, 128, 2, 2, 2]         2,944
+│    │    └─ReLU: 3-2                    [4, 128, 2, 2, 2]         --
+├─ModuleList: 1-4                        --                        (recursive)
+│    └─Upsample: 2-2                     [4, 64, 4, 4, 4]          --
+│    │    └─Sequential: 3-3              [4, 64, 4, 4, 4]          --
+│    │    │    └─Upsample: 4-1           [4, 128, 4, 4, 4]         --
+│    │    │    └─Conv3d: 4-2             [4, 64, 4, 4, 4]          8,256
+├─ModuleList: 1-5                        --                        (recursive)
+│    └─ConvPass: 2-3                     [4, 64, 4, 4, 4]          --
+│    │    └─Sequential: 3-4              [4, 64, 4, 4, 4]          --
+│    │    │    └─Conv3d: 4-3             [4, 64, 4, 4, 4]          110,656
+│    │    │    └─ReLU: 4-4               [4, 64, 4, 4, 4]          --
+│    │    │    └─Conv3d: 4-5             [4, 64, 4, 4, 4]          110,656
+│    │    │    └─ReLU: 4-6               [4, 64, 4, 4, 4]          --
+├─ModuleList: 1-4                        --                        (recursive)
+│    └─Upsample: 2-4                     [4, 1, 8, 8, 8]           --
+│    │    └─Sequential: 3-5              [4, 1, 8, 8, 8]           --
+│    │    │    └─Upsample: 4-7           [4, 64, 8, 8, 8]          --
+│    │    │    └─Conv3d: 4-8             [4, 1, 8, 8, 8]           65
+├─ModuleList: 1-5                        --                        (recursive)
+│    └─ConvPass: 2-5                     [4, 1, 8, 8, 8]           --
+│    │    └─Sequential: 3-6              [4, 1, 8, 8, 8]           --
+│    │    │    └─Conv3d: 4-9             [4, 1, 8, 8, 8]           28
+│    │    │    └─Conv3d: 4-10            [4, 1, 8, 8, 8]           28
+==========================================================================================
+Total params: 1,011,727
+Trainable params: 1,011,727
+Non-trainable params: 0
+Total mult-adds (M): 59.11
+==========================================================================================
+Input size (MB): 0.00
+Forward/backward pass size (MB): 0.48
+Params size (MB): 0.93
+Estimated Total Size (MB): 1.41
+==========================================================================================
+tensor([[0, 0, 0],
+        [0, 0, 1],
+        [0, 0, 2],
+        ...,
+        [6, 6, 4],
+        [6, 6, 5],
+        [6, 6, 6]], device='cuda:0')
+INFO:flylight.setups.setup01.torch_model:initializing model..
+INFO:flylight.setups.setup01.torch_model:setting padding to valid
+INFO:flylight.setups.setup01.torch_model:getting output shape by running model
+INFO:flylight.setups.setup01.torch_model:done
+INFO:flylight.setups.setup01.torch_model:input shape [156, 156, 156], output shape torch.Size([64, 64, 64])
+input/output shape val:  [156, 156, 156] torch.Size([64, 64, 64])
+INFO:flylight.setups.setup01.torch_model:setting padding to valid
+INFO:flylight.setups.setup01.torch_model:getting output shape by running model
+INFO:flylight.setups.setup01.torch_model:done
+INFO:flylight.setups.setup01.torch_model:input shape [140, 140, 140], output shape torch.Size([52, 52, 52])
+input/output shape:  [140, 140, 140] torch.Size([52, 52, 52])
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/R38F04-20181005_63_G3.zarr (val: False)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/R38F04-20181005_63_G3.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/R38F04-20181005_63_G5.zarr (val: False)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/R38F04-20181005_63_G5.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/R38F04-20181005_63_H1.zarr (val: False)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/R38F04-20181005_63_H1.zarr
+INFO:flylight.setups.setup01.train:unet.l_conv.0.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:unet.l_conv.0.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:unet.l_conv.0.conv_pass.2.weight
+INFO:flylight.setups.setup01.train:unet.l_conv.0.conv_pass.2.bias
+INFO:flylight.setups.setup01.train:unet.l_conv.1.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:unet.l_conv.1.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:unet.l_conv.1.conv_pass.2.weight
+INFO:flylight.setups.setup01.train:unet.l_conv.1.conv_pass.2.bias
+INFO:flylight.setups.setup01.train:unet.l_conv.2.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:unet.l_conv.2.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:unet.l_conv.2.conv_pass.2.weight
+INFO:flylight.setups.setup01.train:unet.l_conv.2.conv_pass.2.bias
+INFO:flylight.setups.setup01.train:unet.l_conv.3.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:unet.l_conv.3.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:unet.l_conv.3.conv_pass.2.weight
+INFO:flylight.setups.setup01.train:unet.l_conv.3.conv_pass.2.bias
+INFO:flylight.setups.setup01.train:unet.r_up.0.0.mask_token
+INFO:flylight.setups.setup01.train:unet.r_up.0.0.up.weight
+INFO:flylight.setups.setup01.train:unet.r_up.0.0.up.bias
+INFO:flylight.setups.setup01.train:unet.r_up.0.1.mask_token
+INFO:flylight.setups.setup01.train:unet.r_up.0.1.up.weight
+INFO:flylight.setups.setup01.train:unet.r_up.0.1.up.bias
+INFO:flylight.setups.setup01.train:unet.r_up.0.2.mask_token
+INFO:flylight.setups.setup01.train:unet.r_up.0.2.up.weight
+INFO:flylight.setups.setup01.train:unet.r_up.0.2.up.bias
+INFO:flylight.setups.setup01.train:unet.r_conv.0.0.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:unet.r_conv.0.0.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:unet.r_conv.0.0.conv_pass.2.weight
+INFO:flylight.setups.setup01.train:unet.r_conv.0.0.conv_pass.2.bias
+INFO:flylight.setups.setup01.train:unet.r_conv.0.1.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:unet.r_conv.0.1.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:unet.r_conv.0.1.conv_pass.2.weight
+INFO:flylight.setups.setup01.train:unet.r_conv.0.1.conv_pass.2.bias
+INFO:flylight.setups.setup01.train:unet.r_conv.0.2.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:unet.r_conv.0.2.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:unet.r_conv.0.2.conv_pass.2.weight
+INFO:flylight.setups.setup01.train:unet.r_conv.0.2.conv_pass.2.bias
+INFO:flylight.setups.setup01.train:out_code_affs.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:out_code_affs.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:out_fgbg_numinst.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:out_fgbg_numinst.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:decoder.down_conv.0.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:decoder.down_conv.0.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:decoder.down_conv.0.conv_pass.2.weight
+INFO:flylight.setups.setup01.train:decoder.down_conv.0.conv_pass.2.bias
+INFO:flylight.setups.setup01.train:decoder.down_conv.1.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:decoder.down_conv.1.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:decoder.down_conv.1.conv_pass.2.weight
+INFO:flylight.setups.setup01.train:decoder.down_conv.1.conv_pass.2.bias
+INFO:flylight.setups.setup01.train:decoder.to_code.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:decoder.to_code.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:decoder.from_code.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:decoder.from_code.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:decoder.up.0.up.1.weight
+INFO:flylight.setups.setup01.train:decoder.up.0.up.1.bias
+INFO:flylight.setups.setup01.train:decoder.up.1.up.1.weight
+INFO:flylight.setups.setup01.train:decoder.up.1.up.1.bias
+INFO:flylight.setups.setup01.train:decoder.up_conv.0.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:decoder.up_conv.0.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:decoder.up_conv.0.conv_pass.2.weight
+INFO:flylight.setups.setup01.train:decoder.up_conv.0.conv_pass.2.bias
+INFO:flylight.setups.setup01.train:decoder.up_conv.1.conv_pass.0.weight
+INFO:flylight.setups.setup01.train:decoder.up_conv.1.conv_pass.0.bias
+INFO:flylight.setups.setup01.train:decoder.up_conv.1.conv_pass.1.weight
+INFO:flylight.setups.setup01.train:decoder.up_conv.1.conv_pass.1.bias
+WARNING:gunpowder.torch.nodes.train:log_dir given, but tensorboardX is not installed
+WARNING:gunpowder.nodes.torch_train:log_dir given, but tensorboard is not installed
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:flylight.setups.setup01.train:Starting training...
+/home/william-zheng/miniforge3/envs/ppp/lib/python3.9/site-packages/gunpowder/nodes/torch_train.py:181: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.scaler = torch.cuda.amp.GradScaler(init_scale=8192.0,
+INFO:gunpowder.nodes.torch_train:using auto mixed precision
+INFO:gunpowder.nodes.torch_train:Starting training from scratch
+INFO:gunpowder.nodes.torch_train:Using device cuda
+/home/william-zheng/miniforge3/envs/ppp/lib/python3.9/site-packages/gunpowder/nodes/torch_train.py:449: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=self.use_auto_mixed_precision):
+/home/william-zheng/miniforge3/envs/ppp/lib/python3.9/site-packages/gunpowder/nodes/torch_train.py:425: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=self.use_auto_mixed_precision):
+INFO:gunpowder.nodes.generic_train:Train process: iteration=1 loss=2.061027 time=43.940
+INFO:gunpowder.nodes.snapshot:saving to ppp_experiments/flylight_setup01_260610_095057_694001/train/snapshots/snapshot_1.hdf
+INFO:flylight.setups.setup01.train:Batch: iteration=1, time=56.325373
+INFO:gunpowder.nodes.generic_train:Train process: iteration=2 loss=1.466488 time=2.997
+INFO:flylight.setups.setup01.train:Batch: iteration=2, time=10.606097
+INFO:gunpowder.nodes.generic_train:Train process: iteration=3 loss=1.044920 time=2.332
+INFO:flylight.setups.setup01.train:Batch: iteration=3, time=11.086920
+INFO:gunpowder.nodes.generic_train:Train process: iteration=4 loss=0.702953 time=2.318
+INFO:flylight.setups.setup01.train:Batch: iteration=4, time=10.114660
+INFO:gunpowder.nodes.generic_train:Train process: iteration=5 loss=0.676540 time=1.830
+INFO:flylight.setups.setup01.train:Batch: iteration=5, time=14.274342
+INFO:gunpowder.nodes.generic_train:Train process: iteration=6 loss=2.948501 time=2.909
+INFO:flylight.setups.setup01.train:Batch: iteration=6, time=15.429787
+INFO:gunpowder.nodes.generic_train:Train process: iteration=7 loss=2.509143 time=3.221
+INFO:flylight.setups.setup01.train:Batch: iteration=7, time=16.529894
+INFO:gunpowder.nodes.generic_train:Train process: iteration=8 loss=0.755475 time=3.021
+INFO:flylight.setups.setup01.train:Batch: iteration=8, time=11.787538
+INFO:gunpowder.nodes.generic_train:Train process: iteration=9 loss=1.086226 time=2.744
+INFO:flylight.setups.setup01.train:Batch: iteration=9, time=16.192687
+INFO:gunpowder.nodes.generic_train:Train process: iteration=10 loss=0.915691 time=2.007
+INFO:flylight.setups.setup01.train:Batch: iteration=10, time=10.651832
+INFO:gunpowder.nodes.generic_train:Train process: iteration=11 loss=0.827032 time=2.336
+INFO:flylight.setups.setup01.train:Batch: iteration=11, time=8.870884
+INFO:gunpowder.nodes.generic_train:Train process: iteration=12 loss=1.617682 time=2.553
+INFO:flylight.setups.setup01.train:Batch: iteration=12, time=10.469683
+INFO:gunpowder.nodes.generic_train:Train process: iteration=13 loss=0.946568 time=2.320
+INFO:flylight.setups.setup01.train:Batch: iteration=13, time=12.424879
+INFO:gunpowder.nodes.generic_train:Train process: iteration=14 loss=0.910925 time=2.690
+INFO:flylight.setups.setup01.train:Batch: iteration=14, time=12.159480
+INFO:gunpowder.nodes.generic_train:Train process: iteration=15 loss=0.969797 time=2.548
+INFO:flylight.setups.setup01.train:Batch: iteration=15, time=17.480378
+INFO:gunpowder.nodes.generic_train:Train process: iteration=16 loss=1.073640 time=2.008
+INFO:flylight.setups.setup01.train:Batch: iteration=16, time=14.664698
+INFO:gunpowder.nodes.generic_train:Train process: iteration=17 loss=1.005426 time=2.800
+INFO:flylight.setups.setup01.train:Batch: iteration=17, time=12.310132
+INFO:gunpowder.nodes.generic_train:Train process: iteration=18 loss=0.969522 time=2.537
+INFO:flylight.setups.setup01.train:Batch: iteration=18, time=14.366302
+INFO:gunpowder.nodes.generic_train:Train process: iteration=19 loss=1.109109 time=2.541
+INFO:flylight.setups.setup01.train:Batch: iteration=19, time=12.966429
+INFO:gunpowder.nodes.generic_train:Train process: iteration=20 loss=0.840046 time=2.894
+INFO:flylight.setups.setup01.train:Batch: iteration=20, time=14.931401
+INFO:gunpowder.nodes.generic_train:Train process: iteration=21 loss=1.086406 time=3.303
+INFO:flylight.setups.setup01.train:Batch: iteration=21, time=17.650274
+INFO:gunpowder.nodes.generic_train:Train process: iteration=22 loss=0.878968 time=2.287
+INFO:flylight.setups.setup01.train:Batch: iteration=22, time=16.664321
+INFO:gunpowder.nodes.generic_train:Train process: iteration=23 loss=0.931554 time=3.029
+INFO:flylight.setups.setup01.train:Batch: iteration=23, time=15.775511
+INFO:gunpowder.nodes.generic_train:Train process: iteration=24 loss=0.015328 time=1.655
+INFO:flylight.setups.setup01.train:Batch: iteration=24, time=16.644093
+INFO:gunpowder.nodes.generic_train:Train process: iteration=25 loss=0.779237 time=3.287
+INFO:flylight.setups.setup01.train:Batch: iteration=25, time=15.530516
+INFO:gunpowder.nodes.generic_train:Train process: iteration=26 loss=0.717436 time=1.993
+INFO:flylight.setups.setup01.train:Batch: iteration=26, time=13.247833
+INFO:gunpowder.nodes.generic_train:Train process: iteration=27 loss=1.529381 time=3.531
+INFO:flylight.setups.setup01.train:Batch: iteration=27, time=13.889965
+INFO:gunpowder.nodes.generic_train:Train process: iteration=28 loss=0.706976 time=2.395
+INFO:flylight.setups.setup01.train:Batch: iteration=28, time=16.503634
+INFO:gunpowder.nodes.generic_train:Train process: iteration=29 loss=0.701939 time=2.615
+INFO:flylight.setups.setup01.train:Batch: iteration=29, time=15.174818
+INFO:gunpowder.nodes.generic_train:Train process: iteration=30 loss=0.846879 time=3.207
+INFO:flylight.setups.setup01.train:Batch: iteration=30, time=12.831622
+INFO:gunpowder.nodes.generic_train:Train process: iteration=31 loss=0.764243 time=2.376
+INFO:flylight.setups.setup01.train:Batch: iteration=31, time=14.489561
+INFO:gunpowder.nodes.generic_train:Train process: iteration=32 loss=0.786465 time=3.398
+INFO:flylight.setups.setup01.train:Batch: iteration=32, time=16.154775
+INFO:gunpowder.nodes.generic_train:Train process: iteration=33 loss=0.895394 time=3.387
+INFO:flylight.setups.setup01.train:Batch: iteration=33, time=16.092588
+INFO:gunpowder.nodes.generic_train:Train process: iteration=34 loss=1.841133 time=2.279
+INFO:flylight.setups.setup01.train:Batch: iteration=34, time=13.760725
+INFO:gunpowder.nodes.generic_train:Train process: iteration=35 loss=0.679677 time=2.399
+INFO:flylight.setups.setup01.train:Batch: iteration=35, time=11.269857
+INFO:gunpowder.nodes.generic_train:Train process: iteration=36 loss=0.851521 time=3.719
+INFO:flylight.setups.setup01.train:Batch: iteration=36, time=17.244402
+INFO:gunpowder.nodes.generic_train:Train process: iteration=37 loss=0.731642 time=2.374
+INFO:flylight.setups.setup01.train:Batch: iteration=37, time=10.470084
+INFO:gunpowder.nodes.generic_train:Train process: iteration=38 loss=0.708263 time=2.398
+INFO:flylight.setups.setup01.train:Batch: iteration=38, time=13.446136
+INFO:gunpowder.nodes.generic_train:Train process: iteration=39 loss=0.842587 time=3.085
+INFO:flylight.setups.setup01.train:Batch: iteration=39, time=14.854511
+INFO:gunpowder.nodes.generic_train:Train process: iteration=40 loss=0.763886 time=3.230
+INFO:flylight.setups.setup01.train:Batch: iteration=40, time=14.536288
+INFO:gunpowder.nodes.generic_train:Train process: iteration=41 loss=0.701601 time=1.994
+INFO:flylight.setups.setup01.train:Batch: iteration=41, time=15.607951
+INFO:gunpowder.nodes.generic_train:Train process: iteration=42 loss=0.793275 time=2.261
+INFO:flylight.setups.setup01.train:Batch: iteration=42, time=15.302883
+INFO:gunpowder.nodes.generic_train:Train process: iteration=43 loss=0.697637 time=2.844
+INFO:flylight.setups.setup01.train:Batch: iteration=43, time=14.793316
+INFO:gunpowder.nodes.generic_train:Train process: iteration=44 loss=0.674778 time=1.990
+INFO:flylight.setups.setup01.train:Batch: iteration=44, time=9.894177
+INFO:gunpowder.nodes.generic_train:Train process: iteration=45 loss=0.699188 time=2.272
+INFO:flylight.setups.setup01.train:Batch: iteration=45, time=13.965855
+INFO:gunpowder.nodes.generic_train:Train process: iteration=46 loss=0.046086 time=1.658
+INFO:flylight.setups.setup01.train:Batch: iteration=46, time=14.454315
+INFO:gunpowder.nodes.generic_train:Train process: iteration=47 loss=0.734056 time=2.267
+INFO:flylight.setups.setup01.train:Batch: iteration=47, time=14.269654
+INFO:gunpowder.nodes.generic_train:Train process: iteration=48 loss=0.688312 time=2.211
+INFO:flylight.setups.setup01.train:Batch: iteration=48, time=19.392669
+INFO:gunpowder.nodes.generic_train:Train process: iteration=49 loss=0.750059 time=2.274
+INFO:flylight.setups.setup01.train:Batch: iteration=49, time=10.309516
+INFO:gunpowder.nodes.generic_train:Train process: iteration=50 loss=0.777099 time=3.101
+INFO:flylight.setups.setup01.train:Batch: iteration=50, time=11.047748
+INFO:gunpowder.nodes.generic_train:Train process: iteration=51 loss=0.712060 time=2.793
+INFO:flylight.setups.setup01.train:Batch: iteration=51, time=16.484824
+INFO:gunpowder.nodes.generic_train:Train process: iteration=52 loss=0.647348 time=2.207
+INFO:flylight.setups.setup01.train:Batch: iteration=52, time=16.668214
+INFO:gunpowder.nodes.generic_train:Train process: iteration=53 loss=0.675133 time=2.275
+INFO:flylight.setups.setup01.train:Batch: iteration=53, time=11.139761
+INFO:gunpowder.nodes.generic_train:Train process: iteration=54 loss=1.571668 time=2.470
+INFO:flylight.setups.setup01.train:Batch: iteration=54, time=12.584463
+INFO:gunpowder.nodes.generic_train:Train process: iteration=55 loss=0.741562 time=3.048
+INFO:flylight.setups.setup01.train:Batch: iteration=55, time=15.755559
+INFO:gunpowder.nodes.generic_train:Train process: iteration=56 loss=0.714277 time=2.275
+INFO:flylight.setups.setup01.train:Batch: iteration=56, time=10.263898
+INFO:gunpowder.nodes.generic_train:Train process: iteration=57 loss=0.663544 time=2.366
+INFO:flylight.setups.setup01.train:Batch: iteration=57, time=10.062907
+INFO:gunpowder.nodes.generic_train:Train process: iteration=58 loss=0.723770 time=2.684
+INFO:flylight.setups.setup01.train:Batch: iteration=58, time=12.372610
