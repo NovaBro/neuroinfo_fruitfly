@@ -1,0 +1,549 @@
+no tensorflow found! (losses.py, might be ok if torch is used)
+INFO:__main__:attention: using config file ['flylight/setups/setup01/default_train_code.toml']
+INFO:__main__:CUDA_VISIBILE_DEVICES already set, device 0
+INFO:__main__:used config: {'general': {'logging': 'INFO', 'debug': False, 'overwrite': False}, 'data': {'fisbe_root': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe', 'train_data': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train', 'val_data': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val', 'test_data': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/test', 'overlap_csv_folder': '', 'fg_csv_folder': '', 'voxel_size': [1, 1, 1], 'input_format': 'zarr', 'num_channels': 3, 'gt_key': 'volumes/gt_instances_rm_5', 'raw_key': 'volumes/raw_normalized', 'numinst_key': 'volumes/gt_numinst', 'sample_mask_key': 'volumes/gt_fg_rm_5', 'validate_on_train': False, 'shift_intensity': False, 'add_partly': False, 'sample_fg_points': False, 'max_train_samples': 10, 'max_val_samples': 10, 'cross_val_folders': ['val_data', 'test_data'], 'test_on_train': False}, 'model': {'train_net_name': 'train_net', 'test_net_name': 'test_net', 'train_input_shape_valid': [140, 140, 140], 'test_input_shape_valid': [156, 156, 156], 'train_input_shape_same': [104, 104, 104], 'test_input_shape_same': [104, 104, 104], 'patchshape': [7, 7, 7], 'patchstride': [1, 1, 1], 'max_num_inst': 2, 'fmap_inc_factors': [3, 3, 3], 'fmap_dec_factors': [1.2, 1.2, 1.2], 'downsample_factors': [[2, 2, 2], [2, 2, 2], [2, 2, 2]], 'activation': 'relu', 'val_padding': 'valid', 'train_padding': 'valid', 'kernel_size': 3, 'num_repetitions': 2, 'upsampling': 'transposed_conv', 'overlapping_inst': True, 'train_code': True, 'patch_activation': 'sigmoid', 'code_units': 176, 'autoencoder_chkpt': 'this', 'network_style': 'unet', 'num_fmaps': 20, 'decode_batch_size': 1024, 'autoencoder': {'train_net_name': 'train_net', 'test_net_name': 'test_net', 'train_input_shape': [7, 7, 7], 'test_input_shape': [7, 7, 7], 'patchshape': [7, 7, 7], 'patchstride': [1, 1, 1], 'network_type': 'conv', 'activation': 'relu', 'num_fmaps': [64, 128], 'downsample_factors': [[2, 2, 2], [2, 2, 2]], 'upsampling': 'nearest', 'kernel_size': 3, 'num_repetitions': 2, 'padding': 'same', 'code_method': 'conv1x1_b', 'code_activation': 'sigmoid', 'code_fmaps': 22, 'regularizer': 'l2', 'regularizer_weight': 0.0001, 'num_code_samples': 1024}}, 'preprocessing': {'clipmax': 1500}, 'training': {'val_log_step': 10, 'len_epoch': 100, 'batch_size': 4, 'num_gpus': 1, 'num_workers': 6, 'cache_size': 8, 'max_iterations': 100, 'checkpoints': 10, 'snapshots': 10, 'profiling': 400, 'probability_hue': 0.3, 'hue_max_change': 0.5, 'probability_permute': 0.5, 'use_auto_mixed_precision': True, 'add_affinities': 'loss', 'mask_bg_weight': 0.01, 'use_gt_extra': False, 'init_ssl': False, 'oversample_complete': 3, 'sampling': {'min_masked': 0.0001, 'probability_random': 0.05, 'probability_fg': 0.75, 'probability_overlap': 0.0, 'point_balance_radius_overlap': 3}, 'augmentation': {'intensity': {'scale': [0.9, 1.1], 'shift': [-0.1, 0.1]}, 'simple': {}, 'elastic': {'control_point_spacing': [20, 20, 20], 'jitter_sigma': [1, 1, 1], 'rotation_min': -45, 'rotation_max': 45, 'subsample': 4}, 'overlay': {'probability_overlay': 0.3}}}, 'prediction': {'output_format': 'zarr', 'num_workers': 5, 'cache_size': 40, 'batch_size': 1, 'aff_key': 'volumes/pred_affs', 'code_key': 'volumes/pred_code', 'numinst_key': 'volumes/pred_numinst', 'mask_folder': '', 'clean_mask': 600, 'fg_thresh': 0.5, 'overlap': [5, 5, 5]}, 'validation': {'params_product': ['mws', 'skeletonize_foreground', 'numinst_threshs'], 'params_zip': ['patch_threshold', 'fc_threshold'], 'mws': [False], 'skeletonize_foreground': [True], 'patch_threshold': [0.5], 'fc_threshold': [0.5], 'numinst_threshs': [[0.9, 0.1]], 'checkpoints': [250, 500, 750, 1000, 1250, 1500, 1750, 2000]}, 'testing': {'num_workers': 5}, 'vote_instances': {'patch_threshold': 0.5, 'fc_threshold': 0.5, 'cuda': True, 'blockwise': True, 'only_bb': True, 'ignore_small_comps': 200, 'num_parallel_samples': 1, 'num_parallel_blocks': 1, 'num_workers': 8, 'chunksize': [92, 92, 92], 'sampling': 1.0, 'debug': False, 'select_patches_for_sparse_data': True, 'save_no_intermediates': True, 'output_format': 'hdf', 'includeSinglePatchCCS': True, 'one_instance_per_channel': False, 'sample': 1.0, 'removeIntersection': True, 'mws': True, 'isbiHack': False, 'mask_fg_border': False, 'graphToInst': False, 'skipLookup': False, 'skipConsensus': False, 'skipRanking': False, 'skipThinCover': False, 'affinity_graph_voting': False, 'affinity_graph_voting_selected': False, 'termAfterThinCover': False, 'add_suffix': False, 'consensus_without_overlap': False, 'pad_with_ps': False, 'fg_thresh_vi': -1.0, 'consensus_interleaved_cnt': False, 'consensus_norm_prob_product': True, 'consensus_prob_product': True, 'consensus_norm_aff': True, 'vi_bg_use_inv_th': False, 'vi_bg_use_half_th': False, 'vi_bg_use_less_than_th': True, 'rank_norm_patch_score': True, 'rank_int_counter': False, 'patch_graph_norm_aff': True, 'blockwise_old_stitch_fn': False, 'flip_cons_arr_axes': False, 'use_score_oracle': False, 'store_scores': False, 'shuffle_patches': False, 'return_intermediates': True, 'remove_small_comps': 0, 'do_nms': False, 'skeletonize_foreground': True, 'prob_based_consensus': False, 'numinst_threshs': [0.9, 0.1]}, 'evaluation': {'num_workers': 5, 'from_scratch': False, 'res_key': 'vote_instances', 'metric': 'general.avg_f1_cov_score', 'localization_criterion': 'cldice', 'assignment_strategy': 'greedy', 'remove_small_components': 500, 'keep_gt_shape': True, 'evaluate_false_labels': True, 'add_general_metrics': ['avg_gt_skel_coverage', 'avg_f1_cov_score'], 'add_multi_thresh_metrics': ['avg_tp_skel_coverage'], 'average_over_samples': False, 'summary': ['general.Num GT', 'general.Num Pred', 'general.avg_f1_cov_score', 'confusion_matrix.avFscore', 'general.avg_gt_skel_coverage', 'confusion_matrix.th_0_5.avg_tp_skel_coverage', 'confusion_matrix.th_0_1.fscore', 'confusion_matrix.th_0_2.fscore', 'confusion_matrix.th_0_3.fscore', 'confusion_matrix.th_0_4.fscore', 'confusion_matrix.th_0_5.fscore', 'confusion_matrix.th_0_6.fscore', 'confusion_matrix.th_0_7.fscore', 'confusion_matrix.th_0_8.fscore', 'confusion_matrix.th_0_9.fscore', 'confusion_matrix.th_0_5.AP_TP', 'confusion_matrix.th_0_5.AP_FP', 'confusion_matrix.th_0_5.AP_FN', 'confusion_matrix.th_0_5.false_split', 'confusion_matrix.th_0_5.false_merge'], 'prediction': {'eval_numinst_prediction': False, 'max_numinst': 2, 'eval_fg_prediction': False, 'eval_patch_prediction': False}}, 'visualize': {'save_mip': True}, 'optimizer': {'optimizer': {'optimizer': 'Adam', 'lr': 0.0001}}, 'postprocessing': {'watershed': {'output_format': 'hdf'}}, 'base': 'ppp_experiments/flylight_setup01_260610_113923_103163'}
+INFO:__main__:validating all checkpoints
+INFO:__main__:zip params {'patch_threshold': [0.5], 'fc_threshold': [0.5]}
+INFO:__main__:product params {'mws': [False], 'skeletonize_foreground': [True], 'numinst_threshs': [[0.9, 0.1]]}
+INFO:__main__:{'patch_threshold': 0.5, 'fc_threshold': 0.5}
+INFO:__main__:{'mws': False, 'skeletonize_foreground': True, 'numinst_threshs': [0.9, 0.1]}
+INFO:__main__:val params [{'patch_threshold': 0.5, 'fc_threshold': 0.5, 'mws': False, 'skeletonize_foreground': True, 'numinst_threshs': [0.9, 0.1]}]
+INFO:__main__:validating checkpoint 100
+INFO:__main__:eval params {'filterSz': None, 'res_key': 'vote_instances'}
+INFO:__main__:validating checkpoint 100 {'patch_threshold': 0.5, 'fc_threshold': 0.5, 'mws': False, 'skeletonize_foreground': True, 'numinst_threshs': [0.9, 0.1]}
+INFO:__main__:predicting checkpoint 100
+INFO:__main__:forking <function decode at 0x78f456655700>
+INFO:__main__:reading data from ppp_experiments/flylight_setup01_260610_113923_103163/val/processed/100
+['VT033614-20171124_64_H5', 'VT033614-20171124_64_H1', 'VT041298-20171114_63_C3', 'VT012403-20171128_61_B2', 'R22C03-20180918_66_J2']
+INFO:__main__:'volumes/pred_affs'
+INFO:__main__:'volumes/pred_affs'
+INFO:__main__:'volumes/pred_affs'
+INFO:__main__:'volumes/pred_affs'
+INFO:__main__:'volumes/pred_affs'
+INFO:__main__:Decoding still to be done for: ['VT033614-20171124_64_H5', 'VT033614-20171124_64_H1', 'VT041298-20171114_63_C3', 'VT012403-20171128_61_B2', 'R22C03-20180918_66_J2']
+INFO:__main__:unable to "import tensorflow" in def decode, this is ok as long as pytorch is used anyway.
+UNet(
+  (l_conv): ModuleList(
+    (0): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(3, 20, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(20, 20, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+    (1): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(20, 60, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(60, 60, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+    (2): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(60, 180, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(180, 180, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+    (3): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(180, 540, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(540, 540, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+  )
+  (l_down): ModuleList(
+    (0-2): 3 x Downsample(
+      (down): MaxPool3d(kernel_size=[2, 2, 2], stride=[2, 2, 2], padding=0, dilation=1, ceil_mode=False)
+    )
+  )
+  (r_up): ModuleList(
+    (0): ModuleList(
+      (0): Upsample(
+        (up): ConvTranspose3d(375, 312, kernel_size=(2, 2, 2), stride=(2, 2, 2))
+        (activation): ReLU()
+      )
+      (1): Upsample(
+        (up): ConvTranspose3d(450, 375, kernel_size=(2, 2, 2), stride=(2, 2, 2))
+        (activation): ReLU()
+      )
+      (2): Upsample(
+        (up): ConvTranspose3d(540, 450, kernel_size=(2, 2, 2), stride=(2, 2, 2))
+        (activation): ReLU()
+      )
+    )
+  )
+  (r_conv): ModuleList(
+    (0): ModuleList(
+      (0): ConvPass(
+        (conv_pass): Sequential(
+          (0): Conv3d(332, 312, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+          (1): ReLU()
+          (2): Conv3d(312, 312, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+          (3): ReLU()
+        )
+      )
+      (1): ConvPass(
+        (conv_pass): Sequential(
+          (0): Conv3d(435, 375, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+          (1): ReLU()
+          (2): Conv3d(375, 375, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+          (3): ReLU()
+        )
+      )
+      (2): ConvPass(
+        (conv_pass): Sequential(
+          (0): Conv3d(630, 450, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+          (1): ReLU()
+          (2): Conv3d(450, 450, kernel_size=(3, 3, 3), stride=(1, 1, 1))
+          (3): ReLU()
+        )
+      )
+    )
+  )
+)
+===============================================================================================
+Layer (type:depth-idx)                        Output Shape              Param #
+===============================================================================================
+UNet                                          [4, 312, 52, 52, 52]      --
+├─ModuleList: 1-7                             --                        (recursive)
+│    └─ConvPass: 2-1                          [4, 20, 136, 136, 136]    --
+│    │    └─Sequential: 3-1                   [4, 20, 136, 136, 136]    --
+│    │    │    └─Conv3d: 4-1                  [4, 20, 138, 138, 138]    1,640
+│    │    │    └─ReLU: 4-2                    [4, 20, 138, 138, 138]    --
+│    │    │    └─Conv3d: 4-3                  [4, 20, 136, 136, 136]    10,820
+│    │    │    └─ReLU: 4-4                    [4, 20, 136, 136, 136]    --
+├─ModuleList: 1-6                             --                        --
+│    └─Downsample: 2-2                        [4, 20, 68, 68, 68]       --
+│    │    └─MaxPool3d: 3-2                    [4, 20, 68, 68, 68]       --
+├─ModuleList: 1-7                             --                        (recursive)
+│    └─ConvPass: 2-3                          [4, 60, 64, 64, 64]       --
+│    │    └─Sequential: 3-3                   [4, 60, 64, 64, 64]       --
+│    │    │    └─Conv3d: 4-5                  [4, 60, 66, 66, 66]       32,460
+│    │    │    └─ReLU: 4-6                    [4, 60, 66, 66, 66]       --
+│    │    │    └─Conv3d: 4-7                  [4, 60, 64, 64, 64]       97,260
+│    │    │    └─ReLU: 4-8                    [4, 60, 64, 64, 64]       --
+├─ModuleList: 1-6                             --                        --
+│    └─Downsample: 2-4                        [4, 60, 32, 32, 32]       --
+│    │    └─MaxPool3d: 3-4                    [4, 60, 32, 32, 32]       --
+├─ModuleList: 1-7                             --                        (recursive)
+│    └─ConvPass: 2-5                          [4, 180, 28, 28, 28]      --
+│    │    └─Sequential: 3-5                   [4, 180, 28, 28, 28]      --
+│    │    │    └─Conv3d: 4-9                  [4, 180, 30, 30, 30]      291,780
+│    │    │    └─ReLU: 4-10                   [4, 180, 30, 30, 30]      --
+│    │    │    └─Conv3d: 4-11                 [4, 180, 28, 28, 28]      874,980
+│    │    │    └─ReLU: 4-12                   [4, 180, 28, 28, 28]      --
+├─ModuleList: 1-6                             --                        --
+│    └─Downsample: 2-6                        [4, 180, 14, 14, 14]      --
+│    │    └─MaxPool3d: 3-6                    [4, 180, 14, 14, 14]      --
+├─ModuleList: 1-7                             --                        (recursive)
+│    └─ConvPass: 2-7                          [4, 540, 10, 10, 10]      --
+│    │    └─Sequential: 3-7                   [4, 540, 10, 10, 10]      --
+│    │    │    └─Conv3d: 4-13                 [4, 540, 12, 12, 12]      2,624,940
+│    │    │    └─ReLU: 4-14                   [4, 540, 12, 12, 12]      --
+│    │    │    └─Conv3d: 4-15                 [4, 540, 10, 10, 10]      7,873,740
+│    │    │    └─ReLU: 4-16                   [4, 540, 10, 10, 10]      --
+├─ModuleList: 1-12                            --                        (recursive)
+│    └─ModuleList: 2-12                       --                        (recursive)
+│    │    └─Upsample: 3-8                     [4, 630, 20, 20, 20]      180
+│    │    │    └─ConvTranspose3d: 4-17        [4, 450, 20, 20, 20]      1,944,450
+│    │    │    └─ReLU: 4-18                   [4, 450, 20, 20, 20]      --
+├─ModuleList: 1-13                            --                        (recursive)
+│    └─ModuleList: 2-13                       --                        (recursive)
+│    │    └─ConvPass: 3-9                     [4, 450, 16, 16, 16]      --
+│    │    │    └─Sequential: 4-19             [4, 450, 16, 16, 16]      --
+│    │    │    │    └─Conv3d: 5-1             [4, 450, 18, 18, 18]      7,654,950
+│    │    │    │    └─ReLU: 5-2               [4, 450, 18, 18, 18]      --
+│    │    │    │    └─Conv3d: 5-3             [4, 450, 16, 16, 16]      5,467,950
+│    │    │    │    └─ReLU: 5-4               [4, 450, 16, 16, 16]      --
+├─ModuleList: 1-12                            --                        (recursive)
+│    └─ModuleList: 2-12                       --                        (recursive)
+│    │    └─Upsample: 3-10                    [4, 435, 32, 32, 32]      60
+│    │    │    └─ConvTranspose3d: 4-20        [4, 375, 32, 32, 32]      1,350,375
+│    │    │    └─ReLU: 4-21                   [4, 375, 32, 32, 32]      --
+├─ModuleList: 1-13                            --                        (recursive)
+│    └─ModuleList: 2-13                       --                        (recursive)
+│    │    └─ConvPass: 3-11                    [4, 375, 28, 28, 28]      --
+│    │    │    └─Sequential: 4-22             [4, 375, 28, 28, 28]      --
+│    │    │    │    └─Conv3d: 5-5             [4, 375, 30, 30, 30]      4,404,750
+│    │    │    │    └─ReLU: 5-6               [4, 375, 30, 30, 30]      --
+│    │    │    │    └─Conv3d: 5-7             [4, 375, 28, 28, 28]      3,797,250
+│    │    │    │    └─ReLU: 5-8               [4, 375, 28, 28, 28]      --
+├─ModuleList: 1-12                            --                        (recursive)
+│    └─ModuleList: 2-12                       --                        (recursive)
+│    │    └─Upsample: 3-12                    [4, 332, 56, 56, 56]      20
+│    │    │    └─ConvTranspose3d: 4-23        [4, 312, 56, 56, 56]      936,312
+│    │    │    └─ReLU: 4-24                   [4, 312, 56, 56, 56]      --
+├─ModuleList: 1-13                            --                        (recursive)
+│    └─ModuleList: 2-13                       --                        (recursive)
+│    │    └─ConvPass: 3-13                    [4, 312, 52, 52, 52]      --
+│    │    │    └─Sequential: 4-25             [4, 312, 52, 52, 52]      --
+│    │    │    │    └─Conv3d: 5-9             [4, 312, 54, 54, 54]      2,797,080
+│    │    │    │    └─ReLU: 5-10              [4, 312, 54, 54, 54]      --
+│    │    │    │    └─Conv3d: 5-11            [4, 312, 52, 52, 52]      2,628,600
+│    │    │    │    └─ReLU: 5-12              [4, 312, 52, 52, 52]      --
+===============================================================================================
+Total params: 42,789,597
+Trainable params: 42,789,597
+Non-trainable params: 0
+Total mult-adds (T): 5.64
+===============================================================================================
+Input size (MB): 131.71
+Forward/backward pass size (MB): 10644.37
+Params size (MB): 171.16
+Estimated Total Size (MB): 10947.24
+===============================================================================================
+Autoencoder(
+  (down): ModuleList(
+    (0-1): 2 x Downsample(
+      (down): MaxPool3d(kernel_size=[2, 2, 2], stride=[2, 2, 2], padding=0, dilation=1, ceil_mode=False)
+    )
+  )
+  (down_conv): ModuleList(
+    (0): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(1, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+    (1): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(64, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(128, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+  )
+  (to_code): ConvPass(
+    (conv_pass): Sequential(
+      (0): Conv3d(128, 22, kernel_size=(1, 1, 1), stride=(1, 1, 1))
+      (1): Sigmoid()
+    )
+  )
+  (from_code): ConvPass(
+    (conv_pass): Sequential(
+      (0): Conv3d(22, 128, kernel_size=(1, 1, 1), stride=(1, 1, 1))
+      (1): ReLU()
+    )
+  )
+  (up): ModuleList(
+    (0): Upsample(
+      (up): Sequential(
+        (0): Upsample(scale_factor=(2.0, 2.0, 2.0), mode='trilinear')
+        (1): Conv3d(128, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1))
+      )
+      (activation): ReLU()
+    )
+    (1): Upsample(
+      (up): Sequential(
+        (0): Upsample(scale_factor=(2.0, 2.0, 2.0), mode='trilinear')
+        (1): Conv3d(64, 1, kernel_size=(1, 1, 1), stride=(1, 1, 1))
+      )
+      (activation): ReLU()
+    )
+  )
+  (up_conv): ModuleList(
+    (0): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (1): ReLU()
+        (2): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (3): ReLU()
+      )
+    )
+    (1): ConvPass(
+      (conv_pass): Sequential(
+        (0): Conv3d(1, 1, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+        (1): Conv3d(1, 1, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+      )
+    )
+  )
+)
+==========================================================================================
+Layer (type:depth-idx)                   Output Shape              Param #
+==========================================================================================
+Autoencoder                              [4, 1, 7, 7, 7]           779,094
+├─ConvPass: 1-1                          [4, 128, 2, 2, 2]         --
+│    └─Sequential: 2-1                   [4, 128, 2, 2, 2]         --
+│    │    └─Conv3d: 3-1                  [4, 128, 2, 2, 2]         2,944
+│    │    └─ReLU: 3-2                    [4, 128, 2, 2, 2]         --
+├─ModuleList: 1-4                        --                        (recursive)
+│    └─Upsample: 2-2                     [4, 64, 4, 4, 4]          --
+│    │    └─Sequential: 3-3              [4, 64, 4, 4, 4]          --
+│    │    │    └─Upsample: 4-1           [4, 128, 4, 4, 4]         --
+│    │    │    └─Conv3d: 4-2             [4, 64, 4, 4, 4]          8,256
+├─ModuleList: 1-5                        --                        (recursive)
+│    └─ConvPass: 2-3                     [4, 64, 4, 4, 4]          --
+│    │    └─Sequential: 3-4              [4, 64, 4, 4, 4]          --
+│    │    │    └─Conv3d: 4-3             [4, 64, 4, 4, 4]          110,656
+│    │    │    └─ReLU: 4-4               [4, 64, 4, 4, 4]          --
+│    │    │    └─Conv3d: 4-5             [4, 64, 4, 4, 4]          110,656
+│    │    │    └─ReLU: 4-6               [4, 64, 4, 4, 4]          --
+├─ModuleList: 1-4                        --                        (recursive)
+│    └─Upsample: 2-4                     [4, 1, 8, 8, 8]           --
+│    │    └─Sequential: 3-5              [4, 1, 8, 8, 8]           --
+│    │    │    └─Upsample: 4-7           [4, 64, 8, 8, 8]          --
+│    │    │    └─Conv3d: 4-8             [4, 1, 8, 8, 8]           65
+├─ModuleList: 1-5                        --                        (recursive)
+│    └─ConvPass: 2-5                     [4, 1, 8, 8, 8]           --
+│    │    └─Sequential: 3-6              [4, 1, 8, 8, 8]           --
+│    │    │    └─Conv3d: 4-9             [4, 1, 8, 8, 8]           28
+│    │    │    └─Conv3d: 4-10            [4, 1, 8, 8, 8]           28
+==========================================================================================
+Total params: 1,011,727
+Trainable params: 1,011,727
+Non-trainable params: 0
+Total mult-adds (M): 59.11
+==========================================================================================
+Input size (MB): 0.00
+Forward/backward pass size (MB): 0.48
+Params size (MB): 0.93
+Estimated Total Size (MB): 1.41
+==========================================================================================
+tensor([[0, 0, 0],
+        [0, 0, 1],
+        [0, 0, 2],
+        ...,
+        [6, 6, 4],
+        [6, 6, 5],
+        [6, 6, 6]], device='cuda:0')
+/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/PatchPerPix/experiments/flylight/setups/setup01/decode.py:101: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(config["checkpoint_file"], map_location=device)
+INFO:flylight.setups.setup01.decode:decoding sample: ppp_experiments/flylight_setup01_260610_113923_103163/val/processed/100/VT033614-20171124_64_H5.zarr (0/5)
+INFO:flylight.setups.setup01.decode:processing 185614450 fg voxels in 181265 batches
+INFO:flylight.setups.setup01.decode:0/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:1/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:2/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:3/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:4/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:5/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:6/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:7/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:8/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:9/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:10/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:11/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:12/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:13/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:14/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:15/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:16/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:17/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:18/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:19/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:20/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:21/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:22/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:23/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:24/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:25/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:26/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:27/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:28/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:29/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:30/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:31/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:32/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:33/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:34/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:35/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:36/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:37/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:38/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:39/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:40/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:41/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:42/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:43/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:44/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:45/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:46/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:47/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:48/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:49/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:50/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:51/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:52/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:53/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:54/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:55/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:56/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:57/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:58/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:59/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:60/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:61/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:62/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:63/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:64/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:65/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:66/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:67/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:68/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:69/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:70/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:71/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:72/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:73/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:74/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:75/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:76/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:77/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:78/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:79/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:80/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:81/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:82/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:83/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:84/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:85/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:86/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:87/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:88/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:89/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:90/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:91/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:92/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:93/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:94/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:95/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:96/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:97/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:98/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:99/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:100/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:101/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:102/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:103/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:104/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:105/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:106/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:107/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:108/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:109/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:110/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:111/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:112/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024
+INFO:flylight.setups.setup01.decode:113/181265: in decode sample: (1, 176)
+INFO:flylight.setups.setup01.decode:torch.Size([1024, 1, 7, 7, 7]) 1024

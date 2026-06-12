@@ -2,9 +2,9 @@ nohup: ignoring input
 no tensorflow found! (losses.py, might be ok if torch is used)
 INFO:__main__:attention: using config file ['flylight/setups/setup01/default_train_code.toml']
 INFO:__main__:CUDA_VISIBILE_DEVICES already set, device 0
-INFO:__main__:used config: {'general': {'logging': 'INFO', 'debug': False, 'overwrite': False}, 'data': {'fisbe_root': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe', 'train_data': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train', 'val_data': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val', 'test_data': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/test', 'overlap_csv_folder': '', 'fg_csv_folder': '', 'voxel_size': [1, 1, 1], 'input_format': 'zarr', 'num_channels': 3, 'gt_key': 'volumes/gt_instances_rm_5', 'raw_key': 'volumes/raw_normalized', 'numinst_key': 'volumes/gt_numinst', 'sample_mask_key': 'volumes/gt_fg_rm_5', 'validate_on_train': False, 'shift_intensity': False, 'add_partly': False, 'sample_fg_points': False, 'max_train_samples': 3, 'max_val_samples': 2, 'cross_val_folders': ['val_data', 'test_data'], 'test_on_train': False}, 'model': {'train_net_name': 'train_net', 'test_net_name': 'test_net', 'train_input_shape_valid': [140, 140, 140], 'test_input_shape_valid': [156, 156, 156], 'train_input_shape_same': [104, 104, 104], 'test_input_shape_same': [104, 104, 104], 'patchshape': [7, 7, 7], 'patchstride': [1, 1, 1], 'max_num_inst': 2, 'fmap_inc_factors': [3, 3, 3], 'fmap_dec_factors': [1.2, 1.2, 1.2], 'downsample_factors': [[2, 2, 2], [2, 2, 2], [2, 2, 2]], 'activation': 'relu', 'val_padding': 'valid', 'train_padding': 'valid', 'kernel_size': 3, 'num_repetitions': 2, 'upsampling': 'transposed_conv', 'overlapping_inst': True, 'train_code': True, 'patch_activation': 'sigmoid', 'code_units': 176, 'autoencoder_chkpt': 'this', 'network_style': 'unet', 'num_fmaps': 20, 'decode_batch_size': 1024, 'autoencoder': {'train_net_name': 'train_net', 'test_net_name': 'test_net', 'train_input_shape': [7, 7, 7], 'test_input_shape': [7, 7, 7], 'patchshape': [7, 7, 7], 'patchstride': [1, 1, 1], 'network_type': 'conv', 'activation': 'relu', 'num_fmaps': [64, 128], 'downsample_factors': [[2, 2, 2], [2, 2, 2]], 'upsampling': 'nearest', 'kernel_size': 3, 'num_repetitions': 2, 'padding': 'same', 'code_method': 'conv1x1_b', 'code_activation': 'sigmoid', 'code_fmaps': 22, 'regularizer': 'l2', 'regularizer_weight': 0.0001, 'num_code_samples': 1024}}, 'preprocessing': {'clipmax': 1500}, 'training': {'len_epoch': 100, 'batch_size': 4, 'num_gpus': 1, 'num_workers': 1, 'cache_size': 8, 'max_iterations': 2000, 'checkpoints': 250, 'snapshots': 250, 'profiling': 100, 'probability_hue': 0.3, 'hue_max_change': 0.5, 'probability_permute': 0.5, 'use_auto_mixed_precision': True, 'add_affinities': 'loss', 'mask_bg_weight': 0.01, 'use_gt_extra': False, 'init_ssl': False, 'oversample_complete': 3, 'sampling': {'min_masked': 0.0001, 'probability_random': 0.05, 'probability_fg': 0.75, 'probability_overlap': 0.0, 'point_balance_radius_overlap': 3}, 'augmentation': {'intensity': {'scale': [0.9, 1.1], 'shift': [-0.1, 0.1]}, 'simple': {}, 'elastic': {'control_point_spacing': [20, 20, 20], 'jitter_sigma': [1, 1, 1], 'rotation_min': -45, 'rotation_max': 45, 'subsample': 4}, 'overlay': {'probability_overlay': 0.3}}}, 'prediction': {'output_format': 'zarr', 'num_workers': 5, 'cache_size': 40, 'aff_key': 'volumes/pred_affs', 'code_key': 'volumes/pred_code', 'numinst_key': 'volumes/pred_numinst', 'mask_folder': '', 'clean_mask': 600, 'fg_thresh': 0.5, 'overlap': [5, 5, 5]}, 'validation': {'params_product': ['mws', 'skeletonize_foreground', 'numinst_threshs'], 'params_zip': ['patch_threshold', 'fc_threshold'], 'mws': [False], 'skeletonize_foreground': [True], 'patch_threshold': [0.5], 'fc_threshold': [0.5], 'numinst_threshs': [[0.9, 0.1]], 'checkpoints': [250, 500, 750, 1000, 1250, 1500, 1750, 2000]}, 'testing': {'num_workers': 5}, 'vote_instances': {'patch_threshold': 0.5, 'fc_threshold': 0.5, 'cuda': True, 'blockwise': True, 'only_bb': True, 'ignore_small_comps': 200, 'num_parallel_samples': 1, 'num_parallel_blocks': 1, 'num_workers': 8, 'chunksize': [92, 92, 92], 'sampling': 1.0, 'debug': False, 'select_patches_for_sparse_data': True, 'save_no_intermediates': True, 'output_format': 'hdf', 'includeSinglePatchCCS': True, 'one_instance_per_channel': False, 'sample': 1.0, 'removeIntersection': True, 'mws': True, 'isbiHack': False, 'mask_fg_border': False, 'graphToInst': False, 'skipLookup': False, 'skipConsensus': False, 'skipRanking': False, 'skipThinCover': False, 'affinity_graph_voting': False, 'affinity_graph_voting_selected': False, 'termAfterThinCover': False, 'add_suffix': False, 'consensus_without_overlap': False, 'pad_with_ps': False, 'fg_thresh_vi': -1.0, 'consensus_interleaved_cnt': False, 'consensus_norm_prob_product': True, 'consensus_prob_product': True, 'consensus_norm_aff': True, 'vi_bg_use_inv_th': False, 'vi_bg_use_half_th': False, 'vi_bg_use_less_than_th': True, 'rank_norm_patch_score': True, 'rank_int_counter': False, 'patch_graph_norm_aff': True, 'blockwise_old_stitch_fn': False, 'flip_cons_arr_axes': False, 'use_score_oracle': False, 'store_scores': False, 'shuffle_patches': False, 'return_intermediates': True, 'remove_small_comps': 0, 'do_nms': False, 'skeletonize_foreground': True, 'prob_based_consensus': False, 'numinst_threshs': [0.9, 0.1]}, 'evaluation': {'num_workers': 5, 'from_scratch': False, 'res_key': 'vote_instances', 'metric': 'general.avg_f1_cov_score', 'localization_criterion': 'cldice', 'assignment_strategy': 'greedy', 'remove_small_components': 500, 'keep_gt_shape': True, 'evaluate_false_labels': True, 'add_general_metrics': ['avg_gt_skel_coverage', 'avg_f1_cov_score'], 'add_multi_thresh_metrics': ['avg_tp_skel_coverage'], 'average_over_samples': False, 'summary': ['general.Num GT', 'general.Num Pred', 'general.avg_f1_cov_score', 'confusion_matrix.avFscore', 'general.avg_gt_skel_coverage', 'confusion_matrix.th_0_5.avg_tp_skel_coverage', 'confusion_matrix.th_0_1.fscore', 'confusion_matrix.th_0_2.fscore', 'confusion_matrix.th_0_3.fscore', 'confusion_matrix.th_0_4.fscore', 'confusion_matrix.th_0_5.fscore', 'confusion_matrix.th_0_6.fscore', 'confusion_matrix.th_0_7.fscore', 'confusion_matrix.th_0_8.fscore', 'confusion_matrix.th_0_9.fscore', 'confusion_matrix.th_0_5.AP_TP', 'confusion_matrix.th_0_5.AP_FP', 'confusion_matrix.th_0_5.AP_FN', 'confusion_matrix.th_0_5.false_split', 'confusion_matrix.th_0_5.false_merge'], 'prediction': {'eval_numinst_prediction': False, 'max_numinst': 2, 'eval_fg_prediction': False, 'eval_patch_prediction': False}}, 'visualize': {'save_mip': True}, 'optimizer': {'optimizer': {'optimizer': 'Adam', 'lr': 0.0001}}, 'postprocessing': {'watershed': {'output_format': 'hdf'}}, 'base': 'ppp_experiments/flylight_setup01_260610_095057_694001'}
-INFO:__main__:limiting training files to 3 of 18
-INFO:__main__:limiting validation files to 2 of 5
+INFO:__main__:used config: {'general': {'logging': 'INFO', 'debug': False, 'overwrite': False}, 'data': {'fisbe_root': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe', 'train_data': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train', 'val_data': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val', 'test_data': '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/test', 'overlap_csv_folder': '', 'fg_csv_folder': '', 'voxel_size': [1, 1, 1], 'input_format': 'zarr', 'num_channels': 3, 'gt_key': 'volumes/gt_instances_rm_5', 'raw_key': 'volumes/raw_normalized', 'numinst_key': 'volumes/gt_numinst', 'sample_mask_key': 'volumes/gt_fg_rm_5', 'validate_on_train': False, 'shift_intensity': False, 'add_partly': False, 'sample_fg_points': False, 'max_train_samples': 10, 'max_val_samples': 10, 'cross_val_folders': ['val_data', 'test_data'], 'test_on_train': False}, 'model': {'train_net_name': 'train_net', 'test_net_name': 'test_net', 'train_input_shape_valid': [140, 140, 140], 'test_input_shape_valid': [156, 156, 156], 'train_input_shape_same': [104, 104, 104], 'test_input_shape_same': [104, 104, 104], 'patchshape': [7, 7, 7], 'patchstride': [1, 1, 1], 'max_num_inst': 2, 'fmap_inc_factors': [3, 3, 3], 'fmap_dec_factors': [1.2, 1.2, 1.2], 'downsample_factors': [[2, 2, 2], [2, 2, 2], [2, 2, 2]], 'activation': 'relu', 'val_padding': 'valid', 'train_padding': 'valid', 'kernel_size': 3, 'num_repetitions': 2, 'upsampling': 'transposed_conv', 'overlapping_inst': True, 'train_code': True, 'patch_activation': 'sigmoid', 'code_units': 176, 'autoencoder_chkpt': 'this', 'network_style': 'unet', 'num_fmaps': 20, 'decode_batch_size': 1024, 'autoencoder': {'train_net_name': 'train_net', 'test_net_name': 'test_net', 'train_input_shape': [7, 7, 7], 'test_input_shape': [7, 7, 7], 'patchshape': [7, 7, 7], 'patchstride': [1, 1, 1], 'network_type': 'conv', 'activation': 'relu', 'num_fmaps': [64, 128], 'downsample_factors': [[2, 2, 2], [2, 2, 2]], 'upsampling': 'nearest', 'kernel_size': 3, 'num_repetitions': 2, 'padding': 'same', 'code_method': 'conv1x1_b', 'code_activation': 'sigmoid', 'code_fmaps': 22, 'regularizer': 'l2', 'regularizer_weight': 0.0001, 'num_code_samples': 1024}}, 'preprocessing': {'clipmax': 1500}, 'training': {'val_log_step': 10, 'len_epoch': 100, 'batch_size': 4, 'num_gpus': 1, 'num_workers': 6, 'cache_size': 8, 'max_iterations': 100, 'checkpoints': 10, 'snapshots': 10, 'profiling': 400, 'probability_hue': 0.3, 'hue_max_change': 0.5, 'probability_permute': 0.5, 'use_auto_mixed_precision': True, 'add_affinities': 'loss', 'mask_bg_weight': 0.01, 'use_gt_extra': False, 'init_ssl': False, 'oversample_complete': 3, 'sampling': {'min_masked': 0.0001, 'probability_random': 0.05, 'probability_fg': 0.75, 'probability_overlap': 0.0, 'point_balance_radius_overlap': 3}, 'augmentation': {'intensity': {'scale': [0.9, 1.1], 'shift': [-0.1, 0.1]}, 'simple': {}, 'elastic': {'control_point_spacing': [20, 20, 20], 'jitter_sigma': [1, 1, 1], 'rotation_min': -45, 'rotation_max': 45, 'subsample': 4}, 'overlay': {'probability_overlay': 0.3}}}, 'prediction': {'output_format': 'zarr', 'num_workers': 5, 'cache_size': 40, 'aff_key': 'volumes/pred_affs', 'code_key': 'volumes/pred_code', 'numinst_key': 'volumes/pred_numinst', 'mask_folder': '', 'clean_mask': 600, 'fg_thresh': 0.5, 'overlap': [5, 5, 5]}, 'validation': {'params_product': ['mws', 'skeletonize_foreground', 'numinst_threshs'], 'params_zip': ['patch_threshold', 'fc_threshold'], 'mws': [False], 'skeletonize_foreground': [True], 'patch_threshold': [0.5], 'fc_threshold': [0.5], 'numinst_threshs': [[0.9, 0.1]], 'checkpoints': [250, 500, 750, 1000, 1250, 1500, 1750, 2000]}, 'testing': {'num_workers': 5}, 'vote_instances': {'patch_threshold': 0.5, 'fc_threshold': 0.5, 'cuda': True, 'blockwise': True, 'only_bb': True, 'ignore_small_comps': 200, 'num_parallel_samples': 1, 'num_parallel_blocks': 1, 'num_workers': 8, 'chunksize': [92, 92, 92], 'sampling': 1.0, 'debug': False, 'select_patches_for_sparse_data': True, 'save_no_intermediates': True, 'output_format': 'hdf', 'includeSinglePatchCCS': True, 'one_instance_per_channel': False, 'sample': 1.0, 'removeIntersection': True, 'mws': True, 'isbiHack': False, 'mask_fg_border': False, 'graphToInst': False, 'skipLookup': False, 'skipConsensus': False, 'skipRanking': False, 'skipThinCover': False, 'affinity_graph_voting': False, 'affinity_graph_voting_selected': False, 'termAfterThinCover': False, 'add_suffix': False, 'consensus_without_overlap': False, 'pad_with_ps': False, 'fg_thresh_vi': -1.0, 'consensus_interleaved_cnt': False, 'consensus_norm_prob_product': True, 'consensus_prob_product': True, 'consensus_norm_aff': True, 'vi_bg_use_inv_th': False, 'vi_bg_use_half_th': False, 'vi_bg_use_less_than_th': True, 'rank_norm_patch_score': True, 'rank_int_counter': False, 'patch_graph_norm_aff': True, 'blockwise_old_stitch_fn': False, 'flip_cons_arr_axes': False, 'use_score_oracle': False, 'store_scores': False, 'shuffle_patches': False, 'return_intermediates': True, 'remove_small_comps': 0, 'do_nms': False, 'skeletonize_foreground': True, 'prob_based_consensus': False, 'numinst_threshs': [0.9, 0.1]}, 'evaluation': {'num_workers': 5, 'from_scratch': False, 'res_key': 'vote_instances', 'metric': 'general.avg_f1_cov_score', 'localization_criterion': 'cldice', 'assignment_strategy': 'greedy', 'remove_small_components': 500, 'keep_gt_shape': True, 'evaluate_false_labels': True, 'add_general_metrics': ['avg_gt_skel_coverage', 'avg_f1_cov_score'], 'add_multi_thresh_metrics': ['avg_tp_skel_coverage'], 'average_over_samples': False, 'summary': ['general.Num GT', 'general.Num Pred', 'general.avg_f1_cov_score', 'confusion_matrix.avFscore', 'general.avg_gt_skel_coverage', 'confusion_matrix.th_0_5.avg_tp_skel_coverage', 'confusion_matrix.th_0_1.fscore', 'confusion_matrix.th_0_2.fscore', 'confusion_matrix.th_0_3.fscore', 'confusion_matrix.th_0_4.fscore', 'confusion_matrix.th_0_5.fscore', 'confusion_matrix.th_0_6.fscore', 'confusion_matrix.th_0_7.fscore', 'confusion_matrix.th_0_8.fscore', 'confusion_matrix.th_0_9.fscore', 'confusion_matrix.th_0_5.AP_TP', 'confusion_matrix.th_0_5.AP_FP', 'confusion_matrix.th_0_5.AP_FN', 'confusion_matrix.th_0_5.false_split', 'confusion_matrix.th_0_5.false_merge'], 'prediction': {'eval_numinst_prediction': False, 'max_numinst': 2, 'eval_fg_prediction': False, 'eval_patch_prediction': False}}, 'visualize': {'save_mip': True}, 'optimizer': {'optimizer': {'optimizer': 'Adam', 'lr': 0.0001}}, 'postprocessing': {'watershed': {'output_format': 'hdf'}}, 'base': 'ppp_experiments/flylight_setup01_260610_113923_103163'}
+INFO:__main__:limiting training files to 10 of 18
+INFO:__main__:limiting validation files to 10 of 5
 INFO:flylight.setups.setup01.train:GPU: NVIDIA GeForce RTX 3060
 UNet(
   (l_conv): ModuleList(
@@ -316,6 +316,30 @@ INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Pr
 random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/R38F04-20181005_63_G5.zarr
 INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/R38F04-20181005_63_H1.zarr (val: False)
 random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/R38F04-20181005_63_H1.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/R53A10-20181019_64_A4.zarr (val: False)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/R53A10-20181019_64_A4.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/R75E01-20181030_64_D1.zarr (val: False)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/R75E01-20181030_64_D1.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/VT008647-20171222_63_D1.zarr (val: False)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/VT008647-20171222_63_D1.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/VT008647-20171222_63_D2.zarr (val: False)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/VT008647-20171222_63_D2.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/VT008647-20171222_63_E1.zarr (val: False)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/VT008647-20171222_63_E1.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/VT019303-20171013_65_B6.zarr (val: False)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/VT019303-20171013_65_B6.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/VT019307-20171013_65_F1.zarr (val: False)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/train/VT019307-20171013_65_F1.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val/R22C03-20180918_66_J2.zarr (val: True)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val/R22C03-20180918_66_J2.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val/VT012403-20171128_61_B2.zarr (val: True)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val/VT012403-20171128_61_B2.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val/VT033614-20171124_64_H1.zarr (val: True)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val/VT033614-20171124_64_H1.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val/VT033614-20171124_64_H5.zarr (val: True)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val/VT033614-20171124_64_H5.zarr
+INFO:flylight.setups.setup01.train:loading data /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val/VT041298-20171114_63_C3.zarr (val: True)
+random source:  /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val/VT041298-20171114_63_C3.zarr
 INFO:flylight.setups.setup01.train:unet.l_conv.0.conv_pass.0.weight
 INFO:flylight.setups.setup01.train:unet.l_conv.0.conv_pass.0.bias
 INFO:flylight.setups.setup01.train:unet.l_conv.0.conv_pass.2.weight
@@ -389,7 +413,32 @@ INFO:gunpowder.nodes.random_location:requesting complete mask...
 INFO:gunpowder.nodes.random_location:allocating mask integral array...
 INFO:gunpowder.nodes.random_location:requesting complete mask...
 INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
+INFO:gunpowder.nodes.random_location:requesting complete mask...
+INFO:gunpowder.nodes.random_location:allocating mask integral array...
 INFO:flylight.setups.setup01.train:Starting training...
+INFO:gunpowder.nodes.precache:starting new set of workers (6, cache size 8)...
 /home/william-zheng/miniforge3/envs/ppp/lib/python3.9/site-packages/gunpowder/nodes/torch_train.py:181: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
   self.scaler = torch.cuda.amp.GradScaler(init_scale=8192.0,
 INFO:gunpowder.nodes.torch_train:using auto mixed precision
@@ -399,120 +448,274 @@ INFO:gunpowder.nodes.torch_train:Using device cuda
   with torch.cuda.amp.autocast(enabled=self.use_auto_mixed_precision):
 /home/william-zheng/miniforge3/envs/ppp/lib/python3.9/site-packages/gunpowder/nodes/torch_train.py:425: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
   with torch.cuda.amp.autocast(enabled=self.use_auto_mixed_precision):
-INFO:gunpowder.nodes.generic_train:Train process: iteration=1 loss=2.061027 time=43.940
-INFO:gunpowder.nodes.snapshot:saving to ppp_experiments/flylight_setup01_260610_095057_694001/train/snapshots/snapshot_1.hdf
-INFO:flylight.setups.setup01.train:Batch: iteration=1, time=56.325373
-INFO:gunpowder.nodes.generic_train:Train process: iteration=2 loss=1.466488 time=2.997
-INFO:flylight.setups.setup01.train:Batch: iteration=2, time=10.606097
-INFO:gunpowder.nodes.generic_train:Train process: iteration=3 loss=1.044920 time=2.332
-INFO:flylight.setups.setup01.train:Batch: iteration=3, time=11.086920
-INFO:gunpowder.nodes.generic_train:Train process: iteration=4 loss=0.702953 time=2.318
-INFO:flylight.setups.setup01.train:Batch: iteration=4, time=10.114660
-INFO:gunpowder.nodes.generic_train:Train process: iteration=5 loss=0.676540 time=1.830
-INFO:flylight.setups.setup01.train:Batch: iteration=5, time=14.274342
-INFO:gunpowder.nodes.generic_train:Train process: iteration=6 loss=2.948501 time=2.909
-INFO:flylight.setups.setup01.train:Batch: iteration=6, time=15.429787
-INFO:gunpowder.nodes.generic_train:Train process: iteration=7 loss=2.509143 time=3.221
-INFO:flylight.setups.setup01.train:Batch: iteration=7, time=16.529894
-INFO:gunpowder.nodes.generic_train:Train process: iteration=8 loss=0.755475 time=3.021
-INFO:flylight.setups.setup01.train:Batch: iteration=8, time=11.787538
-INFO:gunpowder.nodes.generic_train:Train process: iteration=9 loss=1.086226 time=2.744
-INFO:flylight.setups.setup01.train:Batch: iteration=9, time=16.192687
-INFO:gunpowder.nodes.generic_train:Train process: iteration=10 loss=0.915691 time=2.007
-INFO:flylight.setups.setup01.train:Batch: iteration=10, time=10.651832
-INFO:gunpowder.nodes.generic_train:Train process: iteration=11 loss=0.827032 time=2.336
-INFO:flylight.setups.setup01.train:Batch: iteration=11, time=8.870884
-INFO:gunpowder.nodes.generic_train:Train process: iteration=12 loss=1.617682 time=2.553
-INFO:flylight.setups.setup01.train:Batch: iteration=12, time=10.469683
-INFO:gunpowder.nodes.generic_train:Train process: iteration=13 loss=0.946568 time=2.320
-INFO:flylight.setups.setup01.train:Batch: iteration=13, time=12.424879
-INFO:gunpowder.nodes.generic_train:Train process: iteration=14 loss=0.910925 time=2.690
-INFO:flylight.setups.setup01.train:Batch: iteration=14, time=12.159480
-INFO:gunpowder.nodes.generic_train:Train process: iteration=15 loss=0.969797 time=2.548
-INFO:flylight.setups.setup01.train:Batch: iteration=15, time=17.480378
-INFO:gunpowder.nodes.generic_train:Train process: iteration=16 loss=1.073640 time=2.008
-INFO:flylight.setups.setup01.train:Batch: iteration=16, time=14.664698
-INFO:gunpowder.nodes.generic_train:Train process: iteration=17 loss=1.005426 time=2.800
-INFO:flylight.setups.setup01.train:Batch: iteration=17, time=12.310132
-INFO:gunpowder.nodes.generic_train:Train process: iteration=18 loss=0.969522 time=2.537
-INFO:flylight.setups.setup01.train:Batch: iteration=18, time=14.366302
-INFO:gunpowder.nodes.generic_train:Train process: iteration=19 loss=1.109109 time=2.541
-INFO:flylight.setups.setup01.train:Batch: iteration=19, time=12.966429
-INFO:gunpowder.nodes.generic_train:Train process: iteration=20 loss=0.840046 time=2.894
-INFO:flylight.setups.setup01.train:Batch: iteration=20, time=14.931401
-INFO:gunpowder.nodes.generic_train:Train process: iteration=21 loss=1.086406 time=3.303
-INFO:flylight.setups.setup01.train:Batch: iteration=21, time=17.650274
-INFO:gunpowder.nodes.generic_train:Train process: iteration=22 loss=0.878968 time=2.287
-INFO:flylight.setups.setup01.train:Batch: iteration=22, time=16.664321
-INFO:gunpowder.nodes.generic_train:Train process: iteration=23 loss=0.931554 time=3.029
-INFO:flylight.setups.setup01.train:Batch: iteration=23, time=15.775511
-INFO:gunpowder.nodes.generic_train:Train process: iteration=24 loss=0.015328 time=1.655
-INFO:flylight.setups.setup01.train:Batch: iteration=24, time=16.644093
-INFO:gunpowder.nodes.generic_train:Train process: iteration=25 loss=0.779237 time=3.287
-INFO:flylight.setups.setup01.train:Batch: iteration=25, time=15.530516
-INFO:gunpowder.nodes.generic_train:Train process: iteration=26 loss=0.717436 time=1.993
-INFO:flylight.setups.setup01.train:Batch: iteration=26, time=13.247833
-INFO:gunpowder.nodes.generic_train:Train process: iteration=27 loss=1.529381 time=3.531
-INFO:flylight.setups.setup01.train:Batch: iteration=27, time=13.889965
-INFO:gunpowder.nodes.generic_train:Train process: iteration=28 loss=0.706976 time=2.395
-INFO:flylight.setups.setup01.train:Batch: iteration=28, time=16.503634
-INFO:gunpowder.nodes.generic_train:Train process: iteration=29 loss=0.701939 time=2.615
-INFO:flylight.setups.setup01.train:Batch: iteration=29, time=15.174818
-INFO:gunpowder.nodes.generic_train:Train process: iteration=30 loss=0.846879 time=3.207
-INFO:flylight.setups.setup01.train:Batch: iteration=30, time=12.831622
-INFO:gunpowder.nodes.generic_train:Train process: iteration=31 loss=0.764243 time=2.376
-INFO:flylight.setups.setup01.train:Batch: iteration=31, time=14.489561
-INFO:gunpowder.nodes.generic_train:Train process: iteration=32 loss=0.786465 time=3.398
-INFO:flylight.setups.setup01.train:Batch: iteration=32, time=16.154775
-INFO:gunpowder.nodes.generic_train:Train process: iteration=33 loss=0.895394 time=3.387
-INFO:flylight.setups.setup01.train:Batch: iteration=33, time=16.092588
-INFO:gunpowder.nodes.generic_train:Train process: iteration=34 loss=1.841133 time=2.279
-INFO:flylight.setups.setup01.train:Batch: iteration=34, time=13.760725
-INFO:gunpowder.nodes.generic_train:Train process: iteration=35 loss=0.679677 time=2.399
-INFO:flylight.setups.setup01.train:Batch: iteration=35, time=11.269857
-INFO:gunpowder.nodes.generic_train:Train process: iteration=36 loss=0.851521 time=3.719
-INFO:flylight.setups.setup01.train:Batch: iteration=36, time=17.244402
-INFO:gunpowder.nodes.generic_train:Train process: iteration=37 loss=0.731642 time=2.374
-INFO:flylight.setups.setup01.train:Batch: iteration=37, time=10.470084
-INFO:gunpowder.nodes.generic_train:Train process: iteration=38 loss=0.708263 time=2.398
-INFO:flylight.setups.setup01.train:Batch: iteration=38, time=13.446136
-INFO:gunpowder.nodes.generic_train:Train process: iteration=39 loss=0.842587 time=3.085
-INFO:flylight.setups.setup01.train:Batch: iteration=39, time=14.854511
-INFO:gunpowder.nodes.generic_train:Train process: iteration=40 loss=0.763886 time=3.230
-INFO:flylight.setups.setup01.train:Batch: iteration=40, time=14.536288
-INFO:gunpowder.nodes.generic_train:Train process: iteration=41 loss=0.701601 time=1.994
-INFO:flylight.setups.setup01.train:Batch: iteration=41, time=15.607951
-INFO:gunpowder.nodes.generic_train:Train process: iteration=42 loss=0.793275 time=2.261
-INFO:flylight.setups.setup01.train:Batch: iteration=42, time=15.302883
-INFO:gunpowder.nodes.generic_train:Train process: iteration=43 loss=0.697637 time=2.844
-INFO:flylight.setups.setup01.train:Batch: iteration=43, time=14.793316
-INFO:gunpowder.nodes.generic_train:Train process: iteration=44 loss=0.674778 time=1.990
-INFO:flylight.setups.setup01.train:Batch: iteration=44, time=9.894177
-INFO:gunpowder.nodes.generic_train:Train process: iteration=45 loss=0.699188 time=2.272
-INFO:flylight.setups.setup01.train:Batch: iteration=45, time=13.965855
-INFO:gunpowder.nodes.generic_train:Train process: iteration=46 loss=0.046086 time=1.658
-INFO:flylight.setups.setup01.train:Batch: iteration=46, time=14.454315
-INFO:gunpowder.nodes.generic_train:Train process: iteration=47 loss=0.734056 time=2.267
-INFO:flylight.setups.setup01.train:Batch: iteration=47, time=14.269654
-INFO:gunpowder.nodes.generic_train:Train process: iteration=48 loss=0.688312 time=2.211
-INFO:flylight.setups.setup01.train:Batch: iteration=48, time=19.392669
-INFO:gunpowder.nodes.generic_train:Train process: iteration=49 loss=0.750059 time=2.274
-INFO:flylight.setups.setup01.train:Batch: iteration=49, time=10.309516
-INFO:gunpowder.nodes.generic_train:Train process: iteration=50 loss=0.777099 time=3.101
-INFO:flylight.setups.setup01.train:Batch: iteration=50, time=11.047748
-INFO:gunpowder.nodes.generic_train:Train process: iteration=51 loss=0.712060 time=2.793
-INFO:flylight.setups.setup01.train:Batch: iteration=51, time=16.484824
-INFO:gunpowder.nodes.generic_train:Train process: iteration=52 loss=0.647348 time=2.207
-INFO:flylight.setups.setup01.train:Batch: iteration=52, time=16.668214
-INFO:gunpowder.nodes.generic_train:Train process: iteration=53 loss=0.675133 time=2.275
-INFO:flylight.setups.setup01.train:Batch: iteration=53, time=11.139761
-INFO:gunpowder.nodes.generic_train:Train process: iteration=54 loss=1.571668 time=2.470
-INFO:flylight.setups.setup01.train:Batch: iteration=54, time=12.584463
-INFO:gunpowder.nodes.generic_train:Train process: iteration=55 loss=0.741562 time=3.048
-INFO:flylight.setups.setup01.train:Batch: iteration=55, time=15.755559
-INFO:gunpowder.nodes.generic_train:Train process: iteration=56 loss=0.714277 time=2.275
-INFO:flylight.setups.setup01.train:Batch: iteration=56, time=10.263898
-INFO:gunpowder.nodes.generic_train:Train process: iteration=57 loss=0.663544 time=2.366
-INFO:flylight.setups.setup01.train:Batch: iteration=57, time=10.062907
-INFO:gunpowder.nodes.generic_train:Train process: iteration=58 loss=0.723770 time=2.684
-INFO:flylight.setups.setup01.train:Batch: iteration=58, time=12.372610
+INFO:gunpowder.nodes.generic_train:Train process: iteration=1 loss=2.519503 time=44.345
+INFO:gunpowder.nodes.snapshot:saving to ppp_experiments/flylight_setup01_260610_113923_103163/train/snapshots/snapshot_1.hdf
+INFO:flylight.setups.setup01.train:Batch: iteration=1, time=52.205328
+INFO:gunpowder.nodes.precache:starting new set of workers (1, cache size 4)...
+INFO:gunpowder.nodes.generic_train:Train process: iteration=2 loss=1.897804 time=23.555
+INFO:flylight.setups.setup01.train:Batch: iteration=2, time=33.216536
+INFO:gunpowder.nodes.generic_train:Train process: iteration=3 loss=1.384253 time=1.780
+INFO:flylight.setups.setup01.train:Batch: iteration=3, time=1.964753
+INFO:gunpowder.nodes.generic_train:Train process: iteration=4 loss=1.066359 time=3.051
+INFO:flylight.setups.setup01.train:Batch: iteration=4, time=3.308734
+INFO:gunpowder.nodes.generic_train:Train process: iteration=5 loss=1.295352 time=3.053
+INFO:flylight.setups.setup01.train:Batch: iteration=5, time=3.458414
+INFO:gunpowder.nodes.generic_train:Train process: iteration=6 loss=0.856048 time=2.577
+INFO:flylight.setups.setup01.train:Batch: iteration=6, time=3.033286
+INFO:gunpowder.nodes.generic_train:Train process: iteration=7 loss=0.864661 time=2.698
+INFO:flylight.setups.setup01.train:Batch: iteration=7, time=2.918658
+INFO:gunpowder.nodes.generic_train:Train process: iteration=8 loss=1.404876 time=3.169
+INFO:flylight.setups.setup01.train:Batch: iteration=8, time=3.625581
+INFO:gunpowder.nodes.generic_train:Train process: iteration=9 loss=1.126058 time=3.215
+INFO:flylight.setups.setup01.train:Batch: iteration=9, time=3.616169
+INFO:gunpowder.nodes.torch_train:Creating checkpoint ppp_experiments/flylight_setup01_260610_113923_103163/train/train_net_checkpoint_10
+INFO:gunpowder.nodes.generic_train:Train process: iteration=10 loss=0.973826 time=3.270
+INFO:flylight.setups.setup01.train:Batch: iteration=10, time=3.601123
+INFO:gunpowder.nodes.generic_train:Train process: iteration=11 loss=0.900155 time=2.058
+INFO:gunpowder.nodes.snapshot:saving to ppp_experiments/flylight_setup01_260610_113923_103163/train/snapshots/snapshot_11.hdf
+INFO:flylight.setups.setup01.train:Batch: iteration=11, time=2.634557
+INFO:gunpowder.nodes.generic_train:Train process: iteration=12 loss=1.189479 time=1.572
+INFO:flylight.setups.setup01.train:Batch: iteration=12, time=2.956861
+INFO:gunpowder.nodes.generic_train:Train process: iteration=13 loss=0.947460 time=3.155
+INFO:flylight.setups.setup01.train:Batch: iteration=13, time=3.656936
+INFO:gunpowder.nodes.generic_train:Train process: iteration=14 loss=0.932996 time=3.352
+INFO:flylight.setups.setup01.train:Batch: iteration=14, time=4.408558
+INFO:gunpowder.nodes.generic_train:Train process: iteration=15 loss=0.970260 time=3.167
+INFO:flylight.setups.setup01.train:Batch: iteration=15, time=4.384304
+INFO:gunpowder.nodes.generic_train:Train process: iteration=16 loss=0.815556 time=2.131
+INFO:flylight.setups.setup01.train:Batch: iteration=16, time=2.419476
+INFO:gunpowder.nodes.generic_train:Train process: iteration=17 loss=0.761465 time=2.165
+INFO:flylight.setups.setup01.train:Batch: iteration=17, time=2.951401
+INFO:gunpowder.nodes.generic_train:Train process: iteration=18 loss=0.766573 time=2.649
+INFO:flylight.setups.setup01.train:Batch: iteration=18, time=3.500080
+INFO:gunpowder.nodes.generic_train:Train process: iteration=19 loss=0.791141 time=2.548
+INFO:flylight.setups.setup01.train:Batch: iteration=19, time=3.791206
+INFO:gunpowder.nodes.torch_train:Creating checkpoint ppp_experiments/flylight_setup01_260610_113923_103163/train/train_net_checkpoint_20
+INFO:gunpowder.nodes.generic_train:Train process: iteration=20 loss=0.707084 time=2.324
+INFO:flylight.setups.setup01.train:Batch: iteration=20, time=2.581402
+INFO:gunpowder.nodes.generic_train:Train process: iteration=21 loss=0.831651 time=2.993
+INFO:gunpowder.nodes.snapshot:saving to ppp_experiments/flylight_setup01_260610_113923_103163/train/snapshots/snapshot_21.hdf
+INFO:flylight.setups.setup01.train:Batch: iteration=21, time=5.835700
+INFO:gunpowder.nodes.generic_train:Train process: iteration=22 loss=0.779037 time=1.532
+INFO:flylight.setups.setup01.train:Batch: iteration=22, time=2.325642
+INFO:gunpowder.nodes.generic_train:Train process: iteration=23 loss=0.719549 time=2.364
+INFO:flylight.setups.setup01.train:Batch: iteration=23, time=2.814678
+INFO:gunpowder.nodes.generic_train:Train process: iteration=24 loss=0.881105 time=3.118
+INFO:flylight.setups.setup01.train:Batch: iteration=24, time=3.868500
+INFO:gunpowder.nodes.generic_train:Train process: iteration=25 loss=1.052408 time=2.414
+INFO:flylight.setups.setup01.train:Batch: iteration=25, time=4.589901
+INFO:gunpowder.nodes.generic_train:Train process: iteration=26 loss=0.794701 time=2.777
+INFO:flylight.setups.setup01.train:Batch: iteration=26, time=5.728255
+INFO:gunpowder.nodes.generic_train:Train process: iteration=27 loss=0.699190 time=2.336
+INFO:flylight.setups.setup01.train:Batch: iteration=27, time=3.775612
+INFO:gunpowder.nodes.generic_train:Train process: iteration=28 loss=1.275578 time=3.819
+INFO:flylight.setups.setup01.train:Batch: iteration=28, time=6.777939
+INFO:gunpowder.nodes.generic_train:Train process: iteration=29 loss=0.665347 time=2.192
+INFO:flylight.setups.setup01.train:Batch: iteration=29, time=2.459511
+INFO:gunpowder.nodes.torch_train:Creating checkpoint ppp_experiments/flylight_setup01_260610_113923_103163/train/train_net_checkpoint_30
+INFO:gunpowder.nodes.generic_train:Train process: iteration=30 loss=0.826281 time=2.156
+INFO:flylight.setups.setup01.train:Batch: iteration=30, time=4.121234
+INFO:gunpowder.nodes.generic_train:Train process: iteration=31 loss=0.904020 time=2.862
+INFO:gunpowder.nodes.snapshot:saving to ppp_experiments/flylight_setup01_260610_113923_103163/train/snapshots/snapshot_31.hdf
+INFO:flylight.setups.setup01.train:Batch: iteration=31, time=4.663023
+INFO:gunpowder.nodes.generic_train:Train process: iteration=32 loss=0.845522 time=1.486
+INFO:flylight.setups.setup01.train:Batch: iteration=32, time=2.359120
+INFO:gunpowder.nodes.generic_train:Train process: iteration=33 loss=1.040221 time=2.560
+INFO:flylight.setups.setup01.train:Batch: iteration=33, time=5.892238
+INFO:gunpowder.nodes.generic_train:Train process: iteration=34 loss=0.839515 time=3.067
+INFO:flylight.setups.setup01.train:Batch: iteration=34, time=5.060739
+INFO:gunpowder.nodes.generic_train:Train process: iteration=35 loss=0.777600 time=2.508
+INFO:flylight.setups.setup01.train:Batch: iteration=35, time=3.825750
+INFO:gunpowder.nodes.generic_train:Train process: iteration=36 loss=0.876815 time=3.011
+INFO:flylight.setups.setup01.train:Batch: iteration=36, time=7.167186
+INFO:gunpowder.nodes.generic_train:Train process: iteration=37 loss=0.842185 time=3.120
+INFO:flylight.setups.setup01.train:Batch: iteration=37, time=3.636133
+INFO:gunpowder.nodes.generic_train:Train process: iteration=38 loss=0.753512 time=2.463
+INFO:flylight.setups.setup01.train:Batch: iteration=38, time=2.988741
+INFO:gunpowder.nodes.generic_train:Train process: iteration=39 loss=0.792007 time=3.400
+INFO:flylight.setups.setup01.train:Batch: iteration=39, time=6.267049
+INFO:gunpowder.nodes.torch_train:Creating checkpoint ppp_experiments/flylight_setup01_260610_113923_103163/train/train_net_checkpoint_40
+INFO:gunpowder.nodes.generic_train:Train process: iteration=40 loss=0.782324 time=2.916
+INFO:flylight.setups.setup01.train:Batch: iteration=40, time=3.463780
+INFO:gunpowder.nodes.generic_train:Train process: iteration=41 loss=0.773697 time=2.495
+INFO:gunpowder.nodes.snapshot:saving to ppp_experiments/flylight_setup01_260610_113923_103163/train/snapshots/snapshot_41.hdf
+INFO:flylight.setups.setup01.train:Batch: iteration=41, time=6.031568
+INFO:gunpowder.nodes.generic_train:Train process: iteration=42 loss=0.762768 time=1.602
+INFO:flylight.setups.setup01.train:Batch: iteration=42, time=3.454906
+INFO:gunpowder.nodes.generic_train:Train process: iteration=43 loss=0.715516 time=2.190
+INFO:flylight.setups.setup01.train:Batch: iteration=43, time=2.894532
+INFO:gunpowder.nodes.generic_train:Train process: iteration=44 loss=0.748921 time=2.527
+INFO:flylight.setups.setup01.train:Batch: iteration=44, time=4.848383
+INFO:gunpowder.nodes.generic_train:Train process: iteration=45 loss=0.719751 time=3.192
+INFO:flylight.setups.setup01.train:Batch: iteration=45, time=3.842953
+INFO:gunpowder.nodes.generic_train:Train process: iteration=46 loss=0.784024 time=2.313
+INFO:flylight.setups.setup01.train:Batch: iteration=46, time=5.566990
+INFO:gunpowder.nodes.generic_train:Train process: iteration=47 loss=0.697598 time=2.427
+INFO:flylight.setups.setup01.train:Batch: iteration=47, time=3.406080
+INFO:gunpowder.nodes.generic_train:Train process: iteration=48 loss=0.902867 time=2.368
+INFO:flylight.setups.setup01.train:Batch: iteration=48, time=4.892725
+INFO:gunpowder.nodes.generic_train:Train process: iteration=49 loss=1.124443 time=3.572
+INFO:flylight.setups.setup01.train:Batch: iteration=49, time=4.683509
+INFO:gunpowder.nodes.torch_train:Creating checkpoint ppp_experiments/flylight_setup01_260610_113923_103163/train/train_net_checkpoint_50
+INFO:gunpowder.nodes.generic_train:Train process: iteration=50 loss=0.688304 time=2.499
+INFO:flylight.setups.setup01.train:Batch: iteration=50, time=3.034069
+INFO:gunpowder.nodes.generic_train:Train process: iteration=51 loss=0.778408 time=2.606
+INFO:gunpowder.nodes.snapshot:saving to ppp_experiments/flylight_setup01_260610_113923_103163/train/snapshots/snapshot_51.hdf
+INFO:flylight.setups.setup01.train:Batch: iteration=51, time=4.836085
+INFO:gunpowder.nodes.generic_train:Train process: iteration=52 loss=0.762295 time=2.070
+INFO:flylight.setups.setup01.train:Batch: iteration=52, time=3.398844
+INFO:gunpowder.nodes.generic_train:Train process: iteration=53 loss=0.715494 time=3.211
+INFO:flylight.setups.setup01.train:Batch: iteration=53, time=3.638894
+INFO:gunpowder.nodes.generic_train:Train process: iteration=54 loss=0.655128 time=1.829
+INFO:flylight.setups.setup01.train:Batch: iteration=54, time=2.216582
+INFO:gunpowder.nodes.generic_train:Train process: iteration=55 loss=0.013619 time=1.660
+INFO:flylight.setups.setup01.train:Batch: iteration=55, time=2.214011
+INFO:gunpowder.nodes.generic_train:Train process: iteration=56 loss=0.940909 time=2.316
+INFO:flylight.setups.setup01.train:Batch: iteration=56, time=3.914182
+INFO:gunpowder.nodes.generic_train:Train process: iteration=57 loss=0.687532 time=2.658
+INFO:flylight.setups.setup01.train:Batch: iteration=57, time=6.773324
+INFO:gunpowder.nodes.generic_train:Train process: iteration=58 loss=0.733031 time=2.987
+INFO:flylight.setups.setup01.train:Batch: iteration=58, time=3.379757
+INFO:gunpowder.nodes.generic_train:Train process: iteration=59 loss=0.676638 time=2.830
+INFO:flylight.setups.setup01.train:Batch: iteration=59, time=4.081321
+INFO:gunpowder.nodes.torch_train:Creating checkpoint ppp_experiments/flylight_setup01_260610_113923_103163/train/train_net_checkpoint_60
+INFO:gunpowder.nodes.generic_train:Train process: iteration=60 loss=0.694057 time=3.037
+INFO:flylight.setups.setup01.train:Batch: iteration=60, time=3.374410
+INFO:gunpowder.nodes.generic_train:Train process: iteration=61 loss=0.021499 time=1.764
+INFO:gunpowder.nodes.snapshot:saving to ppp_experiments/flylight_setup01_260610_113923_103163/train/snapshots/snapshot_61.hdf
+INFO:flylight.setups.setup01.train:Batch: iteration=61, time=5.024447
+INFO:gunpowder.nodes.generic_train:Train process: iteration=62 loss=0.729315 time=1.912
+INFO:flylight.setups.setup01.train:Batch: iteration=62, time=3.081771
+INFO:gunpowder.nodes.generic_train:Train process: iteration=63 loss=0.676983 time=2.035
+INFO:flylight.setups.setup01.train:Batch: iteration=63, time=2.305494
+INFO:gunpowder.nodes.generic_train:Train process: iteration=64 loss=0.732483 time=2.293
+INFO:flylight.setups.setup01.train:Batch: iteration=64, time=2.526580
+INFO:gunpowder.nodes.generic_train:Train process: iteration=65 loss=0.689057 time=2.358
+INFO:flylight.setups.setup01.train:Batch: iteration=65, time=5.931963
+INFO:gunpowder.nodes.generic_train:Train process: iteration=66 loss=0.744187 time=2.683
+INFO:flylight.setups.setup01.train:Batch: iteration=66, time=4.327914
+INFO:gunpowder.nodes.generic_train:Train process: iteration=67 loss=0.724354 time=2.769
+INFO:flylight.setups.setup01.train:Batch: iteration=67, time=4.590497
+INFO:gunpowder.nodes.generic_train:Train process: iteration=68 loss=0.676700 time=2.388
+INFO:flylight.setups.setup01.train:Batch: iteration=68, time=3.602075
+INFO:gunpowder.nodes.generic_train:Train process: iteration=69 loss=0.764513 time=2.297
+INFO:flylight.setups.setup01.train:Batch: iteration=69, time=4.037579
+INFO:gunpowder.nodes.torch_train:Creating checkpoint ppp_experiments/flylight_setup01_260610_113923_103163/train/train_net_checkpoint_70
+INFO:gunpowder.nodes.generic_train:Train process: iteration=70 loss=0.706079 time=3.661
+INFO:flylight.setups.setup01.train:Batch: iteration=70, time=6.710401
+INFO:gunpowder.nodes.generic_train:Train process: iteration=71 loss=0.667727 time=2.491
+INFO:gunpowder.nodes.snapshot:saving to ppp_experiments/flylight_setup01_260610_113923_103163/train/snapshots/snapshot_71.hdf
+INFO:flylight.setups.setup01.train:Batch: iteration=71, time=3.871705
+INFO:gunpowder.nodes.generic_train:Train process: iteration=72 loss=0.653120 time=1.436
+INFO:flylight.setups.setup01.train:Batch: iteration=72, time=2.423702
+INFO:gunpowder.nodes.generic_train:Train process: iteration=73 loss=0.751263 time=2.883
+INFO:flylight.setups.setup01.train:Batch: iteration=73, time=3.192354
+INFO:gunpowder.nodes.generic_train:Train process: iteration=74 loss=0.695400 time=2.815
+INFO:flylight.setups.setup01.train:Batch: iteration=74, time=3.127661
+INFO:gunpowder.nodes.generic_train:Train process: iteration=75 loss=0.681385 time=3.024
+INFO:flylight.setups.setup01.train:Batch: iteration=75, time=4.264851
+INFO:gunpowder.nodes.generic_train:Train process: iteration=76 loss=0.651290 time=2.968
+INFO:flylight.setups.setup01.train:Batch: iteration=76, time=4.120384
+INFO:gunpowder.nodes.generic_train:Train process: iteration=77 loss=0.777858 time=3.233
+INFO:flylight.setups.setup01.train:Batch: iteration=77, time=5.216161
+INFO:gunpowder.nodes.generic_train:Train process: iteration=78 loss=0.802484 time=3.393
+INFO:flylight.setups.setup01.train:Batch: iteration=78, time=5.519423
+INFO:gunpowder.nodes.generic_train:Train process: iteration=79 loss=0.824669 time=2.366
+INFO:flylight.setups.setup01.train:Batch: iteration=79, time=2.791203
+INFO:gunpowder.nodes.torch_train:Creating checkpoint ppp_experiments/flylight_setup01_260610_113923_103163/train/train_net_checkpoint_80
+INFO:gunpowder.nodes.generic_train:Train process: iteration=80 loss=0.743212 time=3.352
+INFO:flylight.setups.setup01.train:Batch: iteration=80, time=5.592462
+INFO:gunpowder.nodes.generic_train:Train process: iteration=81 loss=0.697527 time=2.459
+INFO:gunpowder.nodes.snapshot:saving to ppp_experiments/flylight_setup01_260610_113923_103163/train/snapshots/snapshot_81.hdf
+INFO:flylight.setups.setup01.train:Batch: iteration=81, time=3.271351
+INFO:gunpowder.nodes.generic_train:Train process: iteration=82 loss=0.745864 time=1.810
+INFO:flylight.setups.setup01.train:Batch: iteration=82, time=2.859851
+INFO:gunpowder.nodes.generic_train:Train process: iteration=83 loss=0.666359 time=2.169
+INFO:flylight.setups.setup01.train:Batch: iteration=83, time=2.500037
+INFO:gunpowder.nodes.generic_train:Train process: iteration=84 loss=0.700447 time=2.995
+INFO:flylight.setups.setup01.train:Batch: iteration=84, time=3.409143
+INFO:gunpowder.nodes.generic_train:Train process: iteration=85 loss=0.705009 time=2.857
+INFO:flylight.setups.setup01.train:Batch: iteration=85, time=3.113775
+INFO:gunpowder.nodes.generic_train:Train process: iteration=86 loss=0.681959 time=2.478
+INFO:flylight.setups.setup01.train:Batch: iteration=86, time=4.586669
+INFO:gunpowder.nodes.generic_train:Train process: iteration=87 loss=0.742762 time=2.862
+INFO:flylight.setups.setup01.train:Batch: iteration=87, time=5.081720
+INFO:gunpowder.nodes.generic_train:Train process: iteration=88 loss=0.615267 time=1.840
+INFO:flylight.setups.setup01.train:Batch: iteration=88, time=2.191890
+INFO:gunpowder.nodes.generic_train:Train process: iteration=89 loss=0.684054 time=2.915
+INFO:flylight.setups.setup01.train:Batch: iteration=89, time=5.343340
+INFO:gunpowder.nodes.torch_train:Creating checkpoint ppp_experiments/flylight_setup01_260610_113923_103163/train/train_net_checkpoint_90
+INFO:gunpowder.nodes.generic_train:Train process: iteration=90 loss=0.611960 time=2.675
+INFO:flylight.setups.setup01.train:Batch: iteration=90, time=3.923003
+INFO:gunpowder.nodes.generic_train:Train process: iteration=91 loss=0.629539 time=2.503
+INFO:gunpowder.nodes.snapshot:saving to ppp_experiments/flylight_setup01_260610_113923_103163/train/snapshots/snapshot_91.hdf
+INFO:flylight.setups.setup01.train:Batch: iteration=91, time=2.971852
+INFO:gunpowder.nodes.generic_train:Train process: iteration=92 loss=0.658748 time=1.653
+INFO:flylight.setups.setup01.train:Batch: iteration=92, time=2.860860
+INFO:gunpowder.nodes.generic_train:Train process: iteration=93 loss=0.651256 time=2.068
+INFO:flylight.setups.setup01.train:Batch: iteration=93, time=2.369759
+INFO:gunpowder.nodes.generic_train:Train process: iteration=94 loss=0.751612 time=3.387
+INFO:flylight.setups.setup01.train:Batch: iteration=94, time=5.924447
+INFO:gunpowder.nodes.generic_train:Train process: iteration=95 loss=0.759296 time=2.864
+INFO:flylight.setups.setup01.train:Batch: iteration=95, time=3.260655
+INFO:gunpowder.nodes.generic_train:Train process: iteration=96 loss=0.700323 time=2.526
+INFO:flylight.setups.setup01.train:Batch: iteration=96, time=4.334483
+INFO:gunpowder.nodes.generic_train:Train process: iteration=97 loss=0.783236 time=2.298
+INFO:flylight.setups.setup01.train:Batch: iteration=97, time=3.883331
+INFO:gunpowder.nodes.generic_train:Train process: iteration=98 loss=0.694102 time=2.555
+INFO:flylight.setups.setup01.train:Batch: iteration=98, time=2.775428
+INFO:gunpowder.nodes.generic_train:Train process: iteration=99 loss=0.775811 time=2.538
+INFO:flylight.setups.setup01.train:Batch: iteration=99, time=4.557904
+INFO:gunpowder.nodes.torch_train:Creating checkpoint ppp_experiments/flylight_setup01_260610_113923_103163/train/train_net_checkpoint_100
+INFO:gunpowder.nodes.generic_train:Train process: iteration=100 loss=0.670005 time=2.204
+INFO:flylight.setups.setup01.train:Batch: iteration=100, time=3.731617
+INFO:gunpowder.producer_pool:terminating workers...
+INFO:gunpowder.producer_pool:joining workers...
+INFO:gunpowder.producer_pool:done
+INFO:gunpowder.producer_pool:terminating workers...
+INFO:gunpowder.producer_pool:joining workers...
+INFO:gunpowder.producer_pool:done
+INFO:__main__:time train: 0:09:40.762960
+INFO:__main__:validating all checkpoints
+INFO:__main__:zip params {'patch_threshold': [0.5], 'fc_threshold': [0.5]}
+INFO:__main__:product params {'mws': [False], 'skeletonize_foreground': [True], 'numinst_threshs': [[0.9, 0.1]]}
+INFO:__main__:{'patch_threshold': 0.5, 'fc_threshold': 0.5}
+INFO:__main__:{'mws': False, 'skeletonize_foreground': True, 'numinst_threshs': [0.9, 0.1]}
+INFO:__main__:val params [{'patch_threshold': 0.5, 'fc_threshold': 0.5, 'mws': False, 'skeletonize_foreground': True, 'numinst_threshs': [0.9, 0.1]}]
+INFO:__main__:validating checkpoint 250
+INFO:__main__:eval params {'filterSz': None, 'res_key': 'vote_instances'}
+INFO:__main__:validating checkpoint 250 {'patch_threshold': 0.5, 'fc_threshold': 0.5, 'mws': False, 'skeletonize_foreground': True, 'numinst_threshs': [0.9, 0.1]}
+INFO:__main__:predicting checkpoint 250
+INFO:__main__:reading data from /home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/fisbe/completely/val
+['VT033614-20171124_64_H5', 'VT033614-20171124_64_H1', 'VT041298-20171114_63_C3', 'VT012403-20171128_61_B2', 'R22C03-20180918_66_J2']
+INFO:__main__:forking <function predict_no_gp at 0x77a29218e430>
+INFO:__main__:predicting!
+Process Process-3:
+Traceback (most recent call last):
+  File "/home/william-zheng/miniforge3/envs/ppp/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/home/william-zheng/miniforge3/envs/ppp/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 99, in wrapper
+    ret = func(*args, **kwargs)
+  File "/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 629, in predict_no_gp
+    predict_fn(name=name, samples=samples, checkpoint=checkpoint,
+TypeError: flylight.setups.setup01.predict_no_gp.predict() got multiple values for keyword argument 'numinst_key'
+Traceback (most recent call last):
+  File "/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 2314, in <module>
+    main()
+  File "/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 2144, in main
+    checkpoint, params = validate_checkpoints(args, config, data,
+  File "/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 995, in validate_checkpoints
+    metric = validate_checkpoint(
+  File "/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 99, in wrapper
+    ret = func(*args, **kwargs)
+  File "/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 828, in validate_checkpoint
+    predict(args, config, config['model']['test_net_name'], data,
+  File "/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 99, in wrapper
+    ret = func(*args, **kwargs)
+  File "/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 680, in predict
+    predict_no_gp(args, config, name, data, samples, checkpoint,
+  File "/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 115, in wrapper
+    raise RuntimeError("child process died")
+RuntimeError: child process died

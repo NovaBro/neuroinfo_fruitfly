@@ -59,6 +59,12 @@ def merge_dicts(sink, source):
     return sink
 
 
+def data_cfg_for_inference(config):
+    data_cfg = dict(config['data'])
+    data_cfg.pop('numinst_key', None)
+    return data_cfg
+
+
 def backup_and_copy_file(source, target, fn):
     target = os.path.join(target, fn)
     if os.path.exists(target):
@@ -562,7 +568,7 @@ def predict_sample(args, config, name, data, sample, checkpoint, input_folder,
     predict_fn(name=name, sample=sample, checkpoint=checkpoint,
                data_folder=data, input_folder=input_folder,
                output_folder=output_folder,
-               **config['data'],
+               **data_cfg_for_inference(config),
                **config['model'],
                **config.get('preprocessing', {}),
                **config['prediction'])
@@ -598,7 +604,7 @@ def predict_autoencoder(args, config, data, checkpoint, train_folder,
                     output_folder=output_folder,
                     samples=samples,
                     **config['model'],
-                    **config['data'],
+                    **data_cfg_for_inference(config),
                     **config['prediction'],
                     **config['visualize'])
 
@@ -629,9 +635,8 @@ def predict_no_gp(args, config, name, data, samples, checkpoint, input_folder,
     predict_fn(name=name, samples=samples, checkpoint=checkpoint,
                data_folder=data, input_folder=input_folder,
                output_folder=output_folder,
-               **config['data'],
+               **data_cfg_for_inference(config),
                **config['model'],
-               batch_size=config['training']['batch_size'],
                **config.get('preprocessing', {}),
                **config['prediction'])
 
@@ -745,6 +750,9 @@ def decode(args, config, data, checkpoint, pred_folder, output_folder):
     else:
         input_shape = None
 
+    prediction_cfg = dict(config['prediction'])
+    prediction_cfg.pop('batch_size', None)
+
     decode_fn(
         mode=mode,
         input_shape=input_shape,
@@ -753,9 +761,9 @@ def decode(args, config, data, checkpoint, pred_folder, output_folder):
         samples=samples,
         included_ae_config=config.get('autoencoder'),
         **config['model'],
-        **config['prediction'],
+        **prediction_cfg,
         **config['visualize'],
-        **config['data'],
+        **data_cfg_for_inference(config),
         batch_size=config['training']['batch_size'],
         num_parallel_samples=config['vote_instances']['num_parallel_samples']
     )
@@ -1334,7 +1342,7 @@ def evaluate_prediction_sample(args, config, sample, data, pred_folder,
             **config['evaluation']['prediction'],
             **config['model'],
             **config['prediction'],
-            **config['data'],
+            **data_cfg_for_inference(config),
             numinst_threshs=config['vote_instances'].get("numinst_threshs")
         )
         metric.update(numinst_metric)
@@ -1347,7 +1355,7 @@ def evaluate_prediction_sample(args, config, sample, data, pred_folder,
             **config['evaluation']['prediction'],
             **config['model'],
             **config['prediction'],
-            **config['data']
+            **data_cfg_for_inference(config)
         )
         metric.update(fg_metric)
 
@@ -1358,7 +1366,7 @@ def evaluate_prediction_sample(args, config, sample, data, pred_folder,
             **config['evaluation']['prediction'],
             **config['model'],
             **config['prediction'],
-            **config['data']
+            **data_cfg_for_inference(config)
         )
         metric.update(patch_metric)
         if config['evaluation']['prediction'].get('store_iou'):
@@ -2030,7 +2038,7 @@ def main():
 
     # repo = Repo(os.path.realpath(os.path.join(os.path.dirname(__file__), "..")))
     # diff = repo.git.diff("HEAD")
-    # dttm = datetime.now().strftime('%y%m%d_%H%M%S')
+    dttm = datetime.now().strftime('%y%m%d_%H%M%S')
     # if diff is not None:
     #     with open(os.path.join(
     #             base, "backups",

@@ -61,9 +61,11 @@ python -u run_ppp.py \
 cd PatchPerPix/experiments/
 nohup env CUDA_VISIBLE_DEVICES=0 \
 python -u run_ppp.py \
--id ppp_experiments/flylight_setup01_260609_133559_546752 \
+--setup setup01 \
+--config flylight/setups/setup01/default_train_code.toml \
+-id ppp_experiments/flylight_setup01_260610_113923_103163 \
 --run_from_exp \
--d predict decode label evaluate \
+-d validate_checkpoints predict decode label evaluate \
 --app flylight \
 --checkpoint 4000 \
 > evaluate.txt 2>&1 &

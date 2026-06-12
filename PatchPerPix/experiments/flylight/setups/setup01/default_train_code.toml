@@ -23,8 +23,8 @@ shift_intensity = false
 add_partly = false
 sample_fg_points = false
 # Limit volumes for faster iteration during local debugging
-max_train_samples = 3
-max_val_samples = 2
+max_train_samples = 10
+max_val_samples = 10
 cross_val_folders = ["val_data", "test_data"]
 
 [model]
@@ -96,18 +96,18 @@ clipmax = 1500
 
 [training]
 # Interleaved val disabled locally: val zarrs + min_masked caused infinite RandomLocation loops
-# val_log_step = 100
+val_log_step = 10
 len_epoch = 100
 # bs=8 OOMs on backward pass (iter 2); bs=4 fits RTX 3060 12GB
 batch_size = 4
 num_gpus = 1
 # num_workers=1 skips PreCache so the first batch returns immediately
-num_workers = 1
+num_workers = 6
 cache_size = 8
-max_iterations = 2000
-checkpoints = 250 
-snapshots = 250
-profiling = 100
+max_iterations = 100
+checkpoints = 10 
+snapshots = 10
+profiling = 400
 probability_hue = 0.3
 hue_max_change = 0.5
 probability_permute = 0.5
@@ -125,6 +125,8 @@ oversample_complete = 3
 output_format = "zarr"
 num_workers = 5
 cache_size = 40
+# bs=4 OOMs at test_input_shape_valid 156^3 on RTX 3060 12GB; bs=1 fits
+batch_size = 1
 aff_key = "volumes/pred_affs"
 code_key = "volumes/pred_code"
 # fg_key = "volumes/pred_fg"
