@@ -10,5 +10,9 @@ imagej
 h5py
 av
 
-napari
+napari[all]
 PyQt6
+
+zarr
+
+navis[all]

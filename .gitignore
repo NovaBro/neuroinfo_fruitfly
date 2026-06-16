@@ -5,6 +5,7 @@ downloads/
 
 /data
 /skeletons
+/volumes
 /__pycache__
 *.DS_Store
 
