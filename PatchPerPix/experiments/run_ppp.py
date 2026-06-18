@@ -109,12 +109,17 @@ def time_func(func):
     return wrapper
 
 
+def _mp_spawn_context():
+    return mp.get_context("spawn")
+
+
 def fork(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         try:
             logger.info("forking %s", func)
-            p = mp.Process(target=func, args=args, kwargs=kwargs)
+            ctx = _mp_spawn_context()
+            p = ctx.Process(target=func, args=args, kwargs=kwargs)
             p.start()
             p.join()
             if p.exitcode != 0:
@@ -133,8 +138,9 @@ def fork_return(func):
     def wrapper(*args, **kwargs):
         try:
             logger.info("forking %s", func)
-            q = mp.Queue()
-            p = mp.Process(target=func,
+            ctx = _mp_spawn_context()
+            q = ctx.Queue()
+            p = ctx.Process(target=func,
                            args=args + (q,), kwargs=kwargs)
             p.start()
             results = None

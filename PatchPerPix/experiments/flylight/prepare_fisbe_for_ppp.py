@@ -103,9 +103,9 @@ def main():
         "completely/train",
         "completely/val",
         "completely/test",
-        "partly/train",
-        "partly/val",
-        "partly/test",
+        # "partly/train",
+        # "partly/val",
+        # "partly/test",
     ]
     for split in splits:
         folder = os.path.join(args.fisbe_root, split)

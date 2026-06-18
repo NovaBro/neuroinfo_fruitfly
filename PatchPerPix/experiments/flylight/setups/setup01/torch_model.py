@@ -99,13 +99,14 @@ class UnetModelWrapper(torch.nn.Module):
                 num_heads=1,
             )
             print(self.unet)
-            torchinfo.summary(
-                self.unet,
-                input_size=((self.config.get("batch_size", 1), self.num_channels) +
-                            tuple(input_shape)),
-                depth=16,
-                mode="train",
-                verbose=1)
+            if not for_inference:
+                torchinfo.summary(
+                    self.unet,
+                    input_size=((self.config.get("batch_size", 1), self.num_channels) +
+                                tuple(input_shape)),
+                    depth=16,
+                    mode="train",
+                    verbose=1)
 
         elif self.config.get("network_style", "unet").lower() == "swinunetr":
             self.unet = monai.networks.nets.SwinUNETR(
@@ -148,14 +149,15 @@ class UnetModelWrapper(torch.nn.Module):
                 config['autoencoder'].get('code_activation', 'Identity'))()
             self.sample_cnt = ae_config.get("num_code_samples", 1024)
 
-            torchinfo.summary(
-                self.decoder,
-                input_size=((self.config.get("batch_size", 1),
-                             ae_config['code_fmaps']) +
-                            (self.decoder.code_spatial,)* self.spatial_dims),
-                depth=16,
-                mode="train",
-                verbose=1)
+            if not for_inference:
+                torchinfo.summary(
+                    self.decoder,
+                    input_size=((self.config.get("batch_size", 1),
+                                 ae_config['code_fmaps']) +
+                                (self.decoder.code_spatial,)* self.spatial_dims),
+                    depth=16,
+                    mode="train",
+                    verbose=1)
         else:
             self.patch_activation = getattr(
                 torch.nn,

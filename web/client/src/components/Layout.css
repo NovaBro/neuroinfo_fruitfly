@@ -1,0 +1,31 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout__header {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #2a2f3a;
+  background: #161922;
+}
+
+.layout__body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.layout__sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  border-right: 1px solid #2a2f3a;
+  background: #13161e;
+  overflow: auto;
+}
+
+.layout__main {
+  flex: 1;
+  overflow: auto;
+  padding: 1rem 1.25rem;
+}

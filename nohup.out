@@ -1,0 +1,555 @@
+SHELL=/bin/bash
+NV_LIBCUBLAS_VERSION=12.1.3.1-1
+NVIDIA_VISIBLE_DEVICES=all
+COLORTERM=truecolor
+SLURM_STEP_NUM_TASKS=1
+NV_NVML_DEV_VERSION=12.1.105-1
+NV_CUDNN_PACKAGE_NAME=libcudnn8
+OMPI_MCA_orte_precondition_transports=00a8566900000000-00a8566900000000
+SLURM_JOB_USER=wmz2007
+SLURM_TASKS_PER_NODE=1
+SLURM_JOB_UID=3674245
+SLURM_STEP_GPUS=0
+NVM_INC=/home/wmz2007/.nvm/versions/node/v20.20.2/include/node
+HISTCONTROL=ignoredups
+TERM_PROGRAM_VERSION=3.7.19
+SLURM_CPU_BIND=quiet,mask_cpu:0x00000000000000000000000000000001
+CONDA_MKL_INTERFACE_LAYER_BACKUP=
+SLURM_TASK_PID=758996
+NV_LIBNCCL_DEV_PACKAGE=libnccl-dev=2.17.1-1+cuda12.1
+CONDA_EXE=/ext3/miniforge3/bin/conda
+_CE_M=
+NV_LIBNCCL_DEV_PACKAGE_VERSION=2.17.1-1
+SLURM_LOCALID=0
+PMIX_HOSTNAME=gl033
+SLURM_SUBMIT_DIR=/scratch/wmz2007/neuroinfo_fruitfly
+SLURM_CPU_BIND_VERBOSE=quiet
+HOSTNAME=torch-login-b-1.hpc-infra.svc.cluster.local
+HISTSIZE=1000
+SINGULARITY_NAME=cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif
+SLURMD_NODENAME=gl033
+PMIX_SECURITY_MODE=munge,native
+SLURM_JOB_START_TIME=1781730303
+HYDRA_LAUNCHER_EXTRA_ARGS=--external-launcher
+NVIDIA_REQUIRE_CUDA=cuda>=12.1 brand=tesla,driver>=450,driver<451 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=geforce,driver>=470,driver<471 brand=geforcertx,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=titan,driver>=470,driver<471 brand=titanrtx,driver>=470,driver<471 brand=tesla,driver>=510,driver<511 brand=unknown,driver>=510,driver<511 brand=nvidia,driver>=510,driver<511 brand=nvidiartx,driver>=510,driver<511 brand=geforce,driver>=510,driver<511 brand=geforcertx,driver>=510,driver<511 brand=quadro,driver>=510,driver<511 brand=quadrortx,driver>=510,driver<511 brand=titan,driver>=510,driver<511 brand=titanrtx,driver>=510,driver<511 brand=tesla,driver>=515,driver<516 brand=unknown,driver>=515,driver<516 brand=nvidia,driver>=515,driver<516 brand=nvidiartx,driver>=515,driver<516 brand=geforce,driver>=515,driver<516 brand=geforcertx,driver>=515,driver<516 brand=quadro,driver>=515,driver<516 brand=quadrortx,driver>=515,driver<516 brand=titan,driver>=515,driver<516 brand=titanrtx,driver>=515,driver<516 brand=tesla,driver>=525,driver<526 brand=unknown,driver>=525,driver<526 brand=nvidia,driver>=525,driver<526 brand=nvidiartx,driver>=525,driver<526 brand=geforce,driver>=525,driver<526 brand=geforcertx,driver>=525,driver<526 brand=quadro,driver>=525,driver<526 brand=quadrortx,driver>=525,driver<526 brand=titan,driver>=525,driver<526 brand=titanrtx,driver>=525,driver<526
+SSH_AUTH_SOCK=/tmp/cursor-remote-ssh-auth-sock-9b452b44-d206-4d8b-83f7-51bc4a247b7d.sock
+NV_LIBCUBLAS_DEV_PACKAGE=libcublas-dev-12-1=12.1.3.1-1
+NV_NVTX_VERSION=12.1.105-1
+SLURM_STEP_NODELIST=gl033
+NV_CUDA_CUDART_DEV_VERSION=12.1.105-1
+NV_LIBCUSPARSE_VERSION=12.1.0.106-1
+SLURM_CLUSTER_NAME=torch
+SLURM_JOB_END_TIME=1781737503
+NV_LIBNPP_VERSION=12.1.0.40-1
+SLURM_CPUS_ON_NODE=1
+SINGULARITY_ENVIRONMENT=/.singularity.d/env/91-environment.sh
+NCCL_VERSION=2.17.1-1
+SLURM_UMASK=0022
+SLURM_JOB_CPUS_PER_NODE=1
+GPG_TTY=/dev/pts/80
+XML_CATALOG_FILES=file:///ext3/miniforge3/envs/ppp/etc/xml/catalog file:///etc/xml/catalog
+LMOD_DIR=/share/apps/lua-modules/lmod/lmod/libexec
+PMIX_GDS_MODULE=shmem2,hash
+SLURM_GPUS_ON_NODE=1
+PWD=/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments
+PRTE_MCA_plm_slurm_args=--external-launcher
+KRB5CCNAME=KCM:
+SLURM_GTIDS=0
+LOGNAME=wmz2007
+XDG_SESSION_TYPE=tty
+CONDA_PREFIX=/ext3/miniforge3/envs/ppp
+NV_CUDNN_PACKAGE=libcudnn8=8.9.0.131-1+cuda12.1
+SLURM_JOB_PARTITION=l40s_public
+MODULESHOME=/share/apps/lua-modules/lmod/lmod
+NVIDIA_DRIVER_CAPABILITIES=compute,utility
+NV_NVPROF_DEV_PACKAGE=cuda-nvprof-12-1=12.1.105-1
+SLURM_OOM_KILL_STEP=0
+NV_LIBNPP_PACKAGE=libnpp-12-1=12.1.0.40-1
+NV_LIBNCCL_DEV_PACKAGE_NAME=libnccl-dev
+SLURM_JOB_NUM_NODES=1
+SRUN_DEBUG=3
+SLURM_STEPID=0
+PMIX_SYSTEM_TMPDIR=/tmp
+SLURM_CPU_BIND_LIST=0x00000000000000000000000000000001
+TZ=America/New_York
+SBATCH_IGNORE_PBS=1
+PMIX_SERVER_URI41=pmix-server.758455;tcp4://127.0.0.1:59977
+VSCODE_GIT_ASKPASS_NODE=/scratch/wmz2007/cursor-server/.cursor-server/bin/linux-x64/80c653c2c3528e65016a0d304b54486084b470b0/node
+SLURM_JOBID=11032169
+NV_LIBCUBLAS_DEV_VERSION=12.1.3.1-1
+NVIDIA_PRODUCT_NAME=CUDA
+SLURM_PTY_PORT=55409
+SLURM_LAUNCH_NODE_IPADDR=10.32.51.121
+SLURM_JOB_QOS=gpu48
+I_MPI_HYDRA_BOOTSTRAP_EXEC_EXTRA_ARGS=--external-launcher
+PMIX_BFROP_BUFFER_TYPE=PMIX_BFROP_BUFFER_NON_DESC
+USER_PATH=/share/apps/apptainer/1.5.1/x86_64/utils/bin:/share/apps/apptainer/bin:/share/apps/local/bin:/home/wmz2007/.nvm/versions/node/v20.20.2/bin:/share/apps/apptainer/bin:/share/apps/local/bin:/share/apps/apptainer/bin:/share/apps/local/bin:/scratch/wmz2007/cursor-server/.cursor-server/bin/linux-x64/80c653c2c3528e65016a0d304b54486084b470b0/bin/remote-cli:/scratch/wmz2007/cursor-server/.cursor-server/bin/linux-x64/80c653c2c3528e65016a0d304b54486084b470b0/bin/remote-cli:/share/apps/apptainer/bin:/share/apps/local/bin:/share/apps/apptainer/bin:/share/apps/local/bin:/share/apps/apptainer/bin:/share/apps/local/bin:/home/wmz2007/.local/bin:/home/wmz2007/bin:/share/apps/apptainer/bin:/share/apps/local/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/slurm/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+NV_LIBCUBLAS_DEV_PACKAGE_NAME=libcublas-dev-12-1
+APPTAINER_ENVIRONMENT=/.singularity.d/env/91-environment.sh
+MOTD_SHOWN=pam
+NV_CUDA_CUDART_VERSION=12.1.105-1
+APPTAINER_APPNAME=
+SLURM_PTY_WIN_ROW=35
+HOME=/home/wmz2007
+LANG=C.UTF-8
+SLURM_CPU_BIND_TYPE=mask_cpu:
+LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=01;37;41:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=01;36:*.au=01;36:*.flac=01;36:*.m4a=01;36:*.mid=01;36:*.midi=01;36:*.mka=01;36:*.mp3=01;36:*.mpc=01;36:*.ogg=01;36:*.ra=01;36:*.wav=01;36:*.oga=01;36:*.opus=01;36:*.spx=01;36:*.xspf=01;36:
+APPTAINER_COMMAND=exec
+SLURMD_DEBUG=2
+SLURM_PROCID=0
+SCRATCH=/scratch/wmz2007
+PMIX_VERSION=5.0.8
+CUDA_VERSION=12.1.1
+SINGULARITY_CONTAINER=/share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif
+NV_LIBCUBLAS_PACKAGE=libcublas-12-1=12.1.3.1-1
+LMOD_SETTARG_FULL_SUPPORT=no
+NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE=cuda-nsight-compute-12-1=12.1.1-1
+CONDA_PROMPT_MODIFIER=(ppp) 
+TMPDIR=/state/partition1/job-11032169
+GIT_ASKPASS=/scratch/wmz2007/cursor-server/.cursor-server/bin/linux-x64/80c653c2c3528e65016a0d304b54486084b470b0/extensions/git/dist/askpass.sh
+PROMPT_COMMAND=PS1="Singularity> "; unset PROMPT_COMMAND
+VSCODE_GIT_IPC_AUTH_TOKEN=70d2563aa7e9ea29388b89aba240adcb02c70df712de40aa4fd3fc2e6444dd10
+SLURM_NTASKS=1
+LMOD_DISABLE_SAME_NAME_AUTOSWAP=yes
+SLURM_TOPOLOGY_ADDR=gl033
+LMOD_VERSION=8.7.64
+SSH_CONNECTION=100.64.0.25 57430 10.0.2.2 22
+SLURM_PMIX_MAPPING_SERV=(vector,(0,1,1))
+NV_LIBNPP_DEV_PACKAGE=libnpp-dev-12-1=12.1.0.40-1
+PMIX_RANK=0
+PMIX_SERVER_URI2=pmix-server.758455;tcp4://127.0.0.1:59977
+PMIX_SERVER_URI3=pmix-server.758455;tcp4://127.0.0.1:59977
+PMIX_SERVER_URI4=pmix-server.758455;tcp4://127.0.0.1:59977
+SLURM_DISTRIBUTION=cyclic
+NV_LIBCUBLAS_PACKAGE_NAME=libcublas-12-1
+HYDRA_BOOTSTRAP=slurm
+NV_LIBNPP_DEV_VERSION=12.1.0.40-1
+NVM_DIR=/home/wmz2007/.nvm
+VSCODE_GIT_ASKPASS_EXTRA_ARGS=
+SLURM_TOPOLOGY_ADDR_PATTERN=node
+CUDA_VISIBLE_DEVICES=0
+SLURM_SRUN_COMM_HOST=10.32.51.121
+HF_HOME=/scratch/wmz2007/.huggingface
+_CONDA_EXE=/ext3/miniforge3/bin/conda
+ARCHIVE=/archive/wmz2007
+SLURM_PMIXP_ABORT_AGENT_PORT=35393
+_CONDA_ROOT=/ext3/miniforge3
+XDG_SESSION_CLASS=user
+LMOD_PKG=/share/apps/lua-modules/lmod/lmod
+APPTAINER_CONTAINER=/share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif
+SLURM_SCRIPT_CONTEXT=prolog_task
+SLURM_MEM_PER_NODE=32768
+SELINUX_ROLE_REQUESTED=
+PYTHONPATH=/ext3/miniforge3/bin:/ext3/miniforge3/bin:/ext3/miniforge3/condabin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+TERM=xterm-256color
+PMIX_SERVER_URI21=pmix-server.758455;tcp4://127.0.0.1:59977
+NV_LIBCUSPARSE_DEV_VERSION=12.1.0.106-1
+_CE_CONDA=
+SLURM_PTY_WIN_COL=82
+LESSOPEN=||/usr/bin/lesspipe.sh %s
+USER=wmz2007
+LIBRARY_PATH=/usr/local/cuda/lib64/stubs
+SLURM_NODELIST=gl033
+NV_CUDNN_VERSION=8.9.0.131
+VSCODE_GIT_IPC_HANDLE=/run/user/3674245/vscode-git-ab34a1374a.sock
+CONDA_SHLVL=1
+SLURM_SRUN_COMM_PORT=13351
+SLURM_STEP_ID=0
+SLURM_JOB_ACCOUNT=torch_pr_61_general
+SLURM_PRIO_PROCESS=0
+SELINUX_USE_CURRENT_RANGE=
+SLURM_NPROCS=1
+SLURM_TMPDIR=/state/partition1/job-11032169
+LMOD_ROOT=/share/apps/lua-modules/lmod
+SHLVL=3
+NVM_CD_FLAGS=
+SLURM_NNODES=1
+BASH_ENV=/etc/profile.d/cluster.sh
+NV_CUDA_LIB_VERSION=12.1.1-1
+NVARCH=x86_64
+APPTAINER_NAME=cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif
+SINGULARITY_BIND=/scratch,/projects,/share/apps,/mnt,/state/partition1
+NV_CUDNN_PACKAGE_DEV=libcudnn8-dev=8.9.0.131-1+cuda12.1
+XDG_SESSION_ID=1886
+SLURM_SUBMIT_HOST=torch-login-b-1.hpc-infra.svc.cluster.local
+NV_CUDA_COMPAT_PACKAGE=cuda-compat-12-1
+PMIX_SERVER_TMPDIR=/opt/slurm/data/slurmd/pmix.11032169.0/
+APPTAINER_BIND=/scratch,/projects,/share/apps,/mnt,/state/partition1
+CONDA_PYTHON_EXE=/ext3/miniforge3/bin/python
+NV_LIBNCCL_PACKAGE=libnccl2=2.17.1-1+cuda12.1
+LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/.singularity.d/libs
+XDG_RUNTIME_DIR=/state/partition1/job-11032169
+SLURM_JOB_ID=11032169
+SLURM_NODEID=0
+S_COLORS=auto
+SLURM_STEP_NUM_NODES=1
+SSH_CLIENT=100.64.0.25 57430 22
+CONDA_DEFAULT_ENV=ppp
+NV_CUDA_NSIGHT_COMPUTE_VERSION=12.1.1-1
+DEBUGINFOD_IMA_CERT_PATH=/etc/keys/ima:
+LMOD_OPTIONS=--quiet
+PMIX_NAMESPACE=slurm.pmix.11032169.0
+which_declare=declare -f
+NV_NVPROF_VERSION=12.1.105-1
+LC_ALL=C
+SLURM_STEP_TASKS_PER_NODE=1
+VSCODE_GIT_ASKPASS_MAIN=/scratch/wmz2007/cursor-server/.cursor-server/bin/linux-x64/80c653c2c3528e65016a0d304b54486084b470b0/extensions/git/dist/askpass-main.js
+SLURM_MPI_TYPE=pmix
+XDG_DATA_DIRS=/home/wmz2007/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+SLURM_CONF=/opt/slurm/data/slurmd/conf-cache/slurm.conf
+BROWSER=/scratch/wmz2007/cursor-server/.cursor-server/bin/linux-x64/80c653c2c3528e65016a0d304b54486084b470b0/bin/helpers/browser.sh
+PATH=/ext3/miniforge3/envs/ppp/bin:/ext3/miniforge3/bin:/ext3/miniforge3/condabin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+SELINUX_LEVEL_REQUESTED=
+SLURM_JOB_NAME=bash
+LMOD_EXACT_MATCH=yes
+MODULEPATH=/share/apps/modulefiles
+NV_LIBNCCL_PACKAGE_NAME=libnccl2
+NV_LIBNCCL_PACKAGE_VERSION=2.17.1-1
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/3674245/bus
+SLURM_JOBTMP=/state/partition1/job-11032169
+LMOD_CMD=/share/apps/lua-modules/lmod/lmod/libexec/lmod
+NVM_BIN=/home/wmz2007/.nvm/versions/node/v20.20.2/bin
+MAIL=/var/spool/mail/wmz2007
+SLURM_JOB_GROUP=wmz2007
+SLURM_STEP_LAUNCHER_PORT=13351
+OMPI_MCA_plm_slurm_args=--external-launcher
+SLURM_JOB_GID=3674245
+CONTAINER_IMAGES_FOLDER=/share/apps/images
+OVSX_REGISTRY_URL=https://open-vsx.org
+OLDPWD=/scratch/wmz2007/neuroinfo_fruitfly
+SLURM_JOB_NODELIST=gl033
+CLUSTER=TORCH
+TERM_PROGRAM=vscode
+MKL_INTERFACE_LAYER=LP64,GNU
+VSCODE_IPC_HOOK_CLI=/run/user/3674245/vscode-ipc-3b4f878b-4ce6-4dd1-a974-cc88fb38e437.sock
+I_MPI_HYDRA_BOOTSTRAP=slurm
+BASH_FUNC_ml%%=() {  eval "$($LMOD_DIR/ml_cmd "$@")"
+}
+BASH_FUNC_module%%=() {  if [ -z "${LMOD_SH_DBG_ON+x}" ]; then
+ case "$-" in 
+ *v*x*)
+ __lmod_sh_dbg='vx'
+ ;;
+ *v*)
+ __lmod_sh_dbg='v'
+ ;;
+ *x*)
+ __lmod_sh_dbg='x'
+ ;;
+ esac;
+ fi;
+ if [ -n "${__lmod_sh_dbg:-}" ]; then
+ set +$__lmod_sh_dbg;
+ echo "Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output" 1>&2;
+ fi;
+ eval "$($LMOD_CMD shell "$@")" && eval "$(${LMOD_SETTARG_CMD:-:} -s sh)";
+ __lmod_my_status=$?;
+ if [ -n "${__lmod_sh_dbg:-}" ]; then
+ echo "Shell debugging restarted" 1>&2;
+ set -$__lmod_sh_dbg;
+ fi;
+ unset __lmod_sh_dbg;
+ return $__lmod_my_status
+}
+_=/usr/bin/env
+no tensorflow found! (losses.py, might be ok if torch is used)
+INFO:__main__:attention: using config file ['flylight/setups/setup01/default_train_code_l40s.toml']
+INFO:__main__:CUDA_VISIBILE_DEVICES already set, device 0
+INFO:__main__:used config: {'general': {'logging': 'INFO', 'debug': False, 'overwrite': False}, 'data': {'fisbe_root': '/scratch/wmz2007/neuroinfo_fruitfly/fisbe', 'train_data': '/scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/train', 'val_data': '/scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/val', 'test_data': '/scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/test', 'overlap_csv_folder': '', 'fg_csv_folder': '', 'voxel_size': [1, 1, 1], 'input_format': 'zarr', 'num_channels': 3, 'gt_key': 'volumes/gt_instances_rm_5', 'raw_key': 'volumes/raw_normalized', 'numinst_key': 'volumes/gt_numinst', 'sample_mask_key': 'volumes/gt_fg_rm_5', 'validate_on_train': False, 'shift_intensity': False, 'add_partly': False, 'sample_fg_points': False, 'max_train_samples': 10, 'max_val_samples': 10, 'cross_val_folders': ['val_data', 'test_data'], 'test_on_train': False}, 'model': {'train_net_name': 'train_net', 'test_net_name': 'test_net', 'train_input_shape_valid': [140, 140, 140], 'test_input_shape_valid': [156, 156, 156], 'train_input_shape_same': [104, 104, 104], 'test_input_shape_same': [104, 104, 104], 'patchshape': [7, 7, 7], 'patchstride': [1, 1, 1], 'max_num_inst': 2, 'fmap_inc_factors': [3, 3, 3], 'fmap_dec_factors': [1.2, 1.2, 1.2], 'downsample_factors': [[2, 2, 2], [2, 2, 2], [2, 2, 2]], 'activation': 'relu', 'val_padding': 'valid', 'train_padding': 'valid', 'kernel_size': 3, 'num_repetitions': 2, 'upsampling': 'transposed_conv', 'overlapping_inst': True, 'train_code': True, 'patch_activation': 'sigmoid', 'code_units': 176, 'autoencoder_chkpt': 'this', 'network_style': 'unet', 'num_fmaps': 20, 'decode_batch_size': 1024, 'autoencoder': {'train_net_name': 'train_net', 'test_net_name': 'test_net', 'train_input_shape': [7, 7, 7], 'test_input_shape': [7, 7, 7], 'patchshape': [7, 7, 7], 'patchstride': [1, 1, 1], 'network_type': 'conv', 'activation': 'relu', 'num_fmaps': [64, 128], 'downsample_factors': [[2, 2, 2], [2, 2, 2]], 'upsampling': 'nearest', 'kernel_size': 3, 'num_repetitions': 2, 'padding': 'same', 'code_method': 'conv1x1_b', 'code_activation': 'sigmoid', 'code_fmaps': 22, 'regularizer': 'l2', 'regularizer_weight': 0.0001, 'num_code_samples': 1024}}, 'preprocessing': {'clipmax': 1500}, 'training': {'val_log_step': 10, 'len_epoch': 100, 'batch_size': 12, 'num_gpus': 1, 'num_workers': 6, 'cache_size': 8, 'max_iterations': 800, 'checkpoints': 50, 'snapshots': 10, 'profiling': 400, 'probability_hue': 0.3, 'hue_max_change': 0.5, 'probability_permute': 0.5, 'use_auto_mixed_precision': True, 'add_affinities': 'loss', 'mask_bg_weight': 0.01, 'use_gt_extra': False, 'init_ssl': False, 'oversample_complete': 3, 'sampling': {'min_masked': 0.0001, 'probability_random': 0.05, 'probability_fg': 0.75, 'probability_overlap': 0.0, 'point_balance_radius_overlap': 3}, 'augmentation': {'intensity': {'scale': [0.9, 1.1], 'shift': [-0.1, 0.1]}, 'simple': {}, 'elastic': {'control_point_spacing': [20, 20, 20], 'jitter_sigma': [1, 1, 1], 'rotation_min': -45, 'rotation_max': 45, 'subsample': 4}, 'overlay': {'probability_overlay': 0.3}}}, 'prediction': {'output_format': 'zarr', 'num_workers': 5, 'cache_size': 40, 'batch_size': 1, 'aff_key': 'volumes/pred_affs', 'code_key': 'volumes/pred_code', 'numinst_key': 'volumes/pred_numinst', 'mask_folder': '', 'clean_mask': 600, 'fg_thresh': 0.5, 'overlap': [5, 5, 5]}, 'validation': {'params_product': ['mws', 'skeletonize_foreground', 'numinst_threshs'], 'params_zip': ['patch_threshold', 'fc_threshold'], 'mws': [False], 'skeletonize_foreground': [True], 'patch_threshold': [0.5], 'fc_threshold': [0.5], 'numinst_threshs': [[0.9, 0.1]], 'checkpoints': [0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600]}, 'testing': {'num_workers': 5}, 'vote_instances': {'patch_threshold': 0.5, 'fc_threshold': 0.5, 'cuda': True, 'blockwise': True, 'only_bb': True, 'ignore_small_comps': 200, 'num_parallel_samples': 1, 'num_parallel_blocks': 1, 'num_workers': 8, 'chunksize': [92, 92, 92], 'sampling': 1.0, 'debug': False, 'select_patches_for_sparse_data': True, 'save_no_intermediates': True, 'output_format': 'hdf', 'includeSinglePatchCCS': True, 'one_instance_per_channel': False, 'sample': 1.0, 'removeIntersection': True, 'mws': True, 'isbiHack': False, 'mask_fg_border': False, 'graphToInst': False, 'skipLookup': False, 'skipConsensus': False, 'skipRanking': False, 'skipThinCover': False, 'affinity_graph_voting': False, 'affinity_graph_voting_selected': False, 'termAfterThinCover': False, 'add_suffix': False, 'consensus_without_overlap': False, 'pad_with_ps': False, 'fg_thresh_vi': -1.0, 'consensus_interleaved_cnt': False, 'consensus_norm_prob_product': True, 'consensus_prob_product': True, 'consensus_norm_aff': True, 'vi_bg_use_inv_th': False, 'vi_bg_use_half_th': False, 'vi_bg_use_less_than_th': True, 'rank_norm_patch_score': True, 'rank_int_counter': False, 'patch_graph_norm_aff': True, 'blockwise_old_stitch_fn': False, 'flip_cons_arr_axes': False, 'use_score_oracle': False, 'store_scores': False, 'shuffle_patches': False, 'return_intermediates': True, 'remove_small_comps': 0, 'do_nms': False, 'skeletonize_foreground': True, 'prob_based_consensus': False, 'numinst_threshs': [0.9, 0.1]}, 'evaluation': {'num_workers': 5, 'from_scratch': False, 'res_key': 'vote_instances', 'metric': 'general.avg_f1_cov_score', 'localization_criterion': 'cldice', 'assignment_strategy': 'greedy', 'remove_small_components': 500, 'keep_gt_shape': True, 'evaluate_false_labels': True, 'add_general_metrics': ['avg_gt_skel_coverage', 'avg_f1_cov_score'], 'add_multi_thresh_metrics': ['avg_tp_skel_coverage'], 'average_over_samples': False, 'summary': ['general.Num GT', 'general.Num Pred', 'general.avg_f1_cov_score', 'confusion_matrix.avFscore', 'general.avg_gt_skel_coverage', 'confusion_matrix.th_0_5.avg_tp_skel_coverage', 'confusion_matrix.th_0_1.fscore', 'confusion_matrix.th_0_2.fscore', 'confusion_matrix.th_0_3.fscore', 'confusion_matrix.th_0_4.fscore', 'confusion_matrix.th_0_5.fscore', 'confusion_matrix.th_0_6.fscore', 'confusion_matrix.th_0_7.fscore', 'confusion_matrix.th_0_8.fscore', 'confusion_matrix.th_0_9.fscore', 'confusion_matrix.th_0_5.AP_TP', 'confusion_matrix.th_0_5.AP_FP', 'confusion_matrix.th_0_5.AP_FN', 'confusion_matrix.th_0_5.false_split', 'confusion_matrix.th_0_5.false_merge'], 'prediction': {'eval_numinst_prediction': False, 'max_numinst': 2, 'eval_fg_prediction': False, 'eval_patch_prediction': False}}, 'visualize': {'save_mip': True}, 'optimizer': {'optimizer': {'optimizer': 'Adam', 'lr': 0.0001}}, 'postprocessing': {'watershed': {'output_format': 'hdf'}}, 'base': 'ppp_experiments/flylight_setup01_260617_130205_919927'}
+INFO:__main__:validating all checkpoints
+INFO:__main__:zip params {'patch_threshold': [0.5], 'fc_threshold': [0.5]}
+INFO:__main__:product params {'mws': [False], 'skeletonize_foreground': [True], 'numinst_threshs': [[0.9, 0.1]]}
+INFO:__main__:{'patch_threshold': 0.5, 'fc_threshold': 0.5}
+INFO:__main__:{'mws': False, 'skeletonize_foreground': True, 'numinst_threshs': [0.9, 0.1]}
+INFO:__main__:val params [{'patch_threshold': 0.5, 'fc_threshold': 0.5, 'mws': False, 'skeletonize_foreground': True, 'numinst_threshs': [0.9, 0.1]}]
+INFO:__main__:validating checkpoint 0
+INFO:__main__:eval params {'filterSz': None, 'res_key': 'vote_instances'}
+INFO:__main__:validating checkpoint 0 {'patch_threshold': 0.5, 'fc_threshold': 0.5, 'mws': False, 'skeletonize_foreground': True, 'numinst_threshs': [0.9, 0.1]}
+INFO:__main__:predicting checkpoint 0
+INFO:__main__:reading data from /scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/val
+['R22C03-20180918_66_J2', 'VT012403-20171128_61_B2', 'VT033614-20171124_64_H1', 'VT033614-20171124_64_H5', 'VT041298-20171114_63_C3']
+INFO:__main__:forking <function predict_no_gp at 0x151a71ca1f70>
+Traceback (most recent call last):
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 2328, in <module>
+    main()
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 2158, in main
+    checkpoint, params = validate_checkpoints(args, config, data,
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 1009, in validate_checkpoints
+    metric = validate_checkpoint(
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 105, in wrapper
+    ret = func(*args, **kwargs)
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 842, in validate_checkpoint
+    predict(args, config, config['model']['test_net_name'], data,
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 105, in wrapper
+    ret = func(*args, **kwargs)
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 691, in predict
+    predict_no_gp(args, config, name, data, samples, checkpoint,
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 123, in wrapper
+    p.start()
+  File "/ext3/miniforge3/envs/ppp/lib/python3.9/multiprocessing/process.py", line 121, in start
+    self._popen = self._Popen(self)
+  File "/ext3/miniforge3/envs/ppp/lib/python3.9/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/ext3/miniforge3/envs/ppp/lib/python3.9/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/ext3/miniforge3/envs/ppp/lib/python3.9/multiprocessing/popen_fork.py", line 19, in __init__
+    self._launch(process_obj)
+  File "/ext3/miniforge3/envs/ppp/lib/python3.9/multiprocessing/popen_spawn_posix.py", line 47, in _launch
+    reduction.dump(process_obj, fp)
+  File "/ext3/miniforge3/envs/ppp/lib/python3.9/multiprocessing/reduction.py", line 60, in dump
+    ForkingPickler(file, protocol).dump(obj)
+_pickle.PicklingError: Can't pickle <function predict_no_gp at 0x151a71ca1f70>: it's not the same object as __main__.predict_no_gp
+SHELL=/bin/bash
+NV_LIBCUBLAS_VERSION=12.1.3.1-1
+NVIDIA_VISIBLE_DEVICES=all
+COLORTERM=truecolor
+SLURM_STEP_NUM_TASKS=1
+NV_NVML_DEV_VERSION=12.1.105-1
+NV_CUDNN_PACKAGE_NAME=libcudnn8
+OMPI_MCA_orte_precondition_transports=00a8566900000000-00a8566900000000
+SLURM_JOB_USER=wmz2007
+SLURM_TASKS_PER_NODE=1
+SLURM_JOB_UID=3674245
+SLURM_STEP_GPUS=0
+NVM_INC=/home/wmz2007/.nvm/versions/node/v20.20.2/include/node
+HISTCONTROL=ignoredups
+TERM_PROGRAM_VERSION=3.7.19
+SLURM_CPU_BIND=quiet,mask_cpu:0x00000000000000000000000000000001
+CONDA_MKL_INTERFACE_LAYER_BACKUP=
+SLURM_TASK_PID=758996
+NV_LIBNCCL_DEV_PACKAGE=libnccl-dev=2.17.1-1+cuda12.1
+CONDA_EXE=/ext3/miniforge3/bin/conda
+_CE_M=
+NV_LIBNCCL_DEV_PACKAGE_VERSION=2.17.1-1
+SLURM_LOCALID=0
+PMIX_HOSTNAME=gl033
+SLURM_SUBMIT_DIR=/scratch/wmz2007/neuroinfo_fruitfly
+SLURM_CPU_BIND_VERBOSE=quiet
+HOSTNAME=torch-login-b-1.hpc-infra.svc.cluster.local
+HISTSIZE=1000
+SINGULARITY_NAME=cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif
+SLURMD_NODENAME=gl033
+PMIX_SECURITY_MODE=munge,native
+SLURM_JOB_START_TIME=1781730303
+HYDRA_LAUNCHER_EXTRA_ARGS=--external-launcher
+NVIDIA_REQUIRE_CUDA=cuda>=12.1 brand=tesla,driver>=450,driver<451 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=geforce,driver>=470,driver<471 brand=geforcertx,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=titan,driver>=470,driver<471 brand=titanrtx,driver>=470,driver<471 brand=tesla,driver>=510,driver<511 brand=unknown,driver>=510,driver<511 brand=nvidia,driver>=510,driver<511 brand=nvidiartx,driver>=510,driver<511 brand=geforce,driver>=510,driver<511 brand=geforcertx,driver>=510,driver<511 brand=quadro,driver>=510,driver<511 brand=quadrortx,driver>=510,driver<511 brand=titan,driver>=510,driver<511 brand=titanrtx,driver>=510,driver<511 brand=tesla,driver>=515,driver<516 brand=unknown,driver>=515,driver<516 brand=nvidia,driver>=515,driver<516 brand=nvidiartx,driver>=515,driver<516 brand=geforce,driver>=515,driver<516 brand=geforcertx,driver>=515,driver<516 brand=quadro,driver>=515,driver<516 brand=quadrortx,driver>=515,driver<516 brand=titan,driver>=515,driver<516 brand=titanrtx,driver>=515,driver<516 brand=tesla,driver>=525,driver<526 brand=unknown,driver>=525,driver<526 brand=nvidia,driver>=525,driver<526 brand=nvidiartx,driver>=525,driver<526 brand=geforce,driver>=525,driver<526 brand=geforcertx,driver>=525,driver<526 brand=quadro,driver>=525,driver<526 brand=quadrortx,driver>=525,driver<526 brand=titan,driver>=525,driver<526 brand=titanrtx,driver>=525,driver<526
+SSH_AUTH_SOCK=/tmp/cursor-remote-ssh-auth-sock-9b452b44-d206-4d8b-83f7-51bc4a247b7d.sock
+NV_LIBCUBLAS_DEV_PACKAGE=libcublas-dev-12-1=12.1.3.1-1
+NV_NVTX_VERSION=12.1.105-1
+SLURM_STEP_NODELIST=gl033
+NV_CUDA_CUDART_DEV_VERSION=12.1.105-1
+NV_LIBCUSPARSE_VERSION=12.1.0.106-1
+SLURM_CLUSTER_NAME=torch
+SLURM_JOB_END_TIME=1781737503
+NV_LIBNPP_VERSION=12.1.0.40-1
+SLURM_CPUS_ON_NODE=1
+SINGULARITY_ENVIRONMENT=/.singularity.d/env/91-environment.sh
+NCCL_VERSION=2.17.1-1
+SLURM_UMASK=0022
+SLURM_JOB_CPUS_PER_NODE=1
+GPG_TTY=/dev/pts/80
+XML_CATALOG_FILES=file:///ext3/miniforge3/envs/ppp/etc/xml/catalog file:///etc/xml/catalog
+LMOD_DIR=/share/apps/lua-modules/lmod/lmod/libexec
+PMIX_GDS_MODULE=shmem2,hash
+SLURM_GPUS_ON_NODE=1
+PWD=/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments
+PRTE_MCA_plm_slurm_args=--external-launcher
+KRB5CCNAME=KCM:
+SLURM_GTIDS=0
+LOGNAME=wmz2007
+XDG_SESSION_TYPE=tty
+CONDA_PREFIX=/ext3/miniforge3/envs/ppp
+NV_CUDNN_PACKAGE=libcudnn8=8.9.0.131-1+cuda12.1
+SLURM_JOB_PARTITION=l40s_public
+MODULESHOME=/share/apps/lua-modules/lmod/lmod
+NVIDIA_DRIVER_CAPABILITIES=compute,utility
+NV_NVPROF_DEV_PACKAGE=cuda-nvprof-12-1=12.1.105-1
+SLURM_OOM_KILL_STEP=0
+NV_LIBNPP_PACKAGE=libnpp-12-1=12.1.0.40-1
+NV_LIBNCCL_DEV_PACKAGE_NAME=libnccl-dev
+SLURM_JOB_NUM_NODES=1
+SRUN_DEBUG=3
+SLURM_STEPID=0
+PMIX_SYSTEM_TMPDIR=/tmp
+SLURM_CPU_BIND_LIST=0x00000000000000000000000000000001
+TZ=America/New_York
+SBATCH_IGNORE_PBS=1
+PMIX_SERVER_URI41=pmix-server.758455;tcp4://127.0.0.1:59977
+VSCODE_GIT_ASKPASS_NODE=/scratch/wmz2007/cursor-server/.cursor-server/bin/linux-x64/80c653c2c3528e65016a0d304b54486084b470b0/node
+SLURM_JOBID=11032169
+NV_LIBCUBLAS_DEV_VERSION=12.1.3.1-1
+NVIDIA_PRODUCT_NAME=CUDA
+SLURM_PTY_PORT=55409
+SLURM_LAUNCH_NODE_IPADDR=10.32.51.121
+SLURM_JOB_QOS=gpu48
+I_MPI_HYDRA_BOOTSTRAP_EXEC_EXTRA_ARGS=--external-launcher
+PMIX_BFROP_BUFFER_TYPE=PMIX_BFROP_BUFFER_NON_DESC
+USER_PATH=/share/apps/apptainer/1.5.1/x86_64/utils/bin:/share/apps/apptainer/bin:/share/apps/local/bin:/home/wmz2007/.nvm/versions/node/v20.20.2/bin:/share/apps/apptainer/bin:/share/apps/local/bin:/share/apps/apptainer/bin:/share/apps/local/bin:/scratch/wmz2007/cursor-server/.cursor-server/bin/linux-x64/80c653c2c3528e65016a0d304b54486084b470b0/bin/remote-cli:/scratch/wmz2007/cursor-server/.cursor-server/bin/linux-x64/80c653c2c3528e65016a0d304b54486084b470b0/bin/remote-cli:/share/apps/apptainer/bin:/share/apps/local/bin:/share/apps/apptainer/bin:/share/apps/local/bin:/share/apps/apptainer/bin:/share/apps/local/bin:/home/wmz2007/.local/bin:/home/wmz2007/bin:/share/apps/apptainer/bin:/share/apps/local/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/slurm/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+NV_LIBCUBLAS_DEV_PACKAGE_NAME=libcublas-dev-12-1
+APPTAINER_ENVIRONMENT=/.singularity.d/env/91-environment.sh
+MOTD_SHOWN=pam
+NV_CUDA_CUDART_VERSION=12.1.105-1
+APPTAINER_APPNAME=
+SLURM_PTY_WIN_ROW=35
+HOME=/home/wmz2007
+LANG=C.UTF-8
+SLURM_CPU_BIND_TYPE=mask_cpu:
+LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=01;37;41:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=01;36:*.au=01;36:*.flac=01;36:*.m4a=01;36:*.mid=01;36:*.midi=01;36:*.mka=01;36:*.mp3=01;36:*.mpc=01;36:*.ogg=01;36:*.ra=01;36:*.wav=01;36:*.oga=01;36:*.opus=01;36:*.spx=01;36:*.xspf=01;36:
+APPTAINER_COMMAND=exec
+SLURMD_DEBUG=2
+SLURM_PROCID=0
+SCRATCH=/scratch/wmz2007
+PMIX_VERSION=5.0.8
+CUDA_VERSION=12.1.1
+SINGULARITY_CONTAINER=/share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif
+NV_LIBCUBLAS_PACKAGE=libcublas-12-1=12.1.3.1-1
+LMOD_SETTARG_FULL_SUPPORT=no
+NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE=cuda-nsight-compute-12-1=12.1.1-1
+CONDA_PROMPT_MODIFIER=(ppp) 
+TMPDIR=/state/partition1/job-11032169
+GIT_ASKPASS=/scratch/wmz2007/cursor-server/.cursor-server/bin/linux-x64/80c653c2c3528e65016a0d304b54486084b470b0/extensions/git/dist/askpass.sh
+PROMPT_COMMAND=PS1="Singularity> "; unset PROMPT_COMMAND
+VSCODE_GIT_IPC_AUTH_TOKEN=70d2563aa7e9ea29388b89aba240adcb02c70df712de40aa4fd3fc2e6444dd10
+SLURM_NTASKS=1
+LMOD_DISABLE_SAME_NAME_AUTOSWAP=yes
+SLURM_TOPOLOGY_ADDR=gl033
+LMOD_VERSION=8.7.64
+SSH_CONNECTION=100.64.0.25 57430 10.0.2.2 22
+SLURM_PMIX_MAPPING_SERV=(vector,(0,1,1))
+NV_LIBNPP_DEV_PACKAGE=libnpp-dev-12-1=12.1.0.40-1
+PMIX_RANK=0
+PMIX_SERVER_URI2=pmix-server.758455;tcp4://127.0.0.1:59977
+PMIX_SERVER_URI3=pmix-server.758455;tcp4://127.0.0.1:59977
+PMIX_SERVER_URI4=pmix-server.758455;tcp4://127.0.0.1:59977
+SLURM_DISTRIBUTION=cyclic
+NV_LIBCUBLAS_PACKAGE_NAME=libcublas-12-1
+HYDRA_BOOTSTRAP=slurm
+NV_LIBNPP_DEV_VERSION=12.1.0.40-1
+NVM_DIR=/home/wmz2007/.nvm
+VSCODE_GIT_ASKPASS_EXTRA_ARGS=
+SLURM_TOPOLOGY_ADDR_PATTERN=node
+CUDA_VISIBLE_DEVICES=0
+SLURM_SRUN_COMM_HOST=10.32.51.121
+HF_HOME=/scratch/wmz2007/.huggingface
+_CONDA_EXE=/ext3/miniforge3/bin/conda
+ARCHIVE=/archive/wmz2007
+SLURM_PMIXP_ABORT_AGENT_PORT=35393
+_CONDA_ROOT=/ext3/miniforge3
+XDG_SESSION_CLASS=user
+LMOD_PKG=/share/apps/lua-modules/lmod/lmod
+APPTAINER_CONTAINER=/share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif
+SLURM_SCRIPT_CONTEXT=prolog_task
+SLURM_MEM_PER_NODE=32768
+SELINUX_ROLE_REQUESTED=
+PYTHONPATH=/ext3/miniforge3/bin:/ext3/miniforge3/bin:/ext3/miniforge3/condabin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+TERM=xterm-256color
+PMIX_SERVER_URI21=pmix-server.758455;tcp4://127.0.0.1:59977
+NV_LIBCUSPARSE_DEV_VERSION=12.1.0.106-1
+_CE_CONDA=
+SLURM_PTY_WIN_COL=82
+LESSOPEN=||/usr/bin/lesspipe.sh %s
+USER=wmz2007
+LIBRARY_PATH=/usr/local/cuda/lib64/stubs
+SLURM_NODELIST=gl033
+NV_CUDNN_VERSION=8.9.0.131
+VSCODE_GIT_IPC_HANDLE=/run/user/3674245/vscode-git-ab34a1374a.sock
+CONDA_SHLVL=1
+SLURM_SRUN_COMM_PORT=13351
+SLURM_STEP_ID=0
+SLURM_JOB_ACCOUNT=torch_pr_61_general
+SLURM_PRIO_PROCESS=0
+SELINUX_USE_CURRENT_RANGE=
+SLURM_NPROCS=1
+SLURM_TMPDIR=/state/partition1/job-11032169
+LMOD_ROOT=/share/apps/lua-modules/lmod
+SHLVL=3
+NVM_CD_FLAGS=
+SLURM_NNODES=1
+BASH_ENV=/etc/profile.d/cluster.sh
+NV_CUDA_LIB_VERSION=12.1.1-1
+NVARCH=x86_64
+APPTAINER_NAME=cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif
+SINGULARITY_BIND=/scratch,/projects,/share/apps,/mnt,/state/partition1
+NV_CUDNN_PACKAGE_DEV=libcudnn8-dev=8.9.0.131-1+cuda12.1
+XDG_SESSION_ID=1886
+SLURM_SUBMIT_HOST=torch-login-b-1.hpc-infra.svc.cluster.local
+NV_CUDA_COMPAT_PACKAGE=cuda-compat-12-1
+PMIX_SERVER_TMPDIR=/opt/slurm/data/slurmd/pmix.11032169.0/
+APPTAINER_BIND=/scratch,/projects,/share/apps,/mnt,/state/partition1
+CONDA_PYTHON_EXE=/ext3/miniforge3/bin/python
+NV_LIBNCCL_PACKAGE=libnccl2=2.17.1-1+cuda12.1
+LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/.singularity.d/libs
+XDG_RUNTIME_DIR=/state/partition1/job-11032169
+SLURM_JOB_ID=11032169
+SLURM_NODEID=0
+S_COLORS=auto
+SLURM_STEP_NUM_NODES=1
+SSH_CLIENT=100.64.0.25 57430 22
+CONDA_DEFAULT_ENV=ppp
+NV_CUDA_NSIGHT_COMPUTE_VERSION=12.1.1-1
+DEBUGINFOD_IMA_CERT_PATH=/etc/keys/ima:
+LMOD_OPTIONS=--quiet
+PMIX_NAMESPACE=slurm.pmix.11032169.0
+which_declare=declare -f
+NV_NVPROF_VERSION=12.1.105-1
+LC_ALL=C
+SLURM_STEP_TASKS_PER_NODE=1
+VSCODE_GIT_ASKPASS_MAIN=/scratch/wmz2007/cursor-server/.cursor-server/bin/linux-x64/80c653c2c3528e65016a0d304b54486084b470b0/extensions/git/dist/askpass-main.js
+SLURM_MPI_TYPE=pmix
+XDG_DATA_DIRS=/home/wmz2007/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+SLURM_CONF=/opt/slurm/data/slurmd/conf-cache/slurm.conf
+BROWSER=/scratch/wmz2007/cursor-server/.cursor-server/bin/linux-x64/80c653c2c3528e65016a0d304b54486084b470b0/bin/helpers/browser.sh
+PATH=/ext3/miniforge3/envs/ppp/bin:/ext3/miniforge3/bin:/ext3/miniforge3/condabin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+SELINUX_LEVEL_REQUESTED=
+SLURM_JOB_NAME=bash
+LMOD_EXACT_MATCH=yes
+MODULEPATH=/share/apps/modulefiles
+NV_LIBNCCL_PACKAGE_NAME=libnccl2
+NV_LIBNCCL_PACKAGE_VERSION=2.17.1-1
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/3674245/bus
+SLURM_JOBTMP=/state/partition1/job-11032169
+LMOD_CMD=/share/apps/lua-modules/lmod/lmod/libexec/lmod
+NVM_BIN=/home/wmz2007/.nvm/versions/node/v20.20.2/bin
+MAIL=/var/spool/mail/wmz2007
+SLURM_JOB_GROUP=wmz2007
+SLURM_STEP_LAUNCHER_PORT=13351
+OMPI_MCA_plm_slurm_args=--external-launcher
+SLURM_JOB_GID=3674245
+CONTAINER_IMAGES_FOLDER=/share/apps/images
+OVSX_REGISTRY_URL=https://open-vsx.org
+OLDPWD=/scratch/wmz2007/neuroinfo_fruitfly
+SLURM_JOB_NODELIST=gl033
+CLUSTER=TORCH
+TERM_PROGRAM=vscode
+MKL_INTERFACE_LAYER=LP64,GNU
+VSCODE_IPC_HOOK_CLI=/run/user/3674245/vscode-ipc-3b4f878b-4ce6-4dd1-a974-cc88fb38e437.sock
+I_MPI_HYDRA_BOOTSTRAP=slurm
+BASH_FUNC_ml%%=() {  eval "$($LMOD_DIR/ml_cmd "$@")"
+}
+BASH_FUNC_module%%=() {  if [ -z "${LMOD_SH_DBG_ON+x}" ]; then
+ case "$-" in 
+ *v*x*)
+ __lmod_sh_dbg='vx'
+ ;;
+ *v*)
+ __lmod_sh_dbg='v'
+ ;;
+ *x*)
+ __lmod_sh_dbg='x'
+ ;;
+ esac;
+ fi;
+ if [ -n "${__lmod_sh_dbg:-}" ]; then
+ set +$__lmod_sh_dbg;
+ echo "Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output" 1>&2;
+ fi;
+ eval "$($LMOD_CMD shell "$@")" && eval "$(${LMOD_SETTARG_CMD:-:} -s sh)";
+ __lmod_my_status=$?;
+ if [ -n "${__lmod_sh_dbg:-}" ]; then
+ echo "Shell debugging restarted" 1>&2;
+ set -$__lmod_sh_dbg;
+ fi;
+ unset __lmod_sh_dbg;
+ return $__lmod_my_status
+}
+_=/usr/bin/env

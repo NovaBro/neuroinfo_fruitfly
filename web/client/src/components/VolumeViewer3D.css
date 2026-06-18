@@ -1,0 +1,134 @@
+.volume-viewer-3d {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.volume-viewer-3d__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.volume-viewer-3d__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.volume-viewer-3d__label {
+  font-size: 0.75rem;
+  color: #8b919c;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.volume-viewer-3d__btn-row {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.volume-viewer-3d__btn {
+  padding: 0.35rem 0.65rem;
+  border: 1px solid #2a2f3a;
+  border-radius: 4px;
+  background: #1a1e28;
+  color: #c8cdd6;
+  cursor: pointer;
+}
+
+.volume-viewer-3d__btn--active {
+  background: #2d3a52;
+  color: #fff;
+  border-color: #4a6fa5;
+}
+
+.volume-viewer-3d__group--slider {
+  min-width: 220px;
+  flex: 1;
+}
+
+.volume-viewer-3d__group--slider input[type="range"] {
+  width: 100%;
+}
+
+.volume-viewer-3d__slider-hint {
+  font-size: 0.75rem;
+  color: #8b919c;
+}
+
+.volume-viewer-3d__checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: #c8cdd6;
+}
+
+.volume-viewer-3d__viewport {
+  position: relative;
+  height: 560px;
+  border: 1px solid #2a2f3a;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #0a0c10;
+  outline: none;
+}
+
+.volume-viewer-3d__viewport:focus-visible {
+  border-color: #4a6fa5;
+  box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.35);
+}
+
+.volume-viewer-3d__canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.volume-viewer-3d__canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.volume-viewer-3d__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 12, 16, 0.72);
+  color: #c8cdd6;
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
+.volume-viewer-3d__overlay--error {
+  color: #f5a5a5;
+  padding: 1rem;
+  text-align: center;
+}
+
+.volume-viewer-3d__hint {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  z-index: 1;
+  margin: 0;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.8rem;
+  color: #aab0bc;
+  background: rgba(22, 25, 34, 0.85);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.volume-viewer-3d__footer {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #8b919c;
+}

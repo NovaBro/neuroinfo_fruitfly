@@ -1,0 +1,8 @@
+INFO:    FUSE2FS (3): Warning: Mounting unchecked fs, running e2fsck is recommended.
+/ext3/miniforge3/envs/ppp/lib/python3.9/site-packages/gunpowder/nodes/torch_train.py:181: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.scaler = torch.cuda.amp.GradScaler(init_scale=8192.0,
+/ext3/miniforge3/envs/ppp/lib/python3.9/site-packages/gunpowder/nodes/torch_train.py:449: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=self.use_auto_mixed_precision):
+/ext3/miniforge3/envs/ppp/lib/python3.9/site-packages/gunpowder/nodes/torch_train.py:425: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=self.use_auto_mixed_precision):
+[2026-06-18T02:10:02.916] error: *** JOB 11046056 ON gl056 CANCELLED AT 2026-06-18T02:10:02 DUE to SIGNAL Terminated ***

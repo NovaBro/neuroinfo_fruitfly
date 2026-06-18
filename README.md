@@ -43,6 +43,17 @@ echo "PID: $!"
 ```
 
 ## PatchPerPix
+```bash
+# data preperation
+# /scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/flylight/prepare_fisbe_for_ppp.py
+# /scratch/wmz2007/neuroinfo_fruitfly/fisbe
+python3 PatchPerPix/experiments/flylight/prepare_fisbe_for_ppp.py --fisbe-root fisbe --opening-radius 1
+```
+
+``` bash
+# extra forgotten packages
+pip install monai pynrrd torchinfo torchmetrics
+```
 
 ```bash
 # Base
@@ -50,7 +61,7 @@ cd PatchPerPix/experiments/
 nohup env CUDA_VISIBLE_DEVICES=0 \
 python -u run_ppp.py \
 --setup setup01 \
---config flylight/setups/setup01/default_train_code.toml \
+--config flylight/setups/setup01/default_train_code_l40s.toml \
 -d train validate_checkpoints predict decode label evaluate \
 --app flylight \
 --root ppp_experiments \
@@ -74,6 +85,12 @@ python -u run_ppp.py \
 
 ## BiaPy Tutorial
 https://biapy.readthedocs.io/en/latest/workflows/semantic_segmentation.html
+
+```bash
+# datapreprocessing to tiff
+# /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy/prepare_tiff_data.py
+python3 neuroinfo_fruitfly/fisbe/biapy/prepare_tiff_data.py --splits test train val
+```
 
 in `./fisbe/biapy/biapy.sh`
 ```bash
@@ -102,4 +119,8 @@ biapy \
 conda activate BiaPy_env
 python fisbe/biapy/prepare_tiff_data.py --splits test --clean
 ```
+
+## Web Viewer
+
+An isolated web app for browsing FISBe 3D volumes lives in [`web/`](web/). See [`web/README.md`](web/README.md) for setup: a FastAPI server serves Zarr slices/MIPs, and a Vite + React frontend provides a sample browser and orthographic slice viewer.
 

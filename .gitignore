@@ -1,5 +1,9 @@
 # .gitignore
 .vscode/
+/.vscode
+env/
+
+# Data
 downloads/
 fisbe/
 *.h5j
@@ -11,8 +15,11 @@ fisbe/
 __pycache__
 *.DS_Store
 
-/.vscode
-
-
 # PatchPerPix
 PatchPerPix/experiments/ppp_experiments/
+
+# Web viewer
+web/client/node_modules/
+web/client/dist/
+web/server/.venv/
+web/server/__pycache__/

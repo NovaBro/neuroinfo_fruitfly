@@ -1,2 +1,0 @@
-nohup: ignoring input
-python: can't open file '/home/william-zheng/Documents/Programming/Python/NeuroInformatics/summer_2026/neuroinfo_fruitfly/run_ppp.py': [Errno 2] No such file or directory

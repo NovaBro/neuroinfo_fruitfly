@@ -1,0 +1,6 @@
+client/node_modules/
+client/dist/
+server/.venv/
+server/__pycache__/
+server/services/__pycache__/
+*.pyc

@@ -1,0 +1,57 @@
+# BiaPy version: 3.6.8
+
+SYSTEM:
+    NUM_CPUS: -1
+
+PROBLEM:
+    TYPE: INSTANCE_SEG
+    NDIM: 3D
+    INSTANCE_SEG:
+        DATA_CHANNELS: BC
+  
+DATA: 
+    PATCH_SIZE: (20, 128, 128, 3)
+    TRAIN:
+        PATH: fisbe/biapy/test/raw
+        GT_PATH: fisbe/biapy/test/label
+        INPUT_IMG_AXES_ORDER: CZYX
+        INPUT_MASK_AXES_ORDER: ZYX
+        IN_MEMORY: True
+    VAL:
+        SPLIT_TRAIN: 0.1
+    TEST:
+        PATH: fisbe/biapy/test/raw
+        GT_PATH: fisbe/biapy/test/label
+        INPUT_IMG_AXES_ORDER: CZYX
+        INPUT_MASK_AXES_ORDER: ZYX
+        IN_MEMORY: True
+        LOAD_GT: True
+        PADDING: (4,16,16)
+
+AUGMENTOR:
+    ENABLE: True
+    RANDOM_ROT: True
+    VFLIP: True
+    HFLIP: True
+    ZFLIP: True
+
+MODEL:
+    ARCHITECTURE: unet
+    FEATURE_MAPS: [16, 32, 64, 128, 256]
+    Z_DOWN: [1,1,1,1]
+    LOAD_CHECKPOINT: True
+
+TRAIN:
+    ENABLE: False
+    OPTIMIZER: ADAMW
+    LR: 1.E-3
+    BATCH_SIZE: 40
+    EPOCHS: 30
+    PATIENCE: 30
+    LR_SCHEDULER:
+        NAME: 'onecycle'    # use one-cycle learning rate scheduler
+  
+TEST:
+    ENABLE: True
+    AUGMENTATION: False
+    FULL_IMG: False
