@@ -16,3 +16,4 @@ PyQt6
 zarr
 
 navis[all]
+skeletor
