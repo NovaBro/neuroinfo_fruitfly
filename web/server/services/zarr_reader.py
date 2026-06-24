@@ -14,7 +14,7 @@ from PIL import Image
 from services.volume_pipeline import (
     VolumeBytesResult,
     compute_downsample_factor,
-    encode_label_volume,
+    encode_label_volume_rgb,
     normalize_raw_volume,
     normalize_rgb_stack,
     to_display_rgb_from_channels,
@@ -27,6 +27,12 @@ ChannelParam = int | Literal["all"]
 
 RAW_KEY = "volumes/raw"
 GT_KEY = "volumes/gt_instances"
+
+# gt_instances stores each neuron mask in a separate channel (CZYX, uint8 labels).
+# When building the 3D overlay we merge all channels into one colored volume; this
+# stride keeps per-channel label ids in disjoint ranges so distinct neurons across
+# channels get distinct colors (uint8 labels are <= 255, so 1000 leaves no overlap).
+_GT_CHANNEL_LABEL_STRIDE = 1000
 
 # Simple label colors for gt_instances display (R, G, B)
 _GT_COLORS = np.array(
@@ -262,6 +268,12 @@ def volume_to_bytes(
     if volume == "predicted":
         raise ValueError("predicted volume is loaded via biapy_loader, not zarr")
 
+    if volume == "gt":
+        # The ground-truth segmentation spans all channels (one neuron per
+        # channel); merge them into a single colored instance volume regardless
+        # of the requested channel.
+        return _gt_volume_to_bytes(zarr_path, max_size)
+
     if channel == "all":
         return _volume_rgb_to_bytes(zarr_path, volume, max_size)
 
@@ -272,11 +284,7 @@ def volume_to_bytes(
     original_shape = tuple(int(s) for s in channel_arr.shape)
     factor = compute_downsample_factor(original_shape, max_size)
     downsampled = downsample_max_pool_zarr(channel_arr, factor)
-
-    if volume == "raw":
-        normalized = normalize_raw_volume(downsampled)
-    else:
-        normalized = encode_label_volume(downsampled)
+    normalized = normalize_raw_volume(downsampled)
 
     return VolumeBytesResult(
         data=normalized.tobytes(),
@@ -284,6 +292,38 @@ def volume_to_bytes(
         original_shape=original_shape,
         downsample_factor=factor,
         components=1,
+    )
+
+
+def _gt_volume_to_bytes(zarr_path: Path, max_size: int) -> VolumeBytesResult:
+    """Merge all gt_instances channels into one colored Z,Y,X,3 instance volume."""
+    arr = _open_array(zarr_path, "gt")
+    n_ch = arr.shape[0]
+    original_shape = tuple(int(s) for s in arr[0].shape)
+    factor = compute_downsample_factor(original_shape, max_size)
+
+    combined: np.ndarray | None = None
+    for ch in range(n_ch):
+        downsampled = downsample_max_pool_zarr(arr[ch], factor).astype(np.int64)
+        if combined is None:
+            combined = np.zeros(downsampled.shape, dtype=np.int64)
+        # Give each (channel, label) a unique id so distinct neurons keep
+        # distinct colors; background (0) stays 0. On overlap keep the larger
+        # id so a voxel always renders some instance's color.
+        encoded = downsampled + ch * _GT_CHANNEL_LABEL_STRIDE
+        labelled = downsampled > 0
+        combined = np.where(labelled & (encoded > combined), encoded, combined)
+
+    if combined is None:
+        raise ValueError("gt_instances has no channels")
+
+    rgb = encode_label_volume_rgb(combined)
+    return VolumeBytesResult(
+        data=rgb.tobytes(),
+        shape=tuple(int(s) for s in rgb.shape[:3]),
+        original_shape=original_shape,
+        downsample_factor=factor,
+        components=3,
     )
 
 

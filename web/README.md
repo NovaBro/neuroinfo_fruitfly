@@ -21,9 +21,9 @@ The API does not send full volumes to the browser; it extracts individual slices
 
 ```bash
 cd web/server
-python -m venv .venv
+python -m venv .venv # just need to be done once on setup
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt # just need to be done once on setup
 FISBE_ROOT=../../fisbe/completely uvicorn main:app --reload --port 8000
 ```
 
@@ -31,11 +31,14 @@ FISBE_ROOT=../../fisbe/completely uvicorn main:app --reload --port 8000
 
 ```bash
 cd web/client
-npm install
+npm install # just need to be done once on setup
 npm run dev
 ```
 <!-- \. "$HOME/.nvm/nvm.sh" -->
 
+### (Local) Terminal 3 - Connect Remotely
+HPC Web Dev
+ssh -L 8000:localhost:5173 -J wmz2007@login.torch.hpc.nyu.edu wmz2007@torch-login-b-1
 Open [http://localhost:5173](http://localhost:5173).
 
 ## Environment variables

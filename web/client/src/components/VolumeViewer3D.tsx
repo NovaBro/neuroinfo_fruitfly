@@ -46,6 +46,7 @@ type VtkContext = {
   genericRenderWindow: ReturnType<typeof vtkGenericRenderWindow.newInstance>;
   raw: VolumeLayer;
   predicted: VolumeLayer;
+  gt: VolumeLayer;
 };
 
 function opacityAtLevel(level: number, floor: number) {
@@ -170,8 +171,10 @@ export function VolumeViewer3D({ sampleName, meta }: VolumeViewer3DProps) {
   const vtkGenerationRef = useRef(0);
   const rawVisibleRef = useRef(false);
   const predictedVisibleRef = useRef(false);
+  const gtVisibleRef = useRef(false);
   const rawSourceRef = useRef<VolumeData | null>(null);
   const predictedSourceRef = useRef<VolumeData | null>(null);
+  const gtSourceRef = useRef<VolumeData | null>(null);
   const [vtkReady, setVtkReady] = useState(false);
   const [channel, setChannel] = useState<ChannelParam>(0);
   const [brightness, setBrightness] = useState(DEFAULT_BRIGHTNESS);
@@ -179,11 +182,13 @@ export function VolumeViewer3D({ sampleName, meta }: VolumeViewer3DProps) {
   const [maxSize, setMaxSize] = useState(DEFAULT_VOLUME_MAX_SIZE);
   const debouncedMaxSize = useDebouncedValue(maxSize, 400);
   const [showPredicted, setShowPredicted] = useState(true);
+  const [showGt, setShowGt] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [volumeInfo, setVolumeInfo] = useState<string | null>(null);
 
   const hasPredicted = meta.predicted_instances != null;
+  const hasGt = meta.gt_instances != null;
   const channelCount = meta.raw.shape[0];
   const rawMode: VolumeMode = channel === "all" ? "rgb" : "raw";
   const showRaw = channel !== "off";
@@ -225,15 +230,19 @@ export function VolumeViewer3D({ sampleName, meta }: VolumeViewer3DProps) {
     const renderer = genericRenderWindow.getRenderer();
     const raw = createVolumeLayer("raw");
     const predicted = createVolumeLayer("instance_rgb");
+    const gt = createVolumeLayer("instance_rgb");
 
     renderer.addVolume(raw.volume);
     renderer.addVolume(predicted.volume);
+    renderer.addVolume(gt.volume);
     predicted.volume.setVisibility(false);
+    gt.volume.setVisibility(false);
     raw.volume.setVisibility(false);
 
-    vtkRef.current = { genericRenderWindow, raw, predicted };
+    vtkRef.current = { genericRenderWindow, raw, predicted, gt };
     rawVisibleRef.current = false;
     predictedVisibleRef.current = false;
+    gtVisibleRef.current = false;
     setVtkReady(true);
 
     const resizeObserver = new ResizeObserver(() => {
@@ -256,12 +265,15 @@ export function VolumeViewer3D({ sampleName, meta }: VolumeViewer3DProps) {
       resizeObserver.disconnect();
       renderer.removeVolume(raw.volume);
       renderer.removeVolume(predicted.volume);
+      renderer.removeVolume(gt.volume);
       genericRenderWindow.delete();
       vtkRef.current = null;
       rawVisibleRef.current = false;
       predictedVisibleRef.current = false;
+      gtVisibleRef.current = false;
       rawSourceRef.current = null;
       predictedSourceRef.current = null;
+      gtSourceRef.current = null;
     };
   }, [renderScene, fitCameraAndRender]);
 
@@ -271,10 +283,12 @@ export function VolumeViewer3D({ sampleName, meta }: VolumeViewer3DProps) {
     setContrast(DEFAULT_CONTRAST);
     setMaxSize(DEFAULT_VOLUME_MAX_SIZE);
     setShowPredicted(hasPredicted);
+    setShowGt(false);
     setVolumeInfo(null);
     setError(null);
     rawSourceRef.current = null;
     predictedSourceRef.current = null;
+    gtSourceRef.current = null;
   }, [sampleName, hasPredicted]);
 
   useEffect(() => {
@@ -296,6 +310,15 @@ export function VolumeViewer3D({ sampleName, meta }: VolumeViewer3DProps) {
         vtk.predicted,
         predictedSourceRef.current.data,
         predictedSourceRef.current.components,
+        brightness,
+        contrast,
+      );
+    }
+    if (gtVisibleRef.current && gtSourceRef.current) {
+      setLayerScalars(
+        vtk.gt,
+        gtSourceRef.current.data,
+        gtSourceRef.current.components,
         brightness,
         contrast,
       );
@@ -379,6 +402,38 @@ export function VolumeViewer3D({ sampleName, meta }: VolumeViewer3DProps) {
           predictedSourceRef.current = null;
         }
 
+        if (hasGt && showGt) {
+          try {
+            const gtVol = await fetchVolumeData(sampleName, {
+              volume: "gt",
+              maxSize: debouncedMaxSize,
+              signal: controller.signal,
+            });
+            if (cancelled || vtkGenerationRef.current !== generation) return;
+            gtSourceRef.current = gtVol;
+            applyVolumeData(
+              vtk!.gt,
+              gtVol,
+              "instance_rgb",
+              brightness,
+              contrast,
+            );
+            vtk!.gt.volume.setVisibility(true);
+            gtVisibleRef.current = true;
+            infoParts.push("ground-truth overlay");
+          } catch (gtErr) {
+            if (controller.signal.aborted || cancelled) return;
+            vtk!.gt.volume.setVisibility(false);
+            gtVisibleRef.current = false;
+            gtSourceRef.current = null;
+            console.warn("Ground-truth overlay unavailable:", gtErr);
+          }
+        } else {
+          vtk!.gt.volume.setVisibility(false);
+          gtVisibleRef.current = false;
+          gtSourceRef.current = null;
+        }
+
         if (cancelled || vtkGenerationRef.current !== generation) return;
 
         setVolumeInfo(infoParts.join(" · "));
@@ -414,6 +469,8 @@ export function VolumeViewer3D({ sampleName, meta }: VolumeViewer3DProps) {
     showRaw,
     hasPredicted,
     showPredicted,
+    hasGt,
+    showGt,
     debouncedMaxSize,
     renderScene,
     fitCameraAndRender,
@@ -530,17 +587,29 @@ export function VolumeViewer3D({ sampleName, meta }: VolumeViewer3DProps) {
           </span>
         </div>
 
-        {hasPredicted && (
+        {(hasGt || hasPredicted) && (
           <div className="volume-viewer-3d__group">
             <span className="volume-viewer-3d__label">Overlay</span>
-            <label className="volume-viewer-3d__checkbox">
-              <input
-                type="checkbox"
-                checked={showPredicted}
-                onChange={(e) => setShowPredicted(e.target.checked)}
-              />
-              Predicted instances (BiaPy)
-            </label>
+            {hasGt && (
+              <label className="volume-viewer-3d__checkbox">
+                <input
+                  type="checkbox"
+                  checked={showGt}
+                  onChange={(e) => setShowGt(e.target.checked)}
+                />
+                Ground truth (Zarr)
+              </label>
+            )}
+            {hasPredicted && (
+              <label className="volume-viewer-3d__checkbox">
+                <input
+                  type="checkbox"
+                  checked={showPredicted}
+                  onChange={(e) => setShowPredicted(e.target.checked)}
+                />
+                Predicted instances (BiaPy)
+              </label>
+            )}
           </div>
         )}
       </div>
@@ -571,6 +640,9 @@ export function VolumeViewer3D({ sampleName, meta }: VolumeViewer3DProps) {
           {volumeInfo}
           {hasPredicted && meta.predicted_instances
             ? ` · Predicted (Z,Y,X): ${meta.predicted_instances.shape.join(" × ")}`
+            : ""}
+          {showGt && hasGt
+            ? ` · GT (C,Z,Y,X): ${meta.gt_instances.shape.join(" × ")}`
             : ""}
           {" · "}Raw shape (C,Z,Y,X): {meta.raw.shape.join(" × ")}
         </p>
