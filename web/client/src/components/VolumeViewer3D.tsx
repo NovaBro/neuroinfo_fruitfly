@@ -74,7 +74,16 @@ function configureVolumeProperty(layer: VolumeLayer, mode: VolumeMode) {
 
   if (mode === "rgb" || mode === "instance_rgb") {
     property.setIndependentComponents(false);
-    property.setRGBTransferFunction(0, null);
+    // For dependent 3-component (direct RGB) rendering vtk.js ignores the color
+    // curve, but it still uses the transfer function's *range* to scale the
+    // stored values in-shader (colorTextureScale = sscale / rangeWidth). A null
+    // function lazily defaults to range [0, 1024], so uint8 RGB (sscale 255)
+    // gets scaled to ~255/1024 ≈ 25% brightness — the "dark filter" where even
+    // white renders muddy. A [0, 255] range makes colorTextureScale ≈ 1 so RGB
+    // renders at full brightness, matching the single-channel path.
+    ctfun.addRGBPoint(0, 0, 0, 0);
+    ctfun.addRGBPoint(255, 1, 1, 1);
+    property.setRGBTransferFunction(0, ctfun);
     ofun.addPoint(0, 0.0);
     ofun.addPoint(1, 0.9);
     ofun.addPoint(16, 0.95);
