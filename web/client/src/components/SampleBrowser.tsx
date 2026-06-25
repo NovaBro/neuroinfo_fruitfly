@@ -3,6 +3,7 @@ import { SampleInfo, Split } from "../api/client";
 import "./SampleBrowser.css";
 
 const SPLITS: Split[] = ["train", "val", "test"];
+type Dataset = "completely" | "partly";
 
 interface SampleBrowserProps {
   samples: SampleInfo[];
@@ -18,17 +19,46 @@ export function SampleBrowser({
   loading,
 }: SampleBrowserProps) {
   const [activeSplit, setActiveSplit] = useState<Split>("train");
+  const [activeDataset, setActiveDataset] = useState<Dataset>("completely");
   const [query, setQuery] = useState("");
+
+  // Only offer a dataset toggle for datasets that are actually present.
+  const datasets = useMemo<Dataset[]>(() => {
+    const present = new Set(samples.map((s) => s.dataset));
+    return (["completely", "partly"] as Dataset[]).filter((d) =>
+      present.has(d),
+    );
+  }, [samples]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return samples
+      .filter((s) => s.dataset === activeDataset)
       .filter((s) => s.split === activeSplit)
       .filter((s) => !q || s.name.toLowerCase().includes(q));
-  }, [samples, activeSplit, query]);
+  }, [samples, activeDataset, activeSplit, query]);
 
   return (
     <div className="sample-browser">
+      {datasets.length > 1 && (
+        <div className="sample-browser__tabs sample-browser__tabs--dataset">
+          {datasets.map((dataset) => (
+            <button
+              key={dataset}
+              type="button"
+              className={
+                activeDataset === dataset
+                  ? "sample-browser__tab sample-browser__tab--active"
+                  : "sample-browser__tab"
+              }
+              onClick={() => setActiveDataset(dataset)}
+            >
+              {dataset}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="sample-browser__tabs">
         {SPLITS.map((split) => (
           <button
@@ -53,6 +83,13 @@ export function SampleBrowser({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
+
+      {!loading && (
+        <p className="sample-browser__count">
+          {filtered.length} {activeDataset} / {activeSplit} sample
+          {filtered.length === 1 ? "" : "s"}
+        </p>
+      )}
 
       {loading ? (
         <p className="sample-browser__status">Loading samples…</p>

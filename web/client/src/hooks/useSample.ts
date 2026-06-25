@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { getMeta, SampleMeta } from "../api/client";
 
-export function useSampleMeta(sampleName: string | null) {
+export function useSampleMeta(
+  sampleName: string | null,
+  predictionSet?: string | null,
+) {
   const [meta, setMeta] = useState<SampleMeta | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +18,7 @@ export function useSampleMeta(sampleName: string | null) {
     setError(null);
     setMeta(null);
     try {
-      const data = await getMeta(sampleName);
+      const data = await getMeta(sampleName, predictionSet);
       setMeta(data);
     } catch (err) {
       setMeta(null);
@@ -23,7 +26,7 @@ export function useSampleMeta(sampleName: string | null) {
     } finally {
       setLoading(false);
     }
-  }, [sampleName]);
+  }, [sampleName, predictionSet]);
 
   useEffect(() => {
     reload();

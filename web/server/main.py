@@ -13,7 +13,8 @@ from fastapi.responses import Response
 from config import CORS_ORIGINS, FISBE_ROOT
 from services.biapy_loader import (
     get_predicted_instances_meta,
-    has_predicted_instances,
+    has_predicted_instances_any,
+    list_prediction_sets,
     predicted_instances_to_bytes,
 )
 from services.sample_list import SampleEntry, find_sample, parse_sample_list, sample_zarr_path
@@ -57,6 +58,12 @@ def health():
     }
 
 
+@app.get("/api/prediction-sets")
+def prediction_sets():
+    """List BiaPy prediction sets (run dirs) the viewer can overlay."""
+    return list_prediction_sets()
+
+
 @app.get("/api/samples")
 def list_samples():
     entries = _cached_samples()
@@ -66,14 +73,14 @@ def list_samples():
             "name": e.name,
             "dataset": e.dataset,
             "path_exists": e.path_exists,
-            "has_predicted": has_predicted_instances(e.name),
+            "has_predicted": has_predicted_instances_any(e.name),
         }
         for e in entries
     ]
 
 
 @app.get("/api/samples/{name}/meta")
-def sample_meta(name: str):
+def sample_meta(name: str, prediction_set: str | None = Query(None)):
     entry = find_sample(name, list(_cached_samples()))
     if entry is None:
         raise HTTPException(status_code=404, detail=f"Sample not found: {name}")
@@ -86,12 +93,13 @@ def sample_meta(name: str):
         )
 
     meta = get_volume_meta(zarr_path)
-    predicted = get_predicted_instances_meta(name)
+    predicted = get_predicted_instances_meta(name, prediction_set)
     return {
         "name": name,
         "split": entry.split,
         "dataset": entry.dataset,
         "zarr_path": str(zarr_path),
+        "prediction_set": prediction_set,
         "predicted_instances": predicted,
         **meta,
     }
@@ -166,6 +174,7 @@ async def sample_volume(
     volume: VolumeKind = Query("raw"),
     channel: str = Query("0"),
     max_size: int = Query(256, ge=64, le=512),
+    prediction_set: str | None = Query(None),
 ):
     try:
         if volume == "predicted":
@@ -173,6 +182,7 @@ async def sample_volume(
                 predicted_instances_to_bytes,
                 name,
                 max_size,
+                prediction_set,
             )
         else:
             _, zarr_path = _resolve_zarr_or_404(name)

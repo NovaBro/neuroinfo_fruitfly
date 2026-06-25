@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { checkHealth, listSamples, SampleInfo } from "./api/client";
+import {
+  checkHealth,
+  listPredictionSets,
+  listSamples,
+  PredictionSet,
+  SampleInfo,
+} from "./api/client";
 import { Layout } from "./components/Layout";
 import { OrthoSliceViewer } from "./components/OrthoSliceViewer";
 import { SampleBrowser } from "./components/SampleBrowser";
@@ -16,8 +22,13 @@ function App() {
   const [activeTab, setActiveTab] = useState<Tab>("3d");
   const [apiOk, setApiOk] = useState<boolean | null>(null);
   const [fisbeRootExists, setFisbeRootExists] = useState(false);
+  const [predictionSets, setPredictionSets] = useState<PredictionSet[]>([]);
+  const [predictionSet, setPredictionSet] = useState<string | null>(null);
 
-  const { meta, loading: metaLoading, error: metaError } = useSampleMeta(selected);
+  const { meta, loading: metaLoading, error: metaError } = useSampleMeta(
+    selected,
+    predictionSet,
+  );
 
   useEffect(() => {
     checkHealth()
@@ -26,6 +37,16 @@ function App() {
         setFisbeRootExists(h.fisbe_root_exists);
       })
       .catch(() => setApiOk(false));
+  }, []);
+
+  useEffect(() => {
+    listPredictionSets()
+      .then((sets) => {
+        setPredictionSets(sets);
+        const def = sets.find((s) => s.default) ?? sets[0];
+        if (def) setPredictionSet(def.id);
+      })
+      .catch(() => setPredictionSets([]));
   }, []);
 
   useEffect(() => {
@@ -72,29 +93,51 @@ function App() {
 
   const main = (
     <div className="app-main">
-      <div className="app-main__tabs">
-        <button
-          type="button"
-          className={
-            activeTab === "slices"
-              ? "app-main__tab app-main__tab--active"
-              : "app-main__tab"
-          }
-          onClick={() => setActiveTab("slices")}
-        >
-          Slice / MIP Viewer
-        </button>
-        <button
-          type="button"
-          className={
-            activeTab === "3d"
-              ? "app-main__tab app-main__tab--active"
-              : "app-main__tab"
-          }
-          onClick={() => setActiveTab("3d")}
-        >
-          3D Viewer
-        </button>
+      <div className="app-main__toolbar">
+        <div className="app-main__tabs">
+          <button
+            type="button"
+            className={
+              activeTab === "slices"
+                ? "app-main__tab app-main__tab--active"
+                : "app-main__tab"
+            }
+            onClick={() => setActiveTab("slices")}
+          >
+            Slice / MIP Viewer
+          </button>
+          <button
+            type="button"
+            className={
+              activeTab === "3d"
+                ? "app-main__tab app-main__tab--active"
+                : "app-main__tab"
+            }
+            onClick={() => setActiveTab("3d")}
+          >
+            3D Viewer
+          </button>
+        </div>
+
+        {predictionSets.length > 0 && (
+          <label className="app-main__pred-set">
+            <span className="app-main__pred-set-label">Predictions</span>
+            <select
+              value={predictionSet ?? ""}
+              onChange={(e) => setPredictionSet(e.target.value)}
+              title={
+                predictionSets.find((s) => s.id === predictionSet)?.path ?? ""
+              }
+            >
+              {predictionSets.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                  {s.default ? " (default)" : ""}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
       </div>
 
       {!selected && (
@@ -114,7 +157,11 @@ function App() {
       )}
 
       {selected && meta && meta.name === selected && activeTab === "3d" && (
-        <VolumeViewer3D sampleName={selected} meta={meta} />
+        <VolumeViewer3D
+          sampleName={selected}
+          meta={meta}
+          predictionSet={predictionSet}
+        />
       )}
     </div>
   );

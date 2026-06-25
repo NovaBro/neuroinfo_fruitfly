@@ -32,6 +32,7 @@ const ROTATE_STEP = 5;
 interface VolumeViewer3DProps {
   sampleName: string;
   meta: SampleMeta;
+  predictionSet?: string | null;
 }
 
 type VolumeMode = "raw" | "rgb" | "instance_rgb";
@@ -165,7 +166,11 @@ function createVolumeLayer(mode: VolumeMode): VolumeLayer {
   return layer;
 }
 
-export function VolumeViewer3D({ sampleName, meta }: VolumeViewer3DProps) {
+export function VolumeViewer3D({
+  sampleName,
+  meta,
+  predictionSet,
+}: VolumeViewer3DProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const vtkRef = useRef<VtkContext | null>(null);
   const vtkGenerationRef = useRef(0);
@@ -375,6 +380,7 @@ export function VolumeViewer3D({ sampleName, meta }: VolumeViewer3DProps) {
             const predictedVol = await fetchVolumeData(sampleName, {
               volume: "predicted",
               maxSize: debouncedMaxSize,
+              predictionSet,
               signal: controller.signal,
             });
             if (cancelled || vtkGenerationRef.current !== generation) return;
@@ -469,6 +475,7 @@ export function VolumeViewer3D({ sampleName, meta }: VolumeViewer3DProps) {
     showRaw,
     hasPredicted,
     showPredicted,
+    predictionSet,
     hasGt,
     showGt,
     debouncedMaxSize,

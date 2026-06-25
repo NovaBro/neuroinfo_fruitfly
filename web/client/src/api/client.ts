@@ -18,9 +18,21 @@ export interface SampleMeta {
   split: Split;
   dataset: "completely" | "partly";
   zarr_path: string;
+  prediction_set?: string | null;
   raw: VolumeMeta;
   gt_instances: VolumeMeta;
   predicted_instances?: VolumeMeta | null;
+}
+
+export interface PredictionSet {
+  /** Path of the run dir relative to BiaPy/results — the selection handle. */
+  id: string;
+  /** Run directory name, e.g. "train_3d_instance_segmentation_1". */
+  name: string;
+  /** Absolute path on the server (for display). */
+  path: string;
+  /** True for the server's default prediction set. */
+  default: boolean;
 }
 
 export interface HealthResponse {
@@ -66,9 +78,19 @@ export async function listSamples(): Promise<SampleInfo[]> {
   return fetchJson<SampleInfo[]>(`${API_BASE}/samples`);
 }
 
-export async function getMeta(name: string): Promise<SampleMeta> {
+export async function listPredictionSets(): Promise<PredictionSet[]> {
+  return fetchJson<PredictionSet[]>(`${API_BASE}/prediction-sets`);
+}
+
+export async function getMeta(
+  name: string,
+  predictionSet?: string | null,
+): Promise<SampleMeta> {
+  const qs = predictionSet
+    ? `?prediction_set=${encodeURIComponent(predictionSet)}`
+    : "";
   return fetchJson<SampleMeta>(
-    `${API_BASE}/samples/${encodeURIComponent(name)}/meta`,
+    `${API_BASE}/samples/${encodeURIComponent(name)}/meta${qs}`,
   );
 }
 
@@ -129,12 +151,14 @@ export function volumeDataUrl(
     volume?: VolumeKind;
     channel?: ChannelParam;
     maxSize?: number;
+    predictionSet?: string | null;
   } = {},
 ): string {
   const params = new URLSearchParams();
   if (opts.volume) params.set("volume", opts.volume);
   if (opts.channel !== undefined) params.set("channel", channelQuery(opts.channel));
   if (opts.maxSize !== undefined) params.set("max_size", String(opts.maxSize));
+  if (opts.predictionSet) params.set("prediction_set", opts.predictionSet);
   const qs = params.toString();
   return `${API_BASE}/samples/${encodeURIComponent(name)}/volume.bin${qs ? `?${qs}` : ""}`;
 }
@@ -145,6 +169,7 @@ export async function fetchVolumeData(
     volume?: VolumeKind;
     channel?: ChannelParam;
     maxSize?: number;
+    predictionSet?: string | null;
     signal?: AbortSignal;
   } = {},
 ): Promise<VolumeData> {

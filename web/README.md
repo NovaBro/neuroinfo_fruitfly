@@ -47,20 +47,26 @@ Open [http://localhost:5173](http://localhost:5173).
 |----------|---------|-------------|
 | `FISBE_ROOT` | `../../fisbe/completely` | Root directory containing `train/`, `val/`, `test/` Zarr folders |
 | `SAMPLE_LIST_PATH` | `../../evaluate-instance-segmentation/assets/sample_list_per_split.txt` | Train/val/test sample list |
-| `BIAPY_RESULT_ROOT` | `../../BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1` | BiaPy per-image / instance TIFF outputs |
+| `BIAPY_RESULTS_BASE` | `../../BiaPy/results` | Base dir scanned for prediction sets (any run dir containing a `per_image_instances` folder) |
+| `BIAPY_RESULT_ROOT` | `../../BiaPy/results/train_3d_instance_segmentation/results/train_3d_instance_segmentation_1` | Default prediction set (used when the client doesn't pick one) |
 
 ## API endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/api/health` | Liveness check |
-| `GET` | `/api/samples` | List samples with split and path status |
-| `GET` | `/api/samples/{name}/meta` | Volume shapes and dtypes |
+| `GET` | `/api/prediction-sets` | List available prediction sets (BiaPy run dirs with `per_image_instances`) |
+| `GET` | `/api/samples` | List samples with split and path status (`has_predicted` is true if *any* set has output) |
+| `GET` | `/api/samples/{name}/meta` | Volume shapes and dtypes (`prediction_set` query param selects which set's predicted shape to report) |
 | `GET` | `/api/samples/{name}/slice.png` | 2D slice (`volume`, `channel`, `axis`, `index` query params) |
 | `GET` | `/api/samples/{name}/mip.png` | Maximum-intensity projection (`volume`, `channel` query params) |
-| `GET` | `/api/samples/{name}/volume.bin` | Downsampled 3D volume for MIP rendering (`volume=raw|gt|predicted`, `channel=0|1|2|all`, `max_size` 64–512) |
+| `GET` | `/api/samples/{name}/volume.bin` | Downsampled 3D volume for MIP rendering (`volume=raw|gt|predicted`, `channel=0|1|2|all`, `max_size` 64–512, `prediction_set` selects which set for `volume=predicted`) |
 
 The **3D Viewer** tab loads downsampled raw data from FISBe Zarr and, when available, overlays BiaPy predicted instances (`volume=predicted`) using helpers from [`ipynb/scripts/biapy.py`](../ipynb/scripts/biapy.py). Drag or use arrow keys to rotate the view.
+
+### Selecting a prediction set
+
+`/api/prediction-sets` discovers every BiaPy run directory under `BIAPY_RESULTS_BASE` that contains a `per_image_instances` folder, so you can compare predictions from different training/testing setups. The **Predictions** dropdown above the viewer tabs switches which set is overlaid; the predicted overlay and reported shapes update accordingly. The set marked `default` (matching `BIAPY_RESULT_ROOT`) is selected on load.
 
 ## Follow-ups (not in scaffold)
 

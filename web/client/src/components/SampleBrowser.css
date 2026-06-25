@@ -27,6 +27,16 @@
   border-color: #4a6fa5;
 }
 
+.sample-browser__tabs--dataset .sample-browser__tab {
+  text-transform: capitalize;
+}
+
+.sample-browser__count {
+  margin: 0;
+  color: #8b919c;
+  font-size: 0.75rem;
+}
+
 .sample-browser__search {
   padding: 0.45rem 0.6rem;
   border: 1px solid #2a2f3a;

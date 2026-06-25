@@ -1,4 +1,9 @@
-"""Load BiaPy prediction volumes via ipynb/scripts/biapy.py."""
+"""Load BiaPy prediction volumes via ipynb/scripts/biapy.py.
+
+A "prediction set" is one BiaPy run directory (containing ``per_image_instances``)
+under ``BiaPy/results``. Callers select one by its ``id`` (path relative to the
+results base); ``None`` falls back to the default set.
+"""
 
 from __future__ import annotations
 
@@ -16,20 +21,46 @@ if str(_SCRIPTS_DIR) not in sys.path:
 import biapy  # noqa: E402
 
 
-def has_predicted_instances(stem: str) -> bool:
-    """Return True when BiaPy per_image_instances output exists for ``stem``."""
-    return biapy.has_biapy_instances(stem)
+def list_prediction_sets() -> list[dict]:
+    """List available prediction sets discovered under the BiaPy results base."""
+    return biapy.discover_prediction_sets()
 
 
-def get_predicted_instances_meta(stem: str) -> dict | None:
-    """Return predicted-instances metadata when BiaPy output exists."""
-    return biapy.get_biapy_instances_meta(stem)
+def has_predicted_instances(stem: str, set_id: str | None = None) -> bool:
+    """Return True when the given prediction set has output for ``stem``."""
+    try:
+        root = biapy.resolve_prediction_set_root(set_id)
+    except (FileNotFoundError, ValueError):
+        return False
+    return biapy.has_biapy_instances(stem, result_root=root)
 
 
-@lru_cache(maxsize=8)
-def predicted_instances_to_bytes(stem: str, max_size: int) -> VolumeBytesResult:
-    """Load and downsample BiaPy per_image_instances for 3D rendering."""
-    volume = biapy.load_biapy_per_image_instances(stem)
+def has_predicted_instances_any(stem: str) -> bool:
+    """Return True when *any* prediction set has output for ``stem``."""
+    return any(
+        biapy.has_biapy_instances(stem, result_root=Path(s["path"]))
+        for s in biapy.discover_prediction_sets()
+    )
+
+
+def get_predicted_instances_meta(
+    stem: str, set_id: str | None = None
+) -> dict | None:
+    """Return predicted-instances metadata for ``stem`` in the given set."""
+    try:
+        root = biapy.resolve_prediction_set_root(set_id)
+    except (FileNotFoundError, ValueError):
+        return None
+    return biapy.get_biapy_instances_meta(stem, result_root=root)
+
+
+@lru_cache(maxsize=16)
+def predicted_instances_to_bytes(
+    stem: str, max_size: int, set_id: str | None = None
+) -> VolumeBytesResult:
+    """Load and downsample a prediction set's per_image_instances for rendering."""
+    root = biapy.resolve_prediction_set_root(set_id)
+    volume = biapy.load_biapy_per_image_instances(stem, result_root=root)
     return volume_array_to_bytes(
         volume, max_size=max_size, encoding="labels_rgb"
     )
