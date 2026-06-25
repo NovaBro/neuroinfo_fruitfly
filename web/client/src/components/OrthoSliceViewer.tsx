@@ -39,6 +39,7 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
   const [index, setIndex] = useState(0);
   const [showGt, setShowGt] = useState(false);
   const [gtChannel, setGtChannel] = useState(0);
+  const [gtOpacity, setGtOpacity] = useState(55);
   const [viewMode, setViewMode] = useState<"slice" | "mip">("slice");
 
   const maxIndex = useMemo(
@@ -232,6 +233,20 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
               ))}
             </div>
           )}
+          {showGt && (
+            <div className="ortho-viewer__group ortho-viewer__group--slider">
+              <span className="ortho-viewer__label">
+                GT opacity ({gtOpacity}%)
+              </span>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={gtOpacity}
+                onChange={(e) => setGtOpacity(Number(e.target.value))}
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -256,6 +271,7 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
             alt={`${sampleName} gt overlay`}
             brightness={brightness}
             contrast={contrast}
+            opacity={gtOpacity / 100}
           />
         )}
       </div>

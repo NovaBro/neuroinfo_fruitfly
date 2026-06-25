@@ -38,7 +38,7 @@ npm run dev
 
 ### (Local) Terminal 3 - Connect Remotely
 HPC Web Dev
-ssh -L 8000:localhost:5173 -J wmz2007@login.torch.hpc.nyu.edu wmz2007@torch-login-b-1
+ssh -L 8000:localhost:5173 -J wmz2007@login.torch.hpc.nyu.edu wmz2007@torch-login-a-1
 Open [http://localhost:5173](http://localhost:5173).
 
 ## Environment variables

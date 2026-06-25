@@ -55,7 +55,11 @@ function opacityAtLevel(level: number, floor: number) {
   return Math.min(1, Math.max(floor, t));
 }
 
-function configureVolumeProperty(layer: VolumeLayer, mode: VolumeMode) {
+function configureVolumeProperty(
+  layer: VolumeLayer,
+  mode: VolumeMode,
+  opacity = 1,
+) {
   const property = layer.volume.getProperty();
   const ctfun = vtkColorTransferFunction.newInstance();
   const ofun = vtkPiecewiseFunction.newInstance();
@@ -85,9 +89,9 @@ function configureVolumeProperty(layer: VolumeLayer, mode: VolumeMode) {
     ctfun.addRGBPoint(255, 1, 1, 1);
     property.setRGBTransferFunction(0, ctfun);
     ofun.addPoint(0, 0.0);
-    ofun.addPoint(1, 0.9);
-    ofun.addPoint(16, 0.95);
-    ofun.addPoint(255, 1.0);
+    ofun.addPoint(1, 0.9 * opacity);
+    ofun.addPoint(16, 0.95 * opacity);
+    ofun.addPoint(255, 1.0 * opacity);
     property.setScalarOpacity(0, ofun);
     return;
   }
@@ -146,8 +150,9 @@ function applyVolumeData(
   mode: VolumeMode,
   brightness: number,
   contrast: number,
+  opacity = 1,
 ) {
-  configureVolumeProperty(layer, mode);
+  configureVolumeProperty(layer, mode, opacity);
 
   const [z, y, x] = vol.shape;
   const [oz, oy, ox] = vol.originalShape;
@@ -197,6 +202,8 @@ export function VolumeViewer3D({
   const debouncedMaxSize = useDebouncedValue(maxSize, 400);
   const [showPredicted, setShowPredicted] = useState(true);
   const [showGt, setShowGt] = useState(false);
+  const [predictedOpacity, setPredictedOpacity] = useState(100);
+  const [gtOpacity, setGtOpacity] = useState(100);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [volumeInfo, setVolumeInfo] = useState<string | null>(null);
@@ -298,6 +305,8 @@ export function VolumeViewer3D({
     setMaxSize(DEFAULT_VOLUME_MAX_SIZE);
     setShowPredicted(hasPredicted);
     setShowGt(false);
+    setPredictedOpacity(100);
+    setGtOpacity(100);
     setVolumeInfo(null);
     setError(null);
     rawSourceRef.current = null;
@@ -339,6 +348,24 @@ export function VolumeViewer3D({
     }
     renderScene();
   }, [vtkReady, brightness, contrast, renderScene]);
+
+  useEffect(() => {
+    if (!vtkReady) return;
+    const vtk = vtkRef.current;
+    if (!vtk) return;
+
+    if (predictedVisibleRef.current) {
+      configureVolumeProperty(
+        vtk.predicted,
+        "instance_rgb",
+        predictedOpacity / 100,
+      );
+    }
+    if (gtVisibleRef.current) {
+      configureVolumeProperty(vtk.gt, "instance_rgb", gtOpacity / 100);
+    }
+    renderScene();
+  }, [vtkReady, predictedOpacity, gtOpacity, renderScene]);
 
   useEffect(() => {
     if (!vtkReady) return;
@@ -400,6 +427,7 @@ export function VolumeViewer3D({
               "instance_rgb",
               brightness,
               contrast,
+              predictedOpacity / 100,
             );
             vtk!.predicted.volume.setVisibility(true);
             predictedVisibleRef.current = true;
@@ -432,6 +460,7 @@ export function VolumeViewer3D({
               "instance_rgb",
               brightness,
               contrast,
+              gtOpacity / 100,
             );
             vtk!.gt.volume.setVisibility(true);
             gtVisibleRef.current = true;
@@ -616,6 +645,20 @@ export function VolumeViewer3D({
                 Ground truth (Zarr)
               </label>
             )}
+            {hasGt && showGt && (
+              <div className="volume-viewer-3d__group volume-viewer-3d__group--slider">
+                <span className="volume-viewer-3d__label">
+                  GT opacity ({gtOpacity}%)
+                </span>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={gtOpacity}
+                  onChange={(e) => setGtOpacity(Number(e.target.value))}
+                />
+              </div>
+            )}
             {hasPredicted && (
               <label className="volume-viewer-3d__checkbox">
                 <input
@@ -625,6 +668,20 @@ export function VolumeViewer3D({
                 />
                 Predicted instances (BiaPy)
               </label>
+            )}
+            {hasPredicted && showPredicted && (
+              <div className="volume-viewer-3d__group volume-viewer-3d__group--slider">
+                <span className="volume-viewer-3d__label">
+                  Predicted opacity ({predictedOpacity}%)
+                </span>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={predictedOpacity}
+                  onChange={(e) => setPredictedOpacity(Number(e.target.value))}
+                />
+              </div>
             )}
           </div>
         )}

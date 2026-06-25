@@ -7,6 +7,7 @@ interface SliceImageProps {
   className?: string;
   brightness?: number;
   contrast?: number;
+  opacity?: number;
 }
 
 export function SliceImage({
@@ -15,6 +16,7 @@ export function SliceImage({
   className,
   brightness = 100,
   contrast = 100,
+  opacity = 1,
 }: SliceImageProps) {
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
 
@@ -58,7 +60,7 @@ export function SliceImage({
       className={className}
       src={blobUrl}
       alt={alt}
-      style={{ filter: cssBrightnessContrast(brightness, contrast) }}
+      style={{ filter: cssBrightnessContrast(brightness, contrast), opacity }}
     />
   );
 }
