@@ -1,31 +1,6 @@
 # README
 
-## Overall TODO:
-- [X] Finish Reading FISBe Paper
-- [ ] Research unsupervised segmentation methods
-
-- [ ] FISBe EDA
-- [ ] Run / Train / Test / Segmentation Models
-- [ ] Skeletonize Segmentation Outputs
-- [ ] Run NBLAST on Skeletonized Outputs
-
-## Google Drive TODO:
-- [ ] Segment the MCFO data into individual neurons William Zheng
-    - [ ] Filter then segment neurons based on colors, isolate color channels, RGB
-    - [ ] Track hyperparameters used in the FISBe paper, 
-    - [ ] Track citations for the FISBe dataset
-    - [ ] Generate a bunch of interactive visualizations, compare neuron segmentations across different segmentations
-    - [ ] Models to Try for Segmentation
-        - [ ] BIApy (General Segmentation): https://biapy.readthedocs.io/en/latest/index.html
-        - [ ] PatchPerPix: https://arxiv.org/pdf/2001.07626
-        - [ ] https://github.com/Kainmueller-Lab/PatchPerPix
-        - [ ] Flood Filling Networks
-        - [ ] https://github.com/google/ffn
-
-- [ ] Training / Test: FISBe https://kainmueller-lab.github.io/fisbe/
-- [ ] Test on MCFO Data
-    - [ ] MCFO processing into zarr file
-
+# Dataset
 ## Fisbe Download Method
 ```bash
 nohup bash -c '
@@ -42,6 +17,17 @@ nohup bash -c '
 echo "PID: $!"
 ```
 
+# Environment Setup
+## Conda Singularity
+Follow this tutorial
+https://services.rt.nyu.edu/docs/hpc/containers/singularity_with_conda/#using-your-singularity-container-in-a-slurm-batch-job
+
+For each model method and the evaluation method, you need to create a new environment.
+BiaPy: https://biapy.readthedocs.io/en/latest/get_started/installation.html
+Fisbe Evaluate Instance Segmentation: https://github.com/Kainmueller-Lab/evaluate-instance-segmentation
+PatchPerPix: https://github.com/Kainmueller-Lab/PatchPerPix
+
+# Model
 ## PatchPerPix
 ```bash
 # data preperation
@@ -124,3 +110,34 @@ python fisbe/biapy/prepare_tiff_data.py --splits test --clean
 
 An isolated web app for browsing FISBe 3D volumes lives in [`web/`](web/). See [`web/README.md`](web/README.md) for setup: a FastAPI server serves Zarr slices/MIPs, and a Vite + React frontend provides a sample browser and orthographic slice viewer.
 
+## Evaluation
+NOTE: For `BiaPy` model, must run the `BiaPy/my_metric_prep_util.py` script to get zarr file format instead of tif.
+
+```bash
+# Base Example
+evalinstseg \
+  --res_file tests/pred/sample_01.hdf \
+  --res_key volumes/gmm_label_cleaned \
+  --gt_file tests/gt/sample_01.zarr \
+  --gt_key volumes/gt_instances \
+  --split_file assets/sample_list_per_split.txt \
+  --out_dir tests/results \
+  --app flylight
+
+# Folders
+evalinstseg \
+  --res_file BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr \
+  --res_key volumes/pred_instance \
+  --gt_file fisbe/completely/train \
+  --gt_key volumes/gt_instances \
+  --out_dir tests/results/biapy \
+  --app flylight
+
+evalinstseg \
+  --res_file BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/JRC_SS04989-20160318_24_A2.zarr \
+  --res_key volumes/pred_instance \
+  --gt_file fisbe/completely/test/JRC_SS04989-20160318_24_A2.zarr \
+  --gt_key volumes/gt_instances \
+  --out_dir tests/results/biapy \
+  --app flylight
+```
