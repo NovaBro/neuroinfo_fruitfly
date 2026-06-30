@@ -17,3 +17,5 @@ zarr
 
 navis[all]
 skeletor
+
+colorcet
