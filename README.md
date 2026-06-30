@@ -22,10 +22,10 @@ echo "PID: $!"
 Follow this tutorial
 https://services.rt.nyu.edu/docs/hpc/containers/singularity_with_conda/#using-your-singularity-container-in-a-slurm-batch-job
 
-For each model method and the evaluation method, you need to create a new environment.
-BiaPy: https://biapy.readthedocs.io/en/latest/get_started/installation.html
-Fisbe Evaluate Instance Segmentation: https://github.com/Kainmueller-Lab/evaluate-instance-segmentation
-PatchPerPix: https://github.com/Kainmueller-Lab/PatchPerPix
+For each model method and the evaluation method, you need to create a new environment, (saved_file_name.ext3).
+BiaPy (BiaPy_env.ext3): https://biapy.readthedocs.io/en/latest/get_started/installation.html
+Fisbe Evaluate Instance Segmentation (evaluate.ext3): https://github.com/Kainmueller-Lab/evaluate-instance-segmentation
+PatchPerPix (ppp.ext3): https://github.com/Kainmueller-Lab/PatchPerPix
 
 # Model
 ## PatchPerPix
@@ -70,13 +70,21 @@ python -u run_ppp.py \
 
 
 ## BiaPy Tutorial
+Very helpful tutorial on getting started and details.
 https://biapy.readthedocs.io/en/latest/workflows/semantic_segmentation.html
 
 ```bash
 # datapreprocessing to tiff
 # /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy/prepare_tiff_data.py
+
+# Make sure to have the interactive environment. 
+srun --cpus-per-task=8 --time 2:00:00 --mem=32g --account=torch_pr_61_general --pty /bin/bash
+# Whatever env you use (BiaPy_env), make sure it hase toml installed
+
 python3 neuroinfo_fruitfly/fisbe/biapy/prepare_tiff_data.py --splits test train val
 ```
+
+Adjust experiment test and training parameters in `BiaPy/3d_instance_segmentation.yaml`
 
 in `./fisbe/biapy/biapy.sh`
 ```bash
@@ -100,20 +108,16 @@ biapy \
     --name $job_name    \
     --run_id $job_counter  \
     --gpu "$gpu_number"
-
-# Then
-conda activate BiaPy_env
-python fisbe/biapy/prepare_tiff_data.py --splits test --clean
 ```
 
-## Web Viewer
-
-An isolated web app for browsing FISBe 3D volumes lives in [`web/`](web/). See [`web/README.md`](web/README.md) for setup: a FastAPI server serves Zarr slices/MIPs, and a Vite + React frontend provides a sample browser and orthographic slice viewer.
+Then you can directly run the sbatch scripts in `BiaPy/biapy.sh` by `sbatch BiaPy/biapy.sh`
 
 ## Evaluation
 NOTE: For `BiaPy` model, must run the `BiaPy/my_metric_prep_util.py` script to get zarr file format instead of tif.
+For this project, run the evaluation through sbatch, `sbatch sbatch/evalinstseg/evalinstseg_sbatch.sh`.
 
 ```bash
+# This command example is from the github.
 # Base Example
 evalinstseg \
   --res_file tests/pred/sample_01.hdf \
@@ -141,3 +145,7 @@ evalinstseg \
   --out_dir tests/results/biapy \
   --app flylight
 ```
+
+## Web Viewer
+
+An isolated web app for browsing FISBe 3D volumes lives in [`web/`](web/). See [`web/README.md`](web/README.md) for setup: a FastAPI server serves Zarr slices/MIPs, and a Vite + React frontend provides a sample browser and orthographic slice viewer.
