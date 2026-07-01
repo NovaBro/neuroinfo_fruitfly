@@ -1,11 +1,18 @@
 import zarr
 import numpy as np
+from pathlib import Path
 import kimimaro
 import os
 import csv
 
-base_path = r"C:\Users\gaura\Downloads\fisbe_v1.0_completely\completely\train"
-output_path = r"C:\Users\gaura\Downloads\swc_output"
+PROJECT_DIR = Path.cwd()
+DATA_DIR = PROJECT_DIR / "data"
+FISBe_DIR = DATA_DIR / "FISBe"
+FlyLight_DIR = DATA_DIR / "FlyLight"
+FANC_DIR = DATA_DIR / "FANC"
+
+base_path = FISBe_DIR / "completely/train"
+output_path = FISBe_DIR / "swc_output"
 os.makedirs(output_path, exist_ok=True)
 
 def save_swc(skel, filepath):

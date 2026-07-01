@@ -19,3 +19,6 @@ navis[all]
 skeletor
 
 colorcet
+
+kimimaro
+crackle-codec

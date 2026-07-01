@@ -1,14 +1,38 @@
 import zarr
 import numpy as np
+from pathlib import Path
+import os
+
 import kimimaro
 import matplotlib.pyplot as plt
 
-store = zarr.open(r"C:\Users\gaura\Downloads\fisbe_v1.0_completely\completely\train\R38F04-20181005_63_G3.zarr")
+PROJECT_DIR = Path.cwd()
+DATA_DIR = PROJECT_DIR / "data"
+FISBe_DIR = DATA_DIR / "FISBe"
+FlyLight_DIR = DATA_DIR / "FlyLight"
+FANC_DIR = DATA_DIR / "FANC"
+
+target_name = "R38F04-20181005_63_G3"
+output_path = FISBe_DIR / "swc_output"
+os.makedirs(output_path, exist_ok=True)
+
+
+store = zarr.open(FISBe_DIR / "completely/train" / f"{target_name}.zarr")
 gt = store['volumes/gt_instances']
 raw = store['volumes/raw']
 
-neuron1 = (np.array(gt[0]) == 1).astype(np.uint8)
-neuron2 = (np.array(gt[1]) == 2).astype(np.uint8)
+
+
+neuron_tuples = []
+
+# print(gt.shape[0])
+
+for i in range(gt.shape[0]):
+    new_neuron = (np.array(gt[i]) == i+1).astype(np.uint8)
+    
+    new_tuple = (f'neuron{i+1}', new_neuron, i)
+    
+    neuron_tuples.append(new_tuple)
 
 def save_swc(skel, filepath):
     """Save a kimimaro skeleton to SWC format"""
@@ -28,7 +52,7 @@ def save_swc(skel, filepath):
             f.write(f"{node_id} 0 {x:.2f} {y:.2f} {z:.2f} {radius:.2f} {parent_id}\n")
     print(f"Saved: {filepath}")
 
-for name, mask, raw_ch in [('neuron1', neuron1, 0), ('neuron2', neuron2, 1)]:
+for name, mask, raw_ch in neuron_tuples:
     print(f"\nSkeletonizing {name}...")
     skels = kimimaro.skeletonize(
         mask,
@@ -39,7 +63,7 @@ for name, mask, raw_ch in [('neuron1', neuron1, 0), ('neuron2', neuron2, 1)]:
     skel = list(skels.values())[0]
     
     # Save as SWC
-    save_swc(skel, rf"C:\Users\gaura\Downloads\{name}.swc")
+    save_swc(skel, output_path / rf"{name}.swc")
 
     # Compare with raw image
     z = mask.shape[0] // 2
@@ -58,4 +82,4 @@ for name, mask, raw_ch in [('neuron1', neuron1, 0), ('neuron2', neuron2, 1)]:
         axes[2].scatter(xs, ys, c='red', s=8)
     axes[2].set_title('Skeleton on Raw Image')
     plt.tight_layout()
-    plt.show()
+    # plt.show()
