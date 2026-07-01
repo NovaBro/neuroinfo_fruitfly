@@ -12,7 +12,7 @@ FISBe_DIR = DATA_DIR / "FISBe"
 FlyLight_DIR = DATA_DIR / "FlyLight"
 FANC_DIR = DATA_DIR / "FANC"
 
-target_name = "R38F04-20181005_63_G3"
+target_name = "R38F04-20181005_63_H1"
 output_path = FISBe_DIR / "swc_output"
 os.makedirs(output_path, exist_ok=True)
 
@@ -63,7 +63,12 @@ for name, mask, raw_ch in neuron_tuples:
     skel = list(skels.values())[0]
     
     # Save as SWC
-    save_swc(skel, output_path / rf"{name}.swc")
+    
+    os.makedirs(output_path, exist_ok=True)
+    os.makedirs(output_path / target_name, exist_ok=True)
+    
+    
+    save_swc(skel, output_path / target_name /rf"{name}.swc")
 
     # Compare with raw image
     z = mask.shape[0] // 2
