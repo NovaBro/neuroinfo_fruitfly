@@ -29,3 +29,11 @@
   overflow: auto;
   padding: 1rem 1.25rem;
 }
+
+.layout__rightpanel {
+  width: 320px;
+  flex-shrink: 0;
+  border-left: 1px solid #2a2f3a;
+  background: #13161e;
+  overflow: auto;
+}

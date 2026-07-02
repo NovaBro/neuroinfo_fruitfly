@@ -132,3 +132,22 @@
   font-size: 0.85rem;
   color: #8b919c;
 }
+
+.volume-viewer-3d__mip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.volume-viewer-3d__mip-img {
+  display: block;
+  max-width: 100%;
+  border: 1px solid #2a2f3a;
+  border-radius: 6px;
+  background: #0a0c10;
+  image-rendering: auto;
+}
+
+.volume-viewer-3d__mip-img.slice-image--loading {
+  min-height: 180px;
+}

@@ -1,0 +1,139 @@
+.metrics-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0.75rem;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.metrics-panel__title {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #e8eaed;
+}
+
+.metrics-panel__sample {
+  margin: 0;
+  color: #8b919c;
+  font-size: 0.72rem;
+  word-break: break-all;
+}
+
+.metrics-panel__hint {
+  margin: 0.25rem 0;
+  color: #8b919c;
+  font-size: 0.75rem;
+}
+
+.metrics-panel__error {
+  margin: 0.25rem 0;
+  color: #e0736d;
+  font-size: 0.75rem;
+}
+
+.metrics-panel__hint code {
+  background: #1a1e28;
+  padding: 0 0.2rem;
+  border-radius: 3px;
+}
+
+.metrics-section {
+  border-top: 1px solid #2a2f3a;
+  padding-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.metrics-section__title {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #cdd3dd;
+}
+
+.metrics-section__source {
+  margin: 0;
+  color: #6f7682;
+  font-size: 0.68rem;
+  word-break: break-all;
+}
+
+.metrics-section__sub {
+  margin: 0.35rem 0 0.1rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8b919c;
+}
+
+.metrics-kv {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.1rem 0.75rem;
+}
+
+.metrics-kv__row {
+  display: contents;
+}
+
+.metrics-kv__key {
+  color: #aab0bc;
+  white-space: nowrap;
+}
+
+.metrics-kv__val {
+  margin: 0;
+  color: #e8eaed;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.metrics-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #2a2f3a;
+  border-radius: 4px;
+}
+
+.metrics-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.metrics-table th,
+.metrics-table td {
+  padding: 0.2rem 0.4rem;
+  text-align: right;
+  white-space: nowrap;
+  border-bottom: 1px solid #21262f;
+}
+
+.metrics-table thead th {
+  background: #1a1e28;
+  color: #cdd3dd;
+  position: sticky;
+  top: 0;
+}
+
+.metrics-table tbody th {
+  text-align: left;
+  color: #aab0bc;
+  font-weight: 500;
+  position: sticky;
+  left: 0;
+  background: #13161e;
+}
+
+.metrics-table__corner {
+  text-align: left !important;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+.metrics-table td {
+  color: #e8eaed;
+}

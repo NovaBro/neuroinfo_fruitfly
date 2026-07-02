@@ -12,11 +12,14 @@ import {
   ChannelParam,
   DEFAULT_VOLUME_MAX_SIZE,
   fetchVolumeData,
+  FisbeMipHalf,
+  fisbeMipUrl,
   RAW_CHANNEL_CHOICES,
   SampleMeta,
   VolumeData,
   VOLUME_MAX_SIZE_OPTIONS,
 } from "../api/client";
+import { SliceImage } from "./SliceImage";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import {
   DEFAULT_BRIGHTNESS,
@@ -207,6 +210,9 @@ export function VolumeViewer3D({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [volumeInfo, setVolumeInfo] = useState<string | null>(null);
+  // Which half of the shipped FISBe MIP composite to show beneath the 3D render:
+  // the original colored raw MIP, the GT instance segmentation, or both.
+  const [mipHalf, setMipHalf] = useState<FisbeMipHalf>("full");
 
   const hasPredicted = meta.predicted_instances != null;
   const hasGt = meta.gt_instances != null;
@@ -706,6 +712,40 @@ export function VolumeViewer3D({
         <p className="volume-viewer-3d__hint">
           Drag to rotate · Arrow keys to rotate (click viewer to focus)
         </p>
+      </div>
+
+      <div className="volume-viewer-3d__mip">
+        <span className="volume-viewer-3d__label">FISBe MIP</span>
+        <div className="volume-viewer-3d__btn-row">
+          {(
+            [
+              ["full", "Both"],
+              ["raw", "Original"],
+              ["gt", "GT segmentation"],
+            ] as [FisbeMipHalf, string][]
+          ).map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              className={
+                mipHalf === value
+                  ? "volume-viewer-3d__btn volume-viewer-3d__btn--active"
+                  : "volume-viewer-3d__btn"
+              }
+              onClick={() => setMipHalf(value)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <SliceImage
+          key={`${sampleName}-${mipHalf}`}
+          url={fisbeMipUrl(sampleName, { half: mipHalf })}
+          alt={`FISBe maximum-intensity projection of ${sampleName} (${mipHalf})`}
+          className="volume-viewer-3d__mip-img"
+          brightness={brightness}
+          contrast={contrast}
+        />
       </div>
 
       {volumeInfo && (

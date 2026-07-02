@@ -24,6 +24,30 @@ export interface SampleMeta {
   predicted_instances?: VolumeMeta | null;
 }
 
+/** One metric source's numbers grouped by detection threshold. */
+export type MetricThresholds = Record<string, Record<string, number | null>>;
+
+export interface TomlMetrics {
+  source: string;
+  general: Record<string, unknown>;
+  summary: Record<string, number>;
+  thresholds: MetricThresholds;
+}
+
+export interface CsvMetrics {
+  source: string;
+  file: string;
+  scalars: Record<string, number | null>;
+  thresholds: MetricThresholds;
+}
+
+export interface SampleMetrics {
+  name: string;
+  prediction_set?: string | null;
+  toml: TomlMetrics | null;
+  csv: CsvMetrics | null;
+}
+
 export interface PredictionSet {
   /** Path of the run dir relative to BiaPy/results — the selection handle. */
   id: string;
@@ -94,6 +118,18 @@ export async function getMeta(
   );
 }
 
+export async function getMetrics(
+  name: string,
+  predictionSet?: string | null,
+): Promise<SampleMetrics> {
+  const qs = predictionSet
+    ? `?prediction_set=${encodeURIComponent(predictionSet)}`
+    : "";
+  return fetchJson<SampleMetrics>(
+    `${API_BASE}/samples/${encodeURIComponent(name)}/metrics${qs}`,
+  );
+}
+
 export function sliceUrl(
   name: string,
   opts: {
@@ -121,6 +157,24 @@ export function mipUrl(
   if (opts.channel !== undefined) params.set("channel", channelQuery(opts.channel));
   const qs = params.toString();
   return `${API_BASE}/samples/${encodeURIComponent(name)}/mip.png${qs ? `?${qs}` : ""}`;
+}
+
+export type FisbeMipHalf = "full" | "raw" | "gt";
+
+/**
+ * URL for a sample's pre-generated FISBe MIP PNG (from fisbe/mips). Unlike
+ * {@link mipUrl}, this serves the shipped image rather than projecting the zarr.
+ * `half` selects the raw (original colored) half, the GT-segmentation half, or
+ * the full side-by-side composite.
+ */
+export function fisbeMipUrl(
+  name: string,
+  opts: { half?: FisbeMipHalf } = {},
+): string {
+  const params = new URLSearchParams();
+  if (opts.half) params.set("half", opts.half);
+  const qs = params.toString();
+  return `${API_BASE}/samples/${encodeURIComponent(name)}/fisbe_mip.png${qs ? `?${qs}` : ""}`;
 }
 
 export interface VolumeData {

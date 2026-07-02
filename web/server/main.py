@@ -17,6 +17,8 @@ from services.biapy_loader import (
     list_prediction_sets,
     predicted_instances_to_bytes,
 )
+from services.fisbe_mip import fisbe_mip_png
+from services.metrics import get_sample_metrics
 from services.sample_list import SampleEntry, find_sample, parse_sample_list, sample_zarr_path
 from services.zarr_reader import (
     AxisKind,
@@ -105,6 +107,23 @@ def sample_meta(name: str, prediction_set: str | None = Query(None)):
     }
 
 
+@app.get("/api/samples/{name}/metrics")
+def sample_metrics(name: str, prediction_set: str | None = Query(None)):
+    """Scoring metrics for ``name`` from the given prediction set.
+
+    Combines the ``tests/metrics`` TOML and the ``test_results_metrics.csv``
+    row; either source may be ``null`` when it is absent for the sample/set.
+    """
+    entry = find_sample(name, list(_cached_samples()))
+    if entry is None:
+        raise HTTPException(status_code=404, detail=f"Sample not found: {name}")
+    return {
+        "name": name,
+        "prediction_set": prediction_set,
+        **get_sample_metrics(name, prediction_set),
+    }
+
+
 def _resolve_zarr_or_404(name: str) -> tuple[SampleEntry, Path]:
     entry = find_sample(name, list(_cached_samples()))
     if entry is None:
@@ -164,6 +183,23 @@ def sample_mip(
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return Response(content=png, media_type="image/png")
+
+
+@app.get("/api/samples/{name}/fisbe_mip.png")
+def sample_fisbe_mip(
+    name: str,
+    half: str = Query("full", pattern="^(full|raw|gt)$"),
+):
+    """Serve the pre-generated FISBe MIP PNG (raw half, GT half, or both)."""
+    entry = find_sample(name, list(_cached_samples()))
+    if entry is None:
+        raise HTTPException(status_code=404, detail=f"Sample not found: {name}")
+    try:
+        png = fisbe_mip_png(entry, half=half)  # type: ignore[arg-type]
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
     return Response(content=png, media_type="image/png")
 

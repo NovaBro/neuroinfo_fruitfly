@@ -7,10 +7,11 @@ import {
   SampleInfo,
 } from "./api/client";
 import { Layout } from "./components/Layout";
+import { MetricsPanel } from "./components/MetricsPanel";
 import { OrthoSliceViewer } from "./components/OrthoSliceViewer";
 import { SampleBrowser } from "./components/SampleBrowser";
 import { VolumeViewer3D } from "./components/VolumeViewer3D";
-import { useSampleMeta } from "./hooks/useSample";
+import { useSampleMeta, useSampleMetrics } from "./hooks/useSample";
 import "./App.css";
 
 type Tab = "slices" | "3d";
@@ -29,6 +30,12 @@ function App() {
     selected,
     predictionSet,
   );
+
+  const {
+    metrics,
+    loading: metricsLoading,
+    error: metricsError,
+  } = useSampleMetrics(selected, predictionSet);
 
   useEffect(() => {
     checkHealth()
@@ -178,6 +185,15 @@ function App() {
         />
       }
       main={main}
+      rightPanel={
+        <MetricsPanel
+          sampleName={selected}
+          toml={metrics?.toml ?? null}
+          csv={metrics?.csv ?? null}
+          loading={metricsLoading}
+          error={metricsError}
+        />
+      }
     />
   );
 }
