@@ -11,11 +11,70 @@ The API does not send full volumes to the browser; it extracts individual slices
 
 ## Prerequisites
 
-- Node.js 18+
-- Python 3.10+
+- Node.js 18+ (on Greene this comes from the user's `nvm` install, loaded by `~/.bashrc`)
+- Python 3.10+ (on Greene this is the base conda env inside the `webdev.ext3` overlay)
 - FISBe data extracted locally under `fisbe/completely/` (see root README for download instructions)
 
-## Quick start
+## Running on NYU Greene (compute node — recommended)
+
+**Do not run the viewer on a login node.** Reading and downsampling the ~1.4 GB FISBe
+volumes is memory- and CPU-heavy; on a shared login node a large MIP/volume request
+can OOM and take your SSH session down with it. Run both processes on a compute node
+instead.
+
+The server runs **inside the Singularity `webdev` container** (its base conda env
+carries `fastapi`/`uvicorn`/`zarr` — there is no login-node `.venv` to maintain). The
+client runs on the host using `node` from `nvm`. A single SLURM job co-locates both on
+one node so Vite's `/api` proxy works:
+
+```bash
+# from the repo root
+sbatch sbatch/web/web.sh
+```
+
+Then find the compute node name and open a tunnel from your **laptop** (the job also
+prints this line to `sbatch/web/web.out`):
+
+```bash
+squeue --me --name=web --states=R -o '%N'   # e.g. cs123
+ssh -S none -N -L 9000:cs123:5173 $USER@login.torch.hpc.nyu.edu
+```
+
+Browse `http://localhost:9000`. Vite (port 5173 on the compute node) is forwarded to
+local port `9000`; only that client port is tunneled — Vite proxies `/api` to the
+server on the same node.
+
+**Tunnel gotchas (learned the hard way):**
+
+- **Run this in a plain terminal** (macOS Terminal.app / iTerm), **not** the integrated
+  terminal of Cursor/VS Code. Those editors' *auto port-forwarding* scans terminal
+  output and open files for port numbers and binds them locally first, so your `ssh -L`
+  loses the race with `bind: Address already in use` — even on a fresh, unused port.
+  (Alternatively, disable `remote.autoForwardPorts` / `remote.restoreForwardedPorts`
+  and clear the editor's Ports panel.)
+- **Use a distinct local port** (here `9000`) rather than `5173`. If the editor is
+  connected to the same login node it will already be forwarding `5173`.
+- **`-S none`** forces a standalone connection, bypassing any `ControlMaster`
+  multiplexing in your `~/.ssh/config` (which otherwise fails with
+  `mux_client_forward: ... master forward request failed`).
+- `-N` means the terminal just hangs with no prompt — that's correct; it's holding the
+  tunnel open. Leave it running.
+
+One-time setup on the node (client deps): `cd web/client && npm install`. The server
+container needs no install step. Vite is launched with `--host` so the login node can
+reach it through the tunnel.
+
+### Splitting server and client across nodes (advanced)
+
+`sbatch/web/server.sh` and `sbatch/web/client.sh` run the two halves as separate jobs.
+Because they land on different nodes, tell the client where the server is:
+
+```bash
+sbatch sbatch/web/server.sh                       # note its node, e.g. cs200
+VITE_API_TARGET=http://cs200:8000 sbatch sbatch/web/client.sh
+```
+
+## Quick start (local machine)
 
 ### Terminal 1 — API server
 
@@ -34,12 +93,6 @@ cd web/client
 npm install # just need to be done once on setup
 npm run dev
 ```
-<!-- \. "$HOME/.nvm/nvm.sh" -->
-
-### (Local) Terminal 3 - Connect Remotely
-HPC Web Dev
-ssh -L 8000:localhost:5173 -J wmz2007@login.torch.hpc.nyu.edu wmz2007@torch-login-a-1
-Open [http://localhost:5173](http://localhost:5173).
 
 ## Environment variables
 

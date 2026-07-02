@@ -144,10 +144,27 @@ def _extract_slice_rgb(
     return _normalize_rgb_slab(slab)
 
 
+# Z-planes read per block when max-projecting. Full FISBe channels are ~GB, so
+# loading a whole channel to MIP it can OOM the host; project in bounded slabs.
+_MIP_Z_BLOCK = 32
+
+
+def _max_project_channel(arr: zarr.Array, channel: int) -> np.ndarray:
+    """MIP along Z for one CZYX channel, reading Z in blocks to bound memory."""
+    z = arr.shape[1]
+    out: np.ndarray | None = None
+    for zi in range(0, z, _MIP_Z_BLOCK):
+        block = np.asarray(arr[channel, zi : zi + _MIP_Z_BLOCK, :, :]).max(axis=0)
+        out = block if out is None else np.maximum(out, block)
+    if out is None:
+        raise ValueError("volume has no Z planes to project")
+    return out
+
+
 def _extract_mip_rgb(arr: zarr.Array) -> np.ndarray:
     """Maximum-intensity projection of RGB channels along Z."""
     n_ch = min(arr.shape[0], 3)
-    mips = [np.array(arr[ch]).max(axis=0) for ch in range(n_ch)]
+    mips = [_max_project_channel(arr, ch) for ch in range(n_ch)]
     return _normalize_rgb_slab(np.stack(mips, axis=0))
 
 
@@ -157,18 +174,11 @@ def _extract_mip(
     channel: int,
 ) -> np.ndarray:
     """Maximum-intensity projection along Z for a single channel."""
-    if volume == "raw":
-        c = arr.shape[0]
-        if channel < 0 or channel >= c:
-            raise ValueError(f"channel must be 0..{c - 1}, got {channel}")
-        slab = arr[channel]
-    else:
-        gt_c = arr.shape[0]
-        if channel < 0 or channel >= gt_c:
-            raise ValueError(f"channel must be 0..{gt_c - 1}, got {channel}")
-        slab = arr[channel]
+    c = arr.shape[0]
+    if channel < 0 or channel >= c:
+        raise ValueError(f"channel must be 0..{c - 1}, got {channel}")
 
-    return np.array(slab).max(axis=0)
+    return _max_project_channel(arr, channel)
 
 
 @lru_cache(maxsize=512)
