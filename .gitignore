@@ -2,6 +2,7 @@
 downloads/
 *.h5j
 *.tif
+*.swc
 
 /data
 /skeletons
