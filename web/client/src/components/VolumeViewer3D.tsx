@@ -7,18 +7,12 @@ import {
   fetchVolumeData,
   FisbeMipHalf,
   fisbeMipUrl,
-  RAW_CHANNEL_CHOICES,
   SampleMeta,
-  VOLUME_MAX_SIZE_OPTIONS,
 } from "../api/client";
 import { SliceImage } from "./SliceImage";
+import { VolumeControls } from "./VolumeControls";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
-import {
-  DEFAULT_BRIGHTNESS,
-  DEFAULT_CONTRAST,
-  DISPLAY_MAX,
-  DISPLAY_MIN,
-} from "../utils/displayAdjust";
+import { DEFAULT_BRIGHTNESS, DEFAULT_CONTRAST } from "../utils/displayAdjust";
 import {
   VolumeLayerController,
   VolumeMode,
@@ -362,135 +356,29 @@ export function VolumeViewer3D({
     [],
   );
 
-  const maxSizeIndex = VOLUME_MAX_SIZE_OPTIONS.indexOf(
-    maxSize as (typeof VOLUME_MAX_SIZE_OPTIONS)[number],
-  );
-  const sliderIndex = maxSizeIndex >= 0 ? maxSizeIndex : 2;
-
   return (
     <div className="volume-viewer-3d">
-      <div className="volume-viewer-3d__controls">
-        <div className="volume-viewer-3d__group">
-          <span className="volume-viewer-3d__label">Channel</span>
-          <div className="volume-viewer-3d__btn-row">
-            {RAW_CHANNEL_CHOICES.filter(
-              (c) =>
-                c.id === "off" ||
-                c.id === "all" ||
-                (typeof c.id === "number" && c.id < channelCount),
-            ).map(({ id, label }) => (
-              <button
-                key={label}
-                type="button"
-                className={
-                  channel === id
-                    ? "volume-viewer-3d__btn volume-viewer-3d__btn--active"
-                    : "volume-viewer-3d__btn"
-                }
-                onClick={() => setChannel(id)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="volume-viewer-3d__group volume-viewer-3d__group--slider">
-          <span className="volume-viewer-3d__label">
-            Brightness ({brightness}%)
-          </span>
-          <input
-            type="range"
-            min={DISPLAY_MIN}
-            max={DISPLAY_MAX}
-            value={brightness}
-            onChange={(e) => setBrightness(Number(e.target.value))}
-          />
-        </div>
-
-        <div className="volume-viewer-3d__group volume-viewer-3d__group--slider">
-          <span className="volume-viewer-3d__label">Contrast ({contrast}%)</span>
-          <input
-            type="range"
-            min={DISPLAY_MIN}
-            max={DISPLAY_MAX}
-            value={contrast}
-            onChange={(e) => setContrast(Number(e.target.value))}
-          />
-        </div>
-
-        <div className="volume-viewer-3d__group volume-viewer-3d__group--slider">
-          <span className="volume-viewer-3d__label">
-            Resolution (max edge {maxSize}px)
-          </span>
-          <input
-            type="range"
-            min={0}
-            max={VOLUME_MAX_SIZE_OPTIONS.length - 1}
-            value={sliderIndex}
-            onChange={(e) =>
-              setMaxSize(VOLUME_MAX_SIZE_OPTIONS[Number(e.target.value)])
-            }
-          />
-          <span className="volume-viewer-3d__slider-hint">
-            Lower = faster · Higher = sharper
-          </span>
-        </div>
-
-        {(hasGt || hasPredicted) && (
-          <div className="volume-viewer-3d__group">
-            <span className="volume-viewer-3d__label">Overlay</span>
-            {hasGt && (
-              <label className="volume-viewer-3d__checkbox">
-                <input
-                  type="checkbox"
-                  checked={showGt}
-                  onChange={(e) => setShowGt(e.target.checked)}
-                />
-                Ground truth (Zarr)
-              </label>
-            )}
-            {hasGt && showGt && (
-              <div className="volume-viewer-3d__group volume-viewer-3d__group--slider">
-                <span className="volume-viewer-3d__label">
-                  GT opacity ({gtOpacity}%)
-                </span>
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  value={gtOpacity}
-                  onChange={(e) => setGtOpacity(Number(e.target.value))}
-                />
-              </div>
-            )}
-            {hasPredicted && (
-              <label className="volume-viewer-3d__checkbox">
-                <input
-                  type="checkbox"
-                  checked={showPredicted}
-                  onChange={(e) => setShowPredicted(e.target.checked)}
-                />
-                Predicted instances (BiaPy)
-              </label>
-            )}
-            {hasPredicted && showPredicted && (
-              <div className="volume-viewer-3d__group volume-viewer-3d__group--slider">
-                <span className="volume-viewer-3d__label">
-                  Predicted opacity ({predictedOpacity}%)
-                </span>
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  value={predictedOpacity}
-                  onChange={(e) => setPredictedOpacity(Number(e.target.value))}
-                />
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+      <VolumeControls
+        channel={channel}
+        onChannelChange={setChannel}
+        channelCount={channelCount}
+        brightness={brightness}
+        onBrightnessChange={setBrightness}
+        contrast={contrast}
+        onContrastChange={setContrast}
+        maxSize={maxSize}
+        onMaxSizeChange={setMaxSize}
+        hasGt={hasGt}
+        showGt={showGt}
+        onShowGtChange={setShowGt}
+        gtOpacity={gtOpacity}
+        onGtOpacityChange={setGtOpacity}
+        hasPredicted={hasPredicted}
+        showPredicted={showPredicted}
+        onShowPredictedChange={setShowPredicted}
+        predictedOpacity={predictedOpacity}
+        onPredictedOpacityChange={setPredictedOpacity}
+      />
 
       <div
         className="volume-viewer-3d__viewport"

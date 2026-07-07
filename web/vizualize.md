@@ -219,7 +219,17 @@ OrthoSliceViewer
 ### 4.3 The 3D viewer: `VolumeViewer3D` + vtk.js
 
 This is the most involved piece. It uses **[vtk.js](https://kitware.github.io/vtk-js/)**
-GPU volume rendering. The flow:
+GPU volume rendering, split across a few modules so the React component stays
+focused on orchestration:
+
+| Module | Responsibility |
+|--------|----------------|
+| `utils/vtkVolumeScene.ts` | Pure vtk.js plumbing (no React): transfer-function setup, scalar upload, mapper sampling, plus the `VolumeLayerController` class that bundles one layer with its visibility/source state. |
+| `components/VolumeViewer3D.tsx` | React orchestration — owns the render window, the load/update effects, lifecycle safety, and layout. |
+| `components/VolumeControls.tsx` | Presentational control panel (channel buttons, sliders, overlay checkboxes) — pure props, no vtk. |
+| `components/RangeSlider.tsx` | Reusable labelled range input used for every slider. |
+
+The render flow:
 
 ```
 fetchVolumeData ──► Uint8Array + shape/components
@@ -245,16 +255,20 @@ vtkGenericRenderWindow → WebGL canvas
 Key details:
 
 - **Three independent layers coexist** in one render window — `raw`, `predicted`,
-  and `gt` — each its own `vtkVolume`/mapper/imageData. Checkboxes toggle
-  visibility and per-layer opacity sliders scale their transfer functions, so you
-  can overlay predicted instances on raw data (or compare against GT) in 3D.
+  and `gt` — each a `VolumeLayerController` wrapping its own
+  `vtkVolume`/mapper/imageData plus the small mutable state the viewer tracks
+  (whether it's shown, and the last-fetched source so brightness/contrast tweaks
+  re-map without re-fetching). Checkboxes toggle visibility and per-layer opacity
+  sliders scale their transfer functions, so you can overlay predicted instances
+  on raw data (or compare against GT) in 3D. The controller collapses what used
+  to be three copies of the same load/update/hide logic into one reusable unit.
 - **Blend mode = Maximum Intensity.** The GPU casts rays and keeps the brightest
   sample — the 3D analogue of the server-side MIP, and what makes sparse neurons
   pop against a dark background.
-- **Transfer functions** (`configureVolumeProperty`) map scalar value → color and
-  → opacity. Raw uses a grayscale ramp with an opacity curve that suppresses dim
-  background and reveals bright structure; instance layers (`instance_rgb`) render
-  the pre-colored RGB directly.
+- **Transfer functions** (`configureVolumeProperty` in `vtkVolumeScene.ts`) map
+  scalar value → color and → opacity. Raw uses a grayscale ramp with an opacity
+  curve that suppresses dim background and reveals bright structure; instance
+  layers (`instance_rgb`) render the pre-colored RGB directly.
 - **The RGB brightness fix** (documented at length in the code): for dependent
   3-component data vtk.js scales stored values by the transfer function's *range*.
   A null function defaults to range `[0,1024]`, which would render `uint8` RGB at
@@ -270,6 +284,9 @@ Key details:
 - **Lifecycle safety.** A `vtkGenerationRef` counter guards against stale async
   results: if the sample/effect changes mid-fetch, results from the old generation
   are dropped and the vtk context is torn down cleanly (`removeVolume` + `delete`).
+  The predicted/gt overlays load through one `loadOverlay` helper that returns a
+  `STALE` sentinel when a request is superseded, so the caller bails out of the
+  whole load sequence rather than applying stale data to a torn-down layer.
 
 ### 4.4 Top-level composition (`App.tsx`)
 
@@ -354,7 +371,10 @@ Interactive GPU render:  raw (grayscale) + predicted instances (colored)
 | `client/src/api/client.ts` | URL builders + typed fetch (`fetchVolumeData`) |
 | `client/src/components/SliceImage.tsx` | blob-fetch a PNG into `<img>` + CSS filter |
 | `client/src/components/OrthoSliceViewer.tsx` | 2D slice/MIP tab with GT overlay |
-| `client/src/components/VolumeViewer3D.tsx` | vtk.js GPU volume renderer |
+| `client/src/components/VolumeViewer3D.tsx` | 3D viewer: vtk.js render orchestration, load effects, lifecycle, layout |
+| `client/src/utils/vtkVolumeScene.ts` | vtk.js volume plumbing + `VolumeLayerController` (per-layer state) |
+| `client/src/components/VolumeControls.tsx` | 3D viewer display/overlay control panel (presentational) |
+| `client/src/components/RangeSlider.tsx` | reusable labelled range input |
 | `client/src/utils/displayAdjust.ts` | brightness/contrast/gamma remap (JS + CSS) |
 | `client/src/App.tsx` | tabs, sample/prediction-set selection, layout |
 </content>

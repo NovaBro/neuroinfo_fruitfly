@@ -9,6 +9,8 @@ Web scaffold for browsing and visualizing FISBe 3D microscopy volumes (Zarr, CZY
 
 The API does not send full volumes to the browser; it extracts individual slices, maximum-intensity projections, or downsampled 3D volumes for interactive viewing.
 
+For how a voxel becomes a pixel end-to-end — the server downsample/contrast pipeline, the vtk.js render path, and the client component/module breakdown (`VolumeViewer3D` + `vtkVolumeScene` + `VolumeControls`/`RangeSlider`) — see [`vizualize.md`](vizualize.md).
+
 ## Prerequisites
 
 - Node.js 18+ (on Greene this comes from the user's `nvm` install, loaded by `~/.bashrc`)
