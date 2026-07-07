@@ -1,0 +1,12 @@
+[Tue Jun 16 21:47:36 EDT 2026] Starting download...
+[Tue Jun 16 21:47:36 EDT 2026] Download complete: 21638798275 bytes, 15267.260010s
+[Wed Jun 17 02:02:03 EDT 2026] Extracting...
+Archive:  fisbe/archive.zip
+ extracting: fisbe/fisbe_v1.0_mips.zip  
+ extracting: fisbe/view_data.py      
+ extracting: fisbe/sample_list_per_split.txt  
+ extracting: fisbe/dim_neurons_val_and_test_sets.json  
+ extracting: fisbe/fisbe_v1.0_partly.zip  
+ extracting: fisbe/Readme.md         
+ extracting: fisbe/fisbe_v1.0_completely.zip  
+[Wed Jun 17 02:04:31 EDT 2026] Done.

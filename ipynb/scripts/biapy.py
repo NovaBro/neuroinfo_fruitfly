@@ -24,16 +24,89 @@ REPO_ROOT = _repo_root()
 
 # --- paths -----------------------------------------------------------------
 
+# Base directory that holds every BiaPy experiment output. Each "prediction
+# set" is a run directory somewhere beneath it that contains a
+# ``per_image_instances`` folder (e.g.
+# ``<base>/train_3d_instance_segmentation/results/train_3d_instance_segmentation_1``).
+BIAPY_RESULTS_BASE = Path(
+    os.environ.get("BIAPY_RESULTS_BASE", REPO_ROOT / "BiaPy/results")
+)
+
+# Default prediction set used when a caller does not specify one.
 BIAPY_RESULT_ROOT = Path(
     os.environ.get(
         "BIAPY_RESULT_ROOT",
-        REPO_ROOT
-        / "BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1",
+        BIAPY_RESULTS_BASE
+        / "train_3d_instance_segmentation/results/train_3d_instance_segmentation_1",
     )
 )
 BIAPY_PER_IMAGE = BIAPY_RESULT_ROOT / "per_image"
 BIAPY_PER_IMAGE_INSTANCES = BIAPY_RESULT_ROOT / "per_image_instances"
 BIAPY_MIP_DIR = BIAPY_RESULT_ROOT / "mips"
+
+
+def _result_root(result_root: Path | str | None = None) -> Path:
+    """Resolve a prediction-set result root, defaulting to ``BIAPY_RESULT_ROOT``."""
+    return Path(result_root) if result_root is not None else BIAPY_RESULT_ROOT
+
+
+def _instances_dir(result_root: Path | str | None = None) -> Path:
+    return _result_root(result_root) / "per_image_instances"
+
+
+# --- prediction sets -------------------------------------------------------
+
+def discover_prediction_sets() -> list[dict]:
+    """List every prediction set (run dir with a ``per_image_instances`` folder).
+
+  Each entry is ``{"id", "name", "path", "default"}`` where ``id`` is the run
+  directory's path relative to :data:`BIAPY_RESULTS_BASE` (a stable handle the
+  web client passes back to select that set).
+  """
+    base = BIAPY_RESULTS_BASE.resolve()
+    default_root = BIAPY_RESULT_ROOT.resolve()
+    sets: list[dict] = []
+    if not base.is_dir():
+        return sets
+    for inst_dir in sorted(base.glob("**/per_image_instances")):
+        if not inst_dir.is_dir():
+            continue
+        run_dir = inst_dir.parent.resolve()
+        try:
+            rel = run_dir.relative_to(base)
+        except ValueError:
+            continue
+        sets.append(
+            {
+                "id": str(rel),
+                "name": run_dir.name,
+                "path": str(run_dir),
+                "default": run_dir == default_root,
+            }
+        )
+    if sets and not any(s["default"] for s in sets):
+        sets[0]["default"] = True
+    return sets
+
+
+def resolve_prediction_set_root(set_id: str | None = None) -> Path:
+    """Map a prediction-set ``id`` back to its result root directory.
+
+  ``None``/empty selects the default set. Raises ``ValueError`` for ids that
+  escape :data:`BIAPY_RESULTS_BASE` and ``FileNotFoundError`` when the set has
+  no ``per_image_instances`` folder.
+  """
+    if not set_id:
+        return BIAPY_RESULT_ROOT
+    base = BIAPY_RESULTS_BASE.resolve()
+    root = (base / set_id).resolve()
+    if root != base and base not in root.parents:
+        raise ValueError(f"Prediction set {set_id!r} is outside {base}")
+    if not (root / "per_image_instances").is_dir():
+        raise FileNotFoundError(
+            f"No per_image_instances folder for prediction set {set_id!r}"
+        )
+    return root
 
 TEST_RAW_DIR = Path(
     os.environ.get("BIAPY_TEST_RAW_DIR", REPO_ROOT / "fisbe/biapy/test/raw")
@@ -73,20 +146,24 @@ def list_biapy_samples() -> list[str]:
     return sorted(sample_stem(p) for p in BIAPY_PER_IMAGE.glob("*.tif*"))
 
 
-def has_biapy_instances(stem: str) -> bool:
+def has_biapy_instances(
+    stem: str, result_root: Path | str | None = None
+) -> bool:
     """Return True if BiaPy per_image_instances output exists for ``stem``."""
     try:
-        resolve_tiff_path(BIAPY_PER_IMAGE_INSTANCES, stem)
+        resolve_tiff_path(_instances_dir(result_root), stem)
         return True
     except FileNotFoundError:
         return False
 
 
-def get_biapy_instances_meta(stem: str) -> dict | None:
+def get_biapy_instances_meta(
+    stem: str, result_root: Path | str | None = None
+) -> dict | None:
     """Return shape/dtype metadata for predicted instances, or None if missing."""
-    if not has_biapy_instances(stem):
+    if not has_biapy_instances(stem, result_root):
         return None
-    path = resolve_tiff_path(BIAPY_PER_IMAGE_INSTANCES, stem)
+    path = resolve_tiff_path(_instances_dir(result_root), stem)
     with tifffile.TiffFile(path) as tif:
         page = tif.series[0] if tif.series else tif.pages[0]
         shape = tuple(int(s) for s in page.shape)
@@ -120,9 +197,11 @@ def load_biapy_per_image(stem: str) -> np.ndarray:
     return load_zarr_tiff(resolve_tiff_path(BIAPY_PER_IMAGE, stem))
 
 
-def load_biapy_per_image_instances(stem: str) -> np.ndarray:
+def load_biapy_per_image_instances(
+    stem: str, result_root: Path | str | None = None
+) -> np.ndarray:
     """Load per_image_instances labels for ``stem``, shape ``(Z, Y, X)``."""
-    return load_zarr_tiff(resolve_tiff_path(BIAPY_PER_IMAGE_INSTANCES, stem))
+    return load_zarr_tiff(resolve_tiff_path(_instances_dir(result_root), stem))
 
 
 def load_biapy_test_raw(stem: str) -> np.ndarray:
