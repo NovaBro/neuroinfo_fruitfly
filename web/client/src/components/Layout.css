@@ -21,7 +21,9 @@
   flex-shrink: 0;
   border-right: 1px solid #2a2f3a;
   background: #13161e;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .layout__main {
@@ -35,5 +37,98 @@
   flex-shrink: 0;
   border-left: 1px solid #2a2f3a;
   background: #13161e;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Fixed bar carrying the collapse control; body scrolls beneath it. */
+.layout__panel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 0.35rem 0.35rem 0.35rem 0.6rem;
+  border-bottom: 1px solid #2a2f3a;
+}
+
+.layout__rightpanel .layout__panel-bar {
+  flex-direction: row-reverse;
+  padding: 0.35rem 0.6rem 0.35rem 0.35rem;
+}
+
+.layout__panel-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a93a6;
+}
+
+.layout__collapse-btn {
+  border: 1px solid #2a2f3a;
+  background: #1a1e28;
+  color: #c3c9d6;
+  border-radius: 4px;
+  width: 22px;
+  height: 22px;
+  line-height: 1;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.layout__collapse-btn:hover {
+  background: #232838;
+  color: #e6e9ef;
+}
+
+.layout__panel-body {
+  flex: 1;
   overflow: auto;
+  min-height: 0;
+}
+
+/* Collapsed state: a thin vertical rail that reopens the panel. */
+.layout__rail {
+  width: 28px;
+  flex-shrink: 0;
+  background: #13161e;
+  color: #8a93a6;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+}
+
+.layout__rail--left {
+  border-right: 1px solid #2a2f3a;
+}
+
+.layout__rail--right {
+  border-left: 1px solid #2a2f3a;
+}
+
+.layout__rail:hover {
+  background: #1a1e28;
+  color: #e6e9ef;
+}
+
+.layout__rail-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.layout__rail-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }

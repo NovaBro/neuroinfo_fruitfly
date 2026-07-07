@@ -1,11 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import "@kitware/vtk.js/Rendering/Profiles/Volume";
-import vtkDataArray from "@kitware/vtk.js/Common/Core/DataArray";
-import vtkPiecewiseFunction from "@kitware/vtk.js/Common/DataModel/PiecewiseFunction";
-import vtkImageData from "@kitware/vtk.js/Common/DataModel/ImageData";
-import vtkColorTransferFunction from "@kitware/vtk.js/Rendering/Core/ColorTransferFunction";
-import vtkVolume from "@kitware/vtk.js/Rendering/Core/Volume";
-import vtkVolumeMapper from "@kitware/vtk.js/Rendering/Core/VolumeMapper";
 import vtkGenericRenderWindow from "@kitware/vtk.js/Rendering/Misc/GenericRenderWindow";
 import vtkInteractorStyleTrackballCamera from "@kitware/vtk.js/Interaction/Style/InteractorStyleTrackballCamera";
 import {
@@ -16,7 +9,6 @@ import {
   fisbeMipUrl,
   RAW_CHANNEL_CHOICES,
   SampleMeta,
-  VolumeData,
   VOLUME_MAX_SIZE_OPTIONS,
 } from "../api/client";
 import { SliceImage } from "./SliceImage";
@@ -26,11 +18,18 @@ import {
   DEFAULT_CONTRAST,
   DISPLAY_MAX,
   DISPLAY_MIN,
-  remapVolumeUint8,
 } from "../utils/displayAdjust";
+import {
+  VolumeLayerController,
+  VolumeMode,
+} from "../utils/vtkVolumeScene";
 import "./VolumeViewer3D.css";
 
 const ROTATE_STEP = 5;
+
+// Returned by loadOverlay when the request finished but the viewer moved on
+// (unmounted or a newer load started) — the caller must abort the whole sequence.
+const STALE = Symbol("stale");
 
 interface VolumeViewer3DProps {
   sampleName: string;
@@ -38,150 +37,12 @@ interface VolumeViewer3DProps {
   predictionSet?: string | null;
 }
 
-type VolumeMode = "raw" | "rgb" | "instance_rgb";
-
-type VolumeLayer = {
-  volume: ReturnType<typeof vtkVolume.newInstance>;
-  mapper: ReturnType<typeof vtkVolumeMapper.newInstance>;
-  imageData: ReturnType<typeof vtkImageData.newInstance>;
-};
-
 type VtkContext = {
   genericRenderWindow: ReturnType<typeof vtkGenericRenderWindow.newInstance>;
-  raw: VolumeLayer;
-  predicted: VolumeLayer;
-  gt: VolumeLayer;
+  raw: VolumeLayerController;
+  predicted: VolumeLayerController;
+  gt: VolumeLayerController;
 };
-
-function opacityAtLevel(level: number, floor: number) {
-  const t = level / 255;
-  return Math.min(1, Math.max(floor, t));
-}
-
-function configureVolumeProperty(
-  layer: VolumeLayer,
-  mode: VolumeMode,
-  opacity = 1,
-) {
-  const property = layer.volume.getProperty();
-  const ctfun = vtkColorTransferFunction.newInstance();
-  const ofun = vtkPiecewiseFunction.newInstance();
-  const dims = layer.imageData.getDimensions();
-  const spacing = layer.imageData.getSpacing();
-  const diagonal = Math.hypot(
-    Math.max(0, dims[0] - 1) * spacing[0],
-    Math.max(0, dims[1] - 1) * spacing[1],
-    Math.max(0, dims[2] - 1) * spacing[2],
-  );
-
-  property.setShade(false);
-  property.setUseGradientOpacity(0, false);
-  property.setInterpolationTypeToLinear();
-  property.setScalarOpacityUnitDistance(0, Math.max(0.5, diagonal / 80));
-
-  if (mode === "rgb" || mode === "instance_rgb") {
-    property.setIndependentComponents(false);
-    // For dependent 3-component (direct RGB) rendering vtk.js ignores the color
-    // curve, but it still uses the transfer function's *range* to scale the
-    // stored values in-shader (colorTextureScale = sscale / rangeWidth). A null
-    // function lazily defaults to range [0, 1024], so uint8 RGB (sscale 255)
-    // gets scaled to ~255/1024 ≈ 25% brightness — the "dark filter" where even
-    // white renders muddy. A [0, 255] range makes colorTextureScale ≈ 1 so RGB
-    // renders at full brightness, matching the single-channel path.
-    ctfun.addRGBPoint(0, 0, 0, 0);
-    ctfun.addRGBPoint(255, 1, 1, 1);
-    property.setRGBTransferFunction(0, ctfun);
-    ofun.addPoint(0, 0.0);
-    ofun.addPoint(1, 0.9 * opacity);
-    ofun.addPoint(16, 0.95 * opacity);
-    ofun.addPoint(255, 1.0 * opacity);
-    property.setScalarOpacity(0, ofun);
-    return;
-  }
-
-  property.setIndependentComponents(false);
-  ctfun.addRGBPoint(0, 0, 0, 0);
-  ctfun.addRGBPoint(255, 1, 1, 1);
-  ofun.addPoint(0, 0.0);
-  ofun.addPoint(32, opacityAtLevel(32, 0.1));
-  ofun.addPoint(96, opacityAtLevel(96, 0.3));
-  ofun.addPoint(160, opacityAtLevel(160, 0.55));
-  ofun.addPoint(255, opacityAtLevel(255, 1.0));
-  property.setRGBTransferFunction(0, ctfun);
-  property.setScalarOpacity(0, ofun);
-}
-
-function updateMapperSampling(layer: VolumeLayer) {
-  const bounds = layer.imageData.getBounds();
-  const diagonal = Math.hypot(
-    bounds[1] - bounds[0],
-    bounds[3] - bounds[2],
-    bounds[5] - bounds[4],
-  );
-  layer.mapper.setAutoAdjustSampleDistances(true);
-  layer.mapper.setSampleDistance(Math.max(0.25, diagonal / 256));
-  layer.mapper.setMaximumSamplesPerRay(2000);
-}
-
-function setLayerScalars(
-  layer: VolumeLayer,
-  source: Uint8Array,
-  components: number,
-  brightness: number,
-  contrast: number,
-) {
-  const displayData = remapVolumeUint8(
-    source,
-    brightness,
-    contrast,
-    components,
-  );
-  const scalars = vtkDataArray.newInstance({
-    name: "Scalars",
-    numberOfComponents: components,
-    values: displayData,
-  });
-  layer.imageData.getPointData().setScalars(scalars);
-  layer.imageData.modified();
-  layer.mapper.modified();
-  layer.volume.modified();
-}
-
-function applyVolumeData(
-  layer: VolumeLayer,
-  vol: VolumeData,
-  mode: VolumeMode,
-  brightness: number,
-  contrast: number,
-  opacity = 1,
-) {
-  configureVolumeProperty(layer, mode, opacity);
-
-  const [z, y, x] = vol.shape;
-  const [oz, oy, ox] = vol.originalShape;
-
-  layer.imageData.setDimensions([x, y, z]);
-  layer.imageData.setSpacing([1, oy / ox, oz / ox]);
-  layer.imageData.setOrigin([0, 0, 0]);
-
-  setLayerScalars(layer, vol.data, vol.components, brightness, contrast);
-  updateMapperSampling(layer);
-}
-
-function createVolumeLayer(mode: VolumeMode): VolumeLayer {
-  const imageData = vtkImageData.newInstance();
-  const mapper = vtkVolumeMapper.newInstance();
-  mapper.setInputData(imageData);
-  mapper.setBlendModeToMaximumIntensity();
-
-  const volume = vtkVolume.newInstance();
-  volume.setMapper(mapper);
-  volume.getProperty().setInterpolationTypeToLinear();
-
-  const layer = { volume, mapper, imageData };
-  configureVolumeProperty(layer, mode);
-  return layer;
-}
 
 export function VolumeViewer3D({
   sampleName,
@@ -191,12 +52,6 @@ export function VolumeViewer3D({
   const containerRef = useRef<HTMLDivElement>(null);
   const vtkRef = useRef<VtkContext | null>(null);
   const vtkGenerationRef = useRef(0);
-  const rawVisibleRef = useRef(false);
-  const predictedVisibleRef = useRef(false);
-  const gtVisibleRef = useRef(false);
-  const rawSourceRef = useRef<VolumeData | null>(null);
-  const predictedSourceRef = useRef<VolumeData | null>(null);
-  const gtSourceRef = useRef<VolumeData | null>(null);
   const [vtkReady, setVtkReady] = useState(false);
   const [channel, setChannel] = useState<ChannelParam>(0);
   const [brightness, setBrightness] = useState(DEFAULT_BRIGHTNESS);
@@ -255,9 +110,9 @@ export function VolumeViewer3D({
     );
 
     const renderer = genericRenderWindow.getRenderer();
-    const raw = createVolumeLayer("raw");
-    const predicted = createVolumeLayer("instance_rgb");
-    const gt = createVolumeLayer("instance_rgb");
+    const raw = new VolumeLayerController("raw");
+    const predicted = new VolumeLayerController("instance_rgb");
+    const gt = new VolumeLayerController("instance_rgb");
 
     renderer.addVolume(raw.volume);
     renderer.addVolume(predicted.volume);
@@ -267,9 +122,6 @@ export function VolumeViewer3D({
     raw.volume.setVisibility(false);
 
     vtkRef.current = { genericRenderWindow, raw, predicted, gt };
-    rawVisibleRef.current = false;
-    predictedVisibleRef.current = false;
-    gtVisibleRef.current = false;
     setVtkReady(true);
 
     const resizeObserver = new ResizeObserver(() => {
@@ -295,12 +147,6 @@ export function VolumeViewer3D({
       renderer.removeVolume(gt.volume);
       genericRenderWindow.delete();
       vtkRef.current = null;
-      rawVisibleRef.current = false;
-      predictedVisibleRef.current = false;
-      gtVisibleRef.current = false;
-      rawSourceRef.current = null;
-      predictedSourceRef.current = null;
-      gtSourceRef.current = null;
     };
   }, [renderScene, fitCameraAndRender]);
 
@@ -315,9 +161,12 @@ export function VolumeViewer3D({
     setGtOpacity(100);
     setVolumeInfo(null);
     setError(null);
-    rawSourceRef.current = null;
-    predictedSourceRef.current = null;
-    gtSourceRef.current = null;
+    const vtk = vtkRef.current;
+    if (vtk) {
+      vtk.raw.source = null;
+      vtk.predicted.source = null;
+      vtk.gt.source = null;
+    }
   }, [sampleName, hasPredicted]);
 
   useEffect(() => {
@@ -325,32 +174,8 @@ export function VolumeViewer3D({
     const vtk = vtkRef.current;
     if (!vtk) return;
 
-    if (rawVisibleRef.current && rawSourceRef.current) {
-      setLayerScalars(
-        vtk.raw,
-        rawSourceRef.current.data,
-        rawSourceRef.current.components,
-        brightness,
-        contrast,
-      );
-    }
-    if (predictedVisibleRef.current && predictedSourceRef.current) {
-      setLayerScalars(
-        vtk.predicted,
-        predictedSourceRef.current.data,
-        predictedSourceRef.current.components,
-        brightness,
-        contrast,
-      );
-    }
-    if (gtVisibleRef.current && gtSourceRef.current) {
-      setLayerScalars(
-        vtk.gt,
-        gtSourceRef.current.data,
-        gtSourceRef.current.components,
-        brightness,
-        contrast,
-      );
+    for (const ctrl of [vtk.raw, vtk.predicted, vtk.gt]) {
+      ctrl.refreshScalars(brightness, contrast);
     }
     renderScene();
   }, [vtkReady, brightness, contrast, renderScene]);
@@ -360,16 +185,8 @@ export function VolumeViewer3D({
     const vtk = vtkRef.current;
     if (!vtk) return;
 
-    if (predictedVisibleRef.current) {
-      configureVolumeProperty(
-        vtk.predicted,
-        "instance_rgb",
-        predictedOpacity / 100,
-      );
-    }
-    if (gtVisibleRef.current) {
-      configureVolumeProperty(vtk.gt, "instance_rgb", gtOpacity / 100);
-    }
+    vtk.predicted.setOpacity("instance_rgb", predictedOpacity / 100);
+    vtk.gt.setOpacity("instance_rgb", gtOpacity / 100);
     renderScene();
   }, [vtkReady, predictedOpacity, gtOpacity, renderScene]);
 
@@ -384,6 +201,41 @@ export function VolumeViewer3D({
     setLoading(true);
     setError(null);
 
+    // Fetch and apply an instance overlay (predicted or gt). Returns the info
+    // label to show on success, null when disabled/unavailable, or STALE when
+    // the load was superseded and the caller should bail out entirely.
+    async function loadOverlay(
+      ctrl: VolumeLayerController,
+      opts: {
+        enabled: boolean;
+        volume: "predicted" | "gt";
+        opacity: number;
+        label: string;
+        predictionSet?: string | null;
+      },
+    ): Promise<string | null | typeof STALE> {
+      if (!opts.enabled) {
+        ctrl.hide();
+        return null;
+      }
+      try {
+        const vol = await fetchVolumeData(sampleName, {
+          volume: opts.volume,
+          maxSize: debouncedMaxSize,
+          predictionSet: opts.predictionSet,
+          signal: controller.signal,
+        });
+        if (cancelled || vtkGenerationRef.current !== generation) return STALE;
+        ctrl.applyData(vol, "instance_rgb", brightness, contrast, opts.opacity);
+        return opts.label;
+      } catch (err) {
+        if (controller.signal.aborted || cancelled) return STALE;
+        ctrl.hide();
+        console.warn(`${opts.label} unavailable:`, err);
+        return null;
+      }
+    }
+
     async function loadVolumes() {
       try {
         const infoParts: string[] = [];
@@ -397,10 +249,7 @@ export function VolumeViewer3D({
           });
           if (cancelled || vtkGenerationRef.current !== generation) return;
 
-          rawSourceRef.current = rawVol;
-          applyVolumeData(vtk!.raw, rawVol, rawMode, brightness, contrast);
-          vtk!.raw.volume.setVisibility(true);
-          rawVisibleRef.current = true;
+          vtk!.raw.applyData(rawVol, rawMode, brightness, contrast);
           fitCameraAndRender();
 
           const [z, y, x] = rawVol.shape;
@@ -411,78 +260,28 @@ export function VolumeViewer3D({
             `${channelLabel} ${z}×${y}×${x} (×${rawVol.downsampleFactor}, max ${debouncedMaxSize}) from ${oz}×${oy}×${ox}`,
           );
         } else {
-          vtk!.raw.volume.setVisibility(false);
-          rawVisibleRef.current = false;
-          rawSourceRef.current = null;
+          vtk!.raw.hide();
           infoParts.push("Raw off");
         }
 
-        if (hasPredicted && showPredicted) {
-          try {
-            const predictedVol = await fetchVolumeData(sampleName, {
-              volume: "predicted",
-              maxSize: debouncedMaxSize,
-              predictionSet,
-              signal: controller.signal,
-            });
-            if (cancelled || vtkGenerationRef.current !== generation) return;
-            predictedSourceRef.current = predictedVol;
-            applyVolumeData(
-              vtk!.predicted,
-              predictedVol,
-              "instance_rgb",
-              brightness,
-              contrast,
-              predictedOpacity / 100,
-            );
-            vtk!.predicted.volume.setVisibility(true);
-            predictedVisibleRef.current = true;
-            infoParts.push("predicted overlay");
-          } catch (predictedErr) {
-            if (controller.signal.aborted || cancelled) return;
-            vtk!.predicted.volume.setVisibility(false);
-            predictedVisibleRef.current = false;
-            predictedSourceRef.current = null;
-            console.warn("Predicted overlay unavailable:", predictedErr);
-          }
-        } else {
-          vtk!.predicted.volume.setVisibility(false);
-          predictedVisibleRef.current = false;
-          predictedSourceRef.current = null;
-        }
+        const predictedInfo = await loadOverlay(vtk!.predicted, {
+          enabled: hasPredicted && showPredicted,
+          volume: "predicted",
+          predictionSet,
+          opacity: predictedOpacity / 100,
+          label: "predicted overlay",
+        });
+        if (predictedInfo === STALE) return;
+        if (predictedInfo) infoParts.push(predictedInfo);
 
-        if (hasGt && showGt) {
-          try {
-            const gtVol = await fetchVolumeData(sampleName, {
-              volume: "gt",
-              maxSize: debouncedMaxSize,
-              signal: controller.signal,
-            });
-            if (cancelled || vtkGenerationRef.current !== generation) return;
-            gtSourceRef.current = gtVol;
-            applyVolumeData(
-              vtk!.gt,
-              gtVol,
-              "instance_rgb",
-              brightness,
-              contrast,
-              gtOpacity / 100,
-            );
-            vtk!.gt.volume.setVisibility(true);
-            gtVisibleRef.current = true;
-            infoParts.push("ground-truth overlay");
-          } catch (gtErr) {
-            if (controller.signal.aborted || cancelled) return;
-            vtk!.gt.volume.setVisibility(false);
-            gtVisibleRef.current = false;
-            gtSourceRef.current = null;
-            console.warn("Ground-truth overlay unavailable:", gtErr);
-          }
-        } else {
-          vtk!.gt.volume.setVisibility(false);
-          gtVisibleRef.current = false;
-          gtSourceRef.current = null;
-        }
+        const gtInfo = await loadOverlay(vtk!.gt, {
+          enabled: hasGt && showGt,
+          volume: "gt",
+          opacity: gtOpacity / 100,
+          label: "ground-truth overlay",
+        });
+        if (gtInfo === STALE) return;
+        if (gtInfo) infoParts.push(gtInfo);
 
         if (cancelled || vtkGenerationRef.current !== generation) return;
 
