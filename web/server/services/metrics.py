@@ -14,10 +14,30 @@ compact tables.
 from __future__ import annotations
 
 import csv
+import re
 import tomllib
 from pathlib import Path
 
 from services.biapy_loader import biapy  # reuse the biapy scripts module
+
+# BiaPy writes some metrics as numpy ``repr`` strings, e.g.
+# ``"np.float64(0.0014492753623188404)"`` or ``"np.int32(3)"``. Unwrap the
+# inner literal back to a plain number so the client never sees the dtype.
+_NUMPY_REPR = re.compile(r"^np\.\w+\((.*)\)$")
+
+
+def _clean_value(value):
+    """Recursively strip numpy ``repr`` wrappers from a parsed-TOML value."""
+    if isinstance(value, str):
+        match = _NUMPY_REPR.match(value.strip())
+        if match:
+            return _num(match.group(1))
+        return value
+    if isinstance(value, list):
+        return [_clean_value(v) for v in value]
+    if isinstance(value, dict):
+        return {k: _clean_value(v) for k, v in value.items()}
+    return value
 
 
 def _metrics_toml_path(result_root: Path, stem: str) -> Path | None:
@@ -49,9 +69,11 @@ def _load_toml_metrics(result_root: Path, stem: str) -> dict | None:
         data = tomllib.load(fh)
 
     confusion = data.get("confusion_matrix", {})
-    summary = {k: v for k, v in confusion.items() if not isinstance(v, dict)}
+    summary = {
+        k: _clean_value(v) for k, v in confusion.items() if not isinstance(v, dict)
+    }
     thresholds = {
-        _threshold_label(k): v
+        _threshold_label(k): _clean_value(v)
         for k, v in confusion.items()
         if isinstance(v, dict)
     }
@@ -59,7 +81,7 @@ def _load_toml_metrics(result_root: Path, stem: str) -> dict | None:
 
     return {
         "source": str(path.relative_to(result_root)),
-        "general": data.get("general", {}),
+        "general": _clean_value(data.get("general", {})),
         "summary": summary,
         "thresholds": thresholds,
     }

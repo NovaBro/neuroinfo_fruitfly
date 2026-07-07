@@ -13,9 +13,9 @@ from fastapi.responses import Response
 from config import CORS_ORIGINS, FISBE_ROOT
 from services.biapy_loader import (
     get_predicted_instances_meta,
-    has_predicted_instances_any,
     list_prediction_sets,
     predicted_instances_to_bytes,
+    stems_with_predictions_any,
 )
 from services.fisbe_mip import fisbe_mip_png
 from services.metrics import get_sample_metrics
@@ -69,13 +69,14 @@ def prediction_sets():
 @app.get("/api/samples")
 def list_samples():
     entries = _cached_samples()
+    predicted = stems_with_predictions_any()
     return [
         {
             "split": e.split,
             "name": e.name,
             "dataset": e.dataset,
             "path_exists": e.path_exists,
-            "has_predicted": has_predicted_instances_any(e.name),
+            "has_predicted": e.name in predicted,
         }
         for e in entries
     ]

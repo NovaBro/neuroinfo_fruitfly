@@ -37,10 +37,24 @@ def has_predicted_instances(stem: str, set_id: str | None = None) -> bool:
 
 def has_predicted_instances_any(stem: str) -> bool:
     """Return True when *any* prediction set has output for ``stem``."""
-    return any(
-        biapy.has_biapy_instances(stem, result_root=Path(s["path"]))
-        for s in biapy.discover_prediction_sets()
-    )
+    return stem in stems_with_predictions_any()
+
+
+def stems_with_predictions_any() -> set[str]:
+    """Stems with predicted instances in *any* prediction set.
+
+    Computed with a single directory scan per prediction set (rather than a
+    recursive glob per sample), so the sample-list endpoint stays fast as the
+    ``BiaPy/results`` tree grows.
+    """
+    stems: set[str] = set()
+    for s in biapy.discover_prediction_sets():
+        inst_dir = Path(s["path"]) / "per_image_instances"
+        if not inst_dir.is_dir():
+            continue
+        for path in inst_dir.glob("*.tif*"):
+            stems.add(biapy.sample_stem(path))
+    return stems
 
 
 def get_predicted_instances_meta(
