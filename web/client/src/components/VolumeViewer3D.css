@@ -133,6 +133,25 @@
   color: #8b919c;
 }
 
+.volume-viewer-3d__subviews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.volume-viewer-3d__subview {
+  flex: 1 1 280px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* Shorter viewport for the two secondary single-volume 3D renders. */
+.volume-viewer-3d__viewport--sub {
+  height: 320px;
+}
+
 .volume-viewer-3d__mip {
   display: flex;
   flex-direction: column;

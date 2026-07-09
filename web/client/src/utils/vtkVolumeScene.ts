@@ -5,10 +5,76 @@ import vtkImageData from "@kitware/vtk.js/Common/DataModel/ImageData";
 import vtkColorTransferFunction from "@kitware/vtk.js/Rendering/Core/ColorTransferFunction";
 import vtkVolume from "@kitware/vtk.js/Rendering/Core/Volume";
 import vtkVolumeMapper from "@kitware/vtk.js/Rendering/Core/VolumeMapper";
+import vtkGenericRenderWindow from "@kitware/vtk.js/Rendering/Misc/GenericRenderWindow";
+import vtkInteractorStyleTrackballCamera from "@kitware/vtk.js/Interaction/Style/InteractorStyleTrackballCamera";
 import { VolumeData } from "../api/client";
 import { remapVolumeUint8 } from "./displayAdjust";
 
 export type VolumeMode = "raw" | "rgb" | "instance_rgb";
+
+export type GenericRenderWindow = ReturnType<
+  typeof vtkGenericRenderWindow.newInstance
+>;
+
+const DEFAULT_BACKGROUND: [number, number, number] = [0.06, 0.07, 0.09];
+
+/** Create a GenericRenderWindow mounted on `container` with a trackball camera. */
+export function createRenderWindow(
+  container: HTMLElement,
+  background: [number, number, number] = DEFAULT_BACKGROUND,
+): GenericRenderWindow {
+  const grw = vtkGenericRenderWindow.newInstance({
+    background,
+    listenWindowResize: false,
+  });
+  grw.setContainer(container);
+  grw.resize();
+  grw
+    .getInteractor()
+    .setInteractorStyle(vtkInteractorStyleTrackballCamera.newInstance());
+  return grw;
+}
+
+/** Resize, reset the camera to fit all volumes, and render. */
+export function fitCamera(grw: GenericRenderWindow): void {
+  const renderer = grw.getRenderer();
+  grw.resize();
+  renderer.resetCamera();
+  renderer.resetCameraClippingRange();
+  grw.getRenderWindow().render();
+}
+
+/**
+ * Rotate the camera in response to an arrow key. Returns true if `key` was an
+ * arrow key (and the caller should `preventDefault`), false otherwise.
+ */
+export function rotateCameraByKey(
+  grw: GenericRenderWindow,
+  key: string,
+  step: number,
+): boolean {
+  const renderer = grw.getRenderer();
+  const camera = renderer.getActiveCamera();
+  switch (key) {
+    case "ArrowLeft":
+      camera.azimuth(-step);
+      break;
+    case "ArrowRight":
+      camera.azimuth(step);
+      break;
+    case "ArrowUp":
+      camera.elevation(step);
+      break;
+    case "ArrowDown":
+      camera.elevation(-step);
+      break;
+    default:
+      return false;
+  }
+  renderer.resetCameraClippingRange();
+  grw.getRenderWindow().render();
+  return true;
+}
 
 export type VolumeLayer = {
   volume: ReturnType<typeof vtkVolume.newInstance>;

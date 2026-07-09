@@ -118,6 +118,18 @@ _max_project_channel(arr, channel):
 This bounds memory to ~32 Z-planes at a time — the key trick that keeps MIPs from
 OOM-ing the host on gigabyte channels.
 
+`mip_to_png` produces three flavors by `volume`/`channel`:
+
+- **`raw`, single channel** → grayscale, contrast-stretched.
+- **`raw`, `channel=all`** → RGB MIP of the (up to 3) raw channels.
+- **`gt`, `channel=all`** → *merged* instance MIP (`_merged_gt_mip_rgb`): every
+  `gt_instances` channel is Z-projected and combined into one image, each
+  `(channel, label)` given a unique id (`label + channel*1000`) then colored with
+  the same `encode_label_volume_rgb` palette as the 3D GT overlay, so the 2D and
+  3D GT views match. The channel count varies per sample (1–8+ observed), so the
+  merge iterates `arr.shape[0]` rather than assuming a fixed number. (`gt` with a
+  single numeric `channel` still returns just that channel's MIP.)
+
 ### 3.4 Downsampled 3D volume (`volume_to_bytes`, `volume.bin`)
 
 For the 3D viewer the server must send an actual volume — just a small one. It
@@ -206,7 +218,11 @@ Slices and MIPs are just images. `SliceImage`:
 `OrthoSliceViewer` composes these: it picks axis + index (slider) or MIP mode,
 builds the raw URL, and optionally stacks a **GT overlay** as a second
 absolutely-positioned `SliceImage` with adjustable opacity. Slider scrubbing is
-debounced (`useDebouncedValue`, 200 ms) so dragging doesn't spam the server.
+debounced (`useDebouncedValue`, 200 ms) so dragging doesn't spam the server. The
+GT overlay picks a single `gt_instances` channel; in **MIP mode** it also offers
+an **All** option that requests the merged all-channel GT MIP (§3.3) — `all` is
+MIP-only (slices are per-channel) and coerces back to channel 0 on switching to
+slice mode.
 
 ```
 OrthoSliceViewer
@@ -287,6 +303,37 @@ Key details:
   The predicted/gt overlays load through one `loadOverlay` helper that returns a
   `STALE` sentinel when a request is superseded, so the caller bails out of the
   whole load sequence rather than applying stale data to a torn-down layer.
+
+Directly below the main render, the 3D tab shows two **standalone interactive 3D
+sub-views** (`Volume3DView`), then the pre-shipped FISBe MIP composite (§3.6):
+
+- **Raw (Zarr)** — `volume.bin?volume=raw&channel=all`, the raw channels as an RGB
+  volume.
+- **GT instances (Zarr)** — `volume.bin?volume=gt`, the merged colored instance
+  volume (same encoding as the main viewer's GT overlay); shown only when the
+  sample has ground truth.
+
+`Volume3DView` is a distilled, single-layer sibling of `VolumeViewer3D`: its own
+`vtkGenericRenderWindow` + one `VolumeLayerController`, MaximumIntensity blend (so
+each reads as a rotatable MIP), and the same generation-guard / `AbortController`
+/ `ResizeObserver` lifecycle. All three renders share the render-window helpers in
+`vtkVolumeScene.ts` (`createRenderWindow`, `fitCamera`, `rotateCameraByKey`) and
+are driven by the *same* brightness / contrast / resolution controls, so they stay
+in sync. Because they read the same Zarr arrays (`volumes/raw`,
+`volumes/gt_instances`) the main view loads, they correspond 1:1 to it — unlike the
+shipped FISBe composite, which is FISBe's own pre-rendered image.
+
+**Linked cameras.** A **Link camera** toggle (default on) keeps all three views at
+the same viewpoint: `VolumeViewer3D` owns one `CameraSync` (`utils/cameraSync.ts`)
+that every view registers its `{camera, renderer, renderWindow}` with. When the
+user rotates/zooms/pans one view, `CameraSync` observes that camera's `onModified`,
+copies its pose (position / focalPoint / viewUp) to the others, and re-renders
+them — a reentrancy guard breaks feedback loops and a `requestAnimationFrame`
+coalesces the burst of events during a drag. This works precisely because the
+three volumes share one world coordinate space and (same sample + shared
+resolution) essentially identical bounds, so one pose frames all three the same
+way. Unlinking lets each view be inspected independently; re-linking snaps the
+sub-views back to the main camera.
 
 ### 4.4 Top-level composition (`App.tsx`)
 
@@ -371,8 +418,10 @@ Interactive GPU render:  raw (grayscale) + predicted instances (colored)
 | `client/src/api/client.ts` | URL builders + typed fetch (`fetchVolumeData`) |
 | `client/src/components/SliceImage.tsx` | blob-fetch a PNG into `<img>` + CSS filter |
 | `client/src/components/OrthoSliceViewer.tsx` | 2D slice/MIP tab with GT overlay |
-| `client/src/components/VolumeViewer3D.tsx` | 3D viewer: vtk.js render orchestration, load effects, lifecycle, layout |
-| `client/src/utils/vtkVolumeScene.ts` | vtk.js volume plumbing + `VolumeLayerController` (per-layer state) |
+| `client/src/components/VolumeViewer3D.tsx` | Main 3D viewer: multi-layer (raw/predicted/gt) render orchestration, controls, layout |
+| `client/src/components/Volume3DView.tsx` | Standalone single-volume interactive 3D viewer (the two raw/gt sub-views) |
+| `client/src/utils/vtkVolumeScene.ts` | vtk.js volume plumbing, `VolumeLayerController`, render-window helpers (`createRenderWindow`/`fitCamera`/`rotateCameraByKey`) |
+| `client/src/utils/cameraSync.ts` | `CameraSync` — links multiple render windows' cameras (rotate/zoom/pan one → all follow) |
 | `client/src/components/VolumeControls.tsx` | 3D viewer display/overlay control panel (presentational) |
 | `client/src/components/RangeSlider.tsx` | reusable labelled range input |
 | `client/src/utils/displayAdjust.ts` | brightness/contrast/gamma remap (JS + CSS) |

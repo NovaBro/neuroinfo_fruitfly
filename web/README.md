@@ -115,7 +115,7 @@ npm run dev
 | `GET` | `/api/samples/{name}/meta` | Volume shapes and dtypes (`prediction_set` query param selects which set's predicted shape to report) |
 | `GET` | `/api/samples/{name}/metrics` | Scoring metrics for the sample (`prediction_set` selects the run): the `tests/metrics/<stem>.zarr.toml` scores and the matching `test_results_metrics.csv` row, each grouped by detection threshold. Shown in the right-hand **Scoring Metrics** column. |
 | `GET` | `/api/samples/{name}/slice.png` | 2D slice (`volume`, `channel`, `axis`, `index` query params) |
-| `GET` | `/api/samples/{name}/mip.png` | Maximum-intensity projection (`volume`, `channel` query params) |
+| `GET` | `/api/samples/{name}/mip.png` | Maximum-intensity projection (`volume`, `channel` query params). `volume=raw&channel=all` → RGB raw MIP; `volume=gt&channel=all` → merged colored MIP of all `gt_instances` channels (matches the 3D GT overlay). The 3D tab shows both as live reference panels beneath the render. |
 | `GET` | `/api/samples/{name}/volume.bin` | Downsampled 3D volume for MIP rendering (`volume=raw|gt|predicted`, `channel=0|1|2|all`, `max_size` 64–512, `prediction_set` selects which set for `volume=predicted`) |
 
 The **3D Viewer** tab loads downsampled raw data from FISBe Zarr and, when available, overlays BiaPy predicted instances (`volume=predicted`) using helpers from [`ipynb/scripts/biapy.py`](../ipynb/scripts/biapy.py). Drag or use arrow keys to rotate the view.

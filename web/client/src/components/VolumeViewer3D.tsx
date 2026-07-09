@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import vtkGenericRenderWindow from "@kitware/vtk.js/Rendering/Misc/GenericRenderWindow";
-import vtkInteractorStyleTrackballCamera from "@kitware/vtk.js/Interaction/Style/InteractorStyleTrackballCamera";
 import {
   ChannelParam,
   DEFAULT_VOLUME_MAX_SIZE,
@@ -11,9 +9,15 @@ import {
 } from "../api/client";
 import { SliceImage } from "./SliceImage";
 import { VolumeControls } from "./VolumeControls";
+import { Volume3DView } from "./Volume3DView";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
+import { CameraSync } from "../utils/cameraSync";
 import { DEFAULT_BRIGHTNESS, DEFAULT_CONTRAST } from "../utils/displayAdjust";
 import {
+  createRenderWindow,
+  fitCamera,
+  GenericRenderWindow,
+  rotateCameraByKey,
   VolumeLayerController,
   VolumeMode,
 } from "../utils/vtkVolumeScene";
@@ -32,7 +36,7 @@ interface VolumeViewer3DProps {
 }
 
 type VtkContext = {
-  genericRenderWindow: ReturnType<typeof vtkGenericRenderWindow.newInstance>;
+  genericRenderWindow: GenericRenderWindow;
   raw: VolumeLayerController;
   predicted: VolumeLayerController;
   gt: VolumeLayerController;
@@ -46,6 +50,11 @@ export function VolumeViewer3D({
   const containerRef = useRef<HTMLDivElement>(null);
   const vtkRef = useRef<VtkContext | null>(null);
   const vtkGenerationRef = useRef(0);
+  // One camera-link group shared by the main render and the two sub-views.
+  const cameraSyncRef = useRef<CameraSync>();
+  if (!cameraSyncRef.current) cameraSyncRef.current = new CameraSync("main");
+  const cameraSync = cameraSyncRef.current;
+  const [linkViews, setLinkViews] = useState(true);
   const [vtkReady, setVtkReady] = useState(false);
   const [channel, setChannel] = useState<ChannelParam>(0);
   const [brightness, setBrightness] = useState(DEFAULT_BRIGHTNESS);
@@ -78,12 +87,7 @@ export function VolumeViewer3D({
   const fitCameraAndRender = useCallback(() => {
     const vtk = vtkRef.current;
     if (!vtk) return;
-    const grw = vtk.genericRenderWindow;
-    const renderer = grw.getRenderer();
-    grw.resize();
-    renderer.resetCamera();
-    renderer.resetCameraClippingRange();
-    grw.getRenderWindow().render();
+    fitCamera(vtk.genericRenderWindow);
   }, []);
 
   useEffect(() => {
@@ -91,17 +95,7 @@ export function VolumeViewer3D({
     if (!container) return;
 
     const generation = ++vtkGenerationRef.current;
-    const genericRenderWindow = vtkGenericRenderWindow.newInstance({
-      background: [0.06, 0.07, 0.09],
-      listenWindowResize: false,
-    });
-    genericRenderWindow.setContainer(container);
-    genericRenderWindow.resize();
-
-    const interactor = genericRenderWindow.getInteractor();
-    interactor.setInteractorStyle(
-      vtkInteractorStyleTrackballCamera.newInstance(),
-    );
+    const genericRenderWindow = createRenderWindow(container);
 
     const renderer = genericRenderWindow.getRenderer();
     const raw = new VolumeLayerController("raw");
@@ -117,6 +111,13 @@ export function VolumeViewer3D({
 
     vtkRef.current = { genericRenderWindow, raw, predicted, gt };
     setVtkReady(true);
+
+    const unregisterSync = cameraSync.register({
+      id: "main",
+      camera: renderer.getActiveCamera(),
+      renderer,
+      renderWindow: genericRenderWindow.getRenderWindow(),
+    });
 
     const resizeObserver = new ResizeObserver(() => {
       if (vtkGenerationRef.current === generation) {
@@ -136,13 +137,18 @@ export function VolumeViewer3D({
       vtkGenerationRef.current += 1;
       setVtkReady(false);
       resizeObserver.disconnect();
+      unregisterSync();
       renderer.removeVolume(raw.volume);
       renderer.removeVolume(predicted.volume);
       renderer.removeVolume(gt.volume);
       genericRenderWindow.delete();
       vtkRef.current = null;
     };
-  }, [renderScene, fitCameraAndRender]);
+  }, [cameraSync, renderScene, fitCameraAndRender]);
+
+  useEffect(() => {
+    cameraSync.setEnabled(linkViews);
+  }, [cameraSync, linkViews]);
 
   useEffect(() => {
     setChannel(0);
@@ -320,41 +326,13 @@ export function VolumeViewer3D({
     fitCameraAndRender,
   ]);
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      const vtk = vtkRef.current;
-      if (!vtk) return;
-
-      const renderer = vtk.genericRenderWindow.getRenderer();
-      const camera = renderer.getActiveCamera();
-      const renderWindow = vtk.genericRenderWindow.getRenderWindow();
-
-      let handled = true;
-      switch (e.key) {
-        case "ArrowLeft":
-          camera.azimuth(-ROTATE_STEP);
-          break;
-        case "ArrowRight":
-          camera.azimuth(ROTATE_STEP);
-          break;
-        case "ArrowUp":
-          camera.elevation(ROTATE_STEP);
-          break;
-        case "ArrowDown":
-          camera.elevation(-ROTATE_STEP);
-          break;
-        default:
-          handled = false;
-      }
-
-      if (handled) {
-        e.preventDefault();
-        renderer.resetCameraClippingRange();
-        renderWindow.render();
-      }
-    },
-    [],
-  );
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    const vtk = vtkRef.current;
+    if (!vtk) return;
+    if (rotateCameraByKey(vtk.genericRenderWindow, e.key, ROTATE_STEP)) {
+      e.preventDefault();
+    }
+  }, []);
 
   return (
     <div className="volume-viewer-3d">
@@ -399,6 +377,48 @@ export function VolumeViewer3D({
         <p className="volume-viewer-3d__hint">
           Drag to rotate · Arrow keys to rotate (click viewer to focus)
         </p>
+      </div>
+
+      {/* Standalone interactive 3D renders of the exact Zarr the main viewer
+          loaded (volumes/raw as RGB, volumes/gt_instances merged/colored). They
+          share the brightness/contrast/resolution controls above, and (when
+          linked) a synchronized camera with the main render. */}
+      <label className="volume-viewer-3d__checkbox">
+        <input
+          type="checkbox"
+          checked={linkViews}
+          onChange={(e) => setLinkViews(e.target.checked)}
+        />
+        Link camera across all 3D views
+      </label>
+      <div className="volume-viewer-3d__subviews">
+        <Volume3DView
+          key={`${sampleName}-raw-3d`}
+          sampleName={sampleName}
+          label="Raw (Zarr)"
+          volume="raw"
+          channel="all"
+          mode="rgb"
+          maxSize={debouncedMaxSize}
+          brightness={brightness}
+          contrast={contrast}
+          cameraSync={cameraSync}
+          syncId="sub-raw"
+        />
+        {hasGt && (
+          <Volume3DView
+            key={`${sampleName}-gt-3d`}
+            sampleName={sampleName}
+            label="GT instances (Zarr)"
+            volume="gt"
+            mode="instance_rgb"
+            maxSize={debouncedMaxSize}
+            brightness={brightness}
+            contrast={contrast}
+            cameraSync={cameraSync}
+            syncId="sub-gt"
+          />
+        )}
       </div>
 
       <div className="volume-viewer-3d__mip">

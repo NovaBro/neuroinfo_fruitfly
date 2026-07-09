@@ -212,6 +212,32 @@ def slice_to_png(
     return buf.getvalue()
 
 
+def _merged_gt_mip_rgb(arr: zarr.Array) -> np.ndarray:
+    """MIP of *all* gt_instances channels merged into one colored (Y,X,3) image.
+
+    Mirrors the merge/coloring in `_gt_volume_to_bytes` so the 2D GT MIP matches
+    the 3D GT overlay. The channel count varies per sample (1..8+ observed), so
+    iterate `arr.shape[0]` rather than assuming a fixed number of channels.
+    """
+    n_ch = arr.shape[0]
+    combined: np.ndarray | None = None
+    for ch in range(n_ch):
+        mip = _max_project_channel(arr, ch).astype(np.int64)  # (Y, X) label ids
+        if combined is None:
+            combined = np.zeros(mip.shape, dtype=np.int64)
+        # Give each (channel, label) a unique id so distinct neurons keep
+        # distinct colors; background (0) stays 0. On overlap keep the larger id.
+        encoded = mip + ch * _GT_CHANNEL_LABEL_STRIDE
+        labelled = mip > 0
+        combined = np.where(labelled & (encoded > combined), encoded, combined)
+
+    if combined is None:
+        raise ValueError("gt_instances has no channels")
+
+    # encode_label_volume_rgb works on Z,Y,X → Z,Y,X,3; feed a single-plane stack.
+    return encode_label_volume_rgb(combined[np.newaxis, ...])[0]
+
+
 @lru_cache(maxsize=128)
 def mip_to_png(
     zarr_path: str,
@@ -222,9 +248,13 @@ def mip_to_png(
     arr = _open_array(zarr_path, volume)
 
     if channel == "all":
-        if volume != "raw":
-            raise ValueError("channel=all is only supported for raw volumes")
-        rgb = _extract_mip_rgb(arr)
+        if volume == "raw":
+            rgb = _extract_mip_rgb(arr)
+        elif volume == "gt":
+            # Merge every instance channel into one colored MIP (see helper).
+            rgb = _merged_gt_mip_rgb(arr)
+        else:
+            raise ValueError("channel=all is only supported for raw and gt volumes")
         img = Image.fromarray(rgb, mode="RGB")
     else:
         ch = int(channel)

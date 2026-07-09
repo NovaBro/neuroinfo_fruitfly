@@ -38,7 +38,10 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
   const [axis, setAxis] = useState<AxisKind>("z");
   const [index, setIndex] = useState(0);
   const [showGt, setShowGt] = useState(false);
-  const [gtChannel, setGtChannel] = useState(0);
+  // "all" merges every gt_instances channel into one colored MIP; it is only
+  // valid in MIP mode (slice_to_png can't project channel=all), so it is coerced
+  // back to a single channel when leaving MIP mode.
+  const [gtChannel, setGtChannel] = useState<number | "all">(0);
   const [gtOpacity, setGtOpacity] = useState(55);
   const [viewMode, setViewMode] = useState<"slice" | "mip">("slice");
 
@@ -83,13 +86,20 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
     if (viewMode === "mip") {
       return mipUrl(sampleName, { volume: "gt", channel: gtChannel });
     }
+    // Slices are per-channel; "all" has no slice equivalent, fall back to ch 0.
+    const sliceChannel = gtChannel === "all" ? 0 : gtChannel;
     return sliceUrl(sampleName, {
       volume: "gt",
-      channel: gtChannel,
+      channel: sliceChannel,
       axis,
       index: debouncedIndex,
     });
   }, [sampleName, showGt, gtChannel, axis, debouncedIndex, viewMode]);
+
+  // "all" is MIP-only; drop back to a single channel when switching to slices.
+  useEffect(() => {
+    if (viewMode !== "mip" && gtChannel === "all") setGtChannel(0);
+  }, [viewMode, gtChannel]);
 
   return (
     <div className="ortho-viewer">
@@ -217,6 +227,19 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
           </label>
           {showGt && (
             <div className="ortho-viewer__btn-row">
+              {viewMode === "mip" && (
+                <button
+                  type="button"
+                  className={
+                    gtChannel === "all"
+                      ? "ortho-viewer__btn ortho-viewer__btn--active"
+                      : "ortho-viewer__btn"
+                  }
+                  onClick={() => setGtChannel("all")}
+                >
+                  All
+                </button>
+              )}
               {Array.from({ length: gtChannelCount }, (_, i) => (
                 <button
                   key={i}
