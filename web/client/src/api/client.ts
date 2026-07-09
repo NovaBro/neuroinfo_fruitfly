@@ -217,6 +217,79 @@ export function volumeDataUrl(
   return `${API_BASE}/samples/${encodeURIComponent(name)}/volume.bin${qs ? `?${qs}` : ""}`;
 }
 
+/**
+ * In-memory LRU cache of decoded {@link VolumeData}, keyed by the request URL
+ * (which encodes sample/volume/channel/maxSize/predictionSet). Switching among
+ * raw channels, or toggling overlays that don't depend on the channel, re-uses
+ * the already-downloaded bytes instead of hitting the network + server
+ * downsample again. FISBe volumes and BiaPy predictions are static on disk, so
+ * a cached entry never goes stale.
+ *
+ * Bounded by a byte budget rather than an entry count: a single max_size=512
+ * RGB volume is ~400 MB, so a count cap could blow memory, whereas at the
+ * default max_size=128 every raw channel (~2–6 MB) of many samples fits.
+ * Insertion order in the Map doubles as the LRU order (re-inserting on hit
+ * moves an entry to the most-recently-used end).
+ */
+const VOLUME_CACHE_MAX_BYTES = 256 * 1024 * 1024;
+const volumeCache = new Map<string, VolumeData>();
+let volumeCacheBytes = 0;
+
+function volumeEntryBytes(vol: VolumeData): number {
+  return vol.data.byteLength;
+}
+
+function touchCacheEntry(key: string): VolumeData | undefined {
+  const vol = volumeCache.get(key);
+  if (!vol) return undefined;
+  // Re-insert to move to the most-recently-used end.
+  volumeCache.delete(key);
+  volumeCache.set(key, vol);
+  return vol;
+}
+
+function storeCacheEntry(key: string, vol: VolumeData): void {
+  const bytes = volumeEntryBytes(vol);
+  // Don't cache a single entry larger than the whole budget — it would evict
+  // everything else and still not fit meaningfully.
+  if (bytes > VOLUME_CACHE_MAX_BYTES) return;
+  const existing = volumeCache.get(key);
+  if (existing) volumeCacheBytes -= volumeEntryBytes(existing);
+  volumeCache.set(key, vol);
+  volumeCacheBytes += bytes;
+  // Evict least-recently-used (front of insertion order) until under budget.
+  while (volumeCacheBytes > VOLUME_CACHE_MAX_BYTES && volumeCache.size > 1) {
+    const oldestKey = volumeCache.keys().next().value as string | undefined;
+    if (oldestKey === undefined) break;
+    const oldest = volumeCache.get(oldestKey);
+    volumeCache.delete(oldestKey);
+    if (oldest) volumeCacheBytes -= volumeEntryBytes(oldest);
+  }
+}
+
+/**
+ * Synchronously return a cached volume for these params without fetching, or
+ * `undefined` on a miss. Callers use this to skip the loading state when a
+ * channel/overlay switch can be satisfied entirely from cache.
+ */
+export function peekVolumeCache(
+  name: string,
+  opts: {
+    volume?: VolumeKind;
+    channel?: ChannelParam;
+    maxSize?: number;
+    predictionSet?: string | null;
+  } = {},
+): VolumeData | undefined {
+  return touchCacheEntry(volumeDataUrl(name, opts));
+}
+
+/** Drop all cached volumes (frees the retained bytes). */
+export function clearVolumeCache(): void {
+  volumeCache.clear();
+  volumeCacheBytes = 0;
+}
+
 export async function fetchVolumeData(
   name: string,
   opts: {
@@ -228,6 +301,9 @@ export async function fetchVolumeData(
   } = {},
 ): Promise<VolumeData> {
   const url = volumeDataUrl(name, opts);
+  const cached = touchCacheEntry(url);
+  if (cached) return cached;
+
   const res = await fetch(url, { signal: opts.signal });
   if (!res.ok) {
     const detail = await res.text();
@@ -249,11 +325,13 @@ export async function fetchVolumeData(
   }
 
   const buffer = await res.arrayBuffer();
-  return {
+  const vol: VolumeData = {
     data: new Uint8Array(buffer),
     shape,
     originalShape,
     downsampleFactor,
     components,
   };
+  storeCacheEntry(url, vol);
+  return vol;
 }

@@ -5,6 +5,7 @@ import {
   fetchVolumeData,
   FisbeMipHalf,
   fisbeMipUrl,
+  peekVolumeCache,
   SampleMeta,
 } from "../api/client";
 import { SliceImage } from "./SliceImage";
@@ -50,6 +51,10 @@ export function VolumeViewer3D({
   const containerRef = useRef<HTMLDivElement>(null);
   const vtkRef = useRef<VtkContext | null>(null);
   const vtkGenerationRef = useRef(0);
+  // The `${sample}:${maxSize}` the camera was last fit to. Channel/overlay
+  // toggles keep the same key, so we render without a camera reset and the
+  // user's rotation survives; a new sample or resolution refits.
+  const fittedKeyRef = useRef<string | null>(null);
   // One camera-link group shared by the main render and the two sub-views.
   const cameraSyncRef = useRef<CameraSync>();
   if (!cameraSyncRef.current) cameraSyncRef.current = new CameraSync("main");
@@ -110,6 +115,7 @@ export function VolumeViewer3D({
     raw.volume.setVisibility(false);
 
     vtkRef.current = { genericRenderWindow, raw, predicted, gt };
+    fittedKeyRef.current = null;
     setVtkReady(true);
 
     const unregisterSync = cameraSync.register({
@@ -161,6 +167,7 @@ export function VolumeViewer3D({
     setGtOpacity(100);
     setVolumeInfo(null);
     setError(null);
+    fittedKeyRef.current = null;
     const vtk = vtkRef.current;
     if (vtk) {
       vtk.raw.source = null;
@@ -198,8 +205,45 @@ export function VolumeViewer3D({
 
     const controller = new AbortController();
     let cancelled = false;
-    setLoading(true);
+
+    // Fit the camera only when the sample or resolution changes; a plain
+    // channel/overlay toggle re-renders in place so the viewpoint is kept.
+    const fitKey = `${sampleName}:${debouncedMaxSize}`;
+    const shouldFit = fittedKeyRef.current !== fitKey;
+
+    // If everything the current view needs is already cached, we can apply it
+    // synchronously with no network round-trip, so skip the loading overlay to
+    // avoid a flash on channel switches.
+    const rawCached =
+      !showRaw ||
+      peekVolumeCache(sampleName, {
+        volume: "raw",
+        channel,
+        maxSize: debouncedMaxSize,
+      }) !== undefined;
+    const predictedCached =
+      !(hasPredicted && showPredicted) ||
+      peekVolumeCache(sampleName, {
+        volume: "predicted",
+        maxSize: debouncedMaxSize,
+        predictionSet,
+      }) !== undefined;
+    const gtCached =
+      !(hasGt && showGt) ||
+      peekVolumeCache(sampleName, { volume: "gt", maxSize: debouncedMaxSize }) !==
+        undefined;
+    const allCached = rawCached && predictedCached && gtCached;
+
+    if (!allCached) setLoading(true);
     setError(null);
+
+    const fitOrRender = () => {
+      if (shouldFit) {
+        fitCameraAndRender();
+      } else {
+        renderScene();
+      }
+    };
 
     // Fetch and apply an instance overlay (predicted or gt). Returns the info
     // label to show on success, null when disabled/unavailable, or STALE when
@@ -250,7 +294,7 @@ export function VolumeViewer3D({
           if (cancelled || vtkGenerationRef.current !== generation) return;
 
           vtk!.raw.applyData(rawVol, rawMode, brightness, contrast);
-          fitCameraAndRender();
+          fitOrRender();
 
           const [z, y, x] = rawVol.shape;
           const [oz, oy, ox] = rawVol.originalShape;
@@ -286,12 +330,15 @@ export function VolumeViewer3D({
         if (cancelled || vtkGenerationRef.current !== generation) return;
 
         setVolumeInfo(infoParts.join(" · "));
-        fitCameraAndRender();
-        requestAnimationFrame(() => {
-          if (!cancelled && vtkGenerationRef.current === generation) {
-            fitCameraAndRender();
-          }
-        });
+        fitOrRender();
+        if (shouldFit) {
+          fittedKeyRef.current = fitKey;
+          requestAnimationFrame(() => {
+            if (!cancelled && vtkGenerationRef.current === generation) {
+              fitCameraAndRender();
+            }
+          });
+        }
       } catch (err) {
         if (controller.signal.aborted || cancelled) return;
         if (vtkGenerationRef.current !== generation) return;
