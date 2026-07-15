@@ -1,5 +1,7 @@
 # .gitignore
 downloads/
+papers/
+
 *.h5j
 *.tif
 *.swc
