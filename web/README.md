@@ -102,31 +102,68 @@ npm run dev
 |----------|---------|-------------|
 | `FISBE_ROOT` | `../../fisbe/completely` | Root directory containing `train/`, `val/`, `test/` Zarr folders |
 | `SAMPLE_LIST_PATH` | `../../evaluate-instance-segmentation/assets/sample_list_per_split.txt` | Train/val/test sample list |
-| `BIAPY_RESULTS_BASE` | `../../BiaPy/results` | Base dir scanned for prediction sets (any run dir containing a `per_image_instances` folder) |
+| `BIAPY_RESULTS_BASE` | `../../BiaPy/results` | Base dir scanned for BiaPy prediction sets (any run dir containing a `per_image_instances` folder) |
 | `BIAPY_RESULT_ROOT` | `../../BiaPy/results/train_3d_instance_segmentation/results/train_3d_instance_segmentation_1` | Default prediction set (used when the client doesn't pick one) |
+| `PPP_EXPERIMENTS_BASE` | `../../PatchPerPix/experiments/ppp_experiments` | Base dir scanned for PatchPerPix prediction sets (per experiment: `numinst` count maps under `test/processed/`, `instances` vote-labels under `test/instanced/`) |
 
 ## API endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/api/health` | Liveness check |
-| `GET` | `/api/prediction-sets` | List available prediction sets (BiaPy run dirs with `per_image_instances`) |
+| `GET` | `/api/prediction-sets` | List available prediction sets across models. Each carries a `source` (`biapy` \| `ppp`) and `kind`; BiaPy run dirs plus PatchPerPix `numinst`/`instances` overlays. |
 | `GET` | `/api/samples` | List samples with split and path status (`has_predicted` is true if *any* set has output) |
 | `GET` | `/api/samples/{name}/meta` | Volume shapes and dtypes (`prediction_set` query param selects which set's predicted shape to report) |
 | `GET` | `/api/samples/{name}/metrics` | Scoring metrics for the sample (`prediction_set` selects the run): the `tests/metrics/<stem>.zarr.toml` scores and the matching `test_results_metrics.csv` row, each grouped by detection threshold. Shown in the right-hand **Scoring Metrics** column. |
+| `GET` | `/api/aggregate-metrics` | Samples × metrics matrix across *all* samples for one prediction set (`prediction_set`, `threshold` query params). Backs the **Aggregate** tab's heatmap. |
 | `GET` | `/api/samples/{name}/slice.png` | 2D slice (`volume`, `channel`, `axis`, `index` query params) |
 | `GET` | `/api/samples/{name}/mip.png` | Maximum-intensity projection (`volume`, `channel` query params). `volume=raw&channel=all` → RGB raw MIP; `volume=gt&channel=all` → merged colored MIP of all `gt_instances` channels (matches the 3D GT overlay). The 3D tab shows both as live reference panels beneath the render. |
 | `GET` | `/api/samples/{name}/volume.bin` | Downsampled 3D volume for MIP rendering (`volume=raw|gt|predicted`, `channel=0|1|2|all`, `max_size` 64–512, `prediction_set` selects which set for `volume=predicted`) |
 
-The **3D Viewer** tab loads downsampled raw data from FISBe Zarr and, when available, overlays BiaPy predicted instances (`volume=predicted`) using helpers from [`ipynb/scripts/biapy.py`](../ipynb/scripts/biapy.py). Drag or use arrow keys to rotate the view.
+The **3D Viewer** tab loads downsampled raw data from FISBe Zarr and, when available, overlays predicted instances (`volume=predicted`) from the selected prediction set. BiaPy sets are loaded via [`ipynb/scripts/biapy.py`](../ipynb/scripts/biapy.py); PatchPerPix sets via [`server/services/ppp_loader.py`](server/services/ppp_loader.py). A dispatcher ([`server/services/predictions.py`](server/services/predictions.py)) routes each request to the right loader by the set's `source`. Drag or use arrow keys to rotate the view.
+
+### Aggregate tab
+
+The **Aggregate** tab renders a samples × metrics heatmap for the selected prediction
+set, so per-sample scores can be compared at a glance instead of one sample at a time.
+It spans every sample, so it ignores the sidebar selection (and hides the per-sample
+**Scoring Metrics** column, which would be redundant).
+
+Columns are the curated "core quality" set defined by `METRIC_SPECS` in
+[`server/services/aggregate_metrics.py`](server/services/aggregate_metrics.py) —
+`iou (f/c channel)`, `avAP`, `avFscore`, `avg_TP_05_cldice`, `TP_05_rel` (threshold-free),
+plus `precision`/`recall`/`f1`/`panoptic_quality` at a selectable detection
+threshold (0.3 / 0.5 / 0.75, default 0.5). Add or drop a column by editing
+`METRIC_SPECS`; the client renders whatever the endpoint lists.
+
+**Each column is colour-scaled to its own min/max across samples**, since the metrics
+span wildly different ranges here (IoU ≈ 0.39–0.68 while avAP ≈ 0–0.0004) — a shared
+0–1 scale would render every AP-family column uniformly dark. Cell colour is therefore
+only comparable *within* a column, never across columns; the tooltip carries the exact
+value. A column whose samples are all equal renders mid-ramp. Like the per-sample
+panel, this is **BiaPy-only** — PatchPerPix sets produce an empty matrix.
+
+Two **mean / median** rows close the table, summarising each column across samples
+(endpoint field `summary`, with `summary.n` giving how many samples each statistic was
+taken over — a column with missing cells is averaged only over the ones present).
+They are *derived* rows rather than samples, so they are returned separately from
+`samples`/`values`, are excluded from the colour normalisation, and render as plain
+unfilled numbers below a rule.
 
 ### Selecting a prediction set
 
-`/api/prediction-sets` discovers every BiaPy run directory under `BIAPY_RESULTS_BASE` that contains a `per_image_instances` folder, so you can compare predictions from different training/testing setups. The **Predictions** dropdown above the viewer tabs switches which set is overlaid; the predicted overlay and reported shapes update accordingly. The set marked `default` (matching `BIAPY_RESULT_ROOT`) is selected on load.
+`/api/prediction-sets` merges sets from every model source, so you can compare predictions across setups. The **Predictions** dropdown above the viewer tabs (grouped by **BiaPy** / **PatchPerPix**) switches which set is overlaid; the predicted overlay and reported shapes update accordingly. The set marked `default` (a BiaPy set matching `BIAPY_RESULT_ROOT`) is selected on load.
+
+- **BiaPy** — every run directory under `BIAPY_RESULTS_BASE` with a `per_image_instances` folder. Rendered as per-neuron coloured instance labels.
+- **PatchPerPix** — every experiment under `PPP_EXPERIMENTS_BASE`, each exposing up to two overlays:
+  - **numinst** — the per-voxel overlap-count map (`test/processed/<ckpt>/<stem>.zarr` → `volumes/pred_numinst`, `(3, Z, Y, X)` = P(0/1/2+ instances)). This is a foreground/count probability map, **not** per-neuron labels, so it renders as a two-colour foreground (argmax of the count channels: 1-instance vs 2+-overlap regions). Streamed in Z-blocks so the ~0.5 GB float16 array is never fully loaded.
+  - **instances** — the final vote-instances labels (`test/instanced/.../<stem>.hdf` → dataset `vote_instances`), coloured per neuron like the BiaPy/GT overlays. **Requires `h5py`** in the server env to read the HDF5 output.
+
+Scoring metrics in the right-hand column are currently BiaPy-only; PatchPerPix sets report no metrics.
 
 ## Follow-ups (not in scaffold)
 
 - h5j / MCFO raw stack support via PyImageJ pipeline
 - Full-resolution in-browser 3D volume rendering (tile streaming)
-- Segmentation model output comparison (BiaPy / PatchPerPix)
+- PatchPerPix scoring metrics in the **Scoring Metrics** column
 - Authentication and production deployment

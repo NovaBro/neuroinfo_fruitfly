@@ -11,12 +11,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 
 from config import CORS_ORIGINS, FISBE_ROOT
-from services.biapy_loader import (
+from services.predictions import (
     get_predicted_instances_meta,
     list_prediction_sets,
     predicted_instances_to_bytes,
     stems_with_predictions_any,
 )
+from services.aggregate_metrics import get_aggregate_metrics
 from services.fisbe_mip import fisbe_mip_png
 from services.metrics import get_sample_metrics
 from services.sample_list import SampleEntry, find_sample, parse_sample_list, sample_zarr_path
@@ -62,7 +63,7 @@ def health():
 
 @app.get("/api/prediction-sets")
 def prediction_sets():
-    """List BiaPy prediction sets (run dirs) the viewer can overlay."""
+    """List prediction sets (BiaPy runs + PatchPerPix overlays) to overlay."""
     return list_prediction_sets()
 
 
@@ -123,6 +124,20 @@ def sample_metrics(name: str, prediction_set: str | None = Query(None)):
         "prediction_set": prediction_set,
         **get_sample_metrics(name, prediction_set),
     }
+
+
+@app.get("/api/aggregate-metrics")
+def aggregate_metrics(
+    prediction_set: str | None = Query(None),
+    threshold: str | None = Query(None),
+):
+    """Samples x metrics matrix for the given prediction set.
+
+    Collects the curated "core quality" metrics across every sample in the
+    split list so the client can render an aggregate heatmap. ``threshold``
+    selects which detection threshold the threshold-dependent columns use.
+    """
+    return get_aggregate_metrics(prediction_set, threshold)
 
 
 def _resolve_zarr_or_404(name: str) -> tuple[SampleEntry, Path]:

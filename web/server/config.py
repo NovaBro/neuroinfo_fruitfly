@@ -32,6 +32,18 @@ SAMPLE_LIST_PATH = Path(
     )
 ).resolve()
 
+# Base dir scanned for PatchPerPix prediction sets. Each experiment under this
+# base can expose two kinds of overlay: the per-voxel count map
+# (``test/processed/<ckpt>/<stem>.zarr`` → ``volumes/pred_numinst``) and the
+# final vote-instances labels (``test/instanced/.../<stem>.hdf`` → dataset
+# ``vote_instances``). See ``services/ppp_loader.py``.
+PPP_EXPERIMENTS_BASE = Path(
+    os.environ.get(
+        "PPP_EXPERIMENTS_BASE",
+        _REPO_ROOT / "PatchPerPix" / "experiments" / "ppp_experiments",
+    )
+).resolve()
+
 CORS_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",

@@ -99,21 +99,13 @@ def _num(value: str):
         return value
 
 
-def _load_csv_metrics(result_root: Path, stem: str) -> dict | None:
-    path = result_root / "test_results_metrics.csv"
-    if not path.is_file():
-        return None
+def _csv_row_keys(stem: str) -> set[str]:
+    """Filenames the CSV may use for ``stem``'s row."""
+    return {f"{stem}.zarr.tiff", f"{stem}.zarr.tif", f"{stem}.zarr"}
 
-    wanted = {f"{stem}.zarr.tiff", f"{stem}.zarr.tif", f"{stem}.zarr"}
-    row: dict[str, str] | None = None
-    with path.open(newline="") as fh:
-        for record in csv.DictReader(fh):
-            if (record.get("file") or "").strip() in wanted:
-                row = record
-                break
-    if row is None:
-        return None
 
+def _parse_csv_row(row: dict[str, str]) -> dict:
+    """Split one CSV row into scalars and per-threshold metric groups."""
     scalars: dict[str, object] = {}
     thresholds: dict[str, dict[str, object]] = {}
     for col, val in row.items():
@@ -132,6 +124,31 @@ def _load_csv_metrics(result_root: Path, stem: str) -> dict | None:
         "scalars": scalars,
         "thresholds": thresholds,
     }
+
+
+def load_csv_table(result_root: Path) -> dict[str, dict]:
+    """Parse ``test_results_metrics.csv`` once, keyed by its ``file`` column.
+
+    Callers scoring many samples at once (the aggregate endpoint) use this to
+    read the file a single time instead of re-parsing it per sample.
+    """
+    path = result_root / "test_results_metrics.csv"
+    if not path.is_file():
+        return {}
+    with path.open(newline="") as fh:
+        return {
+            key: _parse_csv_row(record)
+            for record in csv.DictReader(fh)
+            if (key := (record.get("file") or "").strip())
+        }
+
+
+def _load_csv_metrics(result_root: Path, stem: str) -> dict | None:
+    table = load_csv_table(result_root)
+    for key in _csv_row_keys(stem):
+        if key in table:
+            return table[key]
+    return None
 
 
 def get_sample_metrics(stem: str, set_id: str | None = None) -> dict:

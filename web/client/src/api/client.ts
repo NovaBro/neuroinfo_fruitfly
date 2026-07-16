@@ -48,15 +48,47 @@ export interface SampleMetrics {
   csv: CsvMetrics | null;
 }
 
+/** One heatmap column: a single metric across all samples. */
+export interface AggregateMetricSpec {
+  key: string;
+  label: string;
+  source: string;
+  higherIsBetter: boolean;
+}
+
+/** Per-column mean/median across samples, plus the n each was taken over. */
+export interface AggregateSummary {
+  mean: Record<string, number | null>;
+  median: Record<string, number | null>;
+  n: Record<string, number>;
+}
+
+export interface AggregateMetrics {
+  prediction_set?: string | null;
+  threshold: string;
+  thresholdChoices: string[];
+  metrics: AggregateMetricSpec[];
+  /** Sample names in row order. Derived summary rows are NOT included here. */
+  samples: string[];
+  /** values[sample][metricKey] -> number | null (missing cell). */
+  values: Record<string, Record<string, number | null>>;
+  summary: AggregateSummary;
+}
+
 export interface PredictionSet {
-  /** Path of the run dir relative to BiaPy/results — the selection handle. */
+  /** Opaque selection handle (BiaPy: run dir relative to BiaPy/results;
+   *  PatchPerPix: source-prefixed, e.g. "ppp-numinst:.../8000"). */
   id: string;
-  /** Run directory name, e.g. "train_3d_instance_segmentation_1". */
+  /** Human-readable set name, e.g. "train_3d_instance_segmentation_1". */
   name: string;
   /** Absolute path on the server (for display). */
   path: string;
   /** True for the server's default prediction set. */
   default: boolean;
+  /** Model that produced this set. */
+  source?: "biapy" | "ppp";
+  /** PatchPerPix overlay flavour ("numinst" | "instances"); BiaPy: "instances". */
+  kind?: string;
 }
 
 export interface HealthResponse {
@@ -127,6 +159,19 @@ export async function getMetrics(
     : "";
   return fetchJson<SampleMetrics>(
     `${API_BASE}/samples/${encodeURIComponent(name)}/metrics${qs}`,
+  );
+}
+
+export async function getAggregateMetrics(
+  predictionSet?: string | null,
+  threshold?: string | null,
+): Promise<AggregateMetrics> {
+  const params = new URLSearchParams();
+  if (predictionSet) params.set("prediction_set", predictionSet);
+  if (threshold) params.set("threshold", threshold);
+  const qs = params.toString();
+  return fetchJson<AggregateMetrics>(
+    `${API_BASE}/aggregate-metrics${qs ? `?${qs}` : ""}`,
   );
 }
 

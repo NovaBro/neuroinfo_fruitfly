@@ -1,0 +1,256 @@
+.agg {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.75rem;
+  height: 100%;
+  overflow: hidden;
+}
+
+.agg__toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.agg__title {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #e8eaed;
+}
+
+.agg__subtitle {
+  margin: 0.15rem 0 0;
+  font-size: 0.72rem;
+  color: #8b919c;
+  max-width: 52ch;
+}
+
+.agg__threshold {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: #aab0bc;
+}
+
+.agg__threshold-label {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.68rem;
+  color: #8b919c;
+}
+
+.agg__threshold select {
+  background: #1a1e28;
+  color: #e8eaed;
+  border: 1px solid #2a2f3a;
+  border-radius: 4px;
+  padding: 0.2rem 0.35rem;
+  font-size: 0.75rem;
+}
+
+.agg__hint {
+  margin: 0;
+  color: #8b919c;
+  font-size: 0.78rem;
+}
+
+.agg__error {
+  margin: 0;
+  color: #e0736d;
+  font-size: 0.78rem;
+}
+
+/* Legend ------------------------------------------------------------------ */
+
+.agg__legend {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  color: #8b919c;
+  flex-wrap: wrap;
+}
+
+.agg__legend-label {
+  color: #8b919c;
+}
+
+.agg__legend-ramp {
+  display: flex;
+  gap: 1px;
+}
+
+.agg__legend-step {
+  width: 14px;
+  height: 10px;
+  border-radius: 1px;
+}
+
+.agg__legend-note {
+  margin-left: 0.5rem;
+  color: #6f7682;
+}
+
+/* Heatmap table ----------------------------------------------------------- */
+
+.agg__table-wrap {
+  overflow: auto;
+  border: 1px solid #2a2f3a;
+  border-radius: 4px;
+  flex: 1;
+  min-height: 0;
+}
+
+.agg__table {
+  border-collapse: separate;
+  /* 2px surface gap between adjacent fills (dataviz mark spec). */
+  border-spacing: 2px;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  background: #13161e;
+}
+
+.agg__caption {
+  caption-side: bottom;
+  text-align: left;
+  padding: 0.4rem;
+  color: #6f7682;
+  font-size: 0.68rem;
+}
+
+.agg__table thead th {
+  background: #1a1e28;
+  color: #cdd3dd;
+  font-weight: 500;
+  padding: 0.3rem 0.45rem;
+  text-align: center;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-radius: 3px;
+}
+
+.agg__corner,
+.agg__rowhead {
+  position: sticky;
+  left: 0;
+  background: #13161e;
+  text-align: left !important;
+  z-index: 2;
+}
+
+.agg__corner {
+  z-index: 3;
+}
+
+.agg__rowhead {
+  color: #aab0bc;
+  font-weight: 500;
+  padding: 0.3rem 0.5rem;
+  white-space: nowrap;
+  max-width: 22ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: normal;
+}
+
+.agg__cell {
+  padding: 0.35rem 0.5rem;
+  text-align: right;
+  white-space: nowrap;
+  border-radius: 3px;
+  cursor: default;
+  min-width: 4.5rem;
+}
+
+.agg__cell--empty {
+  background: #191d26;
+  color: #5c626d;
+  text-align: center;
+}
+
+/* Summary rows (mean / median) — derived, so no heatmap fill: plain tabular
+   numbers, pinned to the bottom below a rule that separates them from the
+   sample rows. Sticky lives on the cells; on <tfoot> itself it is unreliable. */
+.agg__foot th,
+.agg__foot td {
+  position: sticky;
+  bottom: 0;
+  background: #1a1e28;
+  z-index: 2;
+}
+
+.agg__foot tr:first-child th,
+.agg__foot tr:first-child td {
+  border-top: 1px solid #3a4150;
+}
+
+/* Scoped under .agg__foot so it outranks the `.agg__foot th` rule above and
+   keeps its corner z-index. */
+.agg__foot .agg__rowhead--summary {
+  /* Also sticky-left, so it stays put when the metric columns scroll. */
+  left: 0;
+  z-index: 4;
+  color: #8b919c;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.66rem;
+  font-variant-numeric: normal;
+}
+
+.agg__cell--summary {
+  color: #cdd3dd;
+  cursor: help;
+}
+
+/* Hover ring is for the data marks only — the summary rows carry no fill. */
+.agg__cell:not(.agg__cell--summary):hover {
+  /* 2px surface ring on the hovered mark, drawn outside so layout is stable. */
+  box-shadow: 0 0 0 2px #13161e, 0 0 0 3px #cde2fb;
+  position: relative;
+}
+
+/* Tooltip ----------------------------------------------------------------- */
+
+.agg__tooltip {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  background: #1a1e28;
+  border: 1px solid #2a2f3a;
+  border-radius: 4px;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.72rem;
+  color: #e8eaed;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  max-width: 28ch;
+}
+
+.agg__tooltip-sample {
+  color: #cdd3dd;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.agg__tooltip-metric {
+  color: #8b919c;
+  font-size: 0.68rem;
+}
+
+.agg__tooltip-value {
+  margin-top: 0.2rem;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+}
+
+.agg__tooltip-norm,
+.agg__tooltip-source {
+  color: #6f7682;
+  font-size: 0.65rem;
+}

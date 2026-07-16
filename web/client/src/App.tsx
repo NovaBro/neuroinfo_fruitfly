@@ -6,6 +6,7 @@ import {
   PredictionSet,
   SampleInfo,
 } from "./api/client";
+import { AggregateHeatmap } from "./components/AggregateHeatmap";
 import { Layout } from "./components/Layout";
 import { MetricsPanel } from "./components/MetricsPanel";
 import { OrthoSliceViewer } from "./components/OrthoSliceViewer";
@@ -14,7 +15,7 @@ import { VolumeViewer3D } from "./components/VolumeViewer3D";
 import { useSampleMeta, useSampleMetrics } from "./hooks/useSample";
 import "./App.css";
 
-type Tab = "slices" | "3d";
+type Tab = "slices" | "3d" | "aggregate";
 
 function App() {
   const [samples, setSamples] = useState<SampleInfo[]>([]);
@@ -124,6 +125,17 @@ function App() {
           >
             3D Viewer
           </button>
+          <button
+            type="button"
+            className={
+              activeTab === "aggregate"
+                ? "app-main__tab app-main__tab--active"
+                : "app-main__tab"
+            }
+            onClick={() => setActiveTab("aggregate")}
+          >
+            Aggregate
+          </button>
         </div>
 
         {predictionSets.length > 0 && (
@@ -136,39 +148,67 @@ function App() {
                 predictionSets.find((s) => s.id === predictionSet)?.path ?? ""
               }
             >
-              {predictionSets.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                  {s.default ? " (default)" : ""}
-                </option>
-              ))}
+              {(() => {
+                const groups: { label: string; source: string }[] = [
+                  { label: "BiaPy", source: "biapy" },
+                  { label: "PatchPerPix", source: "ppp" },
+                ];
+                return groups
+                  .map(({ label, source }) => {
+                    const sets = predictionSets.filter(
+                      (s) => (s.source ?? "biapy") === source
+                    );
+                    if (sets.length === 0) return null;
+                    return (
+                      <optgroup key={source} label={label}>
+                        {sets.map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.name}
+                            {s.default ? " (default)" : ""}
+                          </option>
+                        ))}
+                      </optgroup>
+                    );
+                  })
+                  .filter(Boolean);
+              })()}
             </select>
           </label>
         )}
       </div>
 
-      {!selected && (
-        <p className="app-main__placeholder">Select a sample from the sidebar.</p>
-      )}
+      {/* The aggregate tab spans all samples, so it never waits on a
+          per-sample selection or its volume metadata. */}
+      {activeTab === "aggregate" ? (
+        <AggregateHeatmap predictionSet={predictionSet} />
+      ) : (
+        <>
+          {!selected && (
+            <p className="app-main__placeholder">
+              Select a sample from the sidebar.
+            </p>
+          )}
 
-      {selected && metaLoading && (
-        <p className="app-main__placeholder">Loading volume metadata…</p>
-      )}
+          {selected && metaLoading && (
+            <p className="app-main__placeholder">Loading volume metadata…</p>
+          )}
 
-      {selected && metaError && (
-        <p className="app-main__error">{metaError}</p>
-      )}
+          {selected && metaError && (
+            <p className="app-main__error">{metaError}</p>
+          )}
 
-      {selected && meta && meta.name === selected && activeTab === "slices" && (
-        <OrthoSliceViewer sampleName={selected} meta={meta} />
-      )}
+          {selected && meta && meta.name === selected && activeTab === "slices" && (
+            <OrthoSliceViewer sampleName={selected} meta={meta} />
+          )}
 
-      {selected && meta && meta.name === selected && activeTab === "3d" && (
-        <VolumeViewer3D
-          sampleName={selected}
-          meta={meta}
-          predictionSet={predictionSet}
-        />
+          {selected && meta && meta.name === selected && activeTab === "3d" && (
+            <VolumeViewer3D
+              sampleName={selected}
+              meta={meta}
+              predictionSet={predictionSet}
+            />
+          )}
+        </>
       )}
     </div>
   );
@@ -186,13 +226,17 @@ function App() {
       }
       main={main}
       rightPanel={
-        <MetricsPanel
-          sampleName={selected}
-          toml={metrics?.toml ?? null}
-          csv={metrics?.csv ?? null}
-          loading={metricsLoading}
-          error={metricsError}
-        />
+        // The aggregate heatmap already shows every sample's scores, so the
+        // per-sample metrics column would be redundant beside it.
+        activeTab === "aggregate" ? undefined : (
+          <MetricsPanel
+            sampleName={selected}
+            toml={metrics?.toml ?? null}
+            csv={metrics?.csv ?? null}
+            loading={metricsLoading}
+            error={metricsError}
+          />
+        )
       }
     />
   );
