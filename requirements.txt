@@ -13,6 +13,8 @@ av
 napari[all]
 PyQt6
 
+neuprint-python
+
 zarr
 
 navis[all]
