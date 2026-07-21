@@ -1,0 +1,82 @@
+# BiaPy version: 3.6.8
+
+SYSTEM:
+    NUM_CPUS: -1
+
+PROBLEM:
+    TYPE: INSTANCE_SEG
+    NDIM: 3D
+    INSTANCE_SEG:
+        DATA_CHANNELS: BC
+        DATA_CHANNELS: ['F', 'C', 'Db', 'Dn']
+        WATERSHED:
+            SEED_CHANNELS: ['F', 'Db']
+            SEED_CHANNELS_THRESH: ['auto', 'auto']
+            TOPOGRAPHIC_SURFACE_CHANNEL: 'Db'
+            GROWTH_MASK_CHANNELS: ['F']
+            GROWTH_MASK_CHANNELS_THRESH: ['auto']
+
+            DATA_REMOVE_BEFORE_MW: True
+            DATA_REMOVE_SMALL_OBJ_BEFORE: 500     # same rough voxel threshold as above
+            SEED_MORPH_SEQUENCE: ['erode', 'dilate']
+            SEED_MORPH_RADIUS: [1, 1]
+            ERODE_AND_DILATE_GROWTH_MASK: True
+            FORE_EROSION_RADIUS: 1
+            FORE_DILATION_RADIUS: 1
+            DATA_CHECK_MW: True
+
+DATA: 
+    PATCH_SIZE: (20, 128, 128, 3)
+    TRAIN:
+        # PATH: fisbe/biapy/train/raw
+        # GT_PATH: fisbe/biapy/train/label
+        PATH: fisbe/aug_biapy/train/raw
+        GT_PATH: fisbe/aug_biapy/train/label
+        INPUT_IMG_AXES_ORDER: CZYX
+        INPUT_MASK_AXES_ORDER: ZYX
+        IN_MEMORY: True
+    VAL:
+        SPLIT_TRAIN: 0.1
+    TEST:
+        # PATH: fisbe/biapy/test/raw
+        # GT_PATH: fisbe/biapy/test/label
+        PATH: fisbe/biapy/train/raw
+        GT_PATH: fisbe/biapy/train/label
+        INPUT_IMG_AXES_ORDER: CZYX
+        INPUT_MASK_AXES_ORDER: ZYX
+        IN_MEMORY: True
+        LOAD_GT: True
+        PADDING: (4,16,16)
+
+AUGMENTOR:
+    ENABLE: True
+    RANDOM_ROT: True
+    VFLIP: True
+    HFLIP: True
+    ZFLIP: True
+
+MODEL:
+    ARCHITECTURE: unet
+    FEATURE_MAPS: [16, 32, 64, 128, 256]
+    Z_DOWN: [1,1,1,1]
+    LOAD_CHECKPOINT: True
+
+TRAIN:
+    ENABLE: False
+    OPTIMIZER: ADAMW
+    LR: 1.E-3
+    BATCH_SIZE: 30
+    EPOCHS: 30
+    PATIENCE: 10
+    LR_SCHEDULER:
+        NAME: 'onecycle'    # use one-cycle learning rate scheduler
+  
+TEST:
+    ENABLE: True
+    AUGMENTATION: False
+    FULL_IMG: False
+    POST_PROCESSING:
+        INSTANCE_REFINEMENT:
+            ENABLE: True
+            OPERATIONS: ['remove_small_objects']
+            VALUES: [500]   # voxel count threshold — tune based on your smallest real neuron
