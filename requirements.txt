@@ -3,6 +3,7 @@ numpy
 matplotlib
 ipykernel
 jupyter
+scikit-learn
 tqdm
 
 scyjava
