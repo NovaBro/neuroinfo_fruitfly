@@ -70,26 +70,66 @@ if __name__ == '__main__':
                     raw_vol, prob_vol, inst_vol = load_biapy_test_sample(sample, biapy_paths)
                     gen_biapy_mip_4panel(raw_vol, prob_vol, inst_vol, analysis_output_paths, title_prefix=f"{sample}")
                 case 'watershed':
-                    input_file_path = biapy_paths.watershed / args.sample / f"{args.watershed}.tif"
-                    output_file_name=f'{args.watershed}_{args.sample}'
-                    watershed_files = [input_file_path]
+                    watershed_root = biapy_paths.watershed
+                    watershed_products = ("growth_mask", "seed_map", "topografic_surface")
+                    dir_mode = args.sample == ""
 
-                    get_stats_in_one_image(input_file_path)
-                    watershed_image = tifffile.imread(input_file_path)[np.newaxis, ...]
-                    logger.info(f"watershed_image shape: {watershed_image.shape}")
-
-                    if args.watershed == 'topografic_surface':
-                        gen_basic_mip(
-                            watershed_image,
-                            output_file_name,
-                            analysis_output_paths
+                    if dir_mode:
+                        samples = sorted(
+                            p.name for p in watershed_root.iterdir() if p.is_dir()
+                        )
+                        products = list(watershed_products)
+                        logger.info(
+                            f"watershed dir mode: {len(samples)} samples × "
+                            f"{len(products)} products under {watershed_root}"
                         )
                     else:
-                        gen_instance_projection(
-                            watershed_image,
-                            output_file_name,
-                            analysis_output_paths,
+                        samples = [args.sample]
+                        products = [args.watershed]
+                        logger.info(
+                            f"watershed single-file mode: sample={args.sample}, "
+                            f"product={args.watershed}"
                         )
+
+                    jobs = [(sample, product) for sample in samples for product in products]
+                    config_out_root = (
+                        analysis_output_paths.output_root / args.bia_config_name
+                    )
+
+                    for sample, product in jobs:
+                        in_path = watershed_root / sample / f"{product}.tif"
+                        if not in_path.is_file():
+                            if dir_mode:
+                                logger.warning(f"Missing watershed TIF, skipping: {in_path}")
+                                continue
+                            logger.error(f"Missing watershed TIF: {in_path}")
+                            raise FileNotFoundError(in_path)
+
+                        if not dir_mode:
+                            get_stats_in_one_image(in_path)
+
+                        watershed_image = tifffile.imread(in_path)[np.newaxis, ...]
+                        logger.info(
+                            f"watershed_image shape: {watershed_image.shape} "
+                            f"({sample}/{product})"
+                        )
+
+                        out_path = config_out_root / sample / f"{product}.png"
+                        output_file_name = f"{product}_{sample}"
+                        if product == "topografic_surface":
+                            gen_basic_mip(
+                                watershed_image,
+                                output_file_name,
+                                analysis_output_paths,
+                                output_path=out_path,
+                            )
+                        else:
+                            gen_instance_projection(
+                                watershed_image,
+                                output_file_name,
+                                analysis_output_paths,
+                                output_path=out_path,
+                            )
 
         case 'fisbe':
             fisb_paths = FisbeDataPaths()
