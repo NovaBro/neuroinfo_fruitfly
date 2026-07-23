@@ -1,4 +1,6 @@
 import logging
+from pathlib import Path
+
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -48,7 +50,8 @@ def gen_basic_mip(
         input_np:np.ndarray, 
         output_file_name:str, 
         analysis_output_paths: AnalysisOutputPaths,
-        axis:int=1
+        axis:int=1,
+        output_path: Path | None = None,
 ):
     logger.info(f"gen_basic_mip:")
     logger.info(f"\toutput_file_name: {output_file_name}")
@@ -64,7 +67,11 @@ def gen_basic_mip(
     axes.imshow(rgb)
     axes.set_title(f"MIP of Zarr Image {output_file_name}")
     axes.axis("off")
-    out_path = analysis_output_paths.output_images / f"{output_file_name}.png"
+    if output_path is None:
+        out_path = analysis_output_paths.output_images / f"{output_file_name}.png"
+    else:
+        out_path = Path(output_path)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(out_path)
     logger.info(f"\tSaving to: {out_path}")
     plt.close(fig)
@@ -74,6 +81,7 @@ def gen_instance_projection(
     output_file_name: str,
     analysis_output_paths: AnalysisOutputPaths,
     axis: int = 1,
+    output_path: Path | None = None,
 ):
     """
     Colorized MIP of FISBe gt_instances (CZYX overlapping instance channels).
@@ -108,8 +116,12 @@ def gen_instance_projection(
     output_file_name = output_file_name.replace('.zarr.tif', '')
     axes.set_title(f"GT instance MIP {output_file_name}")
     axes.axis("off")
-    rand_id = np.random.randint(0, len(np.unique(labels)))
-    out_path = analysis_output_paths.output_images / f"{output_file_name}_id{rand_id}_instances.png"
+    if output_path is None:
+        rand_id = np.random.randint(0, len(np.unique(labels)))
+        out_path = analysis_output_paths.output_images / f"{output_file_name}_id{rand_id}_instances.png"
+    else:
+        out_path = Path(output_path)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
     logger.info(f"\tSaving to: {out_path}")
     plt.savefig(out_path)
     plt.close(fig)
