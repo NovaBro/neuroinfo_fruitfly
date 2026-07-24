@@ -14,6 +14,11 @@ av
 napari[all]
 PyQt6
 
+pycpd
+
+cajal
+umap-learn
+
 neuprint-python
 
 zarr
