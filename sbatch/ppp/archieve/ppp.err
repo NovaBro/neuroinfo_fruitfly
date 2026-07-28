@@ -1,0 +1,36 @@
+/ext3/miniforge3/envs/ppp/lib/python3.9/site-packages/gunpowder/nodes/torch_train.py:181: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.scaler = torch.cuda.amp.GradScaler(init_scale=8192.0,
+/ext3/miniforge3/envs/ppp/lib/python3.9/site-packages/gunpowder/nodes/torch_train.py:449: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=self.use_auto_mixed_precision):
+/ext3/miniforge3/envs/ppp/lib/python3.9/site-packages/gunpowder/nodes/torch_train.py:425: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=self.use_auto_mixed_precision):
+Traceback (most recent call last):
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 2328, in <module>
+    main()
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 2158, in main
+    checkpoint, params = validate_checkpoints(args, config, data,
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 1009, in validate_checkpoints
+    metric = validate_checkpoint(
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 105, in wrapper
+    ret = func(*args, **kwargs)
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 842, in validate_checkpoint
+    predict(args, config, config['model']['test_net_name'], data,
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 105, in wrapper
+    ret = func(*args, **kwargs)
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 691, in predict
+    predict_no_gp(args, config, name, data, samples, checkpoint,
+  File "/scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/run_ppp.py", line 123, in wrapper
+    p.start()
+  File "/ext3/miniforge3/envs/ppp/lib/python3.9/multiprocessing/process.py", line 121, in start
+    self._popen = self._Popen(self)
+  File "/ext3/miniforge3/envs/ppp/lib/python3.9/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/ext3/miniforge3/envs/ppp/lib/python3.9/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/ext3/miniforge3/envs/ppp/lib/python3.9/multiprocessing/popen_fork.py", line 19, in __init__
+    self._launch(process_obj)
+  File "/ext3/miniforge3/envs/ppp/lib/python3.9/multiprocessing/popen_spawn_posix.py", line 47, in _launch
+    reduction.dump(process_obj, fp)
+  File "/ext3/miniforge3/envs/ppp/lib/python3.9/multiprocessing/reduction.py", line 60, in dump
+    ForkingPickler(file, protocol).dump(obj)
+_pickle.PicklingError: Can't pickle <function predict_no_gp at 0x14cc25d39a60>: it's not the same object as __main__.predict_no_gp

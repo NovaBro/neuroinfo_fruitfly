@@ -1,0 +1,1383 @@
+SBATCH Run: biapy-py_debug.yaml
+running BiaPy/run_biapy-py.py
+Date     : 2026-07-24 13:55:29
+Arguments: Namespace(config=PosixPath('BiaPy/configs/biapy-py_debug.yaml'), result_dir=PosixPath('metrics/biapy'), name='biapy-py_debug', run_id='0', gpu='0', world_size=1, local_rank=-1, dist_on_itp=False, dist_url='env://', dist_backend='nccl')
+Job      : biapy-py_debug_0
+BiaPy    : 3.6.8
+Python   : 3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:34:02) [GCC 14.3.0]
+PyTorch  : 2.10.0
+The following changes were made in order to adapt the input configuration:
+Not using distributed mode
+[13:55:29.486422] WARNING: seems that the channels requested are custom so BiaPy did not fill some varibles by default.
+You will need to fill the following variables:
+    - PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS
+    - PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH
+    - PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL
+    - PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS
+    - PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH
+
+[13:55:29.491306] Configuration details:
+[13:55:29.491313] AUGMENTOR:
+  AFFINE_MODE: reflect
+  AUG_NUM_SAMPLES: 10
+  AUG_SAMPLES: True
+  BRIGHTNESS: False
+  BRIGHTNESS_FACTOR: (-0.1, 0.1)
+  CBLUR_DOWN_RANGE: (2, 8)
+  CBLUR_INSIDE: True
+  CBLUR_SIZE: (0.2, 0.4)
+  CHANNEL_SHUFFLE: False
+  CMIX_SIZE: (0.2, 0.4)
+  CNOISE_NB_ITERATIONS: (1, 3)
+  CNOISE_SCALE: (0.05, 0.1)
+  CNOISE_SIZE: (0.2, 0.4)
+  CONTRAST: False
+  CONTRAST_FACTOR: (-0.1, 0.1)
+  COUT_APPLY_TO_MASK: False
+  COUT_CVAL: 0.0
+  COUT_NB_ITERATIONS: (1, 3)
+  COUT_SIZE: (0.05, 0.3)
+  CUTBLUR: False
+  CUTMIX: False
+  CUTNOISE: False
+  CUTOUT: False
+  DA_PROB: 0.5
+  DRAW_GRID: True
+  DROPOUT: False
+  DROP_RANGE: (0, 0.2)
+  ELASTIC: False
+  ENABLE: True
+  E_ALPHA: (12, 16)
+  E_MODE: constant
+  E_SIGMA: 4
+  GAMMA_CONTRAST: False
+  GAUSSIAN_NOISE: False
+  GAUSSIAN_NOISE_MEAN: 0.0
+  GAUSSIAN_NOISE_USE_INPUT_IMG_MEAN_AND_VAR: False
+  GAUSSIAN_NOISE_VAR: 0.05
+  GC_GAMMA: (1.25, 1.75)
+  GRAYSCALE: False
+  GRIDMASK: False
+  GRID_D_RANGE: (0.4, 1)
+  GRID_INVERT: False
+  GRID_RATIO: 0.6
+  GRID_ROTATE: 1.0
+  G_BLUR: False
+  G_SIGMA: (1.0, 2.0)
+  HFLIP: True
+  MB_KERNEL: (3, 7)
+  MEDIAN_BLUR: False
+  MISALIGNMENT: False
+  MISSING_SECTIONS: False
+  MISSP_CHANNEL_PB: 0.5
+  MISSP_ITERATIONS: (10, 30)
+  MOTB_K_RANGE: (8, 12)
+  MOTION_BLUR: False
+  MS_DISPLACEMENT: 16
+  MS_ROTATE_RATIO: 0.5
+  PEPPER: False
+  PEPPER_AMOUNT: 0.05
+  POISSON_NOISE: False
+  RANDOM_ROT: True
+  RANDOM_ROT_RANGE: (-180, 180)
+  ROT90: False
+  SALT: False
+  SALT_AMOUNT: 0.05
+  SALT_AND_PEPPER: False
+  SALT_AND_PEPPER_AMOUNT: 0.05
+  SALT_AND_PEPPER_PROP: 0.5
+  SHEAR: False
+  SHEAR_RANGE: (-20, 20)
+  SHIFT: False
+  SHIFT_RANGE: (0.1, 0.2)
+  SHUFFLE_TRAIN_DATA_EACH_EPOCH: True
+  SHUFFLE_VAL_DATA_EACH_EPOCH: False
+  VFLIP: True
+  ZFLIP: True
+  ZOOM: False
+  ZOOM_IN_Z: False
+  ZOOM_RANGE: (0.8, 1.2)
+DATA:
+  CHECK_GENERATORS: False
+  FILTER_BY_IMAGE: False
+  FORCE_RGB: False
+  NORMALIZATION:
+    MEASURE_BY: image
+    PERC_CLIP:
+      ENABLE: False
+      LOWER_PERC: -1.0
+      LOWER_VALUE: -1.0
+      UPPER_PERC: -1.0
+      UPPER_VALUE: -1.0
+    TYPE: zero_mean_unit_variance
+    ZERO_MEAN_UNIT_VAR:
+      MEAN_VAL: -1.0
+      STD_VAL: -1.0
+  N_CLASSES: 2
+  PATCH_SIZE: (20, 128, 128, 3)
+  PREPROCESS:
+    CANNY:
+      ENABLE: False
+      HIGH_THRESHOLD: None
+      LOW_THRESHOLD: None
+    CLAHE:
+      CLIP_LIMIT: 0.01
+      ENABLE: False
+      KERNEL_SIZE: None
+    GAUSSIAN_BLUR:
+      CHANNEL_AXIS: None
+      ENABLE: False
+      MODE: nearest
+      SIGMA: 1
+    MATCH_HISTOGRAM:
+      ENABLE: False
+      REFERENCE_PATH: user_data/test/x
+    MEDIAN_BLUR:
+      ENABLE: False
+      KERNEL_SIZE: (3, 3, 1)
+    RESIZE:
+      ANTI_ALIASING: False
+      CLIP: True
+      CVAL: 0.0
+      ENABLE: False
+      MODE: reflect
+      ORDER: 1
+      OUTPUT_SHAPE: (512, 512)
+      PRESERVE_RANGE: True
+    TEST: False
+    TRAIN: False
+    VAL: False
+    ZOOM:
+      ENABLE: False
+      ZOOM_FACTOR: [1, 1, 1, 1, 1]
+  REFLECT_TO_COMPLETE_SHAPE: False
+  SAVE_FILTERED_IMAGES: False
+  SAVE_FILTERED_IMAGES_NUM: 3
+  TEST:
+    ARGMAX_TO_OUTPUT: True
+    BINARY_MASKS: fisbe/biapy-debug/test/raw/../bin_mask
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy-debug/test/label_detection_masks_2
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy-debug/test/label
+    INPUT_IMG_AXES_ORDER: TZCYX
+    INPUT_MASK_AXES_ORDER: TZCYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-debug/test/label_F.erosion-0.dilation-0_C.mode-thick_Db.norm-True.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+    IN_MEMORY: True
+    LOAD_GT: True
+    MEDIAN_PADDING: False
+    OVERLAP: (0, 0, 0)
+    PADDING: (4, 16, 16)
+    PATH: fisbe/biapy-debug/test/raw
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy-debug/test/raw_ssl_source
+    USE_VAL_AS_TEST: False
+  TRAIN:
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy-debug/train/label_detection_masks_2
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy-debug/train/label
+    INPUT_IMG_AXES_ORDER: TZCYX
+    INPUT_MASK_AXES_ORDER: TZCYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-debug/train/label_F.erosion-0.dilation-0_C.mode-thick_Db.norm-True.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+    IN_MEMORY: True
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: fisbe/biapy-debug/train/raw
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy-debug/train/raw_ssl_source
+  VAL:
+    CROSS_VAL: False
+    CROSS_VAL_FOLD: 1
+    CROSS_VAL_NFOLD: 5
+    DETECTION_MASK_DIR: user_data/val/y_detection_masks_2
+    DIST_EVAL: True
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    FROM_TRAIN: True
+    GT_PATH: user_data/val/y
+    INPUT_IMG_AXES_ORDER: TZCYX
+    INPUT_MASK_AXES_ORDER: TZCYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: user_data/val/y_F.erosion-0.dilation-0_C.mode-thick_Db.norm-True.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+    IN_MEMORY: True
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: user_data/val/x
+    RANDOM: True
+    RESOLUTION: (1, 1, 1)
+    SPLIT_TRAIN: 0.1
+    SSL_SOURCE_DIR: user_data/val/x_ssl_source
+LOG:
+  CHART_CREATION_FREQ: 5
+  LOG_DIR: metrics/biapy/biapy-py_debug/train_logs
+  LOG_FILE_PREFIX: biapy-py_debug_0
+  TENSORBOARD_LOG_DIR: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/tensorboard
+LOSS:
+  CLASS_REBALANCE: none
+  CLASS_WEIGHTS: []
+  CONTRAST:
+    ENABLE: False
+    MEMORY_SIZE: 5000
+    PIXEL_UPD_FREQ: 10
+    PROJ_DIM: 256
+  IGNORE_INDEX: -1
+  TYPE: 
+  WEIGHTS: [0.66, 0.34]
+MODEL:
+  ACTIVATION: ELU
+  ARCHITECTURE: unet
+  BMZ:
+    EXPORT:
+      AUTHORS: []
+      CITE: []
+      DATASET_INFO: [{}]
+      DESCRIPTION: 
+      DOCUMENTATION: 
+      ENABLE: False
+      LICENSE: CC-BY-4.0
+      MODEL_NAME: 
+      MODEL_VERSION: 0.1.0
+      REUSE_BMZ_CONFIG: False
+      TAGS: []
+    SOURCE_MODEL_ID: 
+  CONVNEXT_LAYERS: [2, 2, 2, 2, 2]
+  CONVNEXT_LAYER_SCALE: 1e-06
+  CONVNEXT_SD_PROB: 0.1
+  CONVNEXT_STEM_K_SIZE: 2
+  DROPOUT_VALUES: [0.0, 0.0, 0.0, 0.0, 0.0]
+  FEATURE_MAPS: [16, 32, 64, 128, 256]
+  HRNET:
+    BLOCK_TYPE: BASIC
+    CUSTOM: False
+    HEAD_TYPE: FCN
+    STAGE2:
+      NUM_BLOCKS: [4, 4]
+      NUM_BRANCHES: 2
+      NUM_CHANNELS: [18, 36]
+      NUM_MODULES: 1
+    STAGE3:
+      NUM_BLOCKS: [4, 4, 4]
+      NUM_BRANCHES: 3
+      NUM_CHANNELS: [18, 36, 72]
+      NUM_MODULES: 4
+    STAGE4:
+      NUM_BLOCKS: [4, 4, 4, 4]
+      NUM_BRANCHES: 4
+      NUM_CHANNELS: [18, 36, 72, 144]
+      NUM_MODULES: 3
+    Z_DOWN: True
+  ISOTROPY: [True, True, True, True, True]
+  KERNEL_SIZE: 3
+  LARGER_IO: False
+  LOAD_CHECKPOINT: False
+  LOAD_CHECKPOINT_EPOCH: best_on_val
+  LOAD_CHECKPOINT_ONLY_WEIGHTS: True
+  LOAD_MODEL_FROM_CHECKPOINT: True
+  MAE_DEC_HIDDEN_SIZE: 512
+  MAE_DEC_MLP_DIMS: 2048
+  MAE_DEC_NUM_HEADS: 16
+  MAE_DEC_NUM_LAYERS: 8
+  MAE_MASK_RATIO: 0.5
+  MAE_MASK_TYPE: grid
+  NORMALIZATION: bn
+  OUT_CHECKPOINT_FORMAT: pth
+  RCAN_CONV_FILTERS: 16
+  RCAN_RCAB_BLOCK_NUM: 20
+  RCAN_REDUCTION_RATIO: 16
+  RCAN_RG_BLOCK_NUM: 10
+  RCAN_UPSCALING_LAYER: True
+  SAVE_CKPT_FREQ: -1
+  SKIP_UNMATCHED_LAYERS: False
+  SOURCE: biapy
+  TORCHVISION_MODEL_NAME: 
+  UNETR_DEC_ACTIVATION: relu
+  UNETR_DEC_KERNEL_SIZE: 3
+  UNETR_VIT_HIDD_MULT: 3
+  UNETR_VIT_NUM_FILTERS: 16
+  UNET_SR_UPSAMPLE_POSITION: pre
+  UPSAMPLE_LAYER: convtranspose
+  VIT_EMBED_DIM: 768
+  VIT_MLP_RATIO: 4.0
+  VIT_MODEL: custom
+  VIT_NORM_EPS: 1e-06
+  VIT_NUM_HEADS: 12
+  VIT_NUM_LAYERS: 12
+  VIT_TOKEN_SIZE: 16
+  Z_DOWN: [1, 1, 1, 1]
+PATHS:
+  BMZ_EXPORT_PATH: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/BMZ_files
+  CHARTS: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/charts
+  CHECKPOINT: metrics/biapy/biapy-py_debug/checkpoints
+  CHECKPOINT_FILE: 
+  DA_SAMPLES: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/aug
+  FIL_SAMPLES_DIR: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/filtering_information
+  GEN_CHECKS: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/gen_check
+  GEN_MASK_CHECKS: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/gen_mask_check
+  MAE_OUT_DIR: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/MAE_checks
+  PROB_MAP_DIR: metrics/biapy/biapy-py_debug/prob_map
+  PROB_MAP_FILENAME: prob_map.npy
+  PROFILER: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/profiler
+  RESULT_DIR:
+    AS_3D_STACK: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/as_3d_stack
+    AS_3D_STACK_BIN: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/as_3d_stack_binarized
+    AS_3D_STACK_POST_PROCESSING: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/as_3d_stack_post_processing
+    DET_ASSOC_POINTS: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/point_associations
+    DET_LOCAL_MAX_COORDS_CHECK: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/per_image_local_max_check
+    DET_LOCAL_MAX_COORDS_CHECK_POST_PROCESSING: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/per_image_local_max_check_post_processing
+    FULL_IMAGE: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/full_image
+    FULL_IMAGE_BIN: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/full_image_binarized
+    FULL_IMAGE_INSTANCES: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/full_image_instances
+    FULL_IMAGE_POST_PROCESSING: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/full_image_post_processing
+    INST_ASSOC_POINTS: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/instance_associations
+    PATH: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0
+    PER_IMAGE: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/per_image
+    PER_IMAGE_BIN: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/per_image_binarized
+    PER_IMAGE_INSTANCES: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/per_image_instances
+    PER_IMAGE_POST_PROCESSING: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/per_image_post_processing
+  TEST_FULL_GT_H5: fisbe/biapy-debug/test/label/h5
+  TEST_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/test_FCDbDn_instance_channels
+  TRAIN_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/train_FCDbDn_instance_channels
+  VAL_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/val_FCDbDn_instance_channels
+  WATERSHED_DIR: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/watershed
+PROBLEM:
+  DENOISING:
+    LOAD_GT_DATA: False
+    N2V_MANIPULATOR: uniform_withCP
+    N2V_NEIGHBORHOOD_RADIUS: 5
+    N2V_PERC_PIX: 0.198
+    N2V_STRUCTMASK: False
+  DETECTION:
+    CENTRAL_POINT_DILATION: [2]
+    CHECK_POINTS_CREATED: True
+    DATA_CHECK_MW: False
+  IMAGE_TO_IMAGE:
+    MULTIPLE_RAW_ONE_TARGET_LOADER: False
+  INSTANCE_SEG:
+    BORDER_EXTRA_WEIGHTS: 
+    DATA_CHANNELS: ['F', 'C', 'Db', 'Dn']
+    DATA_CHANNELS_EXTRA_OPTS: [{'F': {'erosion': 0, 'dilation': 0}, 'C': {'mode': 'thick'}, 'Db': {'norm': True, 'mask_values': True}, 'Dn': {'closing_size': 3, 'norm': True, 'mask_values': True, 'decline_power': 3}}]
+    DATA_CHANNELS_LOSSES: ['bce', 'bce', 'l1', 'l1']
+    DATA_CHANNEL_WEIGHTS: (1, 1, 1, 1)
+    EMBEDSEG:
+      MIN_MASK_SUM: 0
+      MIN_OBJECT_SIZE: 100
+      MIN_UNCLUSTERED_SUM: 0
+      SEED_THRESH: 0.5
+    INSTANCE_CREATION_PROCESS: watershed
+    STARDIST:
+      NMS_IOU_THRESH: 0.3
+      PROB_THRESH: 0.4
+    SYNAPSES:
+      BLOB_LOG_MAX_SIGMA: 10
+      BLOB_LOG_MIN_SIGMA: 5
+      BLOB_LOG_NUM_SIGMA: 2
+      EXCLUDE_BORDER: False
+      MIN_TH_TO_BE_PEAK: 0.2
+      PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+      POINT_CREATION_FUNCTION: peak_local_max
+      POSTSITE_DILATION: [2, 4, 4]
+      POSTSITE_DILATION_DISTANCE_CHANNELS: [3, 10, 10]
+      REMOVE_CLOSE_POINTS_RADIUS_BY_MASK: False
+      REMOVE_CLOSE_POST_POINTS_RADIUS: 0
+      REMOVE_CLOSE_PRE_POINTS_RADIUS: 0
+      TH_TYPE: auto
+    TYPE: regular
+    WATERSHED:
+      BY_2D_SLICES: False
+      DATA_CHECK_MW: True
+      DATA_REMOVE_BEFORE_MW: True
+      DATA_REMOVE_SMALL_OBJ_BEFORE: 500
+      ERODE_AND_DILATE_GROWTH_MASK: True
+      FORE_DILATION_RADIUS: 1
+      FORE_EROSION_RADIUS: 1
+      GROWTH_MASK_CHANNELS: ['F']
+      GROWTH_MASK_CHANNELS_THRESH: ['auto']
+      SEED_CHANNELS: ['F', 'Db']
+      SEED_CHANNELS_THRESH: ['auto', 'auto']
+      SEED_MORPH_RADIUS: [1, 1]
+      SEED_MORPH_SEQUENCE: ['erode', 'dilate']
+      TOPOGRAPHIC_SURFACE_CHANNEL: Db
+  NDIM: 3D
+  PRINT_OLD_KEY_CHANGES: True
+  SELF_SUPERVISED:
+    NOISE: 0.2
+    PRETEXT_TASK: crappify
+    RESIZING_FACTOR: 4
+  SEMANTIC_SEG:
+    IGNORE_CLASS_ID: 0
+  SUPER_RESOLUTION:
+    UPSCALING: (1, 1, 1)
+  TYPE: INSTANCE_SEG
+SYSTEM:
+  DEVICE: cpu
+  NUM_CPUS: 128
+  NUM_GPUS: 1
+  NUM_WORKERS: -1
+  PIN_MEM: True
+  SEED: 0
+TEST:
+  ANALIZE_2D_IMGS_AS_3D_STACK: False
+  AUGMENTATION: False
+  AUGMENTATION_MODE: mean
+  BY_CHUNKS:
+    ENABLE: False
+    FLUSH_EACH: 100
+    SAVE_OUT_TIF: False
+    WORKFLOW_PROCESS:
+      ENABLE: True
+      TYPE: chunk_by_chunk
+  DET_BLOB_LOG_MAX_SIGMA: 10
+  DET_BLOB_LOG_MIN_SIGMA: 5
+  DET_BLOB_LOG_NUM_SIGMA: 2
+  DET_EXCLUDE_BORDER: False
+  DET_IGNORE_POINTS_OUTSIDE_BOX: []
+  DET_MIN_TH_TO_BE_PEAK: 0.2
+  DET_PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+  DET_POINT_CREATION_FUNCTION: peak_local_max
+  DET_TH_TYPE: manual
+  DET_TOLERANCE: 10
+  ENABLE: True
+  FULL_IMG: False
+  MATCHING_STATS: True
+  MATCHING_STATS_THS: [0.3, 0.5, 0.75]
+  MATCHING_STATS_THS_COLORED_IMG: []
+  METRICS: ['iou']
+  METRICS_IN_CPU: True
+  POST_PROCESSING:
+    APPLY_MASK: False
+    DET_WATERSHED: False
+    DET_WATERSHED_DONUTS_CLASSES: [-1]
+    DET_WATERSHED_DONUTS_NUCLEUS_DIAMETER: 30
+    DET_WATERSHED_DONUTS_PATCH: [13, 120, 120]
+    DET_WATERSHED_FIRST_DILATION: [-1, -1]
+    INSTANCE_REFINEMENT:
+      ENABLE: True
+      OPERATIONS: ['remove_small_objects']
+      VALUES: [500]
+    MEASURE_PROPERTIES:
+      ENABLE: False
+      EXTRA_PROPS: []
+      REMOVE_BY_PROPERTIES:
+        ENABLE: False
+        PROPS: []
+        SIGNS: []
+        VALUES: []
+    MEDIAN_FILTER: False
+    MEDIAN_FILTER_AXIS: []
+    MEDIAN_FILTER_SIZE: []
+    REMOVE_CLOSE_POINTS: False
+    REMOVE_CLOSE_POINTS_RADIUS: 0
+    REPARE_LARGE_BLOBS_SIZE: -1
+    VORONOI_ON_MASK: False
+    VORONOI_TH: 0.0
+  REDUCE_MEMORY: False
+  REUSE_PREDICTIONS: False
+  SAVE_MODEL_RAW_OUTPUT: True
+  VERBOSE: True
+TRAIN:
+  ACCUM_ITER: 1
+  BATCH_SIZE: 30
+  CHECKPOINT_MONITOR: val_loss
+  ENABLE: True
+  EPOCHS: 30
+  LR: 0.001
+  LR_SCHEDULER:
+    MIN_LR: -1.0
+    NAME: onecycle
+    REDUCEONPLATEAU_FACTOR: 0.5
+    REDUCEONPLATEAU_PATIENCE: -1
+    WARMUP_COSINE_DECAY_EPOCHS: -1
+  METRICS: ['iou']
+  OPTIMIZER: ADAMW
+  OPT_BETAS: (0.9, 0.999)
+  PATIENCE: 10
+  VERBOSE: False
+  W_DECAY: 0.02
+[13:55:34.837286] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+[13:55:34.837304] Initializing Instance_Segmentation_Workflow
+[13:55:34.837309] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+
+[13:55:35.149038] Creating normalization module . . .
+[13:55:35.149076] Normalization: using mean None and std: None
+[13:55:35.149122] ###########################
+[13:55:35.149125] #  PREPARE INSTANCE DATA  #
+[13:55:35.149127] ###########################
+[13:55:35.151377] DATA.TRAIN.GT_PATH changed from fisbe/biapy-debug/train/label to fisbe/biapy-debug/train/label_F.erosion-0.dilation-0_C.mode-thick_Db.norm-True.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+[13:55:35.151395] DATA.TEST.GT_PATH changed from fisbe/biapy-debug/test/label to fisbe/biapy-debug/test/label_F.erosion-0.dilation-0_C.mode-thick_Db.norm-True.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+[13:55:35.152611] ##########################
+[13:55:35.152617] #   LOAD TRAINING DATA   #
+[13:55:35.152619] ##########################
+[13:55:35.152681] ### LOAD ###
+[13:55:35.153775] Gathering raw images for training data . . .
+[13:55:39.457257] Gathering labels for training data . . .
+[13:55:42.878635] Checking training raw and label images' shapes . . .
+[13:55:42.879379] Creating validation data from train . . .
+[13:55:42.879387] As only one sample was found BiaPy will assume that it is big enough to hold multiple training samples so the validation will be created extracting samples from it too.
+[13:55:42.914118] Raw samples chosen for training (first 10 only): [ 0  2  3  4  5  6  7  9 10 11...]
+[13:55:42.914163] Raw samples chosen for validation (first 10 only): [ 1  8 14 27 31 40 55 75 79 85 ...]
+[13:55:42.914167] * Loading train images . . .
+[13:55:44.556912] *** Loaded data shape is (712, 20, 128, 128)
+[13:55:44.556934] * Loading train GT . . .
+[13:55:45.326315] *** Loaded data shape is (712, 20, 128, 128)
+[13:55:45.326337] * Loading validation images . . .
+[13:55:46.789321] *** Loaded data shape is (80, 20, 128, 128)
+[13:55:46.789353] * Loading validation GT . . .
+[13:55:47.563399] *** Loaded data shape is (80, 20, 128, 128)
+[13:55:47.563414] ### LOAD RESULTS ###
+[13:55:47.563423] *** Loaded train data shape is: (712, 20, 128, 128)
+[13:55:47.563429] *** Loaded train GT shape is: (712, 20, 128, 128)
+[13:55:47.563434] *** Loaded validation data shape is: (80, 20, 128, 128)
+[13:55:47.563438] *** Loaded validation GT shape is: (80, 20, 128, 128)
+[13:55:47.563440] ### END LOAD ###
+[13:55:47.563500] ###############
+[13:55:47.563502] # Build model #
+[13:55:47.563504] ###############
+[13:55:54.191650] ==================================================================================================================================
+Layer (type:depth-idx)                                  Input Shape               Output Shape              Param #
+==================================================================================================================================
+U_Net                                                   [1, 3, 20, 128, 128]      [1, 4, 20, 128, 128]      --
+├─ModuleList: 1-7                                       --                        --                        (recursive)
+│    └─DoubleConvBlock: 2-1                             [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    └─Sequential: 3-1                             [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    │    └─ConvBlock: 4-1                         [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    │    │    └─Sequential: 5-1                   [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─Conv3d: 6-1                  [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     1,312
+│    │    │    │    │    └─BatchNorm3d: 6-2             [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    └─ELU: 6-3                     [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    └─ConvBlock: 4-2                         [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    └─Sequential: 5-2                   [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─Conv3d: 6-4                  [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     6,928
+│    │    │    │    │    └─BatchNorm3d: 6-5             [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    └─ELU: 6-6                     [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+├─ModuleList: 1-8                                       --                        --                        --
+│    └─MaxPool3d: 2-2                                   [1, 16, 20, 128, 128]     [1, 16, 20, 64, 64]       --
+├─ModuleList: 1-7                                       --                        --                        (recursive)
+│    └─DoubleConvBlock: 2-3                             [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    └─Sequential: 3-2                             [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    └─ConvBlock: 4-3                         [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─Sequential: 5-3                   [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─Conv3d: 6-7                  [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       13,856
+│    │    │    │    │    └─BatchNorm3d: 6-8             [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    └─ELU: 6-9                     [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    └─ConvBlock: 4-4                         [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─Sequential: 5-4                   [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─Conv3d: 6-10                 [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       27,680
+│    │    │    │    │    └─BatchNorm3d: 6-11            [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    └─ELU: 6-12                    [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+├─ModuleList: 1-8                                       --                        --                        --
+│    └─MaxPool3d: 2-4                                   [1, 32, 20, 64, 64]       [1, 32, 20, 32, 32]       --
+├─ModuleList: 1-7                                       --                        --                        (recursive)
+│    └─DoubleConvBlock: 2-5                             [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    └─Sequential: 3-3                             [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    └─ConvBlock: 4-5                         [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    └─Sequential: 5-5                   [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─Conv3d: 6-13                 [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       55,360
+│    │    │    │    │    └─BatchNorm3d: 6-14            [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    └─ELU: 6-15                    [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    └─ConvBlock: 4-6                         [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    └─Sequential: 5-6                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─Conv3d: 6-16                 [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       110,656
+│    │    │    │    │    └─BatchNorm3d: 6-17            [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    └─ELU: 6-18                    [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+├─ModuleList: 1-8                                       --                        --                        --
+│    └─MaxPool3d: 2-6                                   [1, 64, 20, 32, 32]       [1, 64, 20, 16, 16]       --
+├─ModuleList: 1-7                                       --                        --                        (recursive)
+│    └─DoubleConvBlock: 2-7                             [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    └─Sequential: 3-4                             [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    │    └─ConvBlock: 4-7                         [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    │    │    └─Sequential: 5-7                   [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─Conv3d: 6-19                 [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      221,312
+│    │    │    │    │    └─BatchNorm3d: 6-20            [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    └─ELU: 6-21                    [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    └─ConvBlock: 4-8                         [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    └─Sequential: 5-8                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─Conv3d: 6-22                 [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      442,496
+│    │    │    │    │    └─BatchNorm3d: 6-23            [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    └─ELU: 6-24                    [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+├─ModuleList: 1-8                                       --                        --                        --
+│    └─MaxPool3d: 2-8                                   [1, 128, 20, 16, 16]      [1, 128, 20, 8, 8]        --
+├─DoubleConvBlock: 1-9                                  [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    └─Sequential: 2-9                                  [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    └─ConvBlock: 3-5                              [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    └─Sequential: 4-9                        [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    │    └─Conv3d: 5-9                       [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        884,992
+│    │    │    │    └─BatchNorm3d: 5-10                 [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        512
+│    │    │    │    └─ELU: 5-11                         [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    └─ConvBlock: 3-6                              [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    └─Sequential: 4-10                       [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    │    └─Conv3d: 5-12                      [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        1,769,728
+│    │    │    │    └─BatchNorm3d: 5-13                 [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        512
+│    │    │    │    └─ELU: 5-14                         [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+├─ModuleList: 1-10                                      --                        --                        --
+│    └─UpBlock: 2-10                                    [1, 256, 20, 8, 8]        [1, 128, 20, 16, 16]      --
+│    │    └─Sequential: 3-7                             [1, 256, 20, 8, 8]        [1, 128, 20, 16, 16]      --
+│    │    │    └─ConvTranspose3d: 4-11                  [1, 256, 20, 8, 8]        [1, 128, 20, 16, 16]      131,200
+│    │    │    └─BatchNorm3d: 4-12                      [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    └─ELU: 4-13                              [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    └─DoubleConvBlock: 3-8                        [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    └─Sequential: 4-14                       [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    └─ConvBlock: 5-15                   [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─Sequential: 6-25             [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    │    └─Conv3d: 7-1             [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      884,864
+│    │    │    │    │    │    └─BatchNorm3d: 7-2        [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    │    └─ELU: 7-3                [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    └─ConvBlock: 5-16                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─Sequential: 6-26             [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    │    └─Conv3d: 7-4             [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      442,496
+│    │    │    │    │    │    └─BatchNorm3d: 7-5        [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    │    └─ELU: 7-6                [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    └─UpBlock: 2-11                                    [1, 128, 20, 16, 16]      [1, 64, 20, 32, 32]       --
+│    │    └─Sequential: 3-9                             [1, 128, 20, 16, 16]      [1, 64, 20, 32, 32]       --
+│    │    │    └─ConvTranspose3d: 4-15                  [1, 128, 20, 16, 16]      [1, 64, 20, 32, 32]       32,832
+│    │    │    └─BatchNorm3d: 4-16                      [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    └─ELU: 4-17                              [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    └─DoubleConvBlock: 3-10                       [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    └─Sequential: 4-18                       [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    └─ConvBlock: 5-17                   [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─Sequential: 6-27             [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    │    │    └─Conv3d: 7-7             [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       221,248
+│    │    │    │    │    │    └─BatchNorm3d: 7-8        [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    │    └─ELU: 7-9                [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    └─ConvBlock: 5-18                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─Sequential: 6-28             [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    │    └─Conv3d: 7-10            [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       110,656
+│    │    │    │    │    │    └─BatchNorm3d: 7-11       [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    │    └─ELU: 7-12               [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    └─UpBlock: 2-12                                    [1, 64, 20, 32, 32]       [1, 32, 20, 64, 64]       --
+│    │    └─Sequential: 3-11                            [1, 64, 20, 32, 32]       [1, 32, 20, 64, 64]       --
+│    │    │    └─ConvTranspose3d: 4-19                  [1, 64, 20, 32, 32]       [1, 32, 20, 64, 64]       8,224
+│    │    │    └─BatchNorm3d: 4-20                      [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    └─ELU: 4-21                              [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    └─DoubleConvBlock: 3-12                       [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    └─Sequential: 4-22                       [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─ConvBlock: 5-19                   [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─Sequential: 6-29             [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    │    └─Conv3d: 7-13            [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       55,328
+│    │    │    │    │    │    └─BatchNorm3d: 7-14       [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    │    └─ELU: 7-15               [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─ConvBlock: 5-20                   [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─Sequential: 6-30             [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    │    └─Conv3d: 7-16            [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       27,680
+│    │    │    │    │    │    └─BatchNorm3d: 7-17       [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    │    └─ELU: 7-18               [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    └─UpBlock: 2-13                                    [1, 32, 20, 64, 64]       [1, 16, 20, 128, 128]     --
+│    │    └─Sequential: 3-13                            [1, 32, 20, 64, 64]       [1, 16, 20, 128, 128]     --
+│    │    │    └─ConvTranspose3d: 4-23                  [1, 32, 20, 64, 64]       [1, 16, 20, 128, 128]     2,064
+│    │    │    └─BatchNorm3d: 4-24                      [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    └─ELU: 4-25                              [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    └─DoubleConvBlock: 3-14                       [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    └─Sequential: 4-26                       [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    └─ConvBlock: 5-21                   [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─Sequential: 6-31             [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    │    └─Conv3d: 7-19            [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     13,840
+│    │    │    │    │    │    └─BatchNorm3d: 7-20       [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    │    └─ELU: 7-21               [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    └─ConvBlock: 5-22                   [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─Sequential: 6-32             [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    │    └─Conv3d: 7-22            [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     6,928
+│    │    │    │    │    │    └─BatchNorm3d: 7-23       [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    │    └─ELU: 7-24               [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+├─Conv3d: 1-11                                          [1, 16, 20, 128, 128]     [1, 4, 20, 128, 128]      68
+==================================================================================================================================
+Total params: 5,475,172
+Trainable params: 5,475,172
+Non-trainable params: 0
+Total mult-adds (Units.GIGABYTES): 46.21
+==================================================================================================================================
+Input size (MB): 3.93
+Forward/backward pass size (MB): 807.40
+Params size (MB): 21.90
+Estimated Total Size (MB): 833.24
+==================================================================================================================================
+[13:55:54.240253] ##############################
+[13:55:54.240264] #  PREPARE TRAIN GENERATORS  #
+[13:55:54.240266] ##############################
+[13:55:54.240406] Initializing train data generator . . .
+[13:55:54.244089] Checking which channel of the mask needs normalization . . .
+[13:55:54.257110] Normalization config used for X: {'type': 'zero_mean_unit_variance', 'measure_by': 'image', 'mask_norm': 'as_mask', 'out_dtype': 'float32', 'do_percentile_clipping': False, 'channels_to_analize': 4, 'channel_info': {0: {'type': 'bin', 'div': False}, 1: {'type': 'bin', 'div': False}, 2: {'type': 'bin', 'div': False}, 3: {'type': 'bin', 'div': False}}, 'train_normalization': True, 'eps': 1e-06, 'orig_dtype': 'float32', 'fixed_mean': None, 'fixed_std': None, 'mean': 0.001648590317927301, 'std': 0.03944270312786102, 'last_X_norm': None, 'last_Y_norm': None, 'last_X_norm_extra_info': {'orig_dtype': 'uint16', 'mean': 11.58373026479304, 'std': 24.82163503540374}, 'last_Y_norm_extra_info': {}}
+[13:55:54.257119] Normalization config used for Y: as_mask
+[13:55:54.257610] Initializing val data generator . . .
+[13:55:54.260910] Checking which channel of the mask needs normalization . . .
+[13:55:54.271971] Normalization config used for X: {'type': 'zero_mean_unit_variance', 'measure_by': 'image', 'mask_norm': 'as_mask', 'out_dtype': 'float32', 'do_percentile_clipping': False, 'channels_to_analize': 4, 'channel_info': {0: {'type': 'bin', 'div': False}, 1: {'type': 'bin', 'div': False}, 2: {'type': 'bin', 'div': False}, 3: {'type': 'bin', 'div': False}}, 'train_normalization': True, 'eps': 1e-06, 'orig_dtype': 'float32', 'fixed_mean': None, 'fixed_std': None, 'mean': 0.001648590317927301, 'std': 0.03944270312786102, 'last_X_norm': None, 'last_Y_norm': None, 'last_X_norm_extra_info': {'orig_dtype': 'uint16', 'mean': 11.58373026479304, 'std': 24.82163503540374}, 'last_Y_norm_extra_info': {}}
+[13:55:54.271979] Normalization config used for Y: as_mask
+[13:55:54.272370] Creating generator samples . . .
+[13:55:54.272383] 0) Creating samples of data augmentation . . .
+[13:55:56.442478] Train/val generators with 5 workers
+[13:55:56.442492] Accumulate grad iterations: 1
+[13:55:56.442495] Effective batch size: 30
+[13:55:56.442498] Sampler_train = None
+[13:55:56.462905] #######################
+[13:55:56.462915] # Prepare logging tool #
+[13:55:56.462918] #######################
+[13:55:56.475762] AdamW (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    decoupled_weight_decay: True
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    lr: 0.001
+    maximize: False
+    weight_decay: 0.0
+
+Parameter Group 1
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    decoupled_weight_decay: True
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    lr: 0.001
+    maximize: False
+    weight_decay: 0.02
+)
+[13:55:56.475964] #####################
+[13:55:56.475969] #  TRAIN THE MODEL  #
+[13:55:56.475971] #####################
+[13:55:56.475978] Start training in epoch 1 - Total: 30
+[13:55:56.476000] ~~~ Epoch 1/30 ~~~
+
+[13:56:47.729050] Epoch: [1]  [ 0/24]  eta: 0:20:28  loss: 10.4909 (10.4909)  IoU (F channel): 0.0122 (0.0122)  IoU (C channel): 0.0085 (0.0085)  L1 (Db channel): 0.8111 (0.8111)  L1 (Dn channel): 0.6014 (0.6014)  lr: 0.000040  iter-time: 51.1916
+[13:56:52.165331] Epoch: [1]  [10/24]  eta: 0:01:10  loss: 10.5397 (11.1084)  IoU (F channel): 0.0043 (0.0056)  IoU (C channel): 0.0042 (0.0043)  L1 (Db channel): 0.8332 (0.8344)  L1 (Dn channel): 0.6455 (0.6410)  lr: 0.000046  iter-time: 5.0570
+[13:56:56.605070] Epoch: [1]  [20/24]  eta: 0:00:11  loss: 8.3913 (9.5627)  IoU (F channel): 0.0037 (0.0050)  IoU (C channel): 0.0031 (0.0039)  L1 (Db channel): 0.8007 (0.8022)  L1 (Dn channel): 0.6737 (0.6639)  lr: 0.000062  iter-time: 0.4437
+[13:57:28.217194] Epoch: [1]  [23/24]  eta: 0:00:03  loss: 7.7752 (9.1793)  IoU (F channel): 0.0037 (0.0050)  IoU (C channel): 0.0031 (0.0039)  L1 (Db channel): 0.7822 (0.7930)  L1 (Dn channel): 0.6797 (0.6694)  lr: 0.000069  iter-time: 1.9578
+[13:57:28.266402] Epoch: [1] Total time: 0:01:31 (3.8246 s / it)
+[13:57:28.266480] [Train] averaged stats: loss: 7.7752 (9.1793)  IoU (F channel): 0.0037 (0.0050)  IoU (C channel): 0.0031 (0.0039)  L1 (Db channel): 0.7822 (0.7930)  L1 (Dn channel): 0.6797 (0.6694)  lr: 0.000069
+[13:57:30.729981] Epoch: [1]  [0/3]  eta: 0:00:07  loss: 1.5964 (1.5964)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.5781 (0.5781)  L1 (Dn channel): 0.5897 (0.5897)  iter-time: 2.4625
+[13:57:33.155575] Epoch: [1]  [2/3]  eta: 0:00:01  loss: 4.7947 (4.3007)  IoU (F channel): 0.0002 (0.0055)  IoU (C channel): 0.0001 (0.0058)  L1 (Db channel): 0.5973 (0.6231)  L1 (Dn channel): 0.6306 (0.6380)  iter-time: 1.6293
+[13:57:33.201876] Epoch: [1] Total time: 0:00:04 (1.6449 s / it)
+[13:57:33.201896] [Val] averaged stats: loss: 4.7947 (4.3007)  IoU (F channel): 0.0002 (0.0055)  IoU (C channel): 0.0001 (0.0058)  L1 (Db channel): 0.5973 (0.6231)  L1 (Dn channel): 0.6306 (0.6380)
+[13:57:33.202161] Val loss improved from inf to 4.300715366999309, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[13:57:33.352547] [Val] best loss: 4.3007 best  IoU (F channel): 0.0055 IoU (C channel): 0.0058 L1 (Db channel): 0.6231 L1 (Dn channel): 0.6380 
+[13:57:33.363181] [Time] 1.6m 1.6m/50.1m
+
+[13:57:33.363194] ~~~ Epoch 2/30 ~~~
+
+[13:57:37.133183] Epoch: [2]  [ 0/24]  eta: 0:01:30  loss: 5.9955 (5.9955)  IoU (F channel): 0.0088 (0.0088)  IoU (C channel): 0.0045 (0.0045)  L1 (Db channel): 0.7366 (0.7366)  L1 (Dn channel): 0.6840 (0.6840)  lr: 0.000072  iter-time: 3.7690
+[13:57:43.160559] Epoch: [2]  [10/24]  eta: 0:00:12  loss: 5.9189 (6.0252)  IoU (F channel): 0.0054 (0.0051)  IoU (C channel): 0.0031 (0.0032)  L1 (Db channel): 0.7373 (0.7384)  L1 (Dn channel): 0.6890 (0.6951)  lr: 0.000101  iter-time: 0.8899
+[13:57:47.722742] Epoch: [2]  [20/24]  eta: 0:00:02  loss: 4.9116 (5.3284)  IoU (F channel): 0.0036 (0.0045)  IoU (C channel): 0.0027 (0.0029)  L1 (Db channel): 0.7532 (0.7502)  L1 (Dn channel): 0.6858 (0.6816)  lr: 0.000140  iter-time: 0.5291
+[13:57:48.935589] Epoch: [2]  [23/24]  eta: 0:00:00  loss: 4.7041 (5.1528)  IoU (F channel): 0.0036 (0.0044)  IoU (C channel): 0.0025 (0.0028)  L1 (Db channel): 0.7550 (0.7514)  L1 (Dn channel): 0.6764 (0.6751)  lr: 0.000153  iter-time: 0.4666
+[13:57:48.985041] Epoch: [2] Total time: 0:00:15 (0.6509 s / it)
+[13:57:48.985098] [Train] averaged stats: loss: 4.7041 (5.1528)  IoU (F channel): 0.0036 (0.0044)  IoU (C channel): 0.0025 (0.0028)  L1 (Db channel): 0.7550 (0.7514)  L1 (Dn channel): 0.6764 (0.6751)  lr: 0.000153
+[13:57:51.561429] Epoch: [2]  [0/3]  eta: 0:00:07  loss: 1.9771 (1.9771)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.8508 (0.8508)  L1 (Dn channel): 0.7672 (0.7672)  iter-time: 2.5754
+[13:57:51.816985] Epoch: [2]  [2/3]  eta: 0:00:00  loss: 3.9931 (3.7186)  IoU (F channel): 0.0001 (0.0047)  IoU (C channel): 0.0001 (0.0042)  L1 (Db channel): 0.8839 (0.9039)  L1 (Dn channel): 0.7928 (0.8105)  iter-time: 0.9436
+[13:57:51.873083] Epoch: [2] Total time: 0:00:02 (0.9624 s / it)
+[13:57:51.873101] [Val] averaged stats: loss: 3.9931 (3.7186)  IoU (F channel): 0.0001 (0.0047)  IoU (C channel): 0.0001 (0.0042)  L1 (Db channel): 0.8839 (0.9039)  L1 (Dn channel): 0.7928 (0.8105)
+[13:57:51.873382] Val loss improved from 4.300715366999309 to 3.718552748362223, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[13:57:51.975235] [Val] best loss: 3.7186 best  IoU (F channel): 0.0047 IoU (C channel): 0.0042 L1 (Db channel): 0.9039 L1 (Dn channel): 0.8105 
+[13:57:51.985167] [Time] 18.6s 1.9m/10.9m
+
+[13:57:51.985180] ~~~ Epoch 3/30 ~~~
+
+[13:57:55.681258] Epoch: [3]  [ 0/24]  eta: 0:01:28  loss: 4.0750 (4.0750)  IoU (F channel): 0.0039 (0.0039)  IoU (C channel): 0.0025 (0.0025)  L1 (Db channel): 0.7370 (0.7370)  L1 (Dn channel): 0.6175 (0.6175)  lr: 0.000158  iter-time: 3.6950
+[13:58:01.253907] Epoch: [3]  [10/24]  eta: 0:00:11  loss: 3.3710 (3.5239)  IoU (F channel): 0.0038 (0.0048)  IoU (C channel): 0.0017 (0.0022)  L1 (Db channel): 0.7244 (0.7223)  L1 (Dn channel): 0.5911 (0.5924)  lr: 0.000208  iter-time: 0.8425
+[13:58:06.318738] Epoch: [3]  [20/24]  eta: 0:00:02  loss: 3.1175 (3.2643)  IoU (F channel): 0.0019 (0.0032)  IoU (C channel): 0.0008 (0.0015)  L1 (Db channel): 0.6965 (0.6995)  L1 (Dn channel): 0.5554 (0.5649)  lr: 0.000264  iter-time: 0.5318
+[13:58:07.532547] Epoch: [3]  [23/24]  eta: 0:00:00  loss: 3.0712 (3.1676)  IoU (F channel): 0.0013 (0.0033)  IoU (C channel): 0.0008 (0.0016)  L1 (Db channel): 0.6767 (0.6940)  L1 (Dn channel): 0.5430 (0.5584)  lr: 0.000282  iter-time: 0.4806
+[13:58:07.584810] Epoch: [3] Total time: 0:00:15 (0.6500 s / it)
+[13:58:07.584874] [Train] averaged stats: loss: 3.0712 (3.1676)  IoU (F channel): 0.0013 (0.0033)  IoU (C channel): 0.0008 (0.0016)  L1 (Db channel): 0.6767 (0.6940)  L1 (Dn channel): 0.5430 (0.5584)  lr: 0.000282
+[13:58:10.088721] Epoch: [3]  [0/3]  eta: 0:00:07  loss: 1.8422 (1.8422)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.7792 (0.7792)  L1 (Dn channel): 0.5850 (0.5850)  iter-time: 2.5028
+[13:58:10.344316] Epoch: [3]  [2/3]  eta: 0:00:00  loss: 2.7884 (2.5607)  IoU (F channel): 0.0000 (0.0037)  IoU (C channel): 0.0000 (0.0020)  L1 (Db channel): 0.7462 (0.7452)  L1 (Dn channel): 0.5850 (0.5947)  iter-time: 0.9194
+[13:58:10.391115] Epoch: [3] Total time: 0:00:02 (0.9352 s / it)
+[13:58:10.391133] [Val] averaged stats: loss: 2.7884 (2.5607)  IoU (F channel): 0.0000 (0.0037)  IoU (C channel): 0.0000 (0.0020)  L1 (Db channel): 0.7462 (0.7452)  L1 (Dn channel): 0.5850 (0.5947)
+[13:58:10.391431] Val loss improved from 3.718552748362223 to 2.5606767336527505, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[13:58:10.494175] [Val] best loss: 2.5607 best  IoU (F channel): 0.0037 IoU (C channel): 0.0020 L1 (Db channel): 0.7452 L1 (Dn channel): 0.5947 
+[13:58:10.501751] [Time] 18.5s 2.2m/10.9m
+
+[13:58:10.501764] ~~~ Epoch 4/30 ~~~
+
+[13:58:15.260545] Epoch: [4]  [ 0/24]  eta: 0:01:53  loss: 2.7127 (2.7127)  IoU (F channel): 0.0005 (0.0005)  IoU (C channel): 0.0003 (0.0003)  L1 (Db channel): 0.6506 (0.6506)  L1 (Dn channel): 0.5083 (0.5083)  lr: 0.000288  iter-time: 4.7468
+[13:58:19.810593] Epoch: [4]  [10/24]  eta: 0:00:11  loss: 2.4458 (2.4394)  IoU (F channel): 0.0012 (0.0013)  IoU (C channel): 0.0006 (0.0006)  L1 (Db channel): 0.6361 (0.6355)  L1 (Dn channel): 0.4862 (0.4882)  lr: 0.000352  iter-time: 0.8451
+[13:58:24.367067] Epoch: [4]  [20/24]  eta: 0:00:02  loss: 2.2540 (2.3237)  IoU (F channel): 0.0012 (0.0012)  IoU (C channel): 0.0005 (0.0005)  L1 (Db channel): 0.6174 (0.6216)  L1 (Dn channel): 0.4750 (0.4774)  lr: 0.000419  iter-time: 0.4553
+[13:58:25.577173] Epoch: [4]  [23/24]  eta: 0:00:00  loss: 2.2303 (2.3062)  IoU (F channel): 0.0010 (0.0012)  IoU (C channel): 0.0004 (0.0005)  L1 (Db channel): 0.6150 (0.6177)  L1 (Dn channel): 0.4698 (0.4752)  lr: 0.000440  iter-time: 0.4466
+[13:58:25.629143] Epoch: [4] Total time: 0:00:15 (0.6303 s / it)
+[13:58:25.629177] [Train] averaged stats: loss: 2.2303 (2.3062)  IoU (F channel): 0.0010 (0.0012)  IoU (C channel): 0.0004 (0.0005)  L1 (Db channel): 0.6150 (0.6177)  L1 (Dn channel): 0.4698 (0.4752)  lr: 0.000440
+[13:58:28.095963] Epoch: [4]  [0/3]  eta: 0:00:07  loss: 1.7301 (1.7301)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.6840 (0.6840)  L1 (Dn channel): 0.5030 (0.5030)  iter-time: 2.4659
+[13:58:28.351897] Epoch: [4]  [2/3]  eta: 0:00:00  loss: 2.3339 (2.1612)  IoU (F channel): 0.0000 (0.0020)  IoU (C channel): 0.0000 (0.0006)  L1 (Db channel): 0.6766 (0.6747)  L1 (Dn channel): 0.5030 (0.5025)  iter-time: 0.9072
+[13:58:28.409193] Epoch: [4] Total time: 0:00:02 (0.9265 s / it)
+[13:58:28.409211] [Val] averaged stats: loss: 2.3339 (2.1612)  IoU (F channel): 0.0000 (0.0020)  IoU (C channel): 0.0000 (0.0006)  L1 (Db channel): 0.6766 (0.6747)  L1 (Dn channel): 0.5030 (0.5025)
+[13:58:28.409524] Val loss improved from 2.5606767336527505 to 2.161163409550985, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[13:58:28.506282] [Val] best loss: 2.1612 best  IoU (F channel): 0.0020 IoU (C channel): 0.0006 L1 (Db channel): 0.6747 L1 (Dn channel): 0.5025 
+[13:58:28.514883] [Time] 18.0s 2.5m/10.6m
+
+[13:58:28.514896] ~~~ Epoch 5/30 ~~~
+
+[13:58:33.749545] Epoch: [5]  [ 0/24]  eta: 0:02:05  loss: 2.1029 (2.1029)  IoU (F channel): 0.0010 (0.0010)  IoU (C channel): 0.0004 (0.0004)  L1 (Db channel): 0.6010 (0.6010)  L1 (Dn channel): 0.4501 (0.4501)  lr: 0.000447  iter-time: 5.2335
+[13:58:38.513755] Epoch: [5]  [10/24]  eta: 0:00:12  loss: 2.0466 (2.0339)  IoU (F channel): 0.0004 (0.0005)  IoU (C channel): 0.0003 (0.0002)  L1 (Db channel): 0.5972 (0.5903)  L1 (Dn channel): 0.4528 (0.4541)  lr: 0.000516  iter-time: 0.9088
+[13:58:43.267920] Epoch: [5]  [20/24]  eta: 0:00:02  loss: 1.9892 (1.9810)  IoU (F channel): 0.0003 (0.0004)  IoU (C channel): 0.0001 (0.0002)  L1 (Db channel): 0.5815 (0.5832)  L1 (Dn channel): 0.4467 (0.4491)  lr: 0.000586  iter-time: 0.4759
+[13:58:44.479967] Epoch: [5]  [23/24]  eta: 0:00:00  loss: 1.9360 (1.9651)  IoU (F channel): 0.0003 (0.0004)  IoU (C channel): 0.0001 (0.0002)  L1 (Db channel): 0.5790 (0.5824)  L1 (Dn channel): 0.4440 (0.4479)  lr: 0.000607  iter-time: 0.4579
+[13:58:44.529917] Epoch: [5] Total time: 0:00:16 (0.6673 s / it)
+[13:58:44.530076] [Train] averaged stats: loss: 1.9360 (1.9651)  IoU (F channel): 0.0003 (0.0004)  IoU (C channel): 0.0001 (0.0002)  L1 (Db channel): 0.5790 (0.5824)  L1 (Dn channel): 0.4440 (0.4479)  lr: 0.000607
+[13:58:47.017978] Epoch: [5]  [0/3]  eta: 0:00:07  loss: 1.6027 (1.6027)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.6079 (0.6079)  L1 (Dn channel): 0.4715 (0.4715)  iter-time: 2.4870
+[13:58:47.273598] Epoch: [5]  [2/3]  eta: 0:00:00  loss: 2.0233 (1.9428)  IoU (F channel): 0.0000 (0.0009)  IoU (C channel): 0.0000 (0.0003)  L1 (Db channel): 0.6133 (0.6232)  L1 (Dn channel): 0.4783 (0.4768)  iter-time: 0.9142
+[13:58:47.327973] Epoch: [5] Total time: 0:00:02 (0.9324 s / it)
+[13:58:47.327989] [Val] averaged stats: loss: 2.0233 (1.9428)  IoU (F channel): 0.0000 (0.0009)  IoU (C channel): 0.0000 (0.0003)  L1 (Db channel): 0.6133 (0.6232)  L1 (Dn channel): 0.4783 (0.4768)
+[13:58:47.328284] Val loss improved from 2.161163409550985 to 1.942836840947469, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[13:58:47.430862] [Val] best loss: 1.9428 best  IoU (F channel): 0.0009 IoU (C channel): 0.0003 L1 (Db channel): 0.6232 L1 (Dn channel): 0.4768 
+[13:58:47.440912] Creating training plots . . .
+[13:58:55.496088] [Time] 27.0s 3.0m/14.7m
+
+[13:58:55.496105] ~~~ Epoch 6/30 ~~~
+
+[13:59:00.106542] Epoch: [6]  [ 0/24]  eta: 0:01:50  loss: 1.9193 (1.9193)  IoU (F channel): 0.0001 (0.0001)  IoU (C channel): 0.0001 (0.0001)  L1 (Db channel): 0.5774 (0.5774)  L1 (Dn channel): 0.4495 (0.4495)  lr: 0.000614  iter-time: 4.5971
+[13:59:05.091168] Epoch: [6]  [10/24]  eta: 0:00:12  loss: 1.8281 (1.8284)  IoU (F channel): 0.0002 (0.0003)  IoU (C channel): 0.0001 (0.0001)  L1 (Db channel): 0.5734 (0.5723)  L1 (Dn channel): 0.4346 (0.4351)  lr: 0.000682  iter-time: 0.8710
+[13:59:09.619459] Epoch: [6]  [20/24]  eta: 0:00:02  loss: 1.7506 (1.7734)  IoU (F channel): 0.0002 (0.0002)  IoU (C channel): 0.0001 (0.0001)  L1 (Db channel): 0.5797 (0.5823)  L1 (Dn channel): 0.4434 (0.4444)  lr: 0.000746  iter-time: 0.4756
+[13:59:10.831592] Epoch: [6]  [23/24]  eta: 0:00:00  loss: 1.7359 (1.7674)  IoU (F channel): 0.0002 (0.0002)  IoU (C channel): 0.0001 (0.0001)  L1 (Db channel): 0.5848 (0.5835)  L1 (Dn channel): 0.4503 (0.4462)  lr: 0.000764  iter-time: 0.4650
+[13:59:10.879924] Epoch: [6] Total time: 0:00:15 (0.6410 s / it)
+[13:59:10.879963] [Train] averaged stats: loss: 1.7359 (1.7674)  IoU (F channel): 0.0002 (0.0002)  IoU (C channel): 0.0001 (0.0001)  L1 (Db channel): 0.5848 (0.5835)  L1 (Dn channel): 0.4503 (0.4462)  lr: 0.000764
+[13:59:13.292028] Epoch: [6]  [0/3]  eta: 0:00:07  loss: 1.3927 (1.3927)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.5559 (0.5559)  L1 (Dn channel): 0.4494 (0.4494)  iter-time: 2.4112
+[13:59:13.547386] Epoch: [6]  [2/3]  eta: 0:00:00  loss: 1.5738 (1.6332)  IoU (F channel): 0.0000 (0.0004)  IoU (C channel): 0.0000 (0.0003)  L1 (Db channel): 0.5559 (0.5482)  L1 (Dn channel): 0.4494 (0.4205)  iter-time: 0.8888
+[13:59:13.607427] Epoch: [6] Total time: 0:00:02 (0.9089 s / it)
+[13:59:13.607445] [Val] averaged stats: loss: 1.5738 (1.6332)  IoU (F channel): 0.0000 (0.0004)  IoU (C channel): 0.0000 (0.0003)  L1 (Db channel): 0.5559 (0.5482)  L1 (Dn channel): 0.4494 (0.4205)
+[13:59:13.607681] Val loss improved from 1.942836840947469 to 1.6332250436147053, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[13:59:13.712171] [Val] best loss: 1.6332 best  IoU (F channel): 0.0004 IoU (C channel): 0.0003 L1 (Db channel): 0.5482 L1 (Dn channel): 0.4205 
+[13:59:13.721065] [Time] 18.2s 3.3m/10.9m
+
+[13:59:13.721079] ~~~ Epoch 7/30 ~~~
+
+[13:59:17.819268] Epoch: [7]  [ 0/24]  eta: 0:01:38  loss: 1.8466 (1.8466)  IoU (F channel): 0.0003 (0.0003)  IoU (C channel): 0.0002 (0.0002)  L1 (Db channel): 0.5885 (0.5885)  L1 (Dn channel): 0.4490 (0.4490)  lr: 0.000770  iter-time: 4.0972
+[13:59:22.523919] Epoch: [7]  [10/24]  eta: 0:00:11  loss: 1.6200 (1.6560)  IoU (F channel): 0.0001 (0.0002)  IoU (C channel): 0.0002 (0.0002)  L1 (Db channel): 0.5851 (0.5806)  L1 (Dn channel): 0.4453 (0.4456)  lr: 0.000827  iter-time: 0.8001
+[13:59:27.331031] Epoch: [7]  [20/24]  eta: 0:00:02  loss: 1.5950 (1.6067)  IoU (F channel): 0.0001 (0.0002)  IoU (C channel): 0.0002 (0.0002)  L1 (Db channel): 0.5641 (0.5705)  L1 (Dn channel): 0.4413 (0.4423)  lr: 0.000877  iter-time: 0.4755
+[13:59:28.545044] Epoch: [7]  [23/24]  eta: 0:00:00  loss: 1.5772 (1.6188)  IoU (F channel): 0.0001 (0.0002)  IoU (C channel): 0.0002 (0.0003)  L1 (Db channel): 0.5564 (0.5679)  L1 (Dn channel): 0.4372 (0.4415)  lr: 0.000891  iter-time: 0.4650
+[13:59:28.597996] Epoch: [7] Total time: 0:00:14 (0.6199 s / it)
+[13:59:28.598059] [Train] averaged stats: loss: 1.5772 (1.6188)  IoU (F channel): 0.0001 (0.0002)  IoU (C channel): 0.0002 (0.0003)  L1 (Db channel): 0.5564 (0.5679)  L1 (Dn channel): 0.4372 (0.4415)  lr: 0.000891
+[13:59:31.123522] Epoch: [7]  [0/3]  eta: 0:00:07  loss: 1.1897 (1.1897)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.4691 (0.4691)  L1 (Dn channel): 0.3366 (0.3366)  iter-time: 2.5246
+[13:59:31.379144] Epoch: [7]  [2/3]  eta: 0:00:00  loss: 1.4109 (1.4317)  IoU (F channel): 0.0000 (0.0010)  IoU (C channel): 0.0000 (0.0010)  L1 (Db channel): 0.4691 (0.4477)  L1 (Dn channel): 0.3366 (0.3208)  iter-time: 0.9267
+[13:59:31.438450] Epoch: [7] Total time: 0:00:02 (0.9466 s / it)
+[13:59:31.438471] [Val] averaged stats: loss: 1.4109 (1.4317)  IoU (F channel): 0.0000 (0.0010)  IoU (C channel): 0.0000 (0.0010)  L1 (Db channel): 0.4691 (0.4477)  L1 (Dn channel): 0.3366 (0.3208)
+[13:59:31.438705] Val loss improved from 1.6332250436147053 to 1.4316612084706624, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[13:59:31.542680] [Val] best loss: 1.4317 best  IoU (F channel): 0.0010 IoU (C channel): 0.0010 L1 (Db channel): 0.4477 L1 (Dn channel): 0.3208 
+[13:59:31.550322] [Time] 17.8s 3.6m/10.7m
+
+[13:59:31.550342] ~~~ Epoch 8/30 ~~~
+
+[13:59:35.655422] Epoch: [8]  [ 0/24]  eta: 0:01:38  loss: 1.4502 (1.4502)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0002 (0.0002)  L1 (Db channel): 0.5335 (0.5335)  L1 (Dn channel): 0.4382 (0.4382)  lr: 0.000896  iter-time: 4.1040
+[13:59:41.259700] Epoch: [8]  [10/24]  eta: 0:00:12  loss: 1.4655 (1.4704)  IoU (F channel): 0.0003 (0.0006)  IoU (C channel): 0.0004 (0.0005)  L1 (Db channel): 0.5283 (0.5228)  L1 (Dn channel): 0.4367 (0.4339)  lr: 0.000935  iter-time: 0.8814
+[13:59:45.886131] Epoch: [8]  [20/24]  eta: 0:00:02  loss: 1.4029 (1.4352)  IoU (F channel): 0.0003 (0.0005)  IoU (C channel): 0.0005 (0.0005)  L1 (Db channel): 0.4942 (0.5038)  L1 (Dn channel): 0.4281 (0.4274)  lr: 0.000966  iter-time: 0.5109
+[13:59:47.097005] Epoch: [8]  [23/24]  eta: 0:00:00  loss: 1.3932 (1.4286)  IoU (F channel): 0.0002 (0.0004)  IoU (C channel): 0.0005 (0.0006)  L1 (Db channel): 0.4875 (0.4989)  L1 (Dn channel): 0.4257 (0.4273)  lr: 0.000973  iter-time: 0.4988
+[13:59:47.148349] Epoch: [8] Total time: 0:00:15 (0.6499 s / it)
+[13:59:47.148428] [Train] averaged stats: loss: 1.3932 (1.4286)  IoU (F channel): 0.0002 (0.0004)  IoU (C channel): 0.0005 (0.0006)  L1 (Db channel): 0.4875 (0.4989)  L1 (Dn channel): 0.4257 (0.4273)  lr: 0.000973
+[13:59:49.588247] Epoch: [8]  [0/3]  eta: 0:00:07  loss: 1.1496 (1.1496)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.5238 (0.5238)  L1 (Dn channel): 0.5004 (0.5004)  iter-time: 2.4388
+[13:59:49.843557] Epoch: [8]  [2/3]  eta: 0:00:00  loss: 1.5392 (1.4819)  IoU (F channel): 0.0000 (0.0005)  IoU (C channel): 0.0000 (0.0004)  L1 (Db channel): 0.6310 (0.6135)  L1 (Dn channel): 0.5634 (0.5742)  iter-time: 0.8980
+[13:59:49.890128] Epoch: [8] Total time: 0:00:02 (0.9136 s / it)
+[13:59:49.890148] [Val] averaged stats: loss: 1.5392 (1.4819)  IoU (F channel): 0.0000 (0.0005)  IoU (C channel): 0.0000 (0.0004)  L1 (Db channel): 0.6310 (0.6135)  L1 (Dn channel): 0.5634 (0.5742)
+[13:59:49.890422] [Val] best loss: 1.4317 best  IoU (F channel): 0.0010 IoU (C channel): 0.0010 L1 (Db channel): 0.4477 L1 (Dn channel): 0.3208 
+EarlyStopping counter: 1 out of 10
+[13:59:49.901992] [Time] 18.4s 3.9m/10.9m
+
+[13:59:49.902004] ~~~ Epoch 9/30 ~~~
+
+[13:59:54.122220] Epoch: [9]  [ 0/24]  eta: 0:01:41  loss: 1.3107 (1.3107)  IoU (F channel): 0.0009 (0.0009)  IoU (C channel): 0.0007 (0.0007)  L1 (Db channel): 0.4851 (0.4851)  L1 (Dn channel): 0.4223 (0.4223)  lr: 0.000975  iter-time: 4.2192
+[13:59:58.799972] Epoch: [9]  [10/24]  eta: 0:00:11  loss: 1.3490 (1.3698)  IoU (F channel): 0.0003 (0.0008)  IoU (C channel): 0.0007 (0.0008)  L1 (Db channel): 0.4471 (0.4514)  L1 (Dn channel): 0.4065 (0.4057)  lr: 0.000993  iter-time: 0.8088
+[14:00:03.987284] Epoch: [9]  [20/24]  eta: 0:00:02  loss: 1.2946 (1.3134)  IoU (F channel): 0.0003 (0.0008)  IoU (C channel): 0.0009 (0.0012)  L1 (Db channel): 0.4341 (0.4379)  L1 (Dn channel): 0.3881 (0.3933)  lr: 0.001000  iter-time: 0.4932
+[14:00:05.196087] Epoch: [9]  [23/24]  eta: 0:00:00  loss: 1.2657 (1.3011)  IoU (F channel): 0.0004 (0.0009)  IoU (C channel): 0.0012 (0.0013)  L1 (Db channel): 0.4241 (0.4344)  L1 (Dn channel): 0.3805 (0.3894)  lr: 0.001000  iter-time: 0.4851
+[14:00:05.251360] Epoch: [9] Total time: 0:00:15 (0.6395 s / it)
+[14:00:05.251439] [Train] averaged stats: loss: 1.2657 (1.3011)  IoU (F channel): 0.0004 (0.0009)  IoU (C channel): 0.0012 (0.0013)  L1 (Db channel): 0.4241 (0.4344)  L1 (Dn channel): 0.3805 (0.3894)  lr: 0.001000
+[14:00:07.785849] Epoch: [9]  [0/3]  eta: 0:00:07  loss: 0.9633 (0.9633)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.3419 (0.3419)  L1 (Dn channel): 0.3331 (0.3331)  iter-time: 2.5336
+[14:00:08.041481] Epoch: [9]  [2/3]  eta: 0:00:00  loss: 1.2713 (1.2545)  IoU (F channel): 0.0000 (0.0006)  IoU (C channel): 0.0001 (0.0017)  L1 (Db channel): 0.3419 (0.3426)  L1 (Dn channel): 0.3331 (0.3373)  iter-time: 0.9297
+[14:00:08.087373] Epoch: [9] Total time: 0:00:02 (0.9451 s / it)
+[14:00:08.087390] [Val] averaged stats: loss: 1.2713 (1.2545)  IoU (F channel): 0.0000 (0.0006)  IoU (C channel): 0.0001 (0.0017)  L1 (Db channel): 0.3419 (0.3426)  L1 (Dn channel): 0.3331 (0.3373)
+[14:00:08.087605] Val loss improved from 1.4316612084706624 to 1.254528005917867, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:00:08.194081] [Val] best loss: 1.2545 best  IoU (F channel): 0.0006 IoU (C channel): 0.0017 L1 (Db channel): 0.3426 L1 (Dn channel): 0.3373 
+[14:00:08.200807] [Time] 18.3s 4.2m/10.9m
+
+[14:00:08.200820] ~~~ Epoch 10/30 ~~~
+
+[14:00:12.244723] Epoch: [10]  [ 0/24]  eta: 0:01:36  loss: 1.1721 (1.1721)  IoU (F channel): 0.0011 (0.0011)  IoU (C channel): 0.0016 (0.0016)  L1 (Db channel): 0.3867 (0.3867)  L1 (Dn channel): 0.3628 (0.3628)  lr: 0.001000  iter-time: 4.0384
+[14:00:17.680194] Epoch: [10]  [10/24]  eta: 0:00:12  loss: 1.1721 (1.2018)  IoU (F channel): 0.0008 (0.0011)  IoU (C channel): 0.0016 (0.0018)  L1 (Db channel): 0.3765 (0.3758)  L1 (Dn channel): 0.3628 (0.3640)  lr: 0.000999  iter-time: 0.8612
+[14:00:22.273052] Epoch: [10]  [20/24]  eta: 0:00:02  loss: 1.1621 (1.1790)  IoU (F channel): 0.0008 (0.0024)  IoU (C channel): 0.0016 (0.0023)  L1 (Db channel): 0.3616 (0.3611)  L1 (Dn channel): 0.3503 (0.3528)  lr: 0.000995  iter-time: 0.5014
+[14:00:23.484603] Epoch: [10]  [23/24]  eta: 0:00:00  loss: 1.1504 (1.1723)  IoU (F channel): 0.0008 (0.0022)  IoU (C channel): 0.0016 (0.0022)  L1 (Db channel): 0.3616 (0.3657)  L1 (Dn channel): 0.3503 (0.3546)  lr: 0.000994  iter-time: 0.4464
+[14:00:23.532018] Epoch: [10] Total time: 0:00:15 (0.6388 s / it)
+[14:00:23.532116] [Train] averaged stats: loss: 1.1504 (1.1723)  IoU (F channel): 0.0008 (0.0022)  IoU (C channel): 0.0016 (0.0022)  L1 (Db channel): 0.3616 (0.3657)  L1 (Dn channel): 0.3503 (0.3546)  lr: 0.000994
+[14:00:26.046747] Epoch: [10]  [0/3]  eta: 0:00:07  loss: 0.9198 (0.9198)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.4166 (0.4166)  L1 (Dn channel): 0.4299 (0.4299)  iter-time: 2.5138
+[14:00:26.302862] Epoch: [10]  [2/3]  eta: 0:00:00  loss: 1.2012 (1.1984)  IoU (F channel): 0.0000 (0.0015)  IoU (C channel): 0.0002 (0.0023)  L1 (Db channel): 0.4519 (0.4624)  L1 (Dn channel): 0.4614 (0.4705)  iter-time: 0.9232
+[14:00:26.358221] Epoch: [10] Total time: 0:00:02 (0.9418 s / it)
+[14:00:26.358239] [Val] averaged stats: loss: 1.2012 (1.1984)  IoU (F channel): 0.0000 (0.0015)  IoU (C channel): 0.0002 (0.0023)  L1 (Db channel): 0.4519 (0.4624)  L1 (Dn channel): 0.4614 (0.4705)
+[14:00:26.358977] Val loss improved from 1.254528005917867 to 1.1983575622240703, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:00:26.456871] [Val] best loss: 1.1984 best  IoU (F channel): 0.0015 IoU (C channel): 0.0023 L1 (Db channel): 0.4624 L1 (Dn channel): 0.4705 
+[14:00:26.463853] Creating training plots . . .
+[14:00:31.691604] [Time] 23.5s 4.6m/12.8m
+
+[14:00:31.691618] ~~~ Epoch 11/30 ~~~
+
+[14:00:36.100065] Epoch: [11]  [ 0/24]  eta: 0:01:45  loss: 1.0954 (1.0954)  IoU (F channel): 0.0009 (0.0009)  IoU (C channel): 0.0029 (0.0029)  L1 (Db channel): 0.4120 (0.4120)  L1 (Dn channel): 0.3977 (0.3977)  lr: 0.000993  iter-time: 4.4075
+[14:00:41.139884] Epoch: [11]  [10/24]  eta: 0:00:12  loss: 1.0820 (1.0918)  IoU (F channel): 0.0006 (0.0018)  IoU (C channel): 0.0027 (0.0040)  L1 (Db channel): 0.3844 (0.3853)  L1 (Dn channel): 0.3566 (0.3635)  lr: 0.000987  iter-time: 0.8588
+[14:00:45.674934] Epoch: [11]  [20/24]  eta: 0:00:02  loss: 1.0639 (1.0743)  IoU (F channel): 0.0016 (0.0034)  IoU (C channel): 0.0044 (0.0071)  L1 (Db channel): 0.3811 (0.3801)  L1 (Dn channel): 0.3564 (0.3565)  lr: 0.000980  iter-time: 0.4787
+[14:00:46.887962] Epoch: [11]  [23/24]  eta: 0:00:00  loss: 1.0639 (1.0758)  IoU (F channel): 0.0020 (0.0045)  IoU (C channel): 0.0041 (0.0080)  L1 (Db channel): 0.3665 (0.3783)  L1 (Dn channel): 0.3483 (0.3549)  lr: 0.000977  iter-time: 0.4721
+[14:00:46.941592] Epoch: [11] Total time: 0:00:15 (0.6354 s / it)
+[14:00:46.941624] [Train] averaged stats: loss: 1.0639 (1.0758)  IoU (F channel): 0.0020 (0.0045)  IoU (C channel): 0.0041 (0.0080)  L1 (Db channel): 0.3665 (0.3783)  L1 (Dn channel): 0.3483 (0.3549)  lr: 0.000977
+[14:00:49.376262] Epoch: [11]  [0/3]  eta: 0:00:07  loss: 0.7561 (0.7561)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.2829 (0.2829)  L1 (Dn channel): 0.2776 (0.2776)  iter-time: 2.4338
+[14:00:49.631991] Epoch: [11]  [2/3]  eta: 0:00:00  loss: 1.0461 (1.0534)  IoU (F channel): 0.0000 (0.0056)  IoU (C channel): 0.0003 (0.0114)  L1 (Db channel): 0.3579 (0.3678)  L1 (Dn channel): 0.2832 (0.3255)  iter-time: 0.8964
+[14:00:49.673887] Epoch: [11] Total time: 0:00:02 (0.9105 s / it)
+[14:00:49.673907] [Val] averaged stats: loss: 1.0461 (1.0534)  IoU (F channel): 0.0000 (0.0056)  IoU (C channel): 0.0003 (0.0114)  L1 (Db channel): 0.3579 (0.3678)  L1 (Dn channel): 0.2832 (0.3255)
+[14:00:49.674155] Val loss improved from 1.1983575622240703 to 1.0533982117970784, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:00:49.809136] [Val] best loss: 1.0534 best  IoU (F channel): 0.0056 IoU (C channel): 0.0114 L1 (Db channel): 0.3678 L1 (Dn channel): 0.3255 
+[14:00:49.816521] [Time] 18.1s 4.9m/10.9m
+
+[14:00:49.816534] ~~~ Epoch 12/30 ~~~
+
+[14:00:53.891220] Epoch: [12]  [ 0/24]  eta: 0:01:37  loss: 0.9772 (0.9772)  IoU (F channel): 0.0063 (0.0063)  IoU (C channel): 0.0114 (0.0114)  L1 (Db channel): 0.3487 (0.3487)  L1 (Dn channel): 0.3420 (0.3420)  lr: 0.000976  iter-time: 4.0737
+[14:00:59.788527] Epoch: [12]  [10/24]  eta: 0:00:12  loss: 0.9897 (0.9944)  IoU (F channel): 0.0034 (0.0057)  IoU (C channel): 0.0114 (0.0188)  L1 (Db channel): 0.3624 (0.3638)  L1 (Dn channel): 0.3391 (0.3363)  lr: 0.000965  iter-time: 0.9054
+[14:01:04.327111] Epoch: [12]  [20/24]  eta: 0:00:02  loss: 0.9546 (0.9669)  IoU (F channel): 0.0049 (0.0092)  IoU (C channel): 0.0173 (0.0403)  L1 (Db channel): 0.3532 (0.3550)  L1 (Dn channel): 0.3275 (0.3282)  lr: 0.000953  iter-time: 0.5212
+[14:01:05.541534] Epoch: [12]  [23/24]  eta: 0:00:00  loss: 0.9370 (0.9586)  IoU (F channel): 0.0050 (0.0112)  IoU (C channel): 0.0361 (0.0555)  L1 (Db channel): 0.3495 (0.3538)  L1 (Dn channel): 0.3253 (0.3271)  lr: 0.000949  iter-time: 0.4511
+[14:01:05.596954] Epoch: [12] Total time: 0:00:15 (0.6575 s / it)
+[14:01:05.597108] [Train] averaged stats: loss: 0.9370 (0.9586)  IoU (F channel): 0.0050 (0.0112)  IoU (C channel): 0.0361 (0.0555)  L1 (Db channel): 0.3495 (0.3538)  L1 (Dn channel): 0.3253 (0.3271)  lr: 0.000949
+[14:01:08.078798] Epoch: [12]  [0/3]  eta: 0:00:07  loss: 0.7718 (0.7718)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.6715 (0.6715)  L1 (Dn channel): 0.6187 (0.6187)  iter-time: 2.4806
+[14:01:08.334618] Epoch: [12]  [2/3]  eta: 0:00:00  loss: 1.1845 (1.1293)  IoU (F channel): 0.0000 (0.0019)  IoU (C channel): 0.0004 (0.0158)  L1 (Db channel): 1.1278 (1.0801)  L1 (Dn channel): 0.9631 (0.9209)  iter-time: 0.9121
+[14:01:08.380039] Epoch: [12] Total time: 0:00:02 (0.9274 s / it)
+[14:01:08.380056] [Val] averaged stats: loss: 1.1845 (1.1293)  IoU (F channel): 0.0000 (0.0019)  IoU (C channel): 0.0004 (0.0158)  L1 (Db channel): 1.1278 (1.0801)  L1 (Dn channel): 0.9631 (0.9209)
+[14:01:08.380279] [Val] best loss: 1.0534 best  IoU (F channel): 0.0056 IoU (C channel): 0.0114 L1 (Db channel): 0.3678 L1 (Dn channel): 0.3255 
+EarlyStopping counter: 1 out of 10
+[14:01:08.397342] [Time] 18.6s 5.2m/11.1m
+
+[14:01:08.397354] ~~~ Epoch 13/30 ~~~
+
+[14:01:12.856198] Epoch: [13]  [ 0/24]  eta: 0:01:46  loss: 0.9045 (0.9045)  IoU (F channel): 0.0120 (0.0120)  IoU (C channel): 0.1307 (0.1307)  L1 (Db channel): 0.3933 (0.3933)  L1 (Dn channel): 0.3433 (0.3433)  lr: 0.000948  iter-time: 4.4578
+[14:01:17.529615] Epoch: [13]  [10/24]  eta: 0:00:11  loss: 0.8846 (0.8838)  IoU (F channel): 0.0120 (0.0221)  IoU (C channel): 0.1068 (0.1176)  L1 (Db channel): 0.3458 (0.3509)  L1 (Dn channel): 0.3225 (0.3229)  lr: 0.000933  iter-time: 0.8301
+[14:01:22.477264] Epoch: [13]  [20/24]  eta: 0:00:02  loss: 0.8628 (0.8799)  IoU (F channel): 0.0137 (0.0236)  IoU (C channel): 0.1088 (0.1340)  L1 (Db channel): 0.3458 (0.3476)  L1 (Dn channel): 0.3231 (0.3236)  lr: 0.000917  iter-time: 0.4810
+[14:01:23.690532] Epoch: [13]  [23/24]  eta: 0:00:00  loss: 0.8580 (0.8742)  IoU (F channel): 0.0144 (0.0247)  IoU (C channel): 0.1321 (0.1473)  L1 (Db channel): 0.3411 (0.3464)  L1 (Dn channel): 0.3231 (0.3238)  lr: 0.000911  iter-time: 0.4720
+[14:01:23.735946] Epoch: [13] Total time: 0:00:15 (0.6391 s / it)
+[14:01:23.735980] [Train] averaged stats: loss: 0.8580 (0.8742)  IoU (F channel): 0.0144 (0.0247)  IoU (C channel): 0.1321 (0.1473)  L1 (Db channel): 0.3411 (0.3464)  L1 (Dn channel): 0.3231 (0.3238)  lr: 0.000911
+[14:01:26.095131] Epoch: [13]  [0/3]  eta: 0:00:07  loss: 0.6223 (0.6223)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.2873 (0.2873)  L1 (Dn channel): 0.2844 (0.2844)  iter-time: 2.3582
+[14:01:26.351218] Epoch: [13]  [2/3]  eta: 0:00:00  loss: 0.8790 (0.8943)  IoU (F channel): 0.0001 (0.0319)  IoU (C channel): 0.0046 (0.1230)  L1 (Db channel): 0.3314 (0.3531)  L1 (Dn channel): 0.2844 (0.3197)  iter-time: 0.8714
+[14:01:26.403594] Epoch: [13] Total time: 0:00:02 (0.8890 s / it)
+[14:01:26.403615] [Val] averaged stats: loss: 0.8790 (0.8943)  IoU (F channel): 0.0001 (0.0319)  IoU (C channel): 0.0046 (0.1230)  L1 (Db channel): 0.3314 (0.3531)  L1 (Dn channel): 0.2844 (0.3197)
+[14:01:26.403859] Val loss improved from 1.0533982117970784 to 0.8942995071411133, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:01:26.502889] [Val] best loss: 0.8943 best  IoU (F channel): 0.0319 IoU (C channel): 0.1230 L1 (Db channel): 0.3531 L1 (Dn channel): 0.3197 
+[14:01:26.513256] [Time] 18.1s 5.5m/10.9m
+
+[14:01:26.513270] ~~~ Epoch 14/30 ~~~
+
+[14:01:31.932899] Epoch: [14]  [ 0/24]  eta: 0:02:10  loss: 0.7974 (0.7974)  IoU (F channel): 0.0809 (0.0809)  IoU (C channel): 0.3262 (0.3262)  L1 (Db channel): 0.3353 (0.3353)  L1 (Dn channel): 0.3041 (0.3041)  lr: 0.000910  iter-time: 5.4185
+[14:01:36.388826] Epoch: [14]  [10/24]  eta: 0:00:12  loss: 0.7974 (0.8174)  IoU (F channel): 0.0320 (0.0378)  IoU (C channel): 0.2402 (0.2094)  L1 (Db channel): 0.3545 (0.3551)  L1 (Dn channel): 0.3337 (0.3316)  lr: 0.000891  iter-time: 0.8976
+[14:01:41.175621] Epoch: [14]  [20/24]  eta: 0:00:02  loss: 0.7964 (0.8281)  IoU (F channel): 0.0326 (0.0497)  IoU (C channel): 0.2471 (0.2283)  L1 (Db channel): 0.3404 (0.3439)  L1 (Dn channel): 0.3286 (0.3304)  lr: 0.000871  iter-time: 0.4621
+[14:01:42.389247] Epoch: [14]  [23/24]  eta: 0:00:00  loss: 0.7964 (0.8227)  IoU (F channel): 0.0392 (0.0514)  IoU (C channel): 0.2471 (0.2235)  L1 (Db channel): 0.3374 (0.3415)  L1 (Dn channel): 0.3320 (0.3315)  lr: 0.000864  iter-time: 0.4556
+[14:01:42.442466] Epoch: [14] Total time: 0:00:15 (0.6637 s / it)
+[14:01:42.442503] [Train] averaged stats: loss: 0.7964 (0.8227)  IoU (F channel): 0.0392 (0.0514)  IoU (C channel): 0.2471 (0.2235)  L1 (Db channel): 0.3374 (0.3415)  L1 (Dn channel): 0.3320 (0.3315)  lr: 0.000864
+[14:01:44.503979] Epoch: [14]  [0/3]  eta: 0:00:06  loss: 0.5858 (0.5858)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.2690 (0.2690)  L1 (Dn channel): 0.2738 (0.2738)  iter-time: 2.0606
+[14:01:45.071793] Epoch: [14]  [2/3]  eta: 0:00:00  loss: 0.7896 (0.8272)  IoU (F channel): 0.0013 (0.0948)  IoU (C channel): 0.0112 (0.1373)  L1 (Db channel): 0.2911 (0.3104)  L1 (Dn channel): 0.2738 (0.3009)  iter-time: 0.8761
+[14:01:45.119643] Epoch: [14] Total time: 0:00:02 (0.8922 s / it)
+[14:01:45.119660] [Val] averaged stats: loss: 0.7896 (0.8272)  IoU (F channel): 0.0013 (0.0948)  IoU (C channel): 0.0112 (0.1373)  L1 (Db channel): 0.2911 (0.3104)  L1 (Dn channel): 0.2738 (0.3009)
+[14:01:45.120257] Val loss improved from 0.8942995071411133 to 0.8271501064300537, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:01:45.215976] [Val] best loss: 0.8272 best  IoU (F channel): 0.0948 IoU (C channel): 0.1373 L1 (Db channel): 0.3104 L1 (Dn channel): 0.3009 
+[14:01:45.225143] [Time] 18.7s 5.8m/11.1m
+
+[14:01:45.225156] ~~~ Epoch 15/30 ~~~
+
+[14:01:49.746967] Epoch: [15]  [ 0/24]  eta: 0:01:48  loss: 0.8153 (0.8153)  IoU (F channel): 0.0755 (0.0755)  IoU (C channel): 0.1925 (0.1925)  L1 (Db channel): 0.3224 (0.3224)  L1 (Dn channel): 0.3389 (0.3389)  lr: 0.000862  iter-time: 4.5211
+[14:01:55.133349] Epoch: [15]  [10/24]  eta: 0:00:12  loss: 0.7655 (0.7685)  IoU (F channel): 0.1146 (0.1287)  IoU (C channel): 0.2790 (0.2683)  L1 (Db channel): 0.3277 (0.3262)  L1 (Dn channel): 0.3329 (0.3359)  lr: 0.000840  iter-time: 0.9006
+[14:01:59.698336] Epoch: [15]  [20/24]  eta: 0:00:02  loss: 0.7310 (0.7445)  IoU (F channel): 0.1525 (0.1497)  IoU (C channel): 0.3139 (0.2952)  L1 (Db channel): 0.3353 (0.3331)  L1 (Dn channel): 0.3406 (0.3399)  lr: 0.000817  iter-time: 0.4975
+[14:02:00.910047] Epoch: [15]  [23/24]  eta: 0:00:00  loss: 0.7203 (0.7386)  IoU (F channel): 0.1412 (0.1493)  IoU (C channel): 0.3139 (0.3052)  L1 (Db channel): 0.3380 (0.3360)  L1 (Dn channel): 0.3424 (0.3401)  lr: 0.000809  iter-time: 0.4879
+[14:02:00.966398] Epoch: [15] Total time: 0:00:15 (0.6559 s / it)
+[14:02:00.966428] [Train] averaged stats: loss: 0.7203 (0.7386)  IoU (F channel): 0.1412 (0.1493)  IoU (C channel): 0.3139 (0.3052)  L1 (Db channel): 0.3380 (0.3360)  L1 (Dn channel): 0.3424 (0.3401)  lr: 0.000809
+[14:02:03.510380] Epoch: [15]  [0/3]  eta: 0:00:07  loss: 0.5015 (0.5015)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.3249 (0.3249)  L1 (Dn channel): 0.3284 (0.3284)  iter-time: 2.5431
+[14:02:03.765925] Epoch: [15]  [2/3]  eta: 0:00:00  loss: 0.7550 (0.7712)  IoU (F channel): 0.0007 (0.0687)  IoU (C channel): 0.0080 (0.1409)  L1 (Db channel): 0.4060 (0.3977)  L1 (Dn channel): 0.3759 (0.3913)  iter-time: 0.9328
+[14:02:03.816698] Epoch: [15] Total time: 0:00:02 (0.9499 s / it)
+[14:02:03.816715] [Val] averaged stats: loss: 0.7550 (0.7712)  IoU (F channel): 0.0007 (0.0687)  IoU (C channel): 0.0080 (0.1409)  L1 (Db channel): 0.4060 (0.3977)  L1 (Dn channel): 0.3759 (0.3913)
+[14:02:03.816992] Val loss improved from 0.8271501064300537 to 0.771239717801412, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:02:03.911899] [Val] best loss: 0.7712 best  IoU (F channel): 0.0687 IoU (C channel): 0.1409 L1 (Db channel): 0.3977 L1 (Dn channel): 0.3913 
+[14:02:03.918852] Creating training plots . . .
+[14:02:09.691648] [Time] 24.5s 6.2m/12.7m
+
+[14:02:09.691662] ~~~ Epoch 16/30 ~~~
+
+[14:02:13.772582] Epoch: [16]  [ 0/24]  eta: 0:01:37  loss: 0.6991 (0.6991)  IoU (F channel): 0.1023 (0.1023)  IoU (C channel): 0.2818 (0.2818)  L1 (Db channel): 0.3558 (0.3558)  L1 (Dn channel): 0.3418 (0.3418)  lr: 0.000807  iter-time: 4.0797
+[14:02:18.855576] Epoch: [16]  [10/24]  eta: 0:00:11  loss: 0.6785 (0.7012)  IoU (F channel): 0.1982 (0.2102)  IoU (C channel): 0.3573 (0.3278)  L1 (Db channel): 0.3551 (0.3573)  L1 (Dn channel): 0.3418 (0.3379)  lr: 0.000782  iter-time: 0.8329
+[14:02:23.410182] Epoch: [16]  [20/24]  eta: 0:00:02  loss: 0.6732 (0.7071)  IoU (F channel): 0.1811 (0.2018)  IoU (C channel): 0.3538 (0.3315)  L1 (Db channel): 0.3551 (0.3583)  L1 (Dn channel): 0.3374 (0.3364)  lr: 0.000755  iter-time: 0.4818
+[14:02:24.621416] Epoch: [16]  [23/24]  eta: 0:00:00  loss: 0.6732 (0.7046)  IoU (F channel): 0.1857 (0.2039)  IoU (C channel): 0.3468 (0.3267)  L1 (Db channel): 0.3627 (0.3622)  L1 (Dn channel): 0.3416 (0.3386)  lr: 0.000747  iter-time: 0.4503
+[14:02:24.670029] Epoch: [16] Total time: 0:00:14 (0.6241 s / it)
+[14:02:24.670159] [Train] averaged stats: loss: 0.6732 (0.7046)  IoU (F channel): 0.1857 (0.2039)  IoU (C channel): 0.3468 (0.3267)  L1 (Db channel): 0.3627 (0.3622)  L1 (Dn channel): 0.3416 (0.3386)  lr: 0.000747
+[14:02:27.173557] Epoch: [16]  [0/3]  eta: 0:00:07  loss: 0.4711 (0.4711)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.3607 (0.3607)  L1 (Dn channel): 0.3278 (0.3278)  iter-time: 2.5025
+[14:02:27.428965] Epoch: [16]  [2/3]  eta: 0:00:00  loss: 0.6856 (0.7087)  IoU (F channel): 0.0028 (0.1081)  IoU (C channel): 0.0154 (0.1508)  L1 (Db channel): 0.4371 (0.4318)  L1 (Dn channel): 0.4103 (0.4042)  iter-time: 0.9192
+[14:02:27.491983] Epoch: [16] Total time: 0:00:02 (0.9404 s / it)
+[14:02:27.491999] [Val] averaged stats: loss: 0.6856 (0.7087)  IoU (F channel): 0.0028 (0.1081)  IoU (C channel): 0.0154 (0.1508)  L1 (Db channel): 0.4371 (0.4318)  L1 (Dn channel): 0.4103 (0.4042)
+[14:02:27.493240] Val loss improved from 0.771239717801412 to 0.7087044517199198, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:02:27.608451] [Val] best loss: 0.7087 best  IoU (F channel): 0.1081 IoU (C channel): 0.1508 L1 (Db channel): 0.4318 L1 (Dn channel): 0.4042 
+[14:02:27.618625] [Time] 17.9s 6.5m/11.0m
+
+[14:02:27.618638] ~~~ Epoch 17/30 ~~~
+
+[14:02:31.905102] Epoch: [17]  [ 0/24]  eta: 0:01:42  loss: 0.6851 (0.6851)  IoU (F channel): 0.3322 (0.3322)  IoU (C channel): 0.2860 (0.2860)  L1 (Db channel): 0.3789 (0.3789)  L1 (Dn channel): 0.3518 (0.3518)  lr: 0.000745  iter-time: 4.2855
+[14:02:37.653520] Epoch: [17]  [10/24]  eta: 0:00:12  loss: 0.6708 (0.7083)  IoU (F channel): 0.1616 (0.2054)  IoU (C channel): 0.2860 (0.2899)  L1 (Db channel): 0.3789 (0.3820)  L1 (Dn channel): 0.3409 (0.3434)  lr: 0.000717  iter-time: 0.9112
+[14:02:42.183927] Epoch: [17]  [20/24]  eta: 0:00:02  loss: 0.6245 (0.6649)  IoU (F channel): 0.2151 (0.2475)  IoU (C channel): 0.3078 (0.3068)  L1 (Db channel): 0.3764 (0.3797)  L1 (Dn channel): 0.3454 (0.3457)  lr: 0.000688  iter-time: 0.5134
+[14:02:43.395405] Epoch: [17]  [23/24]  eta: 0:00:00  loss: 0.6229 (0.6645)  IoU (F channel): 0.2151 (0.2492)  IoU (C channel): 0.3393 (0.3143)  L1 (Db channel): 0.3750 (0.3773)  L1 (Dn channel): 0.3425 (0.3431)  lr: 0.000680  iter-time: 0.5045
+[14:02:43.446888] Epoch: [17] Total time: 0:00:15 (0.6595 s / it)
+[14:02:43.447068] [Train] averaged stats: loss: 0.6229 (0.6645)  IoU (F channel): 0.2151 (0.2492)  IoU (C channel): 0.3393 (0.3143)  L1 (Db channel): 0.3750 (0.3773)  L1 (Dn channel): 0.3425 (0.3431)  lr: 0.000680
+[14:02:46.140489] Epoch: [17]  [0/3]  eta: 0:00:08  loss: 0.3953 (0.3953)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.3001 (0.3001)  L1 (Dn channel): 0.2845 (0.2845)  iter-time: 2.6925
+[14:02:46.395718] Epoch: [17]  [2/3]  eta: 0:00:00  loss: 0.6396 (0.6518)  IoU (F channel): 0.0237 (0.1539)  IoU (C channel): 0.0291 (0.1554)  L1 (Db channel): 0.2855 (0.2629)  L1 (Dn channel): 0.2479 (0.2185)  iter-time: 0.9825
+[14:02:46.443588] Epoch: [17] Total time: 0:00:02 (0.9986 s / it)
+[14:02:46.443604] [Val] averaged stats: loss: 0.6396 (0.6518)  IoU (F channel): 0.0237 (0.1539)  IoU (C channel): 0.0291 (0.1554)  L1 (Db channel): 0.2855 (0.2629)  L1 (Dn channel): 0.2479 (0.2185)
+[14:02:46.444389] Val loss improved from 0.7087044517199198 to 0.6517866651217142, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:02:46.547534] [Val] best loss: 0.6518 best  IoU (F channel): 0.1539 IoU (C channel): 0.1554 L1 (Db channel): 0.2629 L1 (Dn channel): 0.2185 
+[14:02:46.556757] [Time] 18.9s 6.8m/11.3m
+
+[14:02:46.556770] ~~~ Epoch 18/30 ~~~
+
+[14:02:50.669546] Epoch: [18]  [ 0/24]  eta: 0:01:38  loss: 0.6129 (0.6129)  IoU (F channel): 0.1343 (0.1343)  IoU (C channel): 0.2877 (0.2877)  L1 (Db channel): 0.3649 (0.3649)  L1 (Dn channel): 0.3380 (0.3380)  lr: 0.000677  iter-time: 4.1117
+[14:02:55.783946] Epoch: [18]  [10/24]  eta: 0:00:11  loss: 0.5888 (0.5986)  IoU (F channel): 0.2669 (0.2571)  IoU (C channel): 0.3661 (0.3209)  L1 (Db channel): 0.3649 (0.3708)  L1 (Dn channel): 0.3341 (0.3358)  lr: 0.000647  iter-time: 0.8387
+[14:03:00.302736] Epoch: [18]  [20/24]  eta: 0:00:02  loss: 0.5964 (0.6127)  IoU (F channel): 0.3144 (0.3112)  IoU (C channel): 0.3661 (0.3447)  L1 (Db channel): 0.3739 (0.3781)  L1 (Dn channel): 0.3399 (0.3420)  lr: 0.000617  iter-time: 0.4816
+[14:03:01.514196] Epoch: [18]  [23/24]  eta: 0:00:00  loss: 0.5859 (0.6102)  IoU (F channel): 0.3282 (0.3111)  IoU (C channel): 0.3636 (0.3448)  L1 (Db channel): 0.3743 (0.3771)  L1 (Dn channel): 0.3411 (0.3412)  lr: 0.000608  iter-time: 0.4650
+[14:03:01.571877] Epoch: [18] Total time: 0:00:15 (0.6256 s / it)
+[14:03:01.572007] [Train] averaged stats: loss: 0.5859 (0.6102)  IoU (F channel): 0.3282 (0.3111)  IoU (C channel): 0.3636 (0.3448)  L1 (Db channel): 0.3743 (0.3771)  L1 (Dn channel): 0.3411 (0.3412)  lr: 0.000608
+[14:03:04.105608] Epoch: [18]  [0/3]  eta: 0:00:07  loss: 0.3756 (0.3756)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.3273 (0.3273)  L1 (Dn channel): 0.2648 (0.2648)  iter-time: 2.5324
+[14:03:04.361328] Epoch: [18]  [2/3]  eta: 0:00:00  loss: 0.6223 (0.6390)  IoU (F channel): 0.0160 (0.1481)  IoU (C channel): 0.0157 (0.1508)  L1 (Db channel): 0.3273 (0.3092)  L1 (Dn channel): 0.2648 (0.2588)  iter-time: 0.9293
+[14:03:04.420316] Epoch: [18] Total time: 0:00:02 (0.9492 s / it)
+[14:03:04.420338] [Val] averaged stats: loss: 0.6223 (0.6390)  IoU (F channel): 0.0160 (0.1481)  IoU (C channel): 0.0157 (0.1508)  L1 (Db channel): 0.3273 (0.3092)  L1 (Dn channel): 0.2648 (0.2588)
+[14:03:04.420573] Val loss improved from 0.6517866651217142 to 0.6390363872051239, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:03:04.596152] [Val] best loss: 0.6390 best  IoU (F channel): 0.1481 IoU (C channel): 0.1508 L1 (Db channel): 0.3092 L1 (Dn channel): 0.2588 
+[14:03:04.603366] [Time] 18.0s 7.1m/11.0m
+
+[14:03:04.603380] ~~~ Epoch 19/30 ~~~
+
+[14:03:08.696273] Epoch: [19]  [ 0/24]  eta: 0:01:38  loss: 0.6495 (0.6495)  IoU (F channel): 0.4344 (0.4344)  IoU (C channel): 0.4102 (0.4102)  L1 (Db channel): 0.3707 (0.3707)  L1 (Dn channel): 0.3270 (0.3270)  lr: 0.000605  iter-time: 4.0919
+[14:03:14.005547] Epoch: [19]  [10/24]  eta: 0:00:11  loss: 0.5658 (0.5891)  IoU (F channel): 0.3785 (0.3723)  IoU (C channel): 0.3722 (0.3455)  L1 (Db channel): 0.4069 (0.4033)  L1 (Dn channel): 0.3461 (0.3513)  lr: 0.000575  iter-time: 0.8534
+[14:03:19.377413] Epoch: [19]  [20/24]  eta: 0:00:02  loss: 0.5625 (0.5763)  IoU (F channel): 0.3429 (0.3485)  IoU (C channel): 0.3722 (0.3345)  L1 (Db channel): 0.3997 (0.4003)  L1 (Dn channel): 0.3416 (0.3448)  lr: 0.000544  iter-time: 0.5334
+[14:03:20.588029] Epoch: [19]  [23/24]  eta: 0:00:00  loss: 0.5616 (0.5719)  IoU (F channel): 0.3490 (0.3490)  IoU (C channel): 0.3790 (0.3355)  L1 (Db channel): 0.3997 (0.3990)  L1 (Dn channel): 0.3398 (0.3432)  lr: 0.000534  iter-time: 0.5229
+[14:03:20.642224] Epoch: [19] Total time: 0:00:16 (0.6683 s / it)
+[14:03:20.642257] [Train] averaged stats: loss: 0.5616 (0.5719)  IoU (F channel): 0.3490 (0.3490)  IoU (C channel): 0.3790 (0.3355)  L1 (Db channel): 0.3997 (0.3990)  L1 (Dn channel): 0.3398 (0.3432)  lr: 0.000534
+[14:03:22.881906] Epoch: [19]  [0/3]  eta: 0:00:06  loss: 0.3396 (0.3396)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.3709 (0.3709)  L1 (Dn channel): 0.2924 (0.2924)  iter-time: 2.2388
+[14:03:23.230603] Epoch: [19]  [2/3]  eta: 0:00:00  loss: 0.5833 (0.5988)  IoU (F channel): 0.0128 (0.1439)  IoU (C channel): 0.0160 (0.1511)  L1 (Db channel): 0.3709 (0.3552)  L1 (Dn channel): 0.2924 (0.3009)  iter-time: 0.8624
+[14:03:23.280164] Epoch: [19] Total time: 0:00:02 (0.8791 s / it)
+[14:03:23.280184] [Val] averaged stats: loss: 0.5833 (0.5988)  IoU (F channel): 0.0128 (0.1439)  IoU (C channel): 0.0160 (0.1511)  L1 (Db channel): 0.3709 (0.3552)  L1 (Dn channel): 0.2924 (0.3009)
+[14:03:23.280533] Val loss improved from 0.6390363872051239 to 0.5987885395685831, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:03:23.375885] [Val] best loss: 0.5988 best  IoU (F channel): 0.1439 IoU (C channel): 0.1511 L1 (Db channel): 0.3552 L1 (Dn channel): 0.3009 
+[14:03:23.382791] [Time] 18.8s 7.4m/11.2m
+
+[14:03:23.382804] ~~~ Epoch 20/30 ~~~
+
+[14:03:27.556225] Epoch: [20]  [ 0/24]  eta: 0:01:40  loss: 0.5279 (0.5279)  IoU (F channel): 0.4293 (0.4293)  IoU (C channel): 0.4135 (0.4135)  L1 (Db channel): 0.3869 (0.3869)  L1 (Dn channel): 0.3401 (0.3401)  lr: 0.000531  iter-time: 4.1724
+[14:03:32.838083] Epoch: [20]  [10/24]  eta: 0:00:12  loss: 0.5552 (0.5638)  IoU (F channel): 0.3599 (0.3579)  IoU (C channel): 0.3533 (0.3433)  L1 (Db channel): 0.3933 (0.3951)  L1 (Dn channel): 0.3376 (0.3369)  lr: 0.000500  iter-time: 0.8594
+[14:03:37.745483] Epoch: [20]  [20/24]  eta: 0:00:02  loss: 0.5343 (0.5356)  IoU (F channel): 0.3599 (0.3680)  IoU (C channel): 0.3627 (0.3551)  L1 (Db channel): 0.3924 (0.3944)  L1 (Dn channel): 0.3432 (0.3419)  lr: 0.000469  iter-time: 0.5094
+[14:03:38.958829] Epoch: [20]  [23/24]  eta: 0:00:00  loss: 0.5343 (0.5486)  IoU (F channel): 0.3536 (0.3649)  IoU (C channel): 0.3627 (0.3600)  L1 (Db channel): 0.3951 (0.3962)  L1 (Dn channel): 0.3442 (0.3426)  lr: 0.000460  iter-time: 0.4739
+[14:03:39.011988] Epoch: [20] Total time: 0:00:15 (0.6512 s / it)
+[14:03:39.012120] [Train] averaged stats: loss: 0.5343 (0.5486)  IoU (F channel): 0.3536 (0.3649)  IoU (C channel): 0.3627 (0.3600)  L1 (Db channel): 0.3951 (0.3962)  L1 (Dn channel): 0.3442 (0.3426)  lr: 0.000460
+[14:03:41.652819] Epoch: [20]  [0/3]  eta: 0:00:07  loss: 0.3635 (0.3635)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.4448 (0.4448)  L1 (Dn channel): 0.3812 (0.3812)  iter-time: 2.6396
+[14:03:41.908271] Epoch: [20]  [2/3]  eta: 0:00:00  loss: 0.5619 (0.5894)  IoU (F channel): 0.0422 (0.1762)  IoU (C channel): 0.0372 (0.1614)  L1 (Db channel): 0.4448 (0.4434)  L1 (Dn channel): 0.4093 (0.4067)  iter-time: 0.9650
+[14:03:41.963330] Epoch: [20] Total time: 0:00:02 (0.9835 s / it)
+[14:03:41.963348] [Val] averaged stats: loss: 0.5619 (0.5894)  IoU (F channel): 0.0422 (0.1762)  IoU (C channel): 0.0372 (0.1614)  L1 (Db channel): 0.4448 (0.4434)  L1 (Dn channel): 0.4093 (0.4067)
+[14:03:41.963712] Val loss improved from 0.5987885395685831 to 0.5893842081228892, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:03:42.079624] [Val] best loss: 0.5894 best  IoU (F channel): 0.1762 IoU (C channel): 0.1614 L1 (Db channel): 0.4434 L1 (Dn channel): 0.4067 
+[14:03:42.088891] Creating training plots . . .
+[14:03:48.175447] [Time] 24.8s 7.9m/12.4m
+
+[14:03:48.175463] ~~~ Epoch 21/30 ~~~
+
+[14:03:53.292262] Epoch: [21]  [ 0/24]  eta: 0:02:02  loss: 0.4933 (0.4933)  IoU (F channel): 0.3930 (0.3930)  IoU (C channel): 0.4167 (0.4167)  L1 (Db channel): 0.3874 (0.3874)  L1 (Dn channel): 0.3457 (0.3457)  lr: 0.000456  iter-time: 5.1157
+[14:03:57.913297] Epoch: [21]  [10/24]  eta: 0:00:12  loss: 0.5239 (0.5480)  IoU (F channel): 0.3642 (0.3771)  IoU (C channel): 0.4167 (0.3729)  L1 (Db channel): 0.4029 (0.4013)  L1 (Dn channel): 0.3438 (0.3443)  lr: 0.000425  iter-time: 0.8851
+[14:04:02.356993] Epoch: [21]  [20/24]  eta: 0:00:02  loss: 0.5226 (0.5638)  IoU (F channel): 0.3642 (0.3882)  IoU (C channel): 0.3928 (0.3672)  L1 (Db channel): 0.4061 (0.4057)  L1 (Dn channel): 0.3429 (0.3444)  lr: 0.000395  iter-time: 0.4532
+[14:04:03.566611] Epoch: [21]  [23/24]  eta: 0:00:00  loss: 0.5195 (0.5596)  IoU (F channel): 0.3801 (0.3907)  IoU (C channel): 0.3811 (0.3627)  L1 (Db channel): 0.4085 (0.4063)  L1 (Dn channel): 0.3440 (0.3447)  lr: 0.000386  iter-time: 0.4459
+[14:04:03.620304] Epoch: [21] Total time: 0:00:15 (0.6435 s / it)
+[14:04:03.620455] [Train] averaged stats: loss: 0.5195 (0.5596)  IoU (F channel): 0.3801 (0.3907)  IoU (C channel): 0.3811 (0.3627)  L1 (Db channel): 0.4085 (0.4063)  L1 (Dn channel): 0.3440 (0.3447)  lr: 0.000386
+[14:04:06.166597] Epoch: [21]  [0/3]  eta: 0:00:07  loss: 0.3247 (0.3247)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.4260 (0.4260)  L1 (Dn channel): 0.3384 (0.3384)  iter-time: 2.5453
+[14:04:06.422088] Epoch: [21]  [2/3]  eta: 0:00:00  loss: 0.5316 (0.5672)  IoU (F channel): 0.0406 (0.1713)  IoU (C channel): 0.0403 (0.1614)  L1 (Db channel): 0.4260 (0.3986)  L1 (Dn channel): 0.3384 (0.3396)  iter-time: 0.9335
+[14:04:06.469569] Epoch: [21] Total time: 0:00:02 (0.9495 s / it)
+[14:04:06.469588] [Val] averaged stats: loss: 0.5316 (0.5672)  IoU (F channel): 0.0406 (0.1713)  IoU (C channel): 0.0403 (0.1614)  L1 (Db channel): 0.4260 (0.3986)  L1 (Dn channel): 0.3384 (0.3396)
+[14:04:06.469895] Val loss improved from 0.5893842081228892 to 0.5671794315179189, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:04:06.564490] [Val] best loss: 0.5672 best  IoU (F channel): 0.1713 IoU (C channel): 0.1614 L1 (Db channel): 0.3986 L1 (Dn channel): 0.3396 
+[14:04:06.574156] [Time] 18.4s 8.2m/11.2m
+
+[14:04:06.574169] ~~~ Epoch 22/30 ~~~
+
+[14:04:11.529468] Epoch: [22]  [ 0/24]  eta: 0:01:58  loss: 0.5322 (0.5322)  IoU (F channel): 0.2808 (0.2808)  IoU (C channel): 0.3688 (0.3688)  L1 (Db channel): 0.4038 (0.4038)  L1 (Dn channel): 0.3516 (0.3516)  lr: 0.000383  iter-time: 4.9544
+[14:04:16.813561] Epoch: [22]  [10/24]  eta: 0:00:13  loss: 0.5238 (0.5386)  IoU (F channel): 0.3460 (0.3539)  IoU (C channel): 0.3832 (0.3663)  L1 (Db channel): 0.4073 (0.4066)  L1 (Dn channel): 0.3403 (0.3390)  lr: 0.000353  iter-time: 0.9296
+[14:04:21.337895] Epoch: [22]  [20/24]  eta: 0:00:02  loss: 0.5014 (0.5223)  IoU (F channel): 0.3835 (0.3699)  IoU (C channel): 0.3869 (0.3634)  L1 (Db channel): 0.4108 (0.4132)  L1 (Dn channel): 0.3422 (0.3436)  lr: 0.000323  iter-time: 0.4897
+[14:04:22.548639] Epoch: [22]  [23/24]  eta: 0:00:00  loss: 0.5014 (0.5230)  IoU (F channel): 0.4003 (0.3898)  IoU (C channel): 0.3832 (0.3672)  L1 (Db channel): 0.4180 (0.4147)  L1 (Dn channel): 0.3429 (0.3438)  lr: 0.000314  iter-time: 0.4812
+[14:04:22.597266] Epoch: [22] Total time: 0:00:16 (0.6676 s / it)
+[14:04:22.597315] [Train] averaged stats: loss: 0.5014 (0.5230)  IoU (F channel): 0.4003 (0.3898)  IoU (C channel): 0.3832 (0.3672)  L1 (Db channel): 0.4180 (0.4147)  L1 (Dn channel): 0.3429 (0.3438)  lr: 0.000314
+[14:04:25.144585] Epoch: [22]  [0/3]  eta: 0:00:07  loss: 0.3415 (0.3415)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.5137 (0.5137)  L1 (Dn channel): 0.4183 (0.4183)  iter-time: 2.5462
+[14:04:25.399941] Epoch: [22]  [2/3]  eta: 0:00:00  loss: 0.5317 (0.5613)  IoU (F channel): 0.0500 (0.1858)  IoU (C channel): 0.0428 (0.1595)  L1 (Db channel): 0.5137 (0.5068)  L1 (Dn channel): 0.4183 (0.4460)  iter-time: 0.9338
+[14:04:25.460943] Epoch: [22] Total time: 0:00:02 (0.9543 s / it)
+[14:04:25.460960] [Val] averaged stats: loss: 0.5317 (0.5613)  IoU (F channel): 0.0500 (0.1858)  IoU (C channel): 0.0428 (0.1595)  L1 (Db channel): 0.5137 (0.5068)  L1 (Dn channel): 0.4183 (0.4460)
+[14:04:25.461332] Val loss improved from 0.5671794315179189 to 0.5612954199314117, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:04:25.559214] [Val] best loss: 0.5613 best  IoU (F channel): 0.1858 IoU (C channel): 0.1595 L1 (Db channel): 0.5068 L1 (Dn channel): 0.4460 
+[14:04:25.565477] [Time] 19.0s 8.5m/11.3m
+
+[14:04:25.565491] ~~~ Epoch 23/30 ~~~
+
+[14:04:30.094230] Epoch: [23]  [ 0/24]  eta: 0:01:48  loss: 0.4710 (0.4710)  IoU (F channel): 0.5962 (0.5962)  IoU (C channel): 0.3902 (0.3902)  L1 (Db channel): 0.4327 (0.4327)  L1 (Dn channel): 0.3422 (0.3422)  lr: 0.000312  iter-time: 4.5277
+[14:04:35.033939] Epoch: [23]  [10/24]  eta: 0:00:12  loss: 0.4848 (0.5022)  IoU (F channel): 0.3667 (0.3893)  IoU (C channel): 0.3902 (0.3593)  L1 (Db channel): 0.4273 (0.4251)  L1 (Dn channel): 0.3503 (0.3481)  lr: 0.000283  iter-time: 0.8606
+[14:04:39.828161] Epoch: [23]  [20/24]  eta: 0:00:02  loss: 0.4848 (0.4958)  IoU (F channel): 0.4234 (0.4072)  IoU (C channel): 0.3990 (0.3795)  L1 (Db channel): 0.4186 (0.4203)  L1 (Dn channel): 0.3447 (0.3430)  lr: 0.000255  iter-time: 0.4866
+[14:04:41.040421] Epoch: [23]  [23/24]  eta: 0:00:00  loss: 0.4782 (0.4937)  IoU (F channel): 0.4249 (0.4154)  IoU (C channel): 0.3990 (0.3826)  L1 (Db channel): 0.4186 (0.4221)  L1 (Dn channel): 0.3447 (0.3439)  lr: 0.000247  iter-time: 0.4779
+[14:04:41.094796] Epoch: [23] Total time: 0:00:15 (0.6470 s / it)
+[14:04:41.094867] [Train] averaged stats: loss: 0.4782 (0.4937)  IoU (F channel): 0.4249 (0.4154)  IoU (C channel): 0.3990 (0.3826)  L1 (Db channel): 0.4186 (0.4221)  L1 (Dn channel): 0.3447 (0.3439)  lr: 0.000247
+[14:04:43.590168] Epoch: [23]  [0/3]  eta: 0:00:07  loss: 0.3089 (0.3089)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.5646 (0.5646)  L1 (Dn channel): 0.4689 (0.4689)  iter-time: 2.4943
+[14:04:43.845895] Epoch: [23]  [2/3]  eta: 0:00:00  loss: 0.5214 (0.5534)  IoU (F channel): 0.0358 (0.1751)  IoU (C channel): 0.0306 (0.1602)  L1 (Db channel): 0.5646 (0.5991)  L1 (Dn channel): 0.4731 (0.5381)  iter-time: 0.9166
+[14:04:43.901229] Epoch: [23] Total time: 0:00:02 (0.9352 s / it)
+[14:04:43.901249] [Val] averaged stats: loss: 0.5214 (0.5534)  IoU (F channel): 0.0358 (0.1751)  IoU (C channel): 0.0306 (0.1602)  L1 (Db channel): 0.5646 (0.5991)  L1 (Dn channel): 0.4731 (0.5381)
+[14:04:43.901510] Val loss improved from 0.5612954199314117 to 0.5534475048383077, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:04:44.013105] [Val] best loss: 0.5534 best  IoU (F channel): 0.1751 IoU (C channel): 0.1602 L1 (Db channel): 0.5991 L1 (Dn channel): 0.5381 
+[14:04:44.022858] [Time] 18.5s 8.8m/11.3m
+
+[14:04:44.022872] ~~~ Epoch 24/30 ~~~
+
+[14:04:48.234186] Epoch: [24]  [ 0/24]  eta: 0:01:41  loss: 0.4705 (0.4705)  IoU (F channel): 0.4570 (0.4570)  IoU (C channel): 0.3856 (0.3856)  L1 (Db channel): 0.4337 (0.4337)  L1 (Dn channel): 0.3512 (0.3512)  lr: 0.000245  iter-time: 4.2104
+[14:04:53.060564] Epoch: [24]  [10/24]  eta: 0:00:11  loss: 0.4705 (0.4930)  IoU (F channel): 0.4238 (0.4177)  IoU (C channel): 0.4017 (0.3916)  L1 (Db channel): 0.4322 (0.4307)  L1 (Dn channel): 0.3530 (0.3513)  lr: 0.000218  iter-time: 0.8206
+[14:04:57.661355] Epoch: [24]  [20/24]  eta: 0:00:02  loss: 0.4599 (0.4859)  IoU (F channel): 0.4123 (0.4269)  IoU (C channel): 0.3966 (0.3814)  L1 (Db channel): 0.4293 (0.4286)  L1 (Dn channel): 0.3512 (0.3498)  lr: 0.000193  iter-time: 0.4708
+[14:04:58.872962] Epoch: [24]  [23/24]  eta: 0:00:00  loss: 0.4797 (0.4879)  IoU (F channel): 0.4238 (0.4285)  IoU (C channel): 0.3934 (0.3766)  L1 (Db channel): 0.4261 (0.4279)  L1 (Dn channel): 0.3512 (0.3496)  lr: 0.000186  iter-time: 0.4526
+[14:04:58.937829] Epoch: [24] Total time: 0:00:14 (0.6214 s / it)
+[14:04:58.938135] [Train] averaged stats: loss: 0.4797 (0.4879)  IoU (F channel): 0.4238 (0.4285)  IoU (C channel): 0.3934 (0.3766)  L1 (Db channel): 0.4261 (0.4279)  L1 (Dn channel): 0.3512 (0.3496)  lr: 0.000186
+[14:05:01.490121] Epoch: [24]  [0/3]  eta: 0:00:07  loss: 0.2953 (0.2953)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.4061 (0.4061)  L1 (Dn channel): 0.3127 (0.3127)  iter-time: 2.5510
+[14:05:01.745795] Epoch: [24]  [2/3]  eta: 0:00:00  loss: 0.4824 (0.5220)  IoU (F channel): 0.0682 (0.1940)  IoU (C channel): 0.0511 (0.1575)  L1 (Db channel): 0.4060 (0.3738)  L1 (Dn channel): 0.3127 (0.3111)  iter-time: 0.9355
+[14:05:01.798873] Epoch: [24] Total time: 0:00:02 (0.9533 s / it)
+[14:05:01.798894] [Val] averaged stats: loss: 0.4824 (0.5220)  IoU (F channel): 0.0682 (0.1940)  IoU (C channel): 0.0511 (0.1575)  L1 (Db channel): 0.4060 (0.3738)  L1 (Dn channel): 0.3127 (0.3111)
+[14:05:01.799284] Val loss improved from 0.5534475048383077 to 0.5220406651496887, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:05:01.901321] [Val] best loss: 0.5220 best  IoU (F channel): 0.1940 IoU (C channel): 0.1575 L1 (Db channel): 0.3738 L1 (Dn channel): 0.3111 
+[14:05:01.907144] [Time] 17.9s 9.1m/11.2m
+
+[14:05:01.907157] ~~~ Epoch 25/30 ~~~
+
+[14:05:06.093803] Epoch: [25]  [ 0/24]  eta: 0:01:40  loss: 0.4632 (0.4632)  IoU (F channel): 0.4736 (0.4736)  IoU (C channel): 0.3741 (0.3741)  L1 (Db channel): 0.4231 (0.4231)  L1 (Dn channel): 0.3480 (0.3480)  lr: 0.000183  iter-time: 4.1731
+[14:05:11.025398] Epoch: [25]  [10/24]  eta: 0:00:11  loss: 0.4533 (0.4784)  IoU (F channel): 0.4102 (0.4105)  IoU (C channel): 0.4011 (0.3739)  L1 (Db channel): 0.4220 (0.4209)  L1 (Dn channel): 0.3480 (0.3470)  lr: 0.000160  iter-time: 0.8277
+[14:05:15.595928] Epoch: [25]  [20/24]  eta: 0:00:02  loss: 0.4533 (0.4767)  IoU (F channel): 0.4037 (0.4270)  IoU (C channel): 0.4074 (0.3948)  L1 (Db channel): 0.4223 (0.4245)  L1 (Dn channel): 0.3452 (0.3458)  lr: 0.000138  iter-time: 0.4751
+[14:05:16.810899] Epoch: [25]  [23/24]  eta: 0:00:00  loss: 0.4532 (0.4782)  IoU (F channel): 0.4210 (0.4355)  IoU (C channel): 0.4121 (0.3925)  L1 (Db channel): 0.4224 (0.4246)  L1 (Dn channel): 0.3452 (0.3458)  lr: 0.000131  iter-time: 0.4542
+[14:05:16.888861] Epoch: [25] Total time: 0:00:14 (0.6242 s / it)
+[14:05:16.888900] [Train] averaged stats: loss: 0.4532 (0.4782)  IoU (F channel): 0.4210 (0.4355)  IoU (C channel): 0.4121 (0.3925)  L1 (Db channel): 0.4224 (0.4246)  L1 (Dn channel): 0.3452 (0.3458)  lr: 0.000131
+[14:05:19.422271] Epoch: [25]  [0/3]  eta: 0:00:07  loss: 0.3012 (0.3012)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.5139 (0.5139)  L1 (Dn channel): 0.4125 (0.4125)  iter-time: 2.5324
+[14:05:19.678175] Epoch: [25]  [2/3]  eta: 0:00:00  loss: 0.4895 (0.5371)  IoU (F channel): 0.0382 (0.1779)  IoU (C channel): 0.0319 (0.1606)  L1 (Db channel): 0.4867 (0.4950)  L1 (Dn channel): 0.4125 (0.4263)  iter-time: 0.9294
+[14:05:19.728085] Epoch: [25] Total time: 0:00:02 (0.9461 s / it)
+[14:05:19.728107] [Val] averaged stats: loss: 0.4895 (0.5371)  IoU (F channel): 0.0382 (0.1779)  IoU (C channel): 0.0319 (0.1606)  L1 (Db channel): 0.4867 (0.4950)  L1 (Dn channel): 0.4125 (0.4263)
+[14:05:19.728566] [Val] best loss: 0.5220 best  IoU (F channel): 0.1940 IoU (C channel): 0.1575 L1 (Db channel): 0.3738 L1 (Dn channel): 0.3111 
+[14:05:19.735190] Creating training plots . . .
+EarlyStopping counter: 1 out of 10
+[14:05:25.088335] [Time] 23.2s 9.5m/11.8m
+
+[14:05:25.088347] ~~~ Epoch 26/30 ~~~
+
+[14:05:30.266868] Epoch: [26]  [ 0/24]  eta: 0:02:04  loss: 0.4488 (0.4488)  IoU (F channel): 0.4338 (0.4338)  IoU (C channel): 0.4188 (0.4188)  L1 (Db channel): 0.4374 (0.4374)  L1 (Dn channel): 0.3468 (0.3468)  lr: 0.000129  iter-time: 5.1771
+[14:05:34.900184] Epoch: [26]  [10/24]  eta: 0:00:12  loss: 0.4488 (0.4865)  IoU (F channel): 0.3759 (0.3464)  IoU (C channel): 0.3835 (0.3211)  L1 (Db channel): 0.4369 (0.4354)  L1 (Dn channel): 0.3524 (0.3520)  lr: 0.000109  iter-time: 0.8918
+[14:05:39.408378] Epoch: [26]  [20/24]  eta: 0:00:02  loss: 0.4420 (0.4680)  IoU (F channel): 0.4234 (0.3994)  IoU (C channel): 0.3835 (0.3491)  L1 (Db channel): 0.4318 (0.4335)  L1 (Dn channel): 0.3522 (0.3513)  lr: 0.000090  iter-time: 0.4570
+[14:05:40.620309] Epoch: [26]  [23/24]  eta: 0:00:00  loss: 0.4460 (0.4724)  IoU (F channel): 0.4512 (0.4067)  IoU (C channel): 0.3839 (0.3578)  L1 (Db channel): 0.4318 (0.4333)  L1 (Dn channel): 0.3519 (0.3511)  lr: 0.000085  iter-time: 0.4499
+[14:05:40.671549] Epoch: [26] Total time: 0:00:15 (0.6493 s / it)
+[14:05:40.671585] [Train] averaged stats: loss: 0.4460 (0.4724)  IoU (F channel): 0.4512 (0.4067)  IoU (C channel): 0.3839 (0.3578)  L1 (Db channel): 0.4318 (0.4333)  L1 (Dn channel): 0.3519 (0.3511)  lr: 0.000085
+[14:05:43.164696] Epoch: [26]  [0/3]  eta: 0:00:07  loss: 0.2969 (0.2969)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.4816 (0.4816)  L1 (Dn channel): 0.3812 (0.3812)  iter-time: 2.4922
+[14:05:43.420566] Epoch: [26]  [2/3]  eta: 0:00:00  loss: 0.4772 (0.5258)  IoU (F channel): 0.0469 (0.1854)  IoU (C channel): 0.0372 (0.1594)  L1 (Db channel): 0.4609 (0.4523)  L1 (Dn channel): 0.3812 (0.3863)  iter-time: 0.9160
+[14:05:43.470014] Epoch: [26] Total time: 0:00:02 (0.9326 s / it)
+[14:05:43.470032] [Val] averaged stats: loss: 0.4772 (0.5258)  IoU (F channel): 0.0469 (0.1854)  IoU (C channel): 0.0372 (0.1594)  L1 (Db channel): 0.4609 (0.4523)  L1 (Dn channel): 0.3812 (0.3863)
+[14:05:43.470237] [Val] best loss: 0.5220 best  IoU (F channel): 0.1940 IoU (C channel): 0.1575 L1 (Db channel): 0.3738 L1 (Dn channel): 0.3111 
+EarlyStopping counter: 2 out of 10
+[14:05:43.482027] [Time] 18.4s 9.8m/11.3m
+
+[14:05:43.482040] ~~~ Epoch 27/30 ~~~
+
+[14:05:48.060142] Epoch: [27]  [ 0/24]  eta: 0:01:49  loss: 0.4598 (0.4598)  IoU (F channel): 0.3611 (0.3611)  IoU (C channel): 0.4252 (0.4252)  L1 (Db channel): 0.4370 (0.4370)  L1 (Dn channel): 0.3466 (0.3466)  lr: 0.000083  iter-time: 4.5770
+[14:05:52.797920] Epoch: [27]  [10/24]  eta: 0:00:11  loss: 0.4465 (0.4729)  IoU (F channel): 0.4677 (0.4644)  IoU (C channel): 0.4121 (0.3948)  L1 (Db channel): 0.4325 (0.4322)  L1 (Dn channel): 0.3509 (0.3506)  lr: 0.000067  iter-time: 0.8468
+[14:05:57.955224] Epoch: [27]  [20/24]  eta: 0:00:02  loss: 0.4423 (0.4711)  IoU (F channel): 0.4439 (0.4432)  IoU (C channel): 0.3975 (0.3878)  L1 (Db channel): 0.4325 (0.4318)  L1 (Dn channel): 0.3500 (0.3497)  lr: 0.000052  iter-time: 0.4947
+[14:05:59.169698] Epoch: [27]  [23/24]  eta: 0:00:00  loss: 0.4382 (0.4723)  IoU (F channel): 0.3929 (0.4350)  IoU (C channel): 0.3975 (0.3897)  L1 (Db channel): 0.4340 (0.4316)  L1 (Dn channel): 0.3500 (0.3498)  lr: 0.000048  iter-time: 0.4844
+[14:05:59.236882] Epoch: [27] Total time: 0:00:15 (0.6564 s / it)
+[14:05:59.236918] [Train] averaged stats: loss: 0.4382 (0.4723)  IoU (F channel): 0.3929 (0.4350)  IoU (C channel): 0.3975 (0.3897)  L1 (Db channel): 0.4340 (0.4316)  L1 (Dn channel): 0.3500 (0.3498)  lr: 0.000048
+[14:06:01.727786] Epoch: [27]  [0/3]  eta: 0:00:07  loss: 0.2918 (0.2918)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.4823 (0.4823)  L1 (Dn channel): 0.3823 (0.3823)  iter-time: 2.4899
+[14:06:01.983684] Epoch: [27]  [2/3]  eta: 0:00:00  loss: 0.4747 (0.5227)  IoU (F channel): 0.0360 (0.1796)  IoU (C channel): 0.0299 (0.1589)  L1 (Db channel): 0.4650 (0.4538)  L1 (Dn channel): 0.3838 (0.3885)  iter-time: 0.9152
+[14:06:02.028587] Epoch: [27] Total time: 0:00:02 (0.9303 s / it)
+[14:06:02.028605] [Val] averaged stats: loss: 0.4747 (0.5227)  IoU (F channel): 0.0360 (0.1796)  IoU (C channel): 0.0299 (0.1589)  L1 (Db channel): 0.4650 (0.4538)  L1 (Dn channel): 0.3838 (0.3885)
+[14:06:02.029260] [Val] best loss: 0.5220 best  IoU (F channel): 0.1940 IoU (C channel): 0.1575 L1 (Db channel): 0.3738 L1 (Dn channel): 0.3111 
+EarlyStopping counter: 3 out of 10
+[14:06:02.039015] [Time] 18.6s 10.1m/11.3m
+
+[14:06:02.039022] ~~~ Epoch 28/30 ~~~
+
+[14:06:07.863950] Epoch: [28]  [ 0/24]  eta: 0:02:19  loss: 0.4460 (0.4460)  IoU (F channel): 0.5920 (0.5920)  IoU (C channel): 0.3740 (0.3740)  L1 (Db channel): 0.4324 (0.4324)  L1 (Dn channel): 0.3482 (0.3482)  lr: 0.000047  iter-time: 5.8236
+[14:06:12.481960] Epoch: [28]  [10/24]  eta: 0:00:13  loss: 0.4513 (0.4743)  IoU (F channel): 0.4680 (0.4518)  IoU (C channel): 0.4210 (0.4076)  L1 (Db channel): 0.4250 (0.4243)  L1 (Dn channel): 0.3455 (0.3478)  lr: 0.000035  iter-time: 0.9492
+[14:06:17.017070] Epoch: [28]  [20/24]  eta: 0:00:02  loss: 0.4449 (0.4634)  IoU (F channel): 0.4220 (0.4174)  IoU (C channel): 0.4091 (0.3784)  L1 (Db channel): 0.4283 (0.4281)  L1 (Dn channel): 0.3455 (0.3481)  lr: 0.000024  iter-time: 0.4576
+[14:06:18.228670] Epoch: [28]  [23/24]  eta: 0:00:00  loss: 0.4390 (0.4587)  IoU (F channel): 0.4149 (0.4111)  IoU (C channel): 0.4091 (0.3722)  L1 (Db channel): 0.4286 (0.4280)  L1 (Dn channel): 0.3490 (0.3484)  lr: 0.000021  iter-time: 0.4492
+[14:06:18.278128] Epoch: [28] Total time: 0:00:16 (0.6766 s / it)
+[14:06:18.278203] [Train] averaged stats: loss: 0.4390 (0.4587)  IoU (F channel): 0.4149 (0.4111)  IoU (C channel): 0.4091 (0.3722)  L1 (Db channel): 0.4286 (0.4280)  L1 (Dn channel): 0.3490 (0.3484)  lr: 0.000021
+[14:06:20.809849] Epoch: [28]  [0/3]  eta: 0:00:07  loss: 0.2892 (0.2892)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.4945 (0.4945)  L1 (Dn channel): 0.3989 (0.3989)  iter-time: 2.5307
+[14:06:21.065695] Epoch: [28]  [2/3]  eta: 0:00:00  loss: 0.4766 (0.5216)  IoU (F channel): 0.0333 (0.1782)  IoU (C channel): 0.0276 (0.1590)  L1 (Db channel): 0.4817 (0.4788)  L1 (Dn channel): 0.4044 (0.4185)  iter-time: 0.9288
+[14:06:21.114798] Epoch: [28] Total time: 0:00:02 (0.9453 s / it)
+[14:06:21.114818] [Val] averaged stats: loss: 0.4766 (0.5216)  IoU (F channel): 0.0333 (0.1782)  IoU (C channel): 0.0276 (0.1590)  L1 (Db channel): 0.4817 (0.4788)  L1 (Dn channel): 0.4044 (0.4185)
+[14:06:21.115122] Val loss improved from 0.5220406651496887 to 0.5216382344563802, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:06:21.209145] [Val] best loss: 0.5216 best  IoU (F channel): 0.1782 IoU (C channel): 0.1590 L1 (Db channel): 0.4788 L1 (Dn channel): 0.4185 
+[14:06:21.217879] [Time] 19.2s 10.4m/11.4m
+
+[14:06:21.217892] ~~~ Epoch 29/30 ~~~
+
+[14:06:25.131804] Epoch: [29]  [ 0/24]  eta: 0:01:33  loss: 0.4730 (0.4730)  IoU (F channel): 0.5909 (0.5909)  IoU (C channel): 0.4146 (0.4146)  L1 (Db channel): 0.4359 (0.4359)  L1 (Dn channel): 0.3523 (0.3523)  lr: 0.000020  iter-time: 3.8999
+[14:06:31.070902] Epoch: [29]  [10/24]  eta: 0:00:12  loss: 0.4477 (0.4575)  IoU (F channel): 0.4292 (0.4289)  IoU (C channel): 0.3848 (0.3833)  L1 (Db channel): 0.4359 (0.4345)  L1 (Dn channel): 0.3519 (0.3514)  lr: 0.000013  iter-time: 0.8944
+[14:06:35.614875] Epoch: [29]  [20/24]  eta: 0:00:02  loss: 0.4455 (0.4696)  IoU (F channel): 0.4506 (0.4460)  IoU (C channel): 0.4016 (0.3927)  L1 (Db channel): 0.4326 (0.4325)  L1 (Dn channel): 0.3518 (0.3513)  lr: 0.000007  iter-time: 0.5241
+[14:06:36.824105] Epoch: [29]  [23/24]  eta: 0:00:00  loss: 0.4437 (0.4631)  IoU (F channel): 0.4317 (0.4315)  IoU (C channel): 0.4016 (0.3852)  L1 (Db channel): 0.4325 (0.4324)  L1 (Dn channel): 0.3519 (0.3512)  lr: 0.000005  iter-time: 0.4825
+[14:06:36.880337] Epoch: [29] Total time: 0:00:15 (0.6526 s / it)
+[14:06:36.880372] [Train] averaged stats: loss: 0.4437 (0.4631)  IoU (F channel): 0.4317 (0.4315)  IoU (C channel): 0.4016 (0.3852)  L1 (Db channel): 0.4325 (0.4324)  L1 (Dn channel): 0.3519 (0.3512)  lr: 0.000005
+[14:06:39.334097] Epoch: [29]  [0/3]  eta: 0:00:07  loss: 0.2902 (0.2902)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.4795 (0.4795)  L1 (Dn channel): 0.3812 (0.3812)  iter-time: 2.4528
+[14:06:39.590020] Epoch: [29]  [2/3]  eta: 0:00:00  loss: 0.4735 (0.5213)  IoU (F channel): 0.0355 (0.1790)  IoU (C channel): 0.0294 (0.1589)  L1 (Db channel): 0.4666 (0.4540)  L1 (Dn channel): 0.3860 (0.3896)  iter-time: 0.9029
+[14:06:39.642007] Epoch: [29] Total time: 0:00:02 (0.9203 s / it)
+[14:06:39.642025] [Val] averaged stats: loss: 0.4735 (0.5213)  IoU (F channel): 0.0355 (0.1790)  IoU (C channel): 0.0294 (0.1589)  L1 (Db channel): 0.4666 (0.4540)  L1 (Dn channel): 0.3860 (0.3896)
+[14:06:39.642258] Val loss improved from 0.5216382344563802 to 0.5212790469328562, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:06:39.752928] [Val] best loss: 0.5213 best  IoU (F channel): 0.1790 IoU (C channel): 0.1589 L1 (Db channel): 0.4540 L1 (Dn channel): 0.3896 
+[14:06:39.761321] [Time] 18.5s 10.7m/11.3m
+
+[14:06:39.761344] ~~~ Epoch 30/30 ~~~
+
+[14:06:44.962963] Epoch: [30]  [ 0/24]  eta: 0:02:04  loss: 0.4240 (0.4240)  IoU (F channel): 0.4268 (0.4268)  IoU (C channel): 0.4435 (0.4435)  L1 (Db channel): 0.4314 (0.4314)  L1 (Dn channel): 0.3553 (0.3553)  lr: 0.000005  iter-time: 5.1918
+[14:06:49.416323] Epoch: [30]  [10/24]  eta: 0:00:12  loss: 0.4320 (0.4773)  IoU (F channel): 0.4243 (0.4295)  IoU (C channel): 0.3946 (0.3804)  L1 (Db channel): 0.4314 (0.4331)  L1 (Dn channel): 0.3504 (0.3516)  lr: 0.000001  iter-time: 0.8768
+[14:06:54.119612] Epoch: [30]  [20/24]  eta: 0:00:02  loss: 0.4320 (0.4687)  IoU (F channel): 0.4243 (0.4335)  IoU (C channel): 0.3936 (0.3795)  L1 (Db channel): 0.4308 (0.4322)  L1 (Dn channel): 0.3504 (0.3514)  lr: 0.000000  iter-time: 0.4578
+[14:06:55.331870] Epoch: [30]  [23/24]  eta: 0:00:00  loss: 0.4406 (0.4679)  IoU (F channel): 0.4116 (0.4259)  IoU (C channel): 0.3930 (0.3791)  L1 (Db channel): 0.4308 (0.4327)  L1 (Dn channel): 0.3504 (0.3509)  lr: 0.000000  iter-time: 0.4512
+[14:06:55.388338] Epoch: [30] Total time: 0:00:15 (0.6511 s / it)
+[14:06:55.388407] [Train] averaged stats: loss: 0.4406 (0.4679)  IoU (F channel): 0.4116 (0.4259)  IoU (C channel): 0.3930 (0.3791)  L1 (Db channel): 0.4308 (0.4327)  L1 (Dn channel): 0.3504 (0.3509)  lr: 0.000000
+[14:06:57.917055] Epoch: [30]  [0/3]  eta: 0:00:07  loss: 0.2885 (0.2885)  IoU (F channel): 0.0000 (0.0000)  IoU (C channel): 0.0000 (0.0000)  L1 (Db channel): 0.4743 (0.4743)  L1 (Dn channel): 0.3707 (0.3707)  iter-time: 2.5278
+[14:06:58.172558] Epoch: [30]  [2/3]  eta: 0:00:00  loss: 0.4720 (0.5196)  IoU (F channel): 0.0363 (0.1794)  IoU (C channel): 0.0303 (0.1589)  L1 (Db channel): 0.4658 (0.4448)  L1 (Dn channel): 0.3749 (0.3754)  iter-time: 0.9277
+[14:06:58.234262] Epoch: [30] Total time: 0:00:02 (0.9484 s / it)
+[14:06:58.234279] [Val] averaged stats: loss: 0.4720 (0.5196)  IoU (F channel): 0.0363 (0.1794)  IoU (C channel): 0.0303 (0.1589)  L1 (Db channel): 0.4658 (0.4448)  L1 (Dn channel): 0.3749 (0.3754)
+[14:06:58.234597] Val loss improved from 0.5212790469328562 to 0.5196408033370972, saving model to metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:06:58.335843] [Val] best loss: 0.5196 best  IoU (F channel): 0.1794 IoU (C channel): 0.1589 L1 (Db channel): 0.4448 L1 (Dn channel): 0.3754 
+[14:06:58.343034] Creating training plots . . .
+[14:07:03.823456] [Time] 24.1s 11.1m/11.5m
+
+[14:07:03.823482] Training time: 0:11:07
+[14:07:03.823517] Train loss: 0.46794194107254344
+[14:07:03.823520] Train IoU (F channel): 0.4259304193158944
+[14:07:03.823521] Train IoU (C channel): 0.3790987158815066
+[14:07:03.823523] Train L1 (Db channel): 0.43268730367223424
+[14:07:03.823525] Train L1 (Dn channel): 0.35089944923917454
+[14:07:03.823526] Validation loss: 0.5196408033370972
+[14:07:03.823528] Validation IoU (F channel): 0.17943425476551056
+[14:07:03.823530] Validation IoU (C channel): 0.15885362029075623
+[14:07:03.823532] Validation L1 (Db channel): 0.4448425769805908
+[14:07:03.823533] Validation L1 (Dn channel): 0.3754225969314575
+[14:07:03.823535] 
+[14:07:03.823537] Finished Training
+[14:07:03.824318] Loading checkpoint from file metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:07:03.949919] Model weights loaded!
+[14:07:03.964035] Releasing memory . . .
+[14:07:03.964087] ######################
+[14:07:03.964091] #   LOAD TEST DATA   #
+[14:07:03.964093] ######################
+[14:07:03.964127] ### LOAD ###
+[14:07:03.969810] ############################
+[14:07:03.969821] #  PREPARE TEST GENERATOR  #
+[14:07:03.969824] ############################
+[14:07:16.673942] Loading checkpoint from file metrics/biapy/biapy-py_debug/checkpoints/biapy-py_debug_0-checkpoint-best.pth
+[14:07:16.724228] Model weights loaded!
+[14:07:16.725309] ###############
+[14:07:16.725318] #  INFERENCE  #
+[14:07:16.725321] ###############
+[14:07:16.725324] Making predictions on test data . . .
+[14:07:35.414436] Processing image: JRC_SS04989-20160318_24_A2.tif (GT: JRC_SS04989-20160318_24_A2.tif)
+[14:07:35.414514] ### 3D-OV-CROP ###
+[14:07:35.414528] Cropping (390, 680, 680, 3) images into (20, 128, 128, 3) with overlapping . . .
+[14:07:35.414531] Minimum overlap selected: (0, 0, 0)
+[14:07:35.414534] Padding: (4, 16, 16)
+[14:07:38.342141] Real overlapping (%): (0.0, 0.125, 0.125)
+[14:07:38.342171] Real overlapping (pixels): (0.0, 12.0, 12.0)
+[14:07:38.342175] (33, 8, 8) patches per (z,y,x) axis
+[14:07:46.568219] **** New data shape is: (2112, 20, 128, 128, 3)
+[14:07:46.568248] ### END 3D-OV-CROP ###
+[14:09:23.412182] ### MERGE-3D-OV-CROP ###
+[14:09:23.412213] Merging (2112, 20, 128, 128, 4) images into (390, 680, 680, 4) with overlapping . . .
+[14:09:23.412217] Minimum overlap selected: (0, 0, 0)
+[14:09:23.412220] Padding: (4, 16, 16)
+[14:09:23.412287] Real overlapping (%): (0.0, 0.125, 0.125)
+[14:09:23.412292] Real overlapping (pixels): (0.0, 12.0, 12.0)
+[14:09:23.412296] (33, 8, 8) patches per (z,y,x) axis
+[14:09:32.051171] **** New data shape is: (390, 680, 680, 4)
+[14:09:32.051208] ### END MERGE-3D-OV-CROP ###
+[14:09:35.722771] ### MERGE-3D-OV-CROP ###
+[14:09:35.722819] Merging (2112, 20, 128, 128, 3) images into (390, 680, 680, 3) with overlapping . . .
+[14:09:35.722825] Minimum overlap selected: (0, 0, 0)
+[14:09:35.722829] Padding: (4, 16, 16)
+[14:09:35.722899] Real overlapping (%): (0.0, 0.125, 0.125)
+[14:09:35.722909] Real overlapping (pixels): (0.0, 12.0, 12.0)
+[14:09:35.722912] (33, 8, 8) patches per (z,y,x) axis
+[14:09:41.283985] **** New data shape is: (390, 680, 680, 3)
+[14:09:41.284012] ### END MERGE-3D-OV-CROP ###
+[14:09:41.312803] Saving (1, 390, 680, 680, 4) data as .tif in folder: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/per_image
+[14:10:27.733018] Creating instances with watershed . . .
+[14:10:35.259204] Applying ['erode', 'dilate'] to seeds . . .
+[14:10:35.259229] Growth mask erosion . . .
+[14:10:42.711261] Thresholds used: {'seed': [0.18829289078712463, -0.8672678470611572], 'growth_mask': [0.09414644539356232]}
+[14:12:42.866710] Saving (1, 390, 680, 680, 1) data as .tif in folder: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/per_image_instances
+[14:12:45.494102] Calculating matching stats . . .
+[14:12:45.496355] Its respective image seems to be: fisbe/biapy-debug/test/label/JRC_SS04989-20160318_24_A2.tif
+[14:13:40.593756] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 422, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 422, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[14:13:40.614340] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 422, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 422, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[14:13:40.630051] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 422, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 422, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[14:13:40.630110] Removing small objects . . .
+[14:13:42.836558] Saving (1, 390, 680, 680, 1) data as .tif in folder: metrics/biapy/biapy-py_debug/results/biapy-py_debug_0/per_image_post_processing
+[14:13:45.543297] Calculating matching stats after post-processing . . .
+[14:14:37.761834] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 422, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 422, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[14:14:37.777038] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 422, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 422, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[14:14:37.792390] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 422, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 422, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[14:14:37.800098] Releasing memory . . .
+[14:14:37.800126] #############
+[14:14:37.800128] #  RESULTS  #
+[14:14:37.800131] #############
+[14:14:37.800133] The values below represent the averages across all test samples
+[14:14:37.800145] Epoch number: 30
+[14:14:37.800147] Train time (s): 0:11:07
+[14:14:37.800203] Train loss: 0.45872293288509053
+[14:14:37.800227] Train IoU (F channel): 0.43546603123346966
+[14:14:37.800241] Train IoU (C channel): 0.3925379316012065
+[14:14:37.800254] Train L1 (Db channel): 0.3359857884546121
+[14:14:37.800264] Train L1 (Dn channel): 0.32384032880266506
+[14:14:37.800267] Validation loss: 0.5196408033370972
+[14:14:37.800278] Validation IoU (F channel): 0.17943425476551056
+[14:14:37.800281] Validation IoU (C channel): 0.15885362029075623
+[14:14:37.800290] Validation L1 (Db channel): 0.4448425769805908
+[14:14:37.800294] Validation L1 (Dn channel): 0.3754225969314575
+[14:14:37.801043] Test IoU (F channel) (per patch): 0.07099801789916738
+[14:14:37.801048] Test IoU (C channel) (per patch): 0.07336205011848557
+[14:14:37.801050] Test L1 (Db channel) (per patch): 0.3773025024524877
+[14:14:37.801052] Test L1 (Dn channel) (per patch): 0.277215193694746
+[14:14:37.801053] Test IoU (F channel) (merge patches): 0.10153429955244064
+[14:14:37.801055] Test IoU (C channel) (merge patches): 0.1124299094080925
+[14:14:37.801056] Test L1 (Db channel) (merge patches): 0.45444995164871216
+[14:14:37.801059] Test L1 (Dn channel) (merge patches): 0.36813756823539734
+[14:14:37.801061] 
+[14:14:37.810311] Instance segmentation specific metrics:
+[14:14:37.810343] IoU TH=0.3
+[14:14:37.810347]       Merge patches:
+[14:14:37.810361]       DatasetMatching(criterion='iou', thresh=0.3, fp=422, tp=0, fn=3, precision=0, recall=0, accuracy=0, f1=0, n_true=3, n_pred=422, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=False)
+[14:14:37.810366] IoU (post-processing) TH=0.3
+[14:14:37.810368]       Merge patches (post-processing):
+[14:14:37.810374]       DatasetMatching(criterion='iou', thresh=0.3, fp=422, tp=0, fn=3, precision=0, recall=0, accuracy=0, f1=0, n_true=3, n_pred=422, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=False)
+[14:14:37.810381] IoU TH=0.5
+[14:14:37.810383]       Merge patches:
+[14:14:37.810391]       DatasetMatching(criterion='iou', thresh=0.5, fp=422, tp=0, fn=3, precision=0, recall=0, accuracy=0, f1=0, n_true=3, n_pred=422, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=False)
+[14:14:37.810395] IoU (post-processing) TH=0.5
+[14:14:37.810396]       Merge patches (post-processing):
+[14:14:37.810401]       DatasetMatching(criterion='iou', thresh=0.5, fp=422, tp=0, fn=3, precision=0, recall=0, accuracy=0, f1=0, n_true=3, n_pred=422, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=False)
+[14:14:37.810405] IoU TH=0.75
+[14:14:37.810407]       Merge patches:
+[14:14:37.810411]       DatasetMatching(criterion='iou', thresh=0.75, fp=422, tp=0, fn=3, precision=0, recall=0, accuracy=0, f1=0, n_true=3, n_pred=422, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=False)
+[14:14:37.810414] IoU (post-processing) TH=0.75
+[14:14:37.810416]       Merge patches (post-processing):
+[14:14:37.810420]       DatasetMatching(criterion='iou', thresh=0.75, fp=422, tp=0, fn=3, precision=0, recall=0, accuracy=0, f1=0, n_true=3, n_pred=422, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=False)
+[14:14:37.810476] FINISHED JOB biapy-py_debug_0 !!

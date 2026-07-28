@@ -1,0 +1,42 @@
+res_file_path: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/JRC_SS04989-20160318_24_A2.zarr
+gt_file_path: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/test/JRC_SS04989-20160318_24_A2.zarr
+res_file: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/JRC_SS04989-20160318_24_A2.zarr
+res_file_name: JRC_SS04989-20160318_24_A2.zarr
+AP: 0.0004177109440267335
+General: {'Num GT': 3, 'Num Pred': 399, 'TP_05': 1, 'TP_05_rel': 0.3333333333333333, 'TP_05_cldice': [0.7448818683624268], 'avg_TP_05_cldice': 0.7448818683624268}
+res_file_path: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/R14A02-20180905_65_A6.zarr
+gt_file_path: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/test/R14A02-20180905_65_A6.zarr
+res_file: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/R14A02-20180905_65_A6.zarr
+res_file_name: R14A02-20180905_65_A6.zarr
+AP: 0.00011893749174045198
+General: {'Num GT': 7, 'Num Pred': 1081, 'TP_05': 1, 'TP_05_rel': 0.14285714285714285, 'TP_05_cldice': [np.float32(0.94346976)], 'avg_TP_05_cldice': np.float32(0.94346976)}
+res_file_path: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/R54A09-20181019_64_H1.zarr
+gt_file_path: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/test/R54A09-20181019_64_H1.zarr
+res_file: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/R54A09-20181019_64_H1.zarr
+res_file_name: R54A09-20181019_64_H1.zarr
+AP: 0.0
+General: {'Num GT': 1, 'Num Pred': 379, 'TP_05': 0, 'TP_05_rel': 0.0, 'TP_05_cldice': [], 'avg_TP_05_cldice': 0.0}
+res_file_path: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/VT011145-20171222_63_I1.zarr
+gt_file_path: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/test/VT011145-20171222_63_I1.zarr
+res_file: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/VT011145-20171222_63_I1.zarr
+res_file_name: VT011145-20171222_63_I1.zarr
+AP: 3.4258307639602604e-05
+General: {'Num GT': 9, 'Num Pred': 973, 'TP_05': 1, 'TP_05_rel': 0.1111111111111111, 'TP_05_cldice': [np.float32(0.6347895)], 'avg_TP_05_cldice': np.float32(0.6347895)}
+res_file_path: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/VT027175-20171031_62_H3.zarr
+gt_file_path: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/test/VT027175-20171031_62_H3.zarr
+res_file: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/VT027175-20171031_62_H3.zarr
+res_file_name: VT027175-20171031_62_H3.zarr
+AP: 0.0
+General: {'Num GT': 3, 'Num Pred': 365, 'TP_05': 0, 'TP_05_rel': 0.0, 'TP_05_cldice': [], 'avg_TP_05_cldice': 0.0}
+res_file_path: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/VT027175-20171031_62_H4.zarr
+gt_file_path: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/test/VT027175-20171031_62_H4.zarr
+res_file: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/VT027175-20171031_62_H4.zarr
+res_file_name: VT027175-20171031_62_H4.zarr
+AP: 0.0
+General: {'Num GT': 6, 'Num Pred': 1372, 'TP_05': 0, 'TP_05_rel': 0.0, 'TP_05_cldice': [], 'avg_TP_05_cldice': 0.0}
+res_file_path: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/VT050157-20171110_61_C1.zarr
+gt_file_path: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/test/VT050157-20171110_61_C1.zarr
+res_file: /scratch/wmz2007/neuroinfo_fruitfly/BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/VT050157-20171110_61_C1.zarr
+res_file_name: VT050157-20171110_61_C1.zarr
+AP: 0.0
+General: {'Num GT': 5, 'Num Pred': 780, 'TP_05': 0, 'TP_05_rel': 0.0, 'TP_05_cldice': [], 'avg_TP_05_cldice': 0.0}

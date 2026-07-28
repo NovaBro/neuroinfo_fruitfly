@@ -1,0 +1,111 @@
+============================================================
+FISBe web viewer starting on compute node: cs606
+From your LAPTOP, open an SSH tunnel:
+
+  ssh -N -L 5173:cs606:5173 wmz2007@greene.hpc.nyu.edu
+
+then browse:  http://localhost:5173
+(Only the client port is tunneled; Vite proxies /api to the server.)
+============================================================
+
+> fisbe-viewer-client@0.1.0 dev
+> vite --host 0.0.0.0 --port 5173
+
+
+  VITE v8.0.16  ready in 1868 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://10.32.36.5:5173/
+  ➜  Network: http://10.0.4.5:5173/
+INFO:     127.0.0.1:52510 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52530 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52520 - "GET /api/prediction-sets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52506 - "GET /api/prediction-sets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52524 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52518 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50876 - "GET /api/samples/R38F04-20181005_63_G3/meta?prediction_set=BiaPy%2Fresults%2Ftrain_3d_instance_segmentation%2Fresults%2Ftrain_3d_instance_segmentation_1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50882 - "GET /api/samples/R38F04-20181005_63_G3/metrics?prediction_set=BiaPy%2Fresults%2Ftrain_3d_instance_segmentation%2Fresults%2Ftrain_3d_instance_segmentation_1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50898 - "GET /api/samples/R38F04-20181005_63_G3/fisbe_mip.png?half=full HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50930 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=raw&channel=0&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50914 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=gt&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50910 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=raw&channel=all&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48964 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48994 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49006 - "GET /api/prediction-sets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48966 - "GET /api/prediction-sets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48982 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49016 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49040 - "GET /api/samples/R38F04-20181005_63_G3/metrics?prediction_set=BiaPy%2Fresults%2Ftrain_3d_instance_segmentation%2Fresults%2Ftrain_3d_instance_segmentation_1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49032 - "GET /api/samples/R38F04-20181005_63_G3/meta?prediction_set=BiaPy%2Fresults%2Ftrain_3d_instance_segmentation%2Fresults%2Ftrain_3d_instance_segmentation_1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49076 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=raw&channel=all&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49084 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=gt&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49096 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=raw&channel=0&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49064 - "GET /api/samples/R38F04-20181005_63_G3/fisbe_mip.png?half=full HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60300 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60322 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60342 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60348 - "GET /api/prediction-sets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60324 - "GET /api/prediction-sets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60306 - "GET /api/prediction-sets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60328 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60356 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60318 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60404 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60414 - "GET /api/samples/R38F04-20181005_63_G3/metrics?prediction_set=BiaPy%2Fresults%2Ftrain_3d_instance_segmentation%2Fresults%2Ftrain_3d_instance_segmentation_1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60424 - "GET /api/samples/R38F04-20181005_63_G3/metrics?prediction_set=BiaPy%2Fresults%2Ftrain_3d_instance_segmentation%2Fresults%2Ftrain_3d_instance_segmentation_1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60416 - "GET /api/samples/R38F04-20181005_63_G3/meta?prediction_set=BiaPy%2Fresults%2Ftrain_3d_instance_segmentation%2Fresults%2Ftrain_3d_instance_segmentation_1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60454 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=raw&channel=all&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60466 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=gt&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60452 - "GET /api/samples/R38F04-20181005_63_G3/fisbe_mip.png?half=full HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60472 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=raw&channel=0&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60388 - "GET /api/prediction-sets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60372 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60406 - "GET /api/samples/R38F04-20181005_63_G3/meta?prediction_set=BiaPy%2Fresults%2Ftrain_3d_instance_segmentation%2Fresults%2Ftrain_3d_instance_segmentation_1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60496 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=gt&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60504 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=raw&channel=all&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60510 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=raw&channel=0&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60492 - "GET /api/samples/R38F04-20181005_63_G3/fisbe_mip.png?half=full HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59538 - "GET /api/samples/R38F04-20181005_63_G3/metrics?prediction_set=metrics%2Fbiapy%2Fbiapy-py_v1%2Fresults%2Fbiapy-py_v1_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59536 - "GET /api/samples/R38F04-20181005_63_G3/meta?prediction_set=metrics%2Fbiapy%2Fbiapy-py_v1%2Fresults%2Fbiapy-py_v1_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59546 - "GET /api/samples/R38F04-20181005_63_G3/fisbe_mip.png?half=full HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44626 - "GET /api/samples/JRC_SS04989-20160318_24_A2/metrics?prediction_set=metrics%2Fbiapy%2Fbiapy-py_v1%2Fresults%2Fbiapy-py_v1_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44618 - "GET /api/samples/JRC_SS04989-20160318_24_A2/meta?prediction_set=metrics%2Fbiapy%2Fbiapy-py_v1%2Fresults%2Fbiapy-py_v1_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44654 - "GET /api/samples/JRC_SS04989-20160318_24_A2/fisbe_mip.png?half=full HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44710 - "GET /api/samples/JRC_SS04989-20160318_24_A2/volume.bin?volume=raw&channel=0&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44718 - "GET /api/samples/JRC_SS04989-20160318_24_A2/volume.bin?volume=predicted&max_size=128&prediction_set=metrics%2Fbiapy%2Fbiapy-py_v1%2Fresults%2Fbiapy-py_v1_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44684 - "GET /api/samples/JRC_SS04989-20160318_24_A2/volume.bin?volume=gt&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44670 - "GET /api/samples/JRC_SS04989-20160318_24_A2/volume.bin?volume=raw&channel=all&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44726 - "GET /api/samples/JRC_SS04989-20160318_24_A2/volume.bin?volume=gt&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51412 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51422 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51418 - "GET /api/prediction-sets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51432 - "GET /api/prediction-sets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51442 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51420 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42408 - "GET /api/samples/R38F04-20181005_63_G3/meta?prediction_set=BiaPy%2Fresults%2Ftrain_3d_instance_segmentation%2Fresults%2Ftrain_3d_instance_segmentation_1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42424 - "GET /api/samples/R38F04-20181005_63_G3/metrics?prediction_set=BiaPy%2Fresults%2Ftrain_3d_instance_segmentation%2Fresults%2Ftrain_3d_instance_segmentation_1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42450 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=raw&channel=all&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42452 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=gt&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42456 - "GET /api/samples/R38F04-20181005_63_G3/volume.bin?volume=raw&channel=0&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42444 - "GET /api/samples/R38F04-20181005_63_G3/fisbe_mip.png?half=full HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42462 - "GET /api/samples/JRC_SS04989-20160318_24_A2/metrics?prediction_set=BiaPy%2Fresults%2Ftrain_3d_instance_segmentation%2Fresults%2Ftrain_3d_instance_segmentation_1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42460 - "GET /api/samples/JRC_SS04989-20160318_24_A2/meta?prediction_set=BiaPy%2Fresults%2Ftrain_3d_instance_segmentation%2Fresults%2Ftrain_3d_instance_segmentation_1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42494 - "GET /api/samples/JRC_SS04989-20160318_24_A2/volume.bin?volume=raw&channel=all&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42500 - "GET /api/samples/JRC_SS04989-20160318_24_A2/volume.bin?volume=gt&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42502 - "GET /api/samples/JRC_SS04989-20160318_24_A2/volume.bin?volume=raw&channel=0&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42488 - "GET /api/samples/JRC_SS04989-20160318_24_A2/fisbe_mip.png?half=full HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42510 - "GET /api/samples/JRC_SS04989-20160318_24_A2/volume.bin?volume=predicted&max_size=128&prediction_set=BiaPy%2Fresults%2Ftrain_3d_instance_segmentation%2Fresults%2Ftrain_3d_instance_segmentation_1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41228 - "GET /api/samples/JRC_SS04989-20160318_24_A2/metrics?prediction_set=metrics%2Fbiapy%2Fbiapy-py_v2%2Fresults%2Fbiapy-py_v2_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41220 - "GET /api/samples/JRC_SS04989-20160318_24_A2/meta?prediction_set=metrics%2Fbiapy%2Fbiapy-py_v2%2Fresults%2Fbiapy-py_v2_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41264 - "GET /api/samples/JRC_SS04989-20160318_24_A2/fisbe_mip.png?half=full HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41278 - "GET /api/samples/JRC_SS04989-20160318_24_A2/volume.bin?volume=predicted&max_size=128&prediction_set=metrics%2Fbiapy%2Fbiapy-py_v2%2Fresults%2Fbiapy-py_v2_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41298 - "GET /api/samples/R14A02-20180905_65_A6/metrics?prediction_set=metrics%2Fbiapy%2Fbiapy-py_v2%2Fresults%2Fbiapy-py_v2_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41288 - "GET /api/samples/R14A02-20180905_65_A6/meta?prediction_set=metrics%2Fbiapy%2Fbiapy-py_v2%2Fresults%2Fbiapy-py_v2_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41320 - "GET /api/samples/R14A02-20180905_65_A6/fisbe_mip.png?half=full HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41340 - "GET /api/samples/R14A02-20180905_65_A6/volume.bin?volume=raw&channel=0&max_size=128 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35256 - "GET /api/samples/JRC_SS04989-20160318_24_A2/metrics?prediction_set=metrics%2Fbiapy%2Fbiapy-py_v2%2Fresults%2Fbiapy-py_v2_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35250 - "GET /api/samples/JRC_SS04989-20160318_24_A2/meta?prediction_set=metrics%2Fbiapy%2Fbiapy-py_v2%2Fresults%2Fbiapy-py_v2_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35280 - "GET /api/samples/JRC_SS04989-20160318_24_A2/fisbe_mip.png?half=full HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33330 - "GET /api/samples/JRC_SS04989-20160318_24_A2/metrics?prediction_set=metrics%2Fbiapy%2Fbiapy-py_v1%2Fresults%2Fbiapy-py_v1_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33322 - "GET /api/samples/JRC_SS04989-20160318_24_A2/meta?prediction_set=metrics%2Fbiapy%2Fbiapy-py_v1%2Fresults%2Fbiapy-py_v1_0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33340 - "GET /api/samples/JRC_SS04989-20160318_24_A2/volume.bin?volume=predicted&max_size=128&prediction_set=metrics%2Fbiapy%2Fbiapy-py_v1%2Fresults%2Fbiapy-py_v1_0 HTTP/1.1" 200 OK

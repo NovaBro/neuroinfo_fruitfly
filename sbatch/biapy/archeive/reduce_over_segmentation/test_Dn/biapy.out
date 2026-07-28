@@ -1,0 +1,1401 @@
+# packages in environment at /ext3/miniforge3/envs/BiaPy_env:
+#
+# Name                                  Version          Build                               Channel
+_openmp_mutex                           4.5              7_kmp_llvm                          conda-forge
+_python_abi3_support                    1.0              hd8ed1ab_2                          conda-forge
+adwaita-icon-theme                      49.0             unix_0                              conda-forge
+alsa-lib                                1.2.16.1         hb03c661_0                          conda-forge
+annotated-doc                           0.0.4            pyhcf101f3_0                        conda-forge
+annotated-types                         0.7.0            pyhd8ed1ab_1                        conda-forge
+anyio                                   4.14.0           pyhcf101f3_0                        conda-forge
+aom                                     3.14.1           pl5321h039972f_1                    conda-forge
+asciitree                               0.3.3            py_2                                conda-forge
+at-spi2-atk                             2.38.0           h0630a04_3                          conda-forge
+at-spi2-core                            2.40.3           h0630a04_0                          conda-forge
+atk-1.0                                 2.38.0           h04ea711_2                          conda-forge
+aws-c-auth                              0.10.3           hea842a7_2                          conda-forge
+aws-c-cal                               0.9.14           h78948cc_2                          conda-forge
+aws-c-common                            0.14.0           hb03c661_0                          conda-forge
+aws-c-compression                       0.3.2            haa0cbde_2                          conda-forge
+aws-c-http                              0.11.0           h6488f85_2                          conda-forge
+aws-c-io                                0.26.3           h5b668fc_4                          conda-forge
+aws-c-s3                                0.12.5           hb916526_1                          conda-forge
+aws-c-sdkutils                          0.2.4            haa0cbde_6                          conda-forge
+aws-checksums                           0.2.10           haa0cbde_2                          conda-forge
+backports.zstd                          1.6.0            py311h6b1f9c4_0                     conda-forge
+biapy                                   3.6.8            pyhd8ed1ab_0                        conda-forge
+bioimageio.core                         0.8.0            pyhd8ed1ab_0                        conda-forge
+bioimageio.spec                         0.5.4.1          pyhd8ed1ab_2                        conda-forge
+blosc                                   1.21.6           he440d0b_1                          conda-forge
+brotli                                  1.2.0            hed03a55_1                          conda-forge
+brotli-bin                              1.2.0            hb03c661_1                          conda-forge
+brotli-python                           1.2.0            py311h66f275b_1                     conda-forge
+brunsli                                 0.1              hd1e3526_2                          conda-forge
+bzip2                                   1.0.8            hda65f42_9                          conda-forge
+c-ares                                  1.34.6           hb03c661_0                          conda-forge
+c-blosc2                                3.0.3            hc31b594_0                          conda-forge
+ca-certificates                         2026.5.20        hbd8a1cb_0                          conda-forge
+cached-property                         1.5.2            hd8ed1ab_1                          conda-forge
+cached_property                         1.5.2            pyha770c72_1                        conda-forge
+cairo                                   1.18.4           he90730b_1                          conda-forge
+certifi                                 2026.5.20        pyhd8ed1ab_0                        conda-forge
+charls                                  2.4.4            hecca717_0                          conda-forge
+charset-normalizer                      3.4.7            pyhd8ed1ab_0                        conda-forge
+click                                   8.4.1            pyhc90fa1f_0                        conda-forge
+contourpy                               1.3.3            py311h724c32c_4                     conda-forge
+cpython                                 3.11.15          py311hd8ed1ab_1                     conda-forge
+cuda-crt-tools                          13.3.33          ha770c72_0                          conda-forge
+cuda-cudart                             13.3.29          hecca717_0                          conda-forge
+cuda-cudart_linux-64                    13.3.29          h376f20c_0                          conda-forge
+cuda-cuobjdump                          13.3.29          hffce074_0                          conda-forge
+cuda-cupti                              13.3.35          h676940d_0                          conda-forge
+cuda-nvcc-tools                         13.3.33          he02047a_0                          conda-forge
+cuda-nvdisasm                           13.3.29          hffce074_0                          conda-forge
+cuda-nvrtc                              13.3.33          hecca717_0                          conda-forge
+cuda-nvtx                               13.3.29          hecca717_0                          conda-forge
+cuda-nvvm-tools                         13.3.33          h4bc722e_0                          conda-forge
+cuda-version                            13.3             hcbadf70_3                          conda-forge
+cycler                                  0.12.1           pyhcf101f3_2                        conda-forge
+cyrus-sasl                              2.1.28           hac629b4_1                          conda-forge
+dav1d                                   1.2.1            hd590300_0                          conda-forge
+dbus                                    1.16.2           h24cb091_1                          conda-forge
+deprecated                              1.3.1            pyhd8ed1ab_1                        conda-forge
+distro                                  1.9.0            pyhd8ed1ab_1                        conda-forge
+dnspython                               2.8.0            pyhcf101f3_0                        conda-forge
+double-conversion                       3.4.0            hecca717_0                          conda-forge
+edt                                     3.1.1            py311h1d5f577_0                     conda-forge
+email-validator                         2.3.0            pyhd8ed1ab_0                        conda-forge
+email_validator                         2.3.0            hd8ed1ab_0                          conda-forge
+epoxy                                   1.5.10           hb03c661_2                          conda-forge
+exceptiongroup                          1.3.1            pyhd8ed1ab_0                        conda-forge
+fasteners                               0.19             pyhd8ed1ab_1                        conda-forge
+fastremap                               1.20.0           py311h1d5f577_0                     conda-forge
+ffmpeg                                  8.1.1            gpl_h6d6c1bd_904                    conda-forge
+filelock                                3.29.4           pyhd8ed1ab_0                        conda-forge
+fill-voids                              2.1.2            py311h1d5f577_0                     conda-forge
+fmt                                     12.1.0           hff5e90c_0                          conda-forge
+font-ttf-dejavu-sans-mono               2.37             hab24e00_0                          conda-forge
+font-ttf-inconsolata                    3.000            h77eed37_0                          conda-forge
+font-ttf-source-code-pro                2.038            h77eed37_0                          conda-forge
+font-ttf-ubuntu                         0.83             h77eed37_3                          conda-forge
+fontconfig                              2.18.1           h27c8c51_0                          conda-forge
+fonts-conda-ecosystem                   1                0                                   conda-forge
+fonts-conda-forge                       1                hc364b38_1                          conda-forge
+fonttools                               4.63.0           py311h3778330_0                     conda-forge
+freetype                                2.14.3           ha770c72_0                          conda-forge
+fribidi                                 1.0.16           hb03c661_0                          conda-forge
+fsspec                                  2026.6.0         pyhd8ed1ab_0                        conda-forge
+gdk-pixbuf                              2.44.6           h2b0a6b4_0                          conda-forge
+giflib                                  5.2.2            hd590300_0                          conda-forge
+glib-tools                              2.88.1           hee1de02_2                          conda-forge
+glslang                                 16.3.0           h96af755_0                          conda-forge
+gmp                                     6.3.0            hac33072_2                          conda-forge
+gmpy2                                   2.3.0            py311h92a432a_1                     conda-forge
+graphite2                               1.3.15           hecca717_0                          conda-forge
+graphviz                                14.1.2           h8b86629_0                          conda-forge
+gtk3                                    3.24.52          ha5ea40c_0                          conda-forge
+gts                                     0.7.6            h977cf35_4                          conda-forge
+h11                                     0.16.0           pyhcf101f3_1                        conda-forge
+h2                                      4.3.0            pyhcf101f3_0                        conda-forge
+h5py                                    3.16.0           nompi_py311hfef529e_102             conda-forge
+harfbuzz                                14.2.1           h6083320_0                          conda-forge
+hdf5                                    2.1.0            nompi_h735b18d_107                  conda-forge
+hf-xet                                  1.5.0            py310hb823017_0                     conda-forge
+hicolor-icon-theme                      0.17             ha770c72_3                          conda-forge
+hpack                                   4.1.0            pyhd8ed1ab_0                        conda-forge
+httpcore                                1.0.9            pyh29332c3_0                        conda-forge
+httpx                                   0.28.1           pyhd8ed1ab_0                        conda-forge
+huggingface_hub                         1.18.0           pyhd8ed1ab_0                        conda-forge
+hyperframe                              6.1.0            pyhd8ed1ab_0                        conda-forge
+icu                                     78.3             h33c6efd_0                          conda-forge
+idna                                    3.18             pyhcf101f3_0                        conda-forge
+imagecodecs                             2026.3.6         py311h5d55412_3                     conda-forge
+imageio                                 2.37.0           pyhfb79c49_0                        conda-forge
+imath                                   3.2.2            hde8ca8f_0                          conda-forge
+importlib-metadata                      9.0.0            pyhcf101f3_0                        conda-forge
+intel-gmmlib                            22.10.0          hb700be7_0                          conda-forge
+intel-media-driver                      26.1.6           hecca717_0                          conda-forge
+jinja2                                  3.1.6            pyhcf101f3_1                        conda-forge
+joblib                                  1.5.3            pyhd8ed1ab_0                        conda-forge
+jxrlib                                  1.1              hd590300_3                          conda-forge
+keyutils                                1.6.3            hb9d3cd8_0                          conda-forge
+kiwisolver                              1.5.0            py311h724c32c_0                     conda-forge
+krb5                                    1.22.2           ha1258a1_0                          conda-forge
+lame                                    3.100            h166bdaf_1003                       conda-forge
+lazy-loader                             0.5              pyhd8ed1ab_0                        conda-forge
+lcms2                                   2.19.1           h0c24ade_1                          conda-forge
+ld_impl_linux-64                        2.45.1           default_hbd61a6d_102                conda-forge
+lerc                                    4.1.0            hdb68285_0                          conda-forge
+level-zero                              1.29.0           hb700be7_0                          conda-forge
+libabseil                               20260107.1       cxx17_h7b12aa8_0                    conda-forge
+libaec                                  1.1.5            h088129d_0                          conda-forge
+libass                                  0.17.4           h96ad9f0_0                          conda-forge
+libavif16                               1.4.2            hf998032_1                          conda-forge
+libblas                                 3.11.0           8_h4a7cf45_openblas                 conda-forge
+libbrotlicommon                         1.2.0            hb03c661_1                          conda-forge
+libbrotlidec                            1.2.0            hb03c661_1                          conda-forge
+libbrotlienc                            1.2.0            hb03c661_1                          conda-forge
+libcap                                  2.78             hd0affe5_0                          conda-forge
+libcblas                                3.11.0           8_h0358290_openblas                 conda-forge
+libcublas                               13.5.1.27        h676940d_0                          conda-forge
+libcudnn                                9.23.1.3         ha4b6413_0                          conda-forge
+libcudss                                0.7.1.4          h7bcfba5_1                          conda-forge
+libcufft                                12.3.0.29        hecca717_0                          conda-forge
+libcufile                               1.18.0.66        h85c024f_0                          conda-forge
+libcups                                 2.3.3            h7a8fb5f_6                          conda-forge
+libcurand                               10.4.3.29        h676940d_0                          conda-forge
+libcurl                                 8.20.0           hcf29cc6_0                          conda-forge
+libcusolver                             12.2.2.18        h676940d_0                          conda-forge
+libcusparse                             12.8.1.7         hecca717_0                          conda-forge
+libdeflate                              1.25             h17f619e_0                          conda-forge
+libdovi                                 3.3.2            ha23c83e_4                          conda-forge
+libdrm                                  2.4.127          hb03c661_0                          conda-forge
+libedit                                 3.1.20250104     pl5321h7949ede_0                    conda-forge
+libegl                                  1.7.0            ha4b6fd6_3                          conda-forge
+libegl-devel                            1.7.0            ha4b6fd6_3                          conda-forge
+libev                                   4.33             hd590300_2                          conda-forge
+libexpat                                2.8.1            hecca717_1                          conda-forge
+libffi                                  3.5.2            h3435931_0                          conda-forge
+libflac                                 1.5.0            he200343_1                          conda-forge
+libfreetype                             2.14.3           ha770c72_0                          conda-forge
+libfreetype6                            2.14.3           h73754d4_0                          conda-forge
+libgcc                                  15.2.0           he0feb66_19                         conda-forge
+libgcc-ng                               15.2.0           h69a702a_19                         conda-forge
+libgd                                   2.3.3            h5fbf134_12                         conda-forge
+libgfortran                             15.2.0           h69a702a_19                         conda-forge
+libgfortran5                            15.2.0           h68bc16d_19                         conda-forge
+libgl                                   1.7.0            ha4b6fd6_3                          conda-forge
+libgl-devel                             1.7.0            ha4b6fd6_3                          conda-forge
+libglib                                 2.88.1           h0d30a3d_2                          conda-forge
+libglvnd                                1.7.0            ha4b6fd6_3                          conda-forge
+libglx                                  1.7.0            ha4b6fd6_3                          conda-forge
+libglx-devel                            1.7.0            ha4b6fd6_3                          conda-forge
+libhwloc                                2.13.0           default_he001693_1000               conda-forge
+libhwy                                  1.4.0            h10be129_0                          conda-forge
+libiconv                                1.18             h3b78370_2                          conda-forge
+libjpeg-turbo                           3.1.4.1          hb03c661_0                          conda-forge
+libjxl                                  0.11.2           h174a0a3_1                          conda-forge
+liblapack                               3.11.0           8_h47877c9_openblas                 conda-forge
+liblapacke                              3.11.0           8_h6ae95b6_openblas                 conda-forge
+liblzma                                 5.8.3            hb03c661_0                          conda-forge
+libmagma                                2.10.0           hd93470c_0                          conda-forge
+libnghttp2                              1.68.1           h877daf1_0                          conda-forge
+libnl                                   3.11.0           hb9d3cd8_0                          conda-forge
+libnsl                                  2.0.1            hb9d3cd8_1                          conda-forge
+libntlm                                 1.8              hb9d3cd8_0                          conda-forge
+libnvjitlink                            13.3.33          hecca717_0                          conda-forge
+libnvjpeg                               13.2.0.21        hecca717_0                          conda-forge
+libogg                                  1.3.5            hd0c01bc_1                          conda-forge
+libopenblas                             0.3.33           openmp_hd680484_0                   conda-forge
+libopencv                               4.13.0           qt6_py311h775604a_610               conda-forge
+libopenvino                             2026.2.0         hb56ce9e_0                          conda-forge
+libopenvino-auto-batch-plugin           2026.2.0         hd85de46_0                          conda-forge
+libopenvino-auto-plugin                 2026.2.0         hd85de46_0                          conda-forge
+libopenvino-hetero-plugin               2026.2.0         hd41364c_0                          conda-forge
+libopenvino-intel-cpu-plugin            2026.2.0         hb56ce9e_0                          conda-forge
+libopenvino-intel-gpu-plugin            2026.2.0         hb56ce9e_0                          conda-forge
+libopenvino-intel-npu-plugin            2026.2.0         hb56ce9e_0                          conda-forge
+libopenvino-ir-frontend                 2026.2.0         hd41364c_0                          conda-forge
+libopenvino-onnx-frontend               2026.2.0         h7a07914_0                          conda-forge
+libopenvino-paddle-frontend             2026.2.0         h7a07914_0                          conda-forge
+libopenvino-pytorch-frontend            2026.2.0         hecca717_0                          conda-forge
+libopenvino-tensorflow-frontend         2026.2.0         h78e8023_0                          conda-forge
+libopenvino-tensorflow-lite-frontend    2026.2.0         hecca717_0                          conda-forge
+libopus                                 1.6.1            h280c20c_0                          conda-forge
+libpciaccess                            0.19             hb03c661_0                          conda-forge
+libplacebo                              7.360.1          h9eeb4b2_0                          conda-forge
+libpng                                  1.6.58           h421ea60_0                          conda-forge
+libpq                                   18.4             hd5a49e9_0                          conda-forge
+libprotobuf                             6.33.5           h6eeba95_1                          conda-forge
+libraqm                                 0.10.5           h75b3fb1_0                          conda-forge
+librsvg                                 2.62.3           h4c96295_0                          conda-forge
+libsndfile                              1.2.2            hc7d488a_2                          conda-forge
+libsqlite                               3.53.2           h0c1763c_0                          conda-forge
+libssh2                                 1.11.1           hcf80075_0                          conda-forge
+libstdcxx                               15.2.0           h934c35e_19                         conda-forge
+libstdcxx-ng                            15.2.0           hdf11a46_19                         conda-forge
+libsystemd0                             260.2            h6f4a2f1_1                          conda-forge
+libtiff                                 4.7.1            h9d88235_1                          conda-forge
+libtorch                                2.10.0           cuda130_generic_h7d455c8_205        conda-forge
+libudev1                                260.2            h6f4a2f1_1                          conda-forge
+libunwind                               1.8.3            h65a8314_0                          conda-forge
+liburing                                2.14             hb700be7_0                          conda-forge
+libusb                                  1.0.29           h73b1eb8_0                          conda-forge
+libuuid                                 2.42.2           h5347b49_0                          conda-forge
+libuv                                   1.52.1           h280c20c_0                          conda-forge
+libva                                   2.23.0           he1eb515_0                          conda-forge
+libvorbis                               1.3.7            h54a6638_2                          conda-forge
+libvpl                                  2.16.0           h54a6638_0                          conda-forge
+libvpx                                  1.15.2           hecca717_0                          conda-forge
+libvulkan-loader                        1.4.341.0        h5279c79_0                          conda-forge
+libwebp-base                            1.6.0            hd42ef1d_0                          conda-forge
+libxcb                                  1.17.0           h8a09558_0                          conda-forge
+libxcrypt                               4.4.36           hd590300_1                          conda-forge
+libxkbcommon                            1.13.2           hca5e8e5_0                          conda-forge
+libxml2                                 2.15.3           h49c6c72_0                          conda-forge
+libxml2-16                              2.15.3           hca6bf5a_0                          conda-forge
+libzlib                                 1.3.2            h25fd6f3_2                          conda-forge
+libzopfli                               1.0.3            h9c3ff4c_0                          conda-forge
+lightning-utilities                     0.15.3           pyhd8ed1ab_0                        conda-forge
+llvm-openmp                             22.1.7           h4922eb0_0                          conda-forge
+loguru                                  0.7.3            pyh707e725_0                        conda-forge
+lz4-c                                   1.10.0           h5888daf_1                          conda-forge
+markdown                                3.10.2           pyhcf101f3_0                        conda-forge
+markdown-it-py                          4.2.0            pyhd8ed1ab_0                        conda-forge
+markupsafe                              3.0.3            py311h3778330_1                     conda-forge
+matplotlib-base                         3.11.0           py311hd013d2e_0                     conda-forge
+mdurl                                   0.1.2            pyhd8ed1ab_1                        conda-forge
+mpc                                     1.4.0            he0a73b1_0                          conda-forge
+mpfr                                    4.2.2            he0a73b1_0                          conda-forge
+mpg123                                  1.32.9           hc50e24c_0                          conda-forge
+mpmath                                  1.3.0            pyhd8ed1ab_1                        conda-forge
+msgpack-python                          1.1.2            py311hdf67eae_1                     conda-forge
+munkres                                 1.1.4            pyhd8ed1ab_1                        conda-forge
+narwhals                                2.22.1           pyhcf101f3_0                        conda-forge
+nccl                                    2.30.7.1         h1aa9b5a_0                          conda-forge
+ncurses                                 6.6              hdb14827_0                          conda-forge
+networkx                                3.6.1            pyhcf101f3_0                        conda-forge
+nomkl                                   1.0              h5ca1d4c_0                          conda-forge
+numcodecs                               0.15.1           py311hed34c8f_1                     conda-forge
+numpy                                   2.4.6            py311h2e04523_0                     conda-forge
+ocl-icd                                 2.3.4            hb03c661_1                          conda-forge
+opencl-headers                          2025.06.13       hecca717_0                          conda-forge
+opencv                                  4.13.0           qt6_py311hcb8ce70_610               conda-forge
+openexr                                 3.4.12           h9f1635d_0                          conda-forge
+openh264                                2.6.0            hc22cd8d_0                          conda-forge
+openjpeg                                2.5.4            h55fea9a_0                          conda-forge
+openjph                                 0.27.4           h8d634f6_0                          conda-forge
+openldap                                2.6.13           hbde042b_0                          conda-forge
+openssl                                 3.6.3            h35e630c_0                          conda-forge
+optree                                  0.19.1           py311hdf67eae_0                     conda-forge
+packaging                               26.2             pyhc364b38_0                        conda-forge
+pandas                                  3.0.3            py311h8032f78_0                     conda-forge
+pango                                   1.56.4           hda50119_1                          conda-forge
+pcre2                                   10.47            haa7fec5_0                          conda-forge
+pillow                                  12.2.0           py311hf88fc01_0                     conda-forge
+pip                                     26.1.2           pyh8b19718_0                        conda-forge
+pixman                                  0.46.4           h54a6638_1                          conda-forge
+platformdirs                            4.10.0           pyhcf101f3_0                        conda-forge
+pooch                                   1.9.0            pyhd8ed1ab_0                        conda-forge
+protobuf                                6.33.5           py311h3f0a9aa_2                     conda-forge
+pthread-stubs                           0.4              hb9d3cd8_1002                       conda-forge
+pugixml                                 1.15             h3f63f65_0                          conda-forge
+pulseaudio-client                       17.0             h9a6aba3_3                          conda-forge
+py-opencv                               4.13.0           qt6_py311h8c533ea_610               conda-forge
+pybind11                                3.0.1            pyh7a1b43c_0                        conda-forge
+pybind11-abi                            11               hc364b38_1                          conda-forge
+pybind11-global                         3.0.1            pyhc7ab6ef_0                        conda-forge
+pydantic                                2.9.2            pyhd8ed1ab_0                        conda-forge
+pydantic-core                           2.23.4           py311h9e33e62_0                     conda-forge
+pydantic-settings                       2.14.1           pyhcf101f3_0                        conda-forge
+pydot                                   4.0.1            pyhcf101f3_2                        conda-forge
+pygments                                2.20.0           pyhd8ed1ab_0                        conda-forge
+pyparsing                               3.3.2            pyhcf101f3_0                        conda-forge
+pysocks                                 1.7.1            pyha55dd90_7                        conda-forge
+python                                  3.11.15          h7508c33_1_cpython                  conda-forge
+python-dateutil                         2.9.0.post0      pyhe01879c_2                        conda-forge
+python-dotenv                           1.2.2            pyhcf101f3_0                        conda-forge
+python-gil                              3.11.15          hd8ed1ab_1                          conda-forge
+python_abi                              3.11             8_cp311                             conda-forge
+pytorch                                 2.10.0           cuda130_generic_py311_h70e8297_205  conda-forge
+pytorch-msssim                          1.0.0            pyhd8ed1ab_0                        conda-forge
+pyyaml                                  6.0.3            py311h3778330_1                     conda-forge
+qhull                                   2020.2           h434a139_5                          conda-forge
+qt6-main                                6.11.1           pl5321h16c4a6b_1                    conda-forge
+rav1e                                   0.8.1            h1fbca29_0                          conda-forge
+rdma-core                               63.0             h192683f_1                          conda-forge
+readline                                8.3              h853b02a_0                          conda-forge
+requests                                2.34.2           pyhcf101f3_0                        conda-forge
+rich                                    15.0.0           pyhcf101f3_0                        conda-forge
+ruyaml                                  0.91.0           pyhd8ed1ab_1                        conda-forge
+s2n                                     1.7.3            hc5a330e_0                          conda-forge
+safetensors                             0.8.0            py311h902ca64_0                     conda-forge
+scikit-image                            0.26.0           np2py311h2a99c40_0                  conda-forge
+scikit-learn                            1.9.0            np2py311ha15b03d_0                  conda-forge
+scipy                                   1.17.1           py311hbe70eeb_1                     conda-forge
+sdl2                                    2.32.56          h54a6638_0                          conda-forge
+sdl3                                    3.4.10           hdeec2a5_0                          conda-forge
+setuptools                              82.0.1           pyh332efcf_0                        conda-forge
+shaderc                                 2026.2           h718be3e_0                          conda-forge
+shellingham                             1.5.4            pyhd8ed1ab_2                        conda-forge
+six                                     1.17.0           pyhe01879c_1                        conda-forge
+sleef                                   3.9.0            ha0421bc_0                          conda-forge
+snappy                                  1.2.2            h03e3b7b_1                          conda-forge
+sniffio                                 1.3.1            pyhd8ed1ab_2                        conda-forge
+spirv-tools                             2026.2           hb700be7_0                          conda-forge
+svt-av1                                 4.0.1            hecca717_0                          conda-forge
+sympy                                   1.14.0           pyh2585a3b_106                      conda-forge
+tbb                                     2023.0.0         hab88423_2                          conda-forge
+tensorboardx                            2.6.2.2          pyhd8ed1ab_1                        conda-forge
+threadpoolctl                           3.6.0            pyhecae5ae_0                        conda-forge
+tifffile                                2026.3.3         pyhd8ed1ab_0                        conda-forge
+timm                                    1.0.14           pyhd8ed1ab_0                        conda-forge
+tk                                      8.6.13           noxft_h366c992_103                  conda-forge
+torchinfo                               1.8.0            pyhd8ed1ab_1                        conda-forge
+torchmetrics                            1.4.3            pyhe5570ce_0                        conda-forge
+torchvision                             0.26.0           cuda130_py311_h6eecc49_0            conda-forge
+tqdm                                    4.68.2           pyh8f84b5b_1                        conda-forge
+triton                                  3.6.0            cuda130py311h280606b_2              conda-forge
+typer                                   0.25.1           pyhcf101f3_0                        conda-forge
+typing-extensions                       4.15.0           h396c80c_0                          conda-forge
+typing-inspection                       0.4.2            pyhcf101f3_2                        conda-forge
+typing_extensions                       4.15.0           pyhcf101f3_0                        conda-forge
+tzdata                                  2025c            hc9c84f9_1                          conda-forge
+unicodedata2                            17.0.1           py311h49ec1c0_0                     conda-forge
+urllib3                                 2.7.0            pyhd8ed1ab_0                        conda-forge
+wayland                                 1.25.0           hd6090a7_0                          conda-forge
+wayland-protocols                       1.49             hd8ed1ab_0                          conda-forge
+wheel                                   0.47.0           pyhd8ed1ab_0                        conda-forge
+wrapt                                   2.2.1            py311h49ec1c0_0                     conda-forge
+x264                                    1!164.3095       h166bdaf_2                          conda-forge
+x265                                    3.5              h924138e_3                          conda-forge
+xarray                                  2025.1.2         pyhd8ed1ab_0                        conda-forge
+xcb-util                                0.4.1            h4f16b4b_2                          conda-forge
+xcb-util-cursor                         0.1.6            hb03c661_0                          conda-forge
+xcb-util-image                          0.4.0            hb711507_2                          conda-forge
+xcb-util-keysyms                        0.4.1            hb711507_0                          conda-forge
+xcb-util-renderutil                     0.3.10           hb711507_0                          conda-forge
+xcb-util-wm                             0.4.2            hb711507_0                          conda-forge
+xkeyboard-config                        2.47             h280c20c_1                          conda-forge
+xorg-libice                             1.1.2            hb9d3cd8_0                          conda-forge
+xorg-libsm                              1.2.6            he73a12e_0                          conda-forge
+xorg-libx11                             1.8.13           he1eb515_0                          conda-forge
+xorg-libxau                             1.0.12           hb03c661_1                          conda-forge
+xorg-libxcomposite                      0.4.7            hb03c661_0                          conda-forge
+xorg-libxcursor                         1.2.3            hb9d3cd8_0                          conda-forge
+xorg-libxdamage                         1.1.6            hb9d3cd8_0                          conda-forge
+xorg-libxdmcp                           1.1.5            hb03c661_1                          conda-forge
+xorg-libxext                            1.3.7            hb03c661_0                          conda-forge
+xorg-libxfixes                          6.0.2            hb03c661_0                          conda-forge
+xorg-libxi                              1.8.3            hb03c661_0                          conda-forge
+xorg-libxinerama                        1.1.6            hecca717_0                          conda-forge
+xorg-libxrandr                          1.5.5            hb03c661_0                          conda-forge
+xorg-libxrender                         0.9.12           hb9d3cd8_0                          conda-forge
+xorg-libxscrnsaver                      1.2.4            hb9d3cd8_0                          conda-forge
+xorg-libxtst                            1.2.5            hb9d3cd8_3                          conda-forge
+xorg-libxxf86vm                         1.1.7            hb03c661_0                          conda-forge
+xorg-xorgproto                          2025.1           hb03c661_0                          conda-forge
+yacs                                    0.1.8            pyh29332c3_2                        conda-forge
+yaml                                    0.2.5            h280c20c_3                          conda-forge
+zarr                                    2.18.7           pyhd8ed1ab_0                        conda-forge
+zfp                                     1.0.1            h909a3a2_5                          conda-forge
+zipp                                    4.1.0            pyhcf101f3_0                        conda-forge
+zlib-ng                                 2.3.3            hceb46e0_1                          conda-forge
+zstd                                    1.5.7            hb78ec9c_6                          conda-forge
+Date     : 2026-06-30 16:07:21
+Arguments: Namespace(config='./BiaPy/3d_instance_segmentation.yaml', result_dir='./BiaPy/results', name='train_Dn_3d_instance_segmentation', run_id=1, gpu='0', world_size=1, local_rank=-1, dist_on_itp=False, dist_url='env://', dist_backend='nccl')
+Job      : train_Dn_3d_instance_segmentation_1
+BiaPy    : 3.6.8
+Python   : 3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:34:02) [GCC 14.3.0]
+PyTorch  : 2.10.0
+The following changes were made in order to adapt the input configuration:
+Not using distributed mode
+[16:07:22.241840] WARNING: seems that the channels requested are custom so BiaPy did not fill some varibles by default.
+You will need to fill the following variables:
+    - PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS
+    - PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH
+    - PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL
+    - PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS
+    - PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH
+
+[16:07:22.257769] Configuration details:
+[16:07:22.257779] AUGMENTOR:
+  AFFINE_MODE: reflect
+  AUG_NUM_SAMPLES: 10
+  AUG_SAMPLES: True
+  BRIGHTNESS: False
+  BRIGHTNESS_FACTOR: (-0.1, 0.1)
+  CBLUR_DOWN_RANGE: (2, 8)
+  CBLUR_INSIDE: True
+  CBLUR_SIZE: (0.2, 0.4)
+  CHANNEL_SHUFFLE: False
+  CMIX_SIZE: (0.2, 0.4)
+  CNOISE_NB_ITERATIONS: (1, 3)
+  CNOISE_SCALE: (0.05, 0.1)
+  CNOISE_SIZE: (0.2, 0.4)
+  CONTRAST: False
+  CONTRAST_FACTOR: (-0.1, 0.1)
+  COUT_APPLY_TO_MASK: False
+  COUT_CVAL: 0.0
+  COUT_NB_ITERATIONS: (1, 3)
+  COUT_SIZE: (0.05, 0.3)
+  CUTBLUR: False
+  CUTMIX: False
+  CUTNOISE: False
+  CUTOUT: False
+  DA_PROB: 0.5
+  DRAW_GRID: True
+  DROPOUT: False
+  DROP_RANGE: (0, 0.2)
+  ELASTIC: False
+  ENABLE: True
+  E_ALPHA: (12, 16)
+  E_MODE: constant
+  E_SIGMA: 4
+  GAMMA_CONTRAST: False
+  GAUSSIAN_NOISE: False
+  GAUSSIAN_NOISE_MEAN: 0.0
+  GAUSSIAN_NOISE_USE_INPUT_IMG_MEAN_AND_VAR: False
+  GAUSSIAN_NOISE_VAR: 0.05
+  GC_GAMMA: (1.25, 1.75)
+  GRAYSCALE: False
+  GRIDMASK: False
+  GRID_D_RANGE: (0.4, 1)
+  GRID_INVERT: False
+  GRID_RATIO: 0.6
+  GRID_ROTATE: 1.0
+  G_BLUR: False
+  G_SIGMA: (1.0, 2.0)
+  HFLIP: True
+  MB_KERNEL: (3, 7)
+  MEDIAN_BLUR: False
+  MISALIGNMENT: False
+  MISSING_SECTIONS: False
+  MISSP_CHANNEL_PB: 0.5
+  MISSP_ITERATIONS: (10, 30)
+  MOTB_K_RANGE: (8, 12)
+  MOTION_BLUR: False
+  MS_DISPLACEMENT: 16
+  MS_ROTATE_RATIO: 0.5
+  PEPPER: False
+  PEPPER_AMOUNT: 0.05
+  POISSON_NOISE: False
+  RANDOM_ROT: True
+  RANDOM_ROT_RANGE: (-180, 180)
+  ROT90: False
+  SALT: False
+  SALT_AMOUNT: 0.05
+  SALT_AND_PEPPER: False
+  SALT_AND_PEPPER_AMOUNT: 0.05
+  SALT_AND_PEPPER_PROP: 0.5
+  SHEAR: False
+  SHEAR_RANGE: (-20, 20)
+  SHIFT: False
+  SHIFT_RANGE: (0.1, 0.2)
+  SHUFFLE_TRAIN_DATA_EACH_EPOCH: True
+  SHUFFLE_VAL_DATA_EACH_EPOCH: False
+  VFLIP: True
+  ZFLIP: True
+  ZOOM: False
+  ZOOM_IN_Z: False
+  ZOOM_RANGE: (0.8, 1.2)
+DATA:
+  CHECK_GENERATORS: False
+  FILTER_BY_IMAGE: False
+  FORCE_RGB: False
+  NORMALIZATION:
+    MEASURE_BY: image
+    PERC_CLIP:
+      ENABLE: False
+      LOWER_PERC: -1.0
+      LOWER_VALUE: -1.0
+      UPPER_PERC: -1.0
+      UPPER_VALUE: -1.0
+    TYPE: zero_mean_unit_variance
+    ZERO_MEAN_UNIT_VAR:
+      MEAN_VAL: -1.0
+      STD_VAL: -1.0
+  N_CLASSES: 2
+  PATCH_SIZE: (20, 128, 128, 3)
+  PREPROCESS:
+    CANNY:
+      ENABLE: False
+      HIGH_THRESHOLD: None
+      LOW_THRESHOLD: None
+    CLAHE:
+      CLIP_LIMIT: 0.01
+      ENABLE: False
+      KERNEL_SIZE: None
+    GAUSSIAN_BLUR:
+      CHANNEL_AXIS: None
+      ENABLE: False
+      MODE: nearest
+      SIGMA: 1
+    MATCH_HISTOGRAM:
+      ENABLE: False
+      REFERENCE_PATH: user_data/test/x
+    MEDIAN_BLUR:
+      ENABLE: False
+      KERNEL_SIZE: (3, 3, 1)
+    RESIZE:
+      ANTI_ALIASING: False
+      CLIP: True
+      CVAL: 0.0
+      ENABLE: False
+      MODE: reflect
+      ORDER: 1
+      OUTPUT_SHAPE: (512, 512)
+      PRESERVE_RANGE: True
+    TEST: False
+    TRAIN: False
+    VAL: False
+    ZOOM:
+      ENABLE: False
+      ZOOM_FACTOR: [1, 1, 1, 1, 1]
+  REFLECT_TO_COMPLETE_SHAPE: False
+  SAVE_FILTERED_IMAGES: False
+  SAVE_FILTERED_IMAGES_NUM: 3
+  TEST:
+    ARGMAX_TO_OUTPUT: True
+    BINARY_MASKS: fisbe/biapy/test/raw/../bin_mask
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy/test/label_detection_masks_2
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy/test/label
+    INPUT_IMG_AXES_ORDER: CZYX
+    INPUT_MASK_AXES_ORDER: ZYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy/test/label_F.erosion-0.dilation-0_C.mode-thick_Db.norm-True.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+    IN_MEMORY: True
+    LOAD_GT: True
+    MEDIAN_PADDING: False
+    OVERLAP: (0, 0, 0)
+    PADDING: (4, 16, 16)
+    PATH: fisbe/biapy/test/raw
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy/test/raw_ssl_source
+    USE_VAL_AS_TEST: False
+  TRAIN:
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy/train/label_detection_masks_2
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy/train/label
+    INPUT_IMG_AXES_ORDER: CZYX
+    INPUT_MASK_AXES_ORDER: ZYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy/train/label_F.erosion-0.dilation-0_C.mode-thick_Db.norm-True.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+    IN_MEMORY: True
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: fisbe/biapy/train/raw
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy/train/raw_ssl_source
+  VAL:
+    CROSS_VAL: False
+    CROSS_VAL_FOLD: 1
+    CROSS_VAL_NFOLD: 5
+    DETECTION_MASK_DIR: user_data/val/y_detection_masks_2
+    DIST_EVAL: True
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    FROM_TRAIN: True
+    GT_PATH: user_data/val/y
+    INPUT_IMG_AXES_ORDER: TZCYX
+    INPUT_MASK_AXES_ORDER: TZCYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: user_data/val/y_F.erosion-0.dilation-0_C.mode-thick_Db.norm-True.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+    IN_MEMORY: True
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: user_data/val/x
+    RANDOM: True
+    RESOLUTION: (1, 1, 1)
+    SPLIT_TRAIN: 0.1
+    SSL_SOURCE_DIR: user_data/val/x_ssl_source
+LOG:
+  CHART_CREATION_FREQ: 5
+  LOG_DIR: ./BiaPy/results/train_Dn_3d_instance_segmentation/train_logs
+  LOG_FILE_PREFIX: train_Dn_3d_instance_segmentation_1
+  TENSORBOARD_LOG_DIR: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/tensorboard
+LOSS:
+  CLASS_REBALANCE: none
+  CLASS_WEIGHTS: []
+  CONTRAST:
+    ENABLE: False
+    MEMORY_SIZE: 5000
+    PIXEL_UPD_FREQ: 10
+    PROJ_DIM: 256
+  IGNORE_INDEX: -1
+  TYPE: 
+  WEIGHTS: [0.66, 0.34]
+MODEL:
+  ACTIVATION: ELU
+  ARCHITECTURE: unet
+  BMZ:
+    EXPORT:
+      AUTHORS: []
+      CITE: []
+      DATASET_INFO: [{}]
+      DESCRIPTION: 
+      DOCUMENTATION: 
+      ENABLE: False
+      LICENSE: CC-BY-4.0
+      MODEL_NAME: 
+      MODEL_VERSION: 0.1.0
+      REUSE_BMZ_CONFIG: False
+      TAGS: []
+    SOURCE_MODEL_ID: 
+  CONVNEXT_LAYERS: [2, 2, 2, 2, 2]
+  CONVNEXT_LAYER_SCALE: 1e-06
+  CONVNEXT_SD_PROB: 0.1
+  CONVNEXT_STEM_K_SIZE: 2
+  DROPOUT_VALUES: [0.0, 0.0, 0.0, 0.0, 0.0]
+  FEATURE_MAPS: [16, 32, 64, 128, 256]
+  HRNET:
+    BLOCK_TYPE: BASIC
+    CUSTOM: False
+    HEAD_TYPE: FCN
+    STAGE2:
+      NUM_BLOCKS: [4, 4]
+      NUM_BRANCHES: 2
+      NUM_CHANNELS: [18, 36]
+      NUM_MODULES: 1
+    STAGE3:
+      NUM_BLOCKS: [4, 4, 4]
+      NUM_BRANCHES: 3
+      NUM_CHANNELS: [18, 36, 72]
+      NUM_MODULES: 4
+    STAGE4:
+      NUM_BLOCKS: [4, 4, 4, 4]
+      NUM_BRANCHES: 4
+      NUM_CHANNELS: [18, 36, 72, 144]
+      NUM_MODULES: 3
+    Z_DOWN: True
+  ISOTROPY: [True, True, True, True, True]
+  KERNEL_SIZE: 3
+  LARGER_IO: False
+  LOAD_CHECKPOINT: True
+  LOAD_CHECKPOINT_EPOCH: best_on_val
+  LOAD_CHECKPOINT_ONLY_WEIGHTS: True
+  LOAD_MODEL_FROM_CHECKPOINT: True
+  MAE_DEC_HIDDEN_SIZE: 512
+  MAE_DEC_MLP_DIMS: 2048
+  MAE_DEC_NUM_HEADS: 16
+  MAE_DEC_NUM_LAYERS: 8
+  MAE_MASK_RATIO: 0.5
+  MAE_MASK_TYPE: grid
+  NORMALIZATION: bn
+  OUT_CHECKPOINT_FORMAT: pth
+  RCAN_CONV_FILTERS: 16
+  RCAN_RCAB_BLOCK_NUM: 20
+  RCAN_REDUCTION_RATIO: 16
+  RCAN_RG_BLOCK_NUM: 10
+  RCAN_UPSCALING_LAYER: True
+  SAVE_CKPT_FREQ: -1
+  SKIP_UNMATCHED_LAYERS: False
+  SOURCE: biapy
+  TORCHVISION_MODEL_NAME: 
+  UNETR_DEC_ACTIVATION: relu
+  UNETR_DEC_KERNEL_SIZE: 3
+  UNETR_VIT_HIDD_MULT: 3
+  UNETR_VIT_NUM_FILTERS: 16
+  UNET_SR_UPSAMPLE_POSITION: pre
+  UPSAMPLE_LAYER: convtranspose
+  VIT_EMBED_DIM: 768
+  VIT_MLP_RATIO: 4.0
+  VIT_MODEL: custom
+  VIT_NORM_EPS: 1e-06
+  VIT_NUM_HEADS: 12
+  VIT_NUM_LAYERS: 12
+  VIT_TOKEN_SIZE: 16
+  Z_DOWN: [1, 1, 1, 1]
+PATHS:
+  BMZ_EXPORT_PATH: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/BMZ_files
+  CHARTS: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/charts
+  CHECKPOINT: ./BiaPy/results/train_Dn_3d_instance_segmentation/checkpoints
+  CHECKPOINT_FILE: 
+  DA_SAMPLES: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/aug
+  FIL_SAMPLES_DIR: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/filtering_information
+  GEN_CHECKS: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/gen_check
+  GEN_MASK_CHECKS: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/gen_mask_check
+  MAE_OUT_DIR: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/MAE_checks
+  PROB_MAP_DIR: ./BiaPy/results/train_Dn_3d_instance_segmentation/prob_map
+  PROB_MAP_FILENAME: prob_map.npy
+  PROFILER: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/profiler
+  RESULT_DIR:
+    AS_3D_STACK: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/as_3d_stack
+    AS_3D_STACK_BIN: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/as_3d_stack_binarized
+    AS_3D_STACK_POST_PROCESSING: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/as_3d_stack_post_processing
+    DET_ASSOC_POINTS: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/point_associations
+    DET_LOCAL_MAX_COORDS_CHECK: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image_local_max_check
+    DET_LOCAL_MAX_COORDS_CHECK_POST_PROCESSING: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image_local_max_check_post_processing
+    FULL_IMAGE: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/full_image
+    FULL_IMAGE_BIN: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/full_image_binarized
+    FULL_IMAGE_INSTANCES: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/full_image_instances
+    FULL_IMAGE_POST_PROCESSING: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/full_image_post_processing
+    INST_ASSOC_POINTS: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/instance_associations
+    PATH: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1
+    PER_IMAGE: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image
+    PER_IMAGE_BIN: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image_binarized
+    PER_IMAGE_INSTANCES: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image_instances
+    PER_IMAGE_POST_PROCESSING: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image_post_processing
+  TEST_FULL_GT_H5: fisbe/biapy/test/label/h5
+  TEST_INSTANCE_CHANNELS_CHECK: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/test_FCDbDn_instance_channels
+  TRAIN_INSTANCE_CHANNELS_CHECK: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/train_FCDbDn_instance_channels
+  VAL_INSTANCE_CHANNELS_CHECK: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/val_FCDbDn_instance_channels
+  WATERSHED_DIR: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/watershed
+PROBLEM:
+  DENOISING:
+    LOAD_GT_DATA: False
+    N2V_MANIPULATOR: uniform_withCP
+    N2V_NEIGHBORHOOD_RADIUS: 5
+    N2V_PERC_PIX: 0.198
+    N2V_STRUCTMASK: False
+  DETECTION:
+    CENTRAL_POINT_DILATION: [2]
+    CHECK_POINTS_CREATED: True
+    DATA_CHECK_MW: False
+  IMAGE_TO_IMAGE:
+    MULTIPLE_RAW_ONE_TARGET_LOADER: False
+  INSTANCE_SEG:
+    BORDER_EXTRA_WEIGHTS: 
+    DATA_CHANNELS: ['F', 'C', 'Db', 'Dn']
+    DATA_CHANNELS_EXTRA_OPTS: [{'F': {'erosion': 0, 'dilation': 0}, 'C': {'mode': 'thick'}, 'Db': {'norm': True, 'mask_values': True}, 'Dn': {'closing_size': 3, 'norm': True, 'mask_values': True, 'decline_power': 3}}]
+    DATA_CHANNELS_LOSSES: ['bce', 'bce', 'l1', 'l1']
+    DATA_CHANNEL_WEIGHTS: (1, 1, 1, 1)
+    EMBEDSEG:
+      MIN_MASK_SUM: 0
+      MIN_OBJECT_SIZE: 100
+      MIN_UNCLUSTERED_SUM: 0
+      SEED_THRESH: 0.5
+    INSTANCE_CREATION_PROCESS: watershed
+    STARDIST:
+      NMS_IOU_THRESH: 0.3
+      PROB_THRESH: 0.4
+    SYNAPSES:
+      BLOB_LOG_MAX_SIGMA: 10
+      BLOB_LOG_MIN_SIGMA: 5
+      BLOB_LOG_NUM_SIGMA: 2
+      EXCLUDE_BORDER: False
+      MIN_TH_TO_BE_PEAK: 0.2
+      PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+      POINT_CREATION_FUNCTION: peak_local_max
+      POSTSITE_DILATION: [2, 4, 4]
+      POSTSITE_DILATION_DISTANCE_CHANNELS: [3, 10, 10]
+      REMOVE_CLOSE_POINTS_RADIUS_BY_MASK: False
+      REMOVE_CLOSE_POST_POINTS_RADIUS: 0
+      REMOVE_CLOSE_PRE_POINTS_RADIUS: 0
+      TH_TYPE: auto
+    TYPE: regular
+    WATERSHED:
+      BY_2D_SLICES: False
+      DATA_CHECK_MW: False
+      DATA_REMOVE_BEFORE_MW: False
+      DATA_REMOVE_SMALL_OBJ_BEFORE: 10
+      ERODE_AND_DILATE_GROWTH_MASK: False
+      FORE_DILATION_RADIUS: 5
+      FORE_EROSION_RADIUS: 5
+      GROWTH_MASK_CHANNELS: ['F']
+      GROWTH_MASK_CHANNELS_THRESH: ['auto']
+      SEED_CHANNELS: ['F', 'Db']
+      SEED_CHANNELS_THRESH: ['auto', 'auto']
+      SEED_MORPH_RADIUS: []
+      SEED_MORPH_SEQUENCE: []
+      TOPOGRAPHIC_SURFACE_CHANNEL: Db
+  NDIM: 3D
+  PRINT_OLD_KEY_CHANGES: True
+  SELF_SUPERVISED:
+    NOISE: 0.2
+    PRETEXT_TASK: crappify
+    RESIZING_FACTOR: 4
+  SEMANTIC_SEG:
+    IGNORE_CLASS_ID: 0
+  SUPER_RESOLUTION:
+    UPSCALING: (1, 1, 1)
+  TYPE: INSTANCE_SEG
+SYSTEM:
+  DEVICE: cpu
+  NUM_CPUS: 128
+  NUM_GPUS: 1
+  NUM_WORKERS: -1
+  PIN_MEM: True
+  SEED: 0
+TEST:
+  ANALIZE_2D_IMGS_AS_3D_STACK: False
+  AUGMENTATION: False
+  AUGMENTATION_MODE: mean
+  BY_CHUNKS:
+    ENABLE: False
+    FLUSH_EACH: 100
+    SAVE_OUT_TIF: False
+    WORKFLOW_PROCESS:
+      ENABLE: True
+      TYPE: chunk_by_chunk
+  DET_BLOB_LOG_MAX_SIGMA: 10
+  DET_BLOB_LOG_MIN_SIGMA: 5
+  DET_BLOB_LOG_NUM_SIGMA: 2
+  DET_EXCLUDE_BORDER: False
+  DET_IGNORE_POINTS_OUTSIDE_BOX: []
+  DET_MIN_TH_TO_BE_PEAK: 0.2
+  DET_PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+  DET_POINT_CREATION_FUNCTION: peak_local_max
+  DET_TH_TYPE: manual
+  DET_TOLERANCE: 10
+  ENABLE: True
+  FULL_IMG: False
+  MATCHING_STATS: True
+  MATCHING_STATS_THS: [0.3, 0.5, 0.75]
+  MATCHING_STATS_THS_COLORED_IMG: []
+  METRICS: ['iou']
+  METRICS_IN_CPU: True
+  POST_PROCESSING:
+    APPLY_MASK: False
+    DET_WATERSHED: False
+    DET_WATERSHED_DONUTS_CLASSES: [-1]
+    DET_WATERSHED_DONUTS_NUCLEUS_DIAMETER: 30
+    DET_WATERSHED_DONUTS_PATCH: [13, 120, 120]
+    DET_WATERSHED_FIRST_DILATION: [-1, -1]
+    INSTANCE_REFINEMENT:
+      ENABLE: False
+      OPERATIONS: []
+      VALUES: []
+    MEASURE_PROPERTIES:
+      ENABLE: False
+      EXTRA_PROPS: []
+      REMOVE_BY_PROPERTIES:
+        ENABLE: False
+        PROPS: []
+        SIGNS: []
+        VALUES: []
+    MEDIAN_FILTER: False
+    MEDIAN_FILTER_AXIS: []
+    MEDIAN_FILTER_SIZE: []
+    REMOVE_CLOSE_POINTS: False
+    REMOVE_CLOSE_POINTS_RADIUS: 0
+    REPARE_LARGE_BLOBS_SIZE: -1
+    VORONOI_ON_MASK: False
+    VORONOI_TH: 0.0
+  REDUCE_MEMORY: False
+  REUSE_PREDICTIONS: False
+  SAVE_MODEL_RAW_OUTPUT: True
+  VERBOSE: True
+TRAIN:
+  ACCUM_ITER: 1
+  BATCH_SIZE: 30
+  CHECKPOINT_MONITOR: val_loss
+  ENABLE: False
+  EPOCHS: 30
+  LR: 0.001
+  LR_SCHEDULER:
+    MIN_LR: -1.0
+    NAME: onecycle
+    REDUCEONPLATEAU_FACTOR: 0.5
+    REDUCEONPLATEAU_PATIENCE: -1
+    WARMUP_COSINE_DECAY_EPOCHS: -1
+  METRICS: ['iou']
+  OPTIMIZER: ADAMW
+  OPT_BETAS: (0.9, 0.999)
+  PATIENCE: 10
+  VERBOSE: False
+  W_DECAY: 0.02
+[16:07:28.938154] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+[16:07:28.938178] Initializing Instance_Segmentation_Workflow
+[16:07:28.938185] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+
+[16:07:29.372298] Creating normalization module . . .
+[16:07:29.372353] Normalization: using mean None and std: None
+[16:07:29.372410] ###########################
+[16:07:29.372414] #  PREPARE INSTANCE DATA  #
+[16:07:29.372417] ###########################
+[16:07:29.375398] You select to create ['F', 'C', 'Db', 'Dn'] channels from given instance labels and no file is detected in fisbe/biapy/test/label_F.erosion-0.dilation-0_C.mode-thick_Db.norm-True.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3 . So let's prepare the data. This process will be done just once!
+[16:07:29.379352] Creating Y_test channels . . .
+[16:18:23.040208] DATA.TEST.GT_PATH changed from fisbe/biapy/test/label to fisbe/biapy/test/label_F.erosion-0.dilation-0_C.mode-thick_Db.norm-True.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+[16:18:23.041126] ######################
+[16:18:23.041133] #   LOAD TEST DATA   #
+[16:18:23.041135] ######################
+[16:18:23.041152] ### LOAD ###
+[16:18:23.047596] ###############
+[16:18:23.047600] # Build model #
+[16:18:23.047603] ###############
+[16:18:23.050590] Extracting model from checkpoint file BiaPy/results/train_Dn_3d_instance_segmentation/checkpoints/train_Dn_3d_instance_segmentation_1-checkpoint-best.pth
+[16:18:23.273658] Comparing configurations . . .
+[16:18:23.273716] Configurations seem to be compatible. Continuing . . .
+[16:18:23.273722] The following changes were made in order to adapt the loaded input configuration from checkpoint into the current configuration version:
+[16:18:23.273748] 'MODEL.BMZ.EXPORT.DATASET_INFO' changed from '[{}]' to '[{'name': 'name_not_specified', 'doi': 'doi_not_specified', 'image_modality': 'image_modality_not_specified', 'dataset_id': 'dataset_id_not_specified'}]'
+[16:18:23.274602] WARNING: seems that the channels requested are custom so BiaPy did not fill some varibles by default.
+You will need to fill the following variables:
+    - PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS
+    - PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH
+    - PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL
+    - PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS
+    - PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH
+
+[16:18:30.064070] ==================================================================================================================================
+Layer (type:depth-idx)                                  Input Shape               Output Shape              Param #
+==================================================================================================================================
+U_Net                                                   [1, 3, 20, 128, 128]      [1, 4, 20, 128, 128]      --
+├─ModuleList: 1-7                                       --                        --                        (recursive)
+│    └─DoubleConvBlock: 2-1                             [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    └─Sequential: 3-1                             [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    │    └─ConvBlock: 4-1                         [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    │    │    └─Sequential: 5-1                   [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─Conv3d: 6-1                  [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     1,312
+│    │    │    │    │    └─BatchNorm3d: 6-2             [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    └─ELU: 6-3                     [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    └─ConvBlock: 4-2                         [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    └─Sequential: 5-2                   [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─Conv3d: 6-4                  [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     6,928
+│    │    │    │    │    └─BatchNorm3d: 6-5             [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    └─ELU: 6-6                     [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+├─ModuleList: 1-8                                       --                        --                        --
+│    └─MaxPool3d: 2-2                                   [1, 16, 20, 128, 128]     [1, 16, 20, 64, 64]       --
+├─ModuleList: 1-7                                       --                        --                        (recursive)
+│    └─DoubleConvBlock: 2-3                             [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    └─Sequential: 3-2                             [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    └─ConvBlock: 4-3                         [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─Sequential: 5-3                   [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─Conv3d: 6-7                  [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       13,856
+│    │    │    │    │    └─BatchNorm3d: 6-8             [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    └─ELU: 6-9                     [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    └─ConvBlock: 4-4                         [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─Sequential: 5-4                   [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─Conv3d: 6-10                 [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       27,680
+│    │    │    │    │    └─BatchNorm3d: 6-11            [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    └─ELU: 6-12                    [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+├─ModuleList: 1-8                                       --                        --                        --
+│    └─MaxPool3d: 2-4                                   [1, 32, 20, 64, 64]       [1, 32, 20, 32, 32]       --
+├─ModuleList: 1-7                                       --                        --                        (recursive)
+│    └─DoubleConvBlock: 2-5                             [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    └─Sequential: 3-3                             [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    └─ConvBlock: 4-5                         [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    └─Sequential: 5-5                   [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─Conv3d: 6-13                 [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       55,360
+│    │    │    │    │    └─BatchNorm3d: 6-14            [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    └─ELU: 6-15                    [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    └─ConvBlock: 4-6                         [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    └─Sequential: 5-6                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─Conv3d: 6-16                 [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       110,656
+│    │    │    │    │    └─BatchNorm3d: 6-17            [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    └─ELU: 6-18                    [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+├─ModuleList: 1-8                                       --                        --                        --
+│    └─MaxPool3d: 2-6                                   [1, 64, 20, 32, 32]       [1, 64, 20, 16, 16]       --
+├─ModuleList: 1-7                                       --                        --                        (recursive)
+│    └─DoubleConvBlock: 2-7                             [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    └─Sequential: 3-4                             [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    │    └─ConvBlock: 4-7                         [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    │    │    └─Sequential: 5-7                   [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─Conv3d: 6-19                 [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      221,312
+│    │    │    │    │    └─BatchNorm3d: 6-20            [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    └─ELU: 6-21                    [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    └─ConvBlock: 4-8                         [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    └─Sequential: 5-8                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─Conv3d: 6-22                 [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      442,496
+│    │    │    │    │    └─BatchNorm3d: 6-23            [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    └─ELU: 6-24                    [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+├─ModuleList: 1-8                                       --                        --                        --
+│    └─MaxPool3d: 2-8                                   [1, 128, 20, 16, 16]      [1, 128, 20, 8, 8]        --
+├─DoubleConvBlock: 1-9                                  [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    └─Sequential: 2-9                                  [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    └─ConvBlock: 3-5                              [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    └─Sequential: 4-9                        [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    │    └─Conv3d: 5-9                       [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        884,992
+│    │    │    │    └─BatchNorm3d: 5-10                 [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        512
+│    │    │    │    └─ELU: 5-11                         [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    └─ConvBlock: 3-6                              [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    └─Sequential: 4-10                       [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    │    └─Conv3d: 5-12                      [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        1,769,728
+│    │    │    │    └─BatchNorm3d: 5-13                 [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        512
+│    │    │    │    └─ELU: 5-14                         [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+├─ModuleList: 1-10                                      --                        --                        --
+│    └─UpBlock: 2-10                                    [1, 256, 20, 8, 8]        [1, 128, 20, 16, 16]      --
+│    │    └─Sequential: 3-7                             [1, 256, 20, 8, 8]        [1, 128, 20, 16, 16]      --
+│    │    │    └─ConvTranspose3d: 4-11                  [1, 256, 20, 8, 8]        [1, 128, 20, 16, 16]      131,200
+│    │    │    └─BatchNorm3d: 4-12                      [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    └─ELU: 4-13                              [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    └─DoubleConvBlock: 3-8                        [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    └─Sequential: 4-14                       [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    └─ConvBlock: 5-15                   [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─Sequential: 6-25             [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    │    └─Conv3d: 7-1             [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      884,864
+│    │    │    │    │    │    └─BatchNorm3d: 7-2        [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    │    └─ELU: 7-3                [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    └─ConvBlock: 5-16                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─Sequential: 6-26             [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    │    └─Conv3d: 7-4             [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      442,496
+│    │    │    │    │    │    └─BatchNorm3d: 7-5        [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    │    └─ELU: 7-6                [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    └─UpBlock: 2-11                                    [1, 128, 20, 16, 16]      [1, 64, 20, 32, 32]       --
+│    │    └─Sequential: 3-9                             [1, 128, 20, 16, 16]      [1, 64, 20, 32, 32]       --
+│    │    │    └─ConvTranspose3d: 4-15                  [1, 128, 20, 16, 16]      [1, 64, 20, 32, 32]       32,832
+│    │    │    └─BatchNorm3d: 4-16                      [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    └─ELU: 4-17                              [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    └─DoubleConvBlock: 3-10                       [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    └─Sequential: 4-18                       [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    └─ConvBlock: 5-17                   [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─Sequential: 6-27             [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    │    │    └─Conv3d: 7-7             [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       221,248
+│    │    │    │    │    │    └─BatchNorm3d: 7-8        [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    │    └─ELU: 7-9                [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    └─ConvBlock: 5-18                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─Sequential: 6-28             [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    │    └─Conv3d: 7-10            [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       110,656
+│    │    │    │    │    │    └─BatchNorm3d: 7-11       [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    │    └─ELU: 7-12               [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    └─UpBlock: 2-12                                    [1, 64, 20, 32, 32]       [1, 32, 20, 64, 64]       --
+│    │    └─Sequential: 3-11                            [1, 64, 20, 32, 32]       [1, 32, 20, 64, 64]       --
+│    │    │    └─ConvTranspose3d: 4-19                  [1, 64, 20, 32, 32]       [1, 32, 20, 64, 64]       8,224
+│    │    │    └─BatchNorm3d: 4-20                      [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    └─ELU: 4-21                              [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    └─DoubleConvBlock: 3-12                       [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    └─Sequential: 4-22                       [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─ConvBlock: 5-19                   [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─Sequential: 6-29             [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    │    └─Conv3d: 7-13            [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       55,328
+│    │    │    │    │    │    └─BatchNorm3d: 7-14       [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    │    └─ELU: 7-15               [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─ConvBlock: 5-20                   [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─Sequential: 6-30             [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    │    └─Conv3d: 7-16            [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       27,680
+│    │    │    │    │    │    └─BatchNorm3d: 7-17       [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    │    └─ELU: 7-18               [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    └─UpBlock: 2-13                                    [1, 32, 20, 64, 64]       [1, 16, 20, 128, 128]     --
+│    │    └─Sequential: 3-13                            [1, 32, 20, 64, 64]       [1, 16, 20, 128, 128]     --
+│    │    │    └─ConvTranspose3d: 4-23                  [1, 32, 20, 64, 64]       [1, 16, 20, 128, 128]     2,064
+│    │    │    └─BatchNorm3d: 4-24                      [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    └─ELU: 4-25                              [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    └─DoubleConvBlock: 3-14                       [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    └─Sequential: 4-26                       [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    └─ConvBlock: 5-21                   [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─Sequential: 6-31             [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    │    └─Conv3d: 7-19            [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     13,840
+│    │    │    │    │    │    └─BatchNorm3d: 7-20       [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    │    └─ELU: 7-21               [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    └─ConvBlock: 5-22                   [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─Sequential: 6-32             [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    │    └─Conv3d: 7-22            [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     6,928
+│    │    │    │    │    │    └─BatchNorm3d: 7-23       [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    │    └─ELU: 7-24               [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+├─Conv3d: 1-11                                          [1, 16, 20, 128, 128]     [1, 4, 20, 128, 128]      68
+==================================================================================================================================
+Total params: 5,475,172
+Trainable params: 5,475,172
+Non-trainable params: 0
+Total mult-adds (Units.GIGABYTES): 46.21
+==================================================================================================================================
+Input size (MB): 3.93
+Forward/backward pass size (MB): 807.40
+Params size (MB): 21.90
+Estimated Total Size (MB): 833.24
+==================================================================================================================================
+[16:18:30.233472] Loading checkpoint from file BiaPy/results/train_Dn_3d_instance_segmentation/checkpoints/train_Dn_3d_instance_segmentation_1-checkpoint-best.pth
+[16:18:30.293004] Model weights loaded!
+[16:18:30.293395] ############################
+[16:18:30.293401] #  PREPARE TEST GENERATOR  #
+[16:18:30.293404] ############################
+[16:18:42.567101] ###############
+[16:18:42.567132] #  INFERENCE  #
+[16:18:42.567135] ###############
+[16:18:42.567137] Making predictions on test data . . .
+[16:19:04.509070] Processing image: JRC_SS04989-20160318_24_A2.zarr.tiff (GT: JRC_SS04989-20160318_24_A2.zarr_seg.tif)
+[16:19:04.509218] ### 3D-OV-CROP ###
+[16:19:04.509241] Cropping (390, 680, 680, 3) images into (20, 128, 128, 3) with overlapping . . .
+[16:19:04.509246] Minimum overlap selected: (0, 0, 0)
+[16:19:04.509253] Padding: (4, 16, 16)
+[16:19:07.926729] Real overlapping (%): (0.0, 0.125, 0.125)
+[16:19:07.926755] Real overlapping (pixels): (0.0, 12.0, 12.0)
+[16:19:07.926772] (33, 8, 8) patches per (z,y,x) axis
+[16:20:37.929400] **** New data shape is: (2112, 20, 128, 128, 3)
+[16:20:37.929450] ### END 3D-OV-CROP ###
+[16:30:00.588353] ### MERGE-3D-OV-CROP ###
+[16:30:00.588398] Merging (2112, 20, 128, 128, 4) images into (390, 680, 680, 4) with overlapping . . .
+[16:30:00.588405] Minimum overlap selected: (0, 0, 0)
+[16:30:00.588410] Padding: (4, 16, 16)
+[16:30:00.588507] Real overlapping (%): (0.0, 0.125, 0.125)
+[16:30:00.588512] Real overlapping (pixels): (0.0, 12.0, 12.0)
+[16:30:00.588515] (33, 8, 8) patches per (z,y,x) axis
+[16:30:57.915374] **** New data shape is: (390, 680, 680, 4)
+[16:30:57.915429] ### END MERGE-3D-OV-CROP ###
+[16:31:11.412102] ### MERGE-3D-OV-CROP ###
+[16:31:11.412136] Merging (2112, 20, 128, 128, 3) images into (390, 680, 680, 3) with overlapping . . .
+[16:31:11.412143] Minimum overlap selected: (0, 0, 0)
+[16:31:11.412147] Padding: (4, 16, 16)
+[16:31:11.412233] Real overlapping (%): (0.0, 0.125, 0.125)
+[16:31:11.412240] Real overlapping (pixels): (0.0, 12.0, 12.0)
+[16:31:11.412243] (33, 8, 8) patches per (z,y,x) axis
+[16:33:38.024249] **** New data shape is: (390, 680, 680, 3)
+[16:33:38.024305] ### END MERGE-3D-OV-CROP ###
+[16:33:38.116891] Saving (1, 390, 680, 680, 4) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image
+[16:34:13.590523] Creating instances with watershed . . .
+[16:34:22.490728] Thresholds used: {'seed': [0.11615760624408722, -0.12301301956176758], 'growth_mask': [0.05807880312204361]}
+[16:34:27.356680] Saving (1, 390, 680, 680, 1) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image_instances
+[16:34:27.754350] Calculating matching stats . . .
+[16:34:27.756300] WARNING: The image seems to have different name than its mask file. Using the mask file that's in the same spot (within the mask files list) where the image is in its own list of images. Check if it is correct!
+[16:34:27.756308] Its respective image seems to be: fisbe/biapy/test/label/JRC_SS04989-20160318_24_A2.zarr_seg.tiff
+[16:35:26.535657] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 14325, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 14325, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[16:35:26.555803] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 14325, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 14325, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[16:35:26.573594] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 14325, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 14325, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[16:35:45.109259] Processing image: R14A02-20180905_65_A6.zarr.tiff (GT: R14A02-20180905_65_A6.zarr_seg.tif)
+[16:35:45.109363] ### 3D-OV-CROP ###
+[16:35:45.109377] Cropping (385, 685, 686, 3) images into (20, 128, 128, 3) with overlapping . . .
+[16:35:45.109383] Minimum overlap selected: (0, 0, 0)
+[16:35:45.109386] Padding: (4, 16, 16)
+[16:35:48.084583] Real overlapping (%): (0.0, 0.11458333333333333, 0.11458333333333333)
+[16:35:48.084611] Real overlapping (pixels): (0.0, 11.0, 11.0)
+[16:35:48.084614] (33, 8, 8) patches per (z,y,x) axis
+[16:35:55.603345] **** New data shape is: (2112, 20, 128, 128, 3)
+[16:35:55.603367] ### END 3D-OV-CROP ###
+[16:37:41.066433] ### MERGE-3D-OV-CROP ###
+[16:37:41.066461] Merging (2112, 20, 128, 128, 4) images into (385, 685, 686, 4) with overlapping . . .
+[16:37:41.066465] Minimum overlap selected: (0, 0, 0)
+[16:37:41.066468] Padding: (4, 16, 16)
+[16:37:41.066544] Real overlapping (%): (0.0, 0.11458333333333333, 0.11458333333333333)
+[16:37:41.066548] Real overlapping (pixels): (0.0, 11.0, 11.0)
+[16:37:41.066551] (33, 8, 8) patches per (z,y,x) axis
+[16:38:29.100811] **** New data shape is: (385, 685, 686, 4)
+[16:38:29.100849] ### END MERGE-3D-OV-CROP ###
+[16:38:54.341471] ### MERGE-3D-OV-CROP ###
+[16:38:54.341501] Merging (2112, 20, 128, 128, 3) images into (385, 685, 686, 3) with overlapping . . .
+[16:38:54.341505] Minimum overlap selected: (0, 0, 0)
+[16:38:54.341508] Padding: (4, 16, 16)
+[16:38:54.341575] Real overlapping (%): (0.0, 0.11458333333333333, 0.11458333333333333)
+[16:38:54.341580] Real overlapping (pixels): (0.0, 11.0, 11.0)
+[16:38:54.341583] (33, 8, 8) patches per (z,y,x) axis
+[16:41:11.459241] **** New data shape is: (385, 685, 686, 3)
+[16:41:11.459289] ### END MERGE-3D-OV-CROP ###
+[16:41:11.489461] Saving (1, 385, 685, 686, 4) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image
+[16:41:46.811115] Creating instances with watershed . . .
+[16:41:56.243102] Thresholds used: {'seed': [0.14238157868385315, -1.4631776809692383], 'growth_mask': [0.07119078934192657]}
+[16:42:00.179685] Saving (1, 385, 685, 686, 1) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image_instances
+[16:42:00.492589] Calculating matching stats . . .
+[16:42:00.494733] WARNING: The image seems to have different name than its mask file. Using the mask file that's in the same spot (within the mask files list) where the image is in its own list of images. Check if it is correct!
+[16:42:00.494740] Its respective image seems to be: fisbe/biapy/test/label/R14A02-20180905_65_A6.zarr_seg.tiff
+[16:42:59.378738] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(1894), 'tp': np.int64(2), 'fn': np.int64(5), 'precision': np.float64(0.0010548523206751054), 'recall': np.float64(0.2857142857142857), 'accuracy': np.float64(0.0010520778537611783), 'f1': np.float64(0.0021019442984760903), 'n_true': 7, 'n_pred': 1896, 'mean_true_score': np.float32(0.11680337), 'mean_matched_score': np.float64(0.4088118076324463), 'panoptic_quality': np.float64(0.0008592996482027247)}
+[16:42:59.400040] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 1896, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 1896, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[16:42:59.416226] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 1896, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 1896, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[16:43:19.267934] Processing image: R54A09-20181019_64_H1.zarr.tiff (GT: R54A09-20181019_64_H1.zarr_seg.tif)
+[16:43:19.268043] ### 3D-OV-CROP ###
+[16:43:19.268056] Cropping (430, 683, 686, 3) images into (20, 128, 128, 3) with overlapping . . .
+[16:43:19.268062] Minimum overlap selected: (0, 0, 0)
+[16:43:19.268065] Padding: (4, 16, 16)
+[16:43:22.568757] Real overlapping (%): (0.0, 0.125, 0.11458333333333333)
+[16:43:22.568785] Real overlapping (pixels): (0.0, 12.0, 11.0)
+[16:43:22.568788] (36, 8, 8) patches per (z,y,x) axis
+[16:43:30.414822] **** New data shape is: (2304, 20, 128, 128, 3)
+[16:43:30.414843] ### END 3D-OV-CROP ###
+[16:45:34.142187] ### MERGE-3D-OV-CROP ###
+[16:45:34.142217] Merging (2304, 20, 128, 128, 4) images into (430, 683, 686, 4) with overlapping . . .
+[16:45:34.142221] Minimum overlap selected: (0, 0, 0)
+[16:45:34.142224] Padding: (4, 16, 16)
+[16:45:34.142296] Real overlapping (%): (0.0, 0.125, 0.11458333333333333)
+[16:45:34.142301] Real overlapping (pixels): (0.0, 12.0, 11.0)
+[16:45:34.142304] (36, 8, 8) patches per (z,y,x) axis
+[16:46:27.187544] **** New data shape is: (430, 683, 686, 4)
+[16:46:27.187586] ### END MERGE-3D-OV-CROP ###
+[16:46:32.540077] ### MERGE-3D-OV-CROP ###
+[16:46:32.540106] Merging (2304, 20, 128, 128, 3) images into (430, 683, 686, 3) with overlapping . . .
+[16:46:32.540110] Minimum overlap selected: (0, 0, 0)
+[16:46:32.540113] Padding: (4, 16, 16)
+[16:46:32.540179] Real overlapping (%): (0.0, 0.125, 0.11458333333333333)
+[16:46:32.540185] Real overlapping (pixels): (0.0, 12.0, 11.0)
+[16:46:32.540187] (36, 8, 8) patches per (z,y,x) axis
+[16:46:38.582109] **** New data shape is: (430, 683, 686, 3)
+[16:46:38.582134] ### END MERGE-3D-OV-CROP ###
+[16:46:38.613229] Saving (1, 430, 683, 686, 4) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image
+[16:48:02.980867] Creating instances with watershed . . .
+[16:48:12.995139] Thresholds used: {'seed': [0.11272060126066208, -1.3958406448364258], 'growth_mask': [0.05636030063033104]}
+[16:48:16.960066] Saving (1, 430, 683, 686, 1) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image_instances
+[16:48:17.404167] Calculating matching stats . . .
+[16:48:17.406309] WARNING: The image seems to have different name than its mask file. Using the mask file that's in the same spot (within the mask files list) where the image is in its own list of images. Check if it is correct!
+[16:48:17.406317] Its respective image seems to be: fisbe/biapy/test/label/R54A09-20181019_64_H1.zarr_seg.tiff
+[16:49:22.350684] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(12375), 'tp': np.int64(1), 'fn': np.int64(0), 'precision': np.float64(8.080155138978668e-05), 'recall': np.float64(1.0), 'accuracy': np.float64(8.080155138978668e-05), 'f1': np.float64(0.00016159004605316313), 'n_true': 1, 'n_pred': 12376, 'mean_true_score': np.float32(0.38943005), 'mean_matched_score': np.float64(0.38943004608154297), 'panoptic_quality': np.float64(6.292801908080197e-05)}
+[16:49:22.369141] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 12376, 'tp': 0, 'fn': 1, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 1, 'n_pred': 12376, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[16:49:22.387453] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 12376, 'tp': 0, 'fn': 1, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 1, 'n_pred': 12376, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[16:49:36.210981] Processing image: VT011145-20171222_63_I1.zarr.tiff (GT: VT011145-20171222_63_I1.zarr_seg.tif)
+[16:49:36.211086] ### 3D-OV-CROP ###
+[16:49:36.211102] Cropping (417, 685, 685, 3) images into (20, 128, 128, 3) with overlapping . . .
+[16:49:36.211107] Minimum overlap selected: (0, 0, 0)
+[16:49:36.211110] Padding: (4, 16, 16)
+[16:49:38.046371] Real overlapping (%): (0.0, 0.11458333333333333, 0.11458333333333333)
+[16:49:38.046397] Real overlapping (pixels): (0.0, 11.0, 11.0)
+[16:49:38.046400] (35, 8, 8) patches per (z,y,x) axis
+[16:49:45.807595] **** New data shape is: (2240, 20, 128, 128, 3)
+[16:49:45.807616] ### END 3D-OV-CROP ###
+[16:51:57.112735] ### MERGE-3D-OV-CROP ###
+[16:51:57.112768] Merging (2240, 20, 128, 128, 4) images into (417, 685, 685, 4) with overlapping . . .
+[16:51:57.112773] Minimum overlap selected: (0, 0, 0)
+[16:51:57.112778] Padding: (4, 16, 16)
+[16:51:57.112856] Real overlapping (%): (0.0, 0.11458333333333333, 0.11458333333333333)
+[16:51:57.112861] Real overlapping (pixels): (0.0, 11.0, 11.0)
+[16:51:57.112864] (35, 8, 8) patches per (z,y,x) axis
+[16:52:06.121307] **** New data shape is: (417, 685, 685, 4)
+[16:52:06.121332] ### END MERGE-3D-OV-CROP ###
+[16:52:09.898644] ### MERGE-3D-OV-CROP ###
+[16:52:09.898669] Merging (2240, 20, 128, 128, 3) images into (417, 685, 685, 3) with overlapping . . .
+[16:52:09.898673] Minimum overlap selected: (0, 0, 0)
+[16:52:09.898676] Padding: (4, 16, 16)
+[16:52:09.898728] Real overlapping (%): (0.0, 0.11458333333333333, 0.11458333333333333)
+[16:52:09.898733] Real overlapping (pixels): (0.0, 11.0, 11.0)
+[16:52:09.898736] (35, 8, 8) patches per (z,y,x) axis
+[16:52:16.081239] **** New data shape is: (417, 685, 685, 3)
+[16:52:16.081274] ### END MERGE-3D-OV-CROP ###
+[16:52:16.112326] Saving (1, 417, 685, 685, 4) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image
+[16:52:49.562690] Creating instances with watershed . . .
+[16:52:59.316480] Thresholds used: {'seed': [0.1066068634390831, 0.03536820411682129], 'growth_mask': [0.05330343171954155]}
+[16:53:03.459883] Saving (1, 417, 685, 685, 1) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image_instances
+[16:53:03.809732] Calculating matching stats . . .
+[16:53:03.812371] WARNING: The image seems to have different name than its mask file. Using the mask file that's in the same spot (within the mask files list) where the image is in its own list of images. Check if it is correct!
+[16:53:03.812391] Its respective image seems to be: fisbe/biapy/test/label/VT011145-20171222_63_I1.zarr_seg.tiff
+[16:54:07.146802] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 3568, 'tp': 0, 'fn': 9, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 9, 'n_pred': 3568, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[16:54:07.168365] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 3568, 'tp': 0, 'fn': 9, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 9, 'n_pred': 3568, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[16:54:07.186110] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 3568, 'tp': 0, 'fn': 9, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 9, 'n_pred': 3568, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[16:54:24.133912] Processing image: VT027175-20171031_62_H3.zarr.tiff (GT: VT027175-20171031_62_H3.zarr_seg.tif)
+[16:54:24.134014] ### 3D-OV-CROP ###
+[16:54:24.134029] Cropping (425, 687, 684, 3) images into (20, 128, 128, 3) with overlapping . . .
+[16:54:24.134035] Minimum overlap selected: (0, 0, 0)
+[16:54:24.134039] Padding: (4, 16, 16)
+[16:54:25.993096] Real overlapping (%): (0.0, 0.11458333333333333, 0.125)
+[16:54:25.993121] Real overlapping (pixels): (0.0, 11.0, 12.0)
+[16:54:25.993124] (36, 8, 8) patches per (z,y,x) axis
+[16:54:33.542431] **** New data shape is: (2304, 20, 128, 128, 3)
+[16:54:33.542456] ### END 3D-OV-CROP ###
+[16:56:34.018221] ### MERGE-3D-OV-CROP ###
+[16:56:34.018252] Merging (2304, 20, 128, 128, 4) images into (425, 687, 684, 4) with overlapping . . .
+[16:56:34.018256] Minimum overlap selected: (0, 0, 0)
+[16:56:34.018260] Padding: (4, 16, 16)
+[16:56:34.018336] Real overlapping (%): (0.0, 0.11458333333333333, 0.125)
+[16:56:34.018340] Real overlapping (pixels): (0.0, 11.0, 12.0)
+[16:56:34.018343] (36, 8, 8) patches per (z,y,x) axis
+[16:56:43.305717] **** New data shape is: (425, 687, 684, 4)
+[16:56:43.305742] ### END MERGE-3D-OV-CROP ###
+[16:56:47.149650] ### MERGE-3D-OV-CROP ###
+[16:56:47.149676] Merging (2304, 20, 128, 128, 3) images into (425, 687, 684, 3) with overlapping . . .
+[16:56:47.149681] Minimum overlap selected: (0, 0, 0)
+[16:56:47.149684] Padding: (4, 16, 16)
+[16:56:47.149742] Real overlapping (%): (0.0, 0.11458333333333333, 0.125)
+[16:56:47.149747] Real overlapping (pixels): (0.0, 11.0, 12.0)
+[16:56:47.149750] (36, 8, 8) patches per (z,y,x) axis
+[16:56:53.460345] **** New data shape is: (425, 687, 684, 3)
+[16:56:53.460375] ### END MERGE-3D-OV-CROP ###
+[16:56:53.490866] Saving (1, 425, 687, 684, 4) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image
+[16:57:25.693861] Creating instances with watershed . . .
+[16:57:36.372660] Thresholds used: {'seed': [0.1048322319984436, -0.07563352584838867], 'growth_mask': [0.0524161159992218]}
+[16:57:41.073706] Saving (1, 425, 687, 684, 1) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image_instances
+[16:57:41.464449] Calculating matching stats . . .
+[16:57:41.466599] WARNING: The image seems to have different name than its mask file. Using the mask file that's in the same spot (within the mask files list) where the image is in its own list of images. Check if it is correct!
+[16:57:41.466618] Its respective image seems to be: fisbe/biapy/test/label/VT027175-20171031_62_H3.zarr_seg.tiff
+[16:58:46.899360] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 15527, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 15527, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[16:58:46.916601] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 15527, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 15527, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[16:58:46.934771] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 15527, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 15527, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[16:59:02.518285] Processing image: VT027175-20171031_62_H4.zarr.tiff (GT: VT027175-20171031_62_H4.zarr_seg.tif)
+[16:59:02.518388] ### 3D-OV-CROP ###
+[16:59:02.518402] Cropping (409, 687, 684, 3) images into (20, 128, 128, 3) with overlapping . . .
+[16:59:02.518407] Minimum overlap selected: (0, 0, 0)
+[16:59:02.518410] Padding: (4, 16, 16)
+[16:59:04.407103] Real overlapping (%): (0.0, 0.11458333333333333, 0.125)
+[16:59:04.407128] Real overlapping (pixels): (0.0, 11.0, 12.0)
+[16:59:04.407132] (35, 8, 8) patches per (z,y,x) axis
+[16:59:12.021586] **** New data shape is: (2240, 20, 128, 128, 3)
+[16:59:12.021607] ### END 3D-OV-CROP ###
+[17:01:04.431250] ### MERGE-3D-OV-CROP ###
+[17:01:04.431283] Merging (2240, 20, 128, 128, 4) images into (409, 687, 684, 4) with overlapping . . .
+[17:01:04.431287] Minimum overlap selected: (0, 0, 0)
+[17:01:04.431291] Padding: (4, 16, 16)
+[17:01:04.431366] Real overlapping (%): (0.0, 0.11458333333333333, 0.125)
+[17:01:04.431370] Real overlapping (pixels): (0.0, 11.0, 12.0)
+[17:01:04.431374] (35, 8, 8) patches per (z,y,x) axis
+[17:01:13.236024] **** New data shape is: (409, 687, 684, 4)
+[17:01:13.236051] ### END MERGE-3D-OV-CROP ###
+[17:01:16.916438] ### MERGE-3D-OV-CROP ###
+[17:01:16.916465] Merging (2240, 20, 128, 128, 3) images into (409, 687, 684, 3) with overlapping . . .
+[17:01:16.916469] Minimum overlap selected: (0, 0, 0)
+[17:01:16.916472] Padding: (4, 16, 16)
+[17:01:16.916523] Real overlapping (%): (0.0, 0.11458333333333333, 0.125)
+[17:01:16.916528] Real overlapping (pixels): (0.0, 11.0, 12.0)
+[17:01:16.916531] (35, 8, 8) patches per (z,y,x) axis
+[17:01:22.942388] **** New data shape is: (409, 687, 684, 3)
+[17:01:22.942416] ### END MERGE-3D-OV-CROP ###
+[17:01:22.970960] Saving (1, 409, 687, 684, 4) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image
+[17:01:54.246085] Creating instances with watershed . . .
+[17:02:03.955890] Thresholds used: {'seed': [0.13083672523498535, -0.039255380630493164], 'growth_mask': [0.06541836261749268]}
+[17:02:07.787455] Saving (1, 409, 687, 684, 1) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image_instances
+[17:02:08.116399] Calculating matching stats . . .
+[17:02:08.118125] WARNING: The image seems to have different name than its mask file. Using the mask file that's in the same spot (within the mask files list) where the image is in its own list of images. Check if it is correct!
+[17:02:08.118133] Its respective image seems to be: fisbe/biapy/test/label/VT027175-20171031_62_H4.zarr_seg.tiff
+[17:03:10.305454] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(2896), 'tp': np.int64(2), 'fn': np.int64(4), 'precision': np.float64(0.0006901311249137336), 'recall': np.float64(0.3333333333333333), 'accuracy': np.float64(0.0006891798759476223), 'f1': np.float64(0.0013774104683195593), 'n_true': 6, 'n_pred': 2898, 'mean_true_score': np.float32(0.11889815), 'mean_matched_score': np.float64(0.35669445991516113), 'panoptic_quality': np.float64(0.0004913146830787344)}
+[17:03:10.323258] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 2898, 'tp': 0, 'fn': 6, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 6, 'n_pred': 2898, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[17:03:10.339535] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 2898, 'tp': 0, 'fn': 6, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 6, 'n_pred': 2898, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[17:03:24.447304] Processing image: VT050157-20171110_61_C1.zarr.tiff (GT: VT050157-20171110_61_C1.zarr_seg.tif)
+[17:03:24.447407] ### 3D-OV-CROP ###
+[17:03:24.447420] Cropping (377, 683, 686, 3) images into (20, 128, 128, 3) with overlapping . . .
+[17:03:24.447426] Minimum overlap selected: (0, 0, 0)
+[17:03:24.447429] Padding: (4, 16, 16)
+[17:03:26.114385] Real overlapping (%): (0.0, 0.125, 0.11458333333333333)
+[17:03:26.114411] Real overlapping (pixels): (0.0, 12.0, 11.0)
+[17:03:26.114414] (32, 8, 8) patches per (z,y,x) axis
+[17:03:33.153802] **** New data shape is: (2048, 20, 128, 128, 3)
+[17:03:33.153825] ### END 3D-OV-CROP ###
+[17:05:26.593417] ### MERGE-3D-OV-CROP ###
+[17:05:26.593441] Merging (2048, 20, 128, 128, 4) images into (377, 683, 686, 4) with overlapping . . .
+[17:05:26.593444] Minimum overlap selected: (0, 0, 0)
+[17:05:26.593447] Padding: (4, 16, 16)
+[17:05:26.593518] Real overlapping (%): (0.0, 0.125, 0.11458333333333333)
+[17:05:26.593522] Real overlapping (pixels): (0.0, 12.0, 11.0)
+[17:05:26.593525] (32, 8, 8) patches per (z,y,x) axis
+[17:05:34.685511] **** New data shape is: (377, 683, 686, 4)
+[17:05:34.685536] ### END MERGE-3D-OV-CROP ###
+[17:05:38.071439] ### MERGE-3D-OV-CROP ###
+[17:05:38.071464] Merging (2048, 20, 128, 128, 3) images into (377, 683, 686, 3) with overlapping . . .
+[17:05:38.071468] Minimum overlap selected: (0, 0, 0)
+[17:05:38.071471] Padding: (4, 16, 16)
+[17:05:38.071523] Real overlapping (%): (0.0, 0.125, 0.11458333333333333)
+[17:05:38.071529] Real overlapping (pixels): (0.0, 12.0, 11.0)
+[17:05:38.071532] (32, 8, 8) patches per (z,y,x) axis
+[17:05:43.474862] **** New data shape is: (377, 683, 686, 3)
+[17:05:43.474893] ### END MERGE-3D-OV-CROP ###
+[17:05:43.502493] Saving (1, 377, 683, 686, 4) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image
+[17:06:12.889068] Creating instances with watershed . . .
+[17:06:21.943544] Thresholds used: {'seed': [0.10706796497106552, 0.031273841857910156], 'growth_mask': [0.05353398248553276]}
+[17:06:23.958922] Saving (1, 377, 683, 686, 1) data as .tif in folder: ./BiaPy/results/train_Dn_3d_instance_segmentation/results/train_Dn_3d_instance_segmentation_1/per_image_instances
+[17:06:24.273483] Calculating matching stats . . .
+[17:06:24.276124] WARNING: The image seems to have different name than its mask file. Using the mask file that's in the same spot (within the mask files list) where the image is in its own list of images. Check if it is correct!
+[17:06:24.276145] Its respective image seems to be: fisbe/biapy/test/label/VT050157-20171110_61_C1.zarr_seg.tiff
+[17:07:22.021099] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(4394), 'tp': np.int64(1), 'fn': np.int64(4), 'precision': np.float64(0.00022753128555176336), 'recall': np.float64(0.2), 'accuracy': np.float64(0.00022732439190725165), 'f1': np.float64(0.00045454545454545455), 'n_true': 5, 'n_pred': 4395, 'mean_true_score': np.float32(0.06975634), 'mean_matched_score': np.float64(0.34878167510032654), 'panoptic_quality': np.float64(0.00015853712504560296)}
+[17:07:22.039117] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 4395, 'tp': 0, 'fn': 5, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 5, 'n_pred': 4395, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[17:07:22.056206] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 4395, 'tp': 0, 'fn': 5, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 5, 'n_pred': 4395, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[17:07:22.064923] Releasing memory . . .
+[17:07:22.064959] #############
+[17:07:22.064961] #  RESULTS  #
+[17:07:22.064963] #############
+[17:07:22.064966] The values below represent the averages across all test samples
+[17:07:22.065603] Test IoU (F channel) (per patch): 0.01678973041100849
+[17:07:22.065607] Test IoU (C channel) (per patch): 0.0035530832605306464
+[17:07:22.065609] Test L1 (Db channel) (per patch): 0.27036061810636985
+[17:07:22.065610] Test L1 (Dn channel) (per patch): 0.24787910731093396
+[17:07:22.065612] Test IoU (F channel) (merge patches): 0.02925955650529691
+[17:07:22.065614] Test IoU (C channel) (merge patches): 0.01067146699019109
+[17:07:22.065616] Test L1 (Db channel) (merge patches): 0.3105138455118452
+[17:07:22.065617] Test L1 (Dn channel) (merge patches): 0.2720248060567038
+[17:07:22.065619] 
+[17:07:22.077330] Instance segmentation specific metrics:
+[17:07:22.077353] IoU TH=0.3
+[17:07:22.077356]       Merge patches:
+[17:07:22.077383]       DatasetMatching(criterion='iou', thresh=0.3, fp=np.int64(54979), tp=np.int64(6), fn=np.int64(28), precision=np.float64(0.00010912066927343821), recall=np.float64(0.17647058823529413), accuracy=np.float64(0.00010906513006016759), f1=np.float64(0.00021810647230956578), n_true=34, n_pred=54985, mean_true_score=np.float32(0.066741884), mean_matched_score=np.float64(0.3782040278116862), panoptic_quality=np.float64(8.248874631927579e-05), by_image=False)
+[17:07:22.077392] IoU TH=0.5
+[17:07:22.077394]       Merge patches:
+[17:07:22.077400]       DatasetMatching(criterion='iou', thresh=0.5, fp=54985, tp=0, fn=34, precision=0, recall=0, accuracy=0, f1=0, n_true=34, n_pred=54985, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=False)
+[17:07:22.077404] IoU TH=0.75
+[17:07:22.077407]       Merge patches:
+[17:07:22.077414]       DatasetMatching(criterion='iou', thresh=0.75, fp=54985, tp=0, fn=34, precision=0, recall=0, accuracy=0, f1=0, n_true=34, n_pred=54985, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=False)
+[17:07:22.077475] FINISHED JOB train_Dn_3d_instance_segmentation_1 !!

@@ -10,11 +10,14 @@
 
 set -e
 module purge
-# config_file="biapy-py_debug.yaml"
-# config_file="biapy-py_v1.yaml"
-config_file="biapy-py_v2.yaml"
+# >>>> Set Job Config >>>>
+config_file="biapy-py_v3.yaml"
+mode="test"
+# sbatch --dependency=afterok:JOBID sbatch/biapy/biapy-py_sbatch.sh 
+# <<<< Set Job Config <<<<
+
 config_name="${config_file%.*}"
-echo "SBATCH Run: ${config_file}"
+echo "SBATCH Run: ${config_file}, mode: ${mode}"
 
 # >>>> GPU Tracking >>>>
 GPU_LOGGER_PID=
@@ -25,7 +28,7 @@ cleanup() {
   fi
 }
 trap cleanup EXIT
-nohup nvidia-smi --query-gpu=timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total --format=csv -l 3 > "gpu_biapy-py_${config_name}.csv" &
+nohup nvidia-smi --query-gpu=timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total --format=csv -l 3 > "gpu_biapy-py_${config_name}_${mode}.csv" &
 GPU_LOGGER_PID=$!
 # <<<< GPU Tracking <<<<
 
@@ -38,5 +41,6 @@ singularity exec --nv \
     echo \"running BiaPy/run_biapy-py.py\"; \
     python3 BiaPy/run_biapy-py.py \
         -c \"${config_file}\" \
+        -m \"${mode}\" \
         --job-name \"${config_name}\" \
         --run-id 0 "
