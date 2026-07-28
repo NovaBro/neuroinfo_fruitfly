@@ -3,12 +3,15 @@
 The web viewer overlays a sample's *predicted* instances from a selected
 "prediction set". Sets come from two sources:
 
-* **BiaPy** — run dirs under ``BIAPY_RESULTS_BASE`` (``services/biapy_loader``).
+* **BiaPy** — run dirs under ``BIAPY_RESULTS_BASES`` (``services/biapy_loader``;
+  default ``BiaPy/results`` + ``metrics/biapy``).
 * **PatchPerPix** — experiment dirs under ``PPP_EXPERIMENTS_BASE``
   (``services/ppp_loader``), exposing ``numinst`` and ``instances`` overlays.
 
 Each set carries a ``source`` (``"biapy"`` | ``"ppp"``) and a globally-unique
-``id``. BiaPy ids stay bare (relative paths, for backward compatibility); the
+``id``. BiaPy ids are repo-relative paths (so ``BiaPy/results/...`` and
+``metrics/biapy/...`` stay distinct; bare paths relative to
+``BIAPY_RESULTS_BASE`` still resolve for backward compatibility). The
 PatchPerPix loader prefixes its ids (``ppp-numinst:`` / ``ppp-inst:``). Routing
 is by that prefix — this module is the single interface ``main.py`` imports, so
 the individual endpoints stay source-agnostic.
