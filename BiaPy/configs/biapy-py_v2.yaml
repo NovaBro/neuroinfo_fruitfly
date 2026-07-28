@@ -10,8 +10,8 @@ PROBLEM:
         DATA_CHANNELS: BC
         DATA_CHANNELS: ['F', 'C', 'Db', 'Dn']
         WATERSHED:
-            SEED_CHANNELS: ['F', 'Db']
-            SEED_CHANNELS_THRESH: ['auto', 'auto']
+            SEED_CHANNELS: ['F', 'Db', 'C', 'Dn']
+            SEED_CHANNELS_THRESH: ['auto', 'auto', 'auto', 'auto']
             TOPOGRAPHIC_SURFACE_CHANNEL: 'Db'
             GROWTH_MASK_CHANNELS: ['F']
             GROWTH_MASK_CHANNELS_THRESH: ['auto']
@@ -28,22 +28,14 @@ PROBLEM:
 DATA: 
     PATCH_SIZE: (20, 128, 128, 3)
     TRAIN:
-        # PATH: fisbe/biapy/train/raw
-        # GT_PATH: fisbe/biapy/train/label
-        PATH: fisbe/aug_biapy/train/raw
-        GT_PATH: fisbe/aug_biapy/train/label
-        INPUT_IMG_AXES_ORDER: CZYX
-        INPUT_MASK_AXES_ORDER: ZYX
+        PATH: fisbe/biapy-py_data/train/raw
+        GT_PATH: fisbe/biapy-py_data/train/label
         IN_MEMORY: True
     VAL:
         SPLIT_TRAIN: 0.1
     TEST:
-        # PATH: fisbe/biapy/test/raw
-        # GT_PATH: fisbe/biapy/test/label
-        PATH: fisbe/biapy/train/raw
-        GT_PATH: fisbe/biapy/train/label
-        INPUT_IMG_AXES_ORDER: CZYX
-        INPUT_MASK_AXES_ORDER: ZYX
+        PATH: fisbe/biapy-py_data/test/raw
+        GT_PATH: fisbe/biapy-py_data/test/label
         IN_MEMORY: True
         LOAD_GT: True
         PADDING: (4,16,16)
