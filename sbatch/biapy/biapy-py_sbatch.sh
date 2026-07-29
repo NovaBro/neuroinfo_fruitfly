@@ -1,19 +1,21 @@
 #!/bin/bash
-#SBATCH --job-name=BiaPy-py
-#SBATCH --cpus-per-task=4
+#SBATCH --job-name=biapy-py
+#SBATCH --cpus-per-task=6
 #SBATCH --time=12:00:00
-#SBATCH --mem=256g
+#SBATCH --mem=128g
 #SBATCH --gres=gpu:1
+#SBATCH --constraint='l40s|a100'
 #SBATCH --account=torch_pr_61_general
-#SBATCH --output=sbatch/biapy/biapy-py-%j.out
-#SBATCH --error=sbatch/biapy/biapy-py-%j.err
+#SBATCH --output=sbatch/biapy/%x-%j.out
+#SBATCH --error=sbatch/biapy/%x-%j.err
 
 set -e
 module purge
 # >>>> Set Job Config >>>>
-config_file="biapy-py_v3.yaml"
-mode="test"
-# sbatch --dependency=afterok:JOBID sbatch/biapy/biapy-py_sbatch.sh 
+# Usage: sbatch sbatch/biapy/biapy-py_sbatch.sh [config.yaml] [train|test]
+# Or use biapy-py_sbatch_chain.sh to submit train/test with dependencies.
+config_file="${1:-biapy-py_v3.yaml}"
+mode="${2:-train}"
 # <<<< Set Job Config <<<<
 
 config_name="${config_file%.*}"
