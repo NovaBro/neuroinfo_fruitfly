@@ -14,12 +14,19 @@ module purge
 # >>>> Set Job Config >>>>
 # Usage: sbatch sbatch/biapy/biapy-py_sbatch.sh [config.yaml] [train|test]
 # Or use biapy-py_sbatch_chain.sh to submit train/test with dependencies.
-config_file="${1:-biapy-py_v3.yaml}"
+# Nested configs: biapy-py_v3/biapy-py_v3-train.yaml (job-name = biapy-py_v3).
+config_file="${1:-biapy-py_v3/biapy-py_v3-train.yaml}"
 mode="${2:-train}"
 # <<<< Set Job Config <<<<
 
-config_name="${config_file%.*}"
-echo "SBATCH Run: ${config_file}, mode: ${mode}"
+# BiaPy --job-name: use stem directory for nested paths so train/test share checkpoints.
+if [[ "$config_file" == */* ]]; then
+  job_name="${config_file%/*}"
+  job_name="${job_name##*/}"
+else
+  job_name="${config_file%.*}"
+fi
+echo "SBATCH Run: ${config_file}, mode: ${mode}, job-name: ${job_name}"
 
 # >>>> GPU Tracking >>>>
 GPU_LOGGER_PID=
@@ -30,7 +37,7 @@ cleanup() {
   fi
 }
 trap cleanup EXIT
-nohup nvidia-smi --query-gpu=timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total --format=csv -l 3 > "gpu_biapy-py_${config_name}_${mode}.csv" &
+nohup nvidia-smi --query-gpu=timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total --format=csv -l 3 > "gpu_biapy-py_${job_name}_${mode}.csv" &
 GPU_LOGGER_PID=$!
 # <<<< GPU Tracking <<<<
 
@@ -44,5 +51,5 @@ singularity exec --nv \
     python3 BiaPy/run_biapy-py.py \
         -c \"${config_file}\" \
         -m \"${mode}\" \
-        --job-name \"${config_name}\" \
+        --job-name \"${job_name}\" \
         --run-id 0 "
