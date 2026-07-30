@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 from imaging_helpers_hpc.paths import AnalysisOutputPaths
-from imaging_helpers_hpc.processing import random_90_rotate_3d
+from imaging_helpers_hpc.processing import axis_rotation
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -76,6 +76,81 @@ def gen_basic_mip(
     logger.info(f"\tSaving to: {out_path}")
     plt.close(fig)
 
+def _hillshade(z: np.ndarray, azimuth_deg: float = 315.0, altitude_deg: float = 45.0) -> np.ndarray:
+    """Simple Lambertian hillshade of a 2D height field, values in [0, 1]."""
+    dy, dx = np.gradient(z.astype(np.float64))
+    slope = np.pi / 2.0 - np.arctan(np.hypot(dx, dy))
+    aspect = np.arctan2(-dx, dy)
+    az = np.radians(azimuth_deg)
+    alt = np.radians(altitude_deg)
+    shade = np.sin(alt) * np.sin(slope) + np.cos(alt) * np.cos(slope) * np.cos(az - aspect)
+    shade = (shade - shade.min()) / (np.ptp(shade) + 1e-8)
+    return shade.astype(np.float32)
+
+
+def gen_topographic_projection(
+    input_np: np.ndarray,
+    output_file_name: str,
+    analysis_output_paths: AnalysisOutputPaths,
+    axis: int = 1,
+    output_path: Path | None = None,
+):
+    """
+    Min-intensity projection of a watershed topographic surface with terrain colormap
+    and light hillshade. Prefer this over MIP: max along Z smears ridges into blocks.
+    Accepts (C, Z, Y, X) or (Z, Y, X).
+    """
+    logger.info("gen_topographic_projection:")
+    logger.info(f"\toutput_file_name: {output_file_name}")
+    logger.info(f"\tBefore Shape: {input_np.shape}")
+
+    vol = np.asarray(input_np, dtype=np.float32)
+    if vol.ndim == 4:
+        # (C, Z, Y, X) — drop channel; map CZYX axis index onto ZYX
+        vol = vol[0]
+        z_axis = max(axis - 1, 0)
+    elif vol.ndim == 3:
+        # (Z, Y, X): axis=1 from CZYX callers means Z at 0; axis=0 also Z
+        z_axis = 0 if axis in (0, 1) else axis
+    else:
+        raise ValueError(f"Expected 3D or 4D volume, got shape {vol.shape}")
+
+    topo2d = vol.min(axis=z_axis)
+    logger.info(f"\tMinIP Shape: {topo2d.shape}")
+
+    lo, hi = np.percentile(topo2d, [1.0, 99.0])
+    if hi <= lo:
+        lo, hi = float(topo2d.min()), float(topo2d.max())
+        if hi <= lo:
+            hi = lo + 1e-8
+    topo_norm = np.clip((topo2d - lo) / (hi - lo), 0.0, 1.0)
+    shade = _hillshade(topo2d)
+
+    terrain_rgb = plt.get_cmap("terrain")(topo_norm)[..., :3]
+    # Blend hillshade so relief reads without washing out height color
+    shaded = terrain_rgb * (0.35 + 0.65 * shade[..., None])
+    shaded = np.clip(shaded, 0.0, 1.0)
+
+    fig, axes = plt.subplots(1, 1, figsize=(8, 8), dpi=800)
+    axes.imshow(shaded, vmin=0, vmax=1)
+    # Colorbar reflects the underlying height (percentile-clipped), not the shade blend
+    sm = plt.cm.ScalarMappable(cmap="terrain", norm=plt.Normalize(vmin=lo, vmax=hi))
+    sm.set_array([])
+    cbar = fig.colorbar(sm, ax=axes, fraction=0.046, pad=0.04)
+    cbar.set_label("height (MinIP)")
+    axes.set_title(f"Topographic MinIP {output_file_name}")
+    axes.axis("off")
+
+    if output_path is None:
+        out_path = analysis_output_paths.output_images / f"{output_file_name}.png"
+    else:
+        out_path = Path(output_path)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(out_path)
+    logger.info(f"\tSaving to: {out_path}")
+    plt.close(fig)
+
+
 def gen_instance_projection(
     input_np: np.ndarray,
     output_file_name: str,
@@ -141,7 +216,7 @@ def gen_rotations_and_projections(
     #         gen_basic_mip(input_np, f"base_rotated_mip{output_file_name}", analysis_output_paths)
     #     case 'gt_instance':
     #         gen_gt_projection(input_np, f"base_rotated_{output_file_name}", analysis_output_paths, axis)
-    rotated_image = random_90_rotate_3d(input_np, rand_axis_int, k_rotations)
+    rotated_image = axis_rotation(input_np, rand_axis_int, k_rotations)
 
     match volume:
         case 'raw':

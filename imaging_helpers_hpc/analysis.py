@@ -92,3 +92,5 @@ def get_stats_in_dir(dir_path: Path):
     logger.info(f"\tmed_shape: {med_shape}")
     logger.info(f"\tmax_shape: {max_shape}")
     logger.info(f"\tmin_shape: {min_shape}")
+
+    

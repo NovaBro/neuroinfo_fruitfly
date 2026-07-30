@@ -5,6 +5,11 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+class MetricPaths:
+    def __init__(self):
+        self.metric_root = Path("metrics")
+        self.metric_biapy = self.metric_root / 'biapy'
+        self.metric_ppp = self.metric_root / 'ppp'
 
 class BiapyDataPaths:
     def __init__(self, config_name:str | Path):
@@ -18,19 +23,19 @@ class BiapyDataPaths:
         self.watershed = self.result_root / "watershed"
 
 class FisbeDataPaths:
-    def __init__(self, root:str | Path = './'):
+    def __init__(self, project_root:str | Path = './', data_root: str | Path = 'completely'):
         # Zarr to Tiff converted input files for training BiaPy model
-        self.completely_root = Path(root) / "fisbe/completely"
+        self.root = Path(project_root) / 'fisbe' / data_root
         
-        self.completely_test = self.completely_root / "test"
-        self.completely_train = self.completely_root / "train"
-        self.completely_val = self.completely_root / "val"
+        self.test_dir = self.root / 'test'
+        self.train_dir = self.root / 'train'
+        self.val_dir = self.root / 'val'
         
         self.paths = {
-            'root': self.completely_root,
-            'train': self.completely_train,
-            'test': self.completely_test,
-            'val': self.completely_val,
+            'root': self.root,
+            'train': self.train_dir,
+            'test': self.test_dir,
+            'val': self.val_dir,
         }
 
 class AnalysisOutputPaths():
