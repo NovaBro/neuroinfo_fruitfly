@@ -11,9 +11,9 @@ For the FISBe dataset, the image dimensions are specified in the doc:
 import argparse
 import shutil
 import logging
-import itertools
 import subprocess
 from pathlib import Path
+from itertools import permutations
 
 import numpy as np
 import zarr
@@ -24,7 +24,7 @@ from biapy.data.data_manipulation import save_tif
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from imaging_helpers_hpc.processing import random_90_rotate_3d
+from imaging_helpers_hpc.processing import axis_rotation, channel_flip
 # from imaging_helpers_hpc.gen_utils import log_wrapper
 
 logger = logging.getLogger()
@@ -45,6 +45,69 @@ def merge_instance_masks(stacked: np.ndarray) -> np.ndarray:
     logger.debug(f"\tnew merged.shape: {merged.shape}")
     return merged
 
+def save_and_log_data(
+    raw:np.ndarray, raw_dir:Path,
+    labels:np.ndarray, label_dir:Path, 
+    in_path:Path, aug_id:str
+):
+    # BiaPy Specific Formatting (c, z, y, x) --> (z, y, x, c)
+    raw = np.transpose(raw, (1, 2, 3, 0))
+    labels = merge_instance_masks(labels)
+    raw = raw[np.newaxis, ...]
+    labels = labels[np.newaxis, ..., np.newaxis]
+
+    logger.debug(
+        f"\tSaving - raw.shape: {raw.shape}"
+        f" raw_dir: {raw_dir}"
+        f" raw_names: {in_path.name}"
+    )
+    logger.debug(
+        f"\tSaving - labels.shape: {labels.shape}"
+        f" lage_dir: {label_dir}"
+        f" label_names: {in_path.name}"
+    )
+    logger.info(f"Saving to lage_dir: {label_dir}")
+    logger.info(f"Saving to raw_dir: {raw_dir}")
+
+    save_tif(raw, raw_dir.as_posix(), [in_path.name + aug_id])
+    save_tif(labels, label_dir.as_posix(), [in_path.name + aug_id])
+
+def generate_augmentation_jobs(num_axis=2, num_rotations=2) -> list[dict]:
+    """
+    Generate jobs for augmentation.
+    c - channel flip order
+    a - rotation axis selection
+    k - rotate number of 90 degrees
+    """
+    jobs = []
+
+    random_order = permutations([0, 1, 2], 3) # Get all permutations
+    for ro in random_order:
+        # Channel Flipping
+        augid = '_c' + ''.join([str(x) for x in ro])
+
+        # Rotation
+        rand_axis_idx = np.random.permutation(3)[0:num_axis] # Select permuted axis 
+        rand_k_rotations = np.random.permutation(4)[0:num_rotations] # Select permuted rotations
+        for a in rand_axis_idx:
+            for k in rand_k_rotations:
+                aug_id = augid + f"_r{a}" + f"_k{k}"
+                jobs.append(
+                    {
+                        'aug_id': aug_id,
+                        'c' : ro,
+                        'a' : a,
+                        'k' : k
+                    }
+                )
+
+    return jobs
+
+def apply_augmentation_set(image:np.ndarray, augmentation:dict):
+    image = channel_flip(image, augmentation['c'])
+    image = axis_rotation(image, augmentation['a'], augmentation['k'])
+    return image
+
 def convert_split(input_dir: Path, output_dir: Path, args:argparse.Namespace) -> None:
     raw_dir = output_dir / "raw"
     label_dir = output_dir / "label"
@@ -55,8 +118,12 @@ def convert_split(input_dir: Path, output_dir: Path, args:argparse.Namespace) ->
 
     if args.max_num_samples: input_paths = input_paths[0:int(args.max_num_samples)]
 
+    aug_jobs = generate_augmentation_jobs()
+    logger.info(f"Number of augmentation jobs: {len(aug_jobs)}")
+    logger.debug(aug_jobs)
+
     for index, in_path in enumerate(input_paths):
-        if (raw_dir / in_path.name.replace('.zarr', '.tif')).exists():
+        if (raw_dir / in_path.name.replace('.zarr', '.tif')).exists() and not args.clean:
             logger.info(f"This path already exists, skipping: '{raw_dir / in_path.name}'")
             continue
 
@@ -76,29 +143,64 @@ def convert_split(input_dir: Path, output_dir: Path, args:argparse.Namespace) ->
             path="volumes/gt_instances"
         ))
 
-        # Apply Custom Augmentations Here
+        if args.augment:
+            for a in aug_jobs:
+                raw = apply_augmentation_set(raw, a)
+                labels = apply_augmentation_set(labels, a)
+                # >>> Save / Log - Data >>>
+                save_and_log_data(
+                    raw, raw_dir,
+                    labels, label_dir,
+                    in_path, a['aug_id']
+                )
+                # <<< Save / Log - Data <<<
+        else:
+            # >>> Save / Log - Data >>>
+            save_and_log_data(
+                raw, raw_dir,
+                labels, label_dir,
+                in_path, ''
+            )
+            # <<< Save / Log - Data <<<
 
-        # BiaPy Specific Formatting (c, z, y, x) --> (z, y, x, c)
-        raw = np.transpose(raw, (1, 2, 3, 0))
-        labels = merge_instance_masks(labels)
-        raw = raw[np.newaxis, ...]
-        labels = labels[np.newaxis, ..., np.newaxis]
 
-        logger.debug(
-            f"\tSaving - raw.shape: {raw.shape}"
-            f" raw_dir: {raw_dir}"
-            f" raw_names: {in_path.name}"
-        )
-        logger.debug(
-            f"\tSaving - labels.shape: {labels.shape}"
-            f" lage_dir: {label_dir}"
-            f" label_names: {in_path.name}"
-        )
 
-        save_tif(raw, raw_dir, [in_path.name])
-        save_tif(labels, label_dir, [in_path.name])
 
-def main() -> None:
+
+        # # Apply Custom Augmentations Here
+        # aug_id = ''
+        # if args.augment:
+        #     random_order = permutations([0, 1, 2], 3) # Get all permutations
+        #     for ro in random_order:
+        #         # Channel Flipping
+        #         raw = channel_flip(np.array(raw).copy(), ro)
+
+        #         # Rotation
+        #         rand_axis_idx = np.random.permutation(3)[0:2] # Select permuted axis 
+        #         rand_k_rotations = np.random.permutation(4)[0:2] # Select permuted rotations
+        #         for a in rand_axis_idx:
+        #             for k in rand_k_rotations:
+        #                 raw = axis_rotation(np.array(raw).copy(), a, k)
+        #                 aug_id = aug_id + f"_r{a}" + f"_k{k}"
+
+        #                 # >>> Save / Log - Data >>>
+        #                 save_and_log_data(
+        #                     raw, raw_dir,
+        #                     labels, label_dir,
+        #                     in_path, aug_id
+        #                 )
+        #                 # <<< Save / Log - Data <<<
+        # else:
+        #     # >>> Save / Log - Data >>>
+        #     save_and_log_data(
+        #         raw, raw_dir,
+        #         labels, label_dir,
+        #         in_path, aug_id
+        #     )
+        #     # <<< Save / Log - Data <<<
+
+
+def get_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "-o", 
@@ -111,6 +213,12 @@ def main() -> None:
         "--input-dir",
         default="fisbe/completely",
         help="Root directory containing train/test/val zarr splits",
+    )
+    parser.add_argument(
+        "-a",
+        "--augment",
+        action="store_true",
+        help="Applies augmentation to data",
     )
 
     parser.add_argument(
@@ -143,7 +251,11 @@ def main() -> None:
         help="verbose logging level"
     )
 
-    args = parser.parse_args()
+    return parser.parse_args()
+
+def main() -> None:
+
+    args = get_args()
 
     source_root = Path(args.input_dir).resolve()
     output_root = Path(args.output_dir).resolve()
@@ -157,6 +269,8 @@ def main() -> None:
             log_level=logging.INFO
         case 'warning':
             log_level=logging.WARNING
+        case _:
+            raise ValueError("Not valid logging error")
 
     logging.basicConfig(
         level=log_level,
@@ -191,3 +305,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
