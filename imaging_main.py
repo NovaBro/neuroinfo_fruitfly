@@ -8,8 +8,14 @@ import numpy as np
 from pathlib import Path
 
 # from imaging_helpers_hpc import globals as ih_globals
-from imaging_helpers_hpc.paths import BiapyDataPaths, FisbeDataPaths, AnalysisOutputPaths
-from imaging_helpers_hpc.imaging import gen_biapy_mip_4panel, gen_basic_mip, gen_instance_projection, gen_rotations_and_projections
+from imaging_helpers_hpc.paths import BiapyDataPaths, FisbeDataPaths, AnalysisOutputPaths, MetricPaths
+from imaging_helpers_hpc.imaging import (
+    gen_biapy_mip_4panel,
+    gen_basic_mip,
+    gen_instance_projection,
+    gen_rotations_and_projections,
+    gen_topographic_projection,
+)
 from imaging_helpers_hpc.loading import get_sample_stem, load_biapy_test_sample, load_fisbe_completely, load_any_tif
 from imaging_helpers_hpc.analysis import get_stats_in_dir, get_stats_in_one_image
 
@@ -52,11 +58,16 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     analysis_output_paths = AnalysisOutputPaths("imaging_helpers_hpc/output")
+    metric_paths = MetricPaths()
 
     match args.command:
         case 'any':
             tif_image = load_any_tif(args.input_file)
             gen_basic_mip(tif_image, f'any_sample_{Path(args.input_file).stem}', analysis_output_paths, axis=0)
+
+        case 'metric':
+            
+            pass
 
         case 'biapy':
             biapy_paths = BiapyDataPaths(args.bia_config_name)
@@ -70,7 +81,9 @@ if __name__ == '__main__':
                     raw_vol, prob_vol, inst_vol = load_biapy_test_sample(sample, biapy_paths)
                     gen_biapy_mip_4panel(raw_vol, prob_vol, inst_vol, analysis_output_paths, title_prefix=f"{sample}")
                 case 'watershed':
-                    watershed_root = biapy_paths.watershed
+                    # watershed_root = biapy_paths.watershed
+                    watershed_root = metric_paths.metric_biapy
+
                     watershed_products = ("growth_mask", "seed_map", "topografic_surface")
                     dir_mode = args.sample == ""
 
@@ -117,7 +130,7 @@ if __name__ == '__main__':
                         out_path = config_out_root / sample / f"{product}.png"
                         output_file_name = f"{product}_{sample}"
                         if product == "topografic_surface":
-                            gen_basic_mip(
+                            gen_topographic_projection(
                                 watershed_image,
                                 output_file_name,
                                 analysis_output_paths,
