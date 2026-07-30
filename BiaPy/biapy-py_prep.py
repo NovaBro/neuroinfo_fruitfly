@@ -50,9 +50,8 @@ def save_and_log_data(
     labels:np.ndarray, label_dir:Path, 
     in_path:Path, aug_id:str
 ):
-    # BiaPy Specific Formatting (c, z, y, x) --> (z, y, x, c)
+    # raw: (C, Z, Y, X) --> (1, Z, Y, X, C); labels: already merged (Z, Y, X) --> (1, Z, Y, X, 1)
     raw = np.transpose(raw, (1, 2, 3, 0))
-    labels = merge_instance_masks(labels)
     raw = raw[np.newaxis, ...]
     labels = labels[np.newaxis, ..., np.newaxis]
 
@@ -143,61 +142,25 @@ def convert_split(input_dir: Path, output_dir: Path, args:argparse.Namespace) ->
             path="volumes/gt_instances"
         ))
 
+        labels_merged = merge_instance_masks(labels)
+
         if args.augment:
             for a in aug_jobs:
-                raw = apply_augmentation_set(raw, a)
-                labels = apply_augmentation_set(labels, a)
-                # >>> Save / Log - Data >>>
+                raw_aug = apply_augmentation_set(raw, a)
+                labels_aug = axis_rotation(
+                    labels_merged[np.newaxis, ...], a['a'], a['k']
+                )[0]
                 save_and_log_data(
-                    raw, raw_dir,
-                    labels, label_dir,
+                    raw_aug, raw_dir,
+                    labels_aug, label_dir,
                     in_path, a['aug_id']
                 )
-                # <<< Save / Log - Data <<<
         else:
-            # >>> Save / Log - Data >>>
             save_and_log_data(
                 raw, raw_dir,
-                labels, label_dir,
+                labels_merged, label_dir,
                 in_path, ''
             )
-            # <<< Save / Log - Data <<<
-
-
-
-
-
-        # # Apply Custom Augmentations Here
-        # aug_id = ''
-        # if args.augment:
-        #     random_order = permutations([0, 1, 2], 3) # Get all permutations
-        #     for ro in random_order:
-        #         # Channel Flipping
-        #         raw = channel_flip(np.array(raw).copy(), ro)
-
-        #         # Rotation
-        #         rand_axis_idx = np.random.permutation(3)[0:2] # Select permuted axis 
-        #         rand_k_rotations = np.random.permutation(4)[0:2] # Select permuted rotations
-        #         for a in rand_axis_idx:
-        #             for k in rand_k_rotations:
-        #                 raw = axis_rotation(np.array(raw).copy(), a, k)
-        #                 aug_id = aug_id + f"_r{a}" + f"_k{k}"
-
-        #                 # >>> Save / Log - Data >>>
-        #                 save_and_log_data(
-        #                     raw, raw_dir,
-        #                     labels, label_dir,
-        #                     in_path, aug_id
-        #                 )
-        #                 # <<< Save / Log - Data <<<
-        # else:
-        #     # >>> Save / Log - Data >>>
-        #     save_and_log_data(
-        #         raw, raw_dir,
-        #         labels, label_dir,
-        #         in_path, aug_id
-        #     )
-        #     # <<< Save / Log - Data <<<
 
 
 def get_args():
