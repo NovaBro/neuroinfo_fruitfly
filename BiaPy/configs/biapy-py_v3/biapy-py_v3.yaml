@@ -1,17 +1,17 @@
 # BiaPy version: 3.6.8
 
 SYSTEM:
-    NUM_CPUS: -1
+    NUM_CPUS: 6
+    NUM_WORKERS: 6
 
 PROBLEM:
     TYPE: INSTANCE_SEG
     NDIM: 3D
     INSTANCE_SEG:
-        DATA_CHANNELS: BC
         DATA_CHANNELS: ['F', 'C', 'Db', 'Dn']
         WATERSHED:
-            SEED_CHANNELS: ['F', 'Db', 'C', 'Dn']
-            SEED_CHANNELS_THRESH: ['auto', 'auto', 'auto', 'auto']
+            SEED_CHANNELS: ['F', 'Db']
+            SEED_CHANNELS_THRESH: ['auto', 'auto']
             TOPOGRAPHIC_SURFACE_CHANNEL: 'Db'
             GROWTH_MASK_CHANNELS: ['F']
             GROWTH_MASK_CHANNELS_THRESH: ['auto']
@@ -43,6 +43,7 @@ DATA:
 AUGMENTOR:
     ENABLE: True
     RANDOM_ROT: True
+    AUG_SAMPLES: True
     VFLIP: True
     HFLIP: True
     ZFLIP: True
@@ -51,20 +52,20 @@ MODEL:
     ARCHITECTURE: unet
     FEATURE_MAPS: [16, 32, 64, 128, 256]
     Z_DOWN: [1,1,1,1]
-    LOAD_CHECKPOINT: True
+    LOAD_CHECKPOINT: False
 
 TRAIN:
-    ENABLE: False
+    ENABLE: True
     OPTIMIZER: ADAMW
     LR: 1.E-3
-    BATCH_SIZE: 30
+    BATCH_SIZE: 45
     EPOCHS: 30
     PATIENCE: 10
     LR_SCHEDULER:
         NAME: 'onecycle'    # use one-cycle learning rate scheduler
   
 TEST:
-    ENABLE: True
+    ENABLE: False
     AUGMENTATION: False
     FULL_IMG: False
     POST_PROCESSING:

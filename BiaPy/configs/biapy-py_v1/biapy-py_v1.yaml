@@ -7,7 +7,6 @@ PROBLEM:
     TYPE: INSTANCE_SEG
     NDIM: 3D
     INSTANCE_SEG:
-        DATA_CHANNELS: BC
         DATA_CHANNELS: ['F', 'C', 'Db', 'Dn']
         WATERSHED:
             SEED_CHANNELS: ['F', 'Db']
@@ -41,11 +40,11 @@ DATA:
         PADDING: (4,16,16)
 
 AUGMENTOR:
-    ENABLE: True
-    RANDOM_ROT: True
-    VFLIP: True
-    HFLIP: True
-    ZFLIP: True
+    ENABLE: False
+    RANDOM_ROT: False
+    VFLIP: False
+    HFLIP: False
+    ZFLIP: False
 
 MODEL:
     ARCHITECTURE: unet

@@ -1,0 +1,4 @@
+biapy-py_v1: 2 seed channels, no augmentation
+biapy-py_v2: 4 seed channels, no augmentation
+biapy-py_v3: 2 seed channels, augmentation
+biapy-py_v4: 4 seed channels, augmentation
