@@ -12,8 +12,10 @@ import argparse
 import shutil
 import logging
 import subprocess
-from pathlib import Path
+import sys
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from itertools import permutations
+from pathlib import Path
 
 import numpy as np
 import zarr
@@ -21,8 +23,7 @@ import tifffile
 from tqdm import tqdm
 from biapy.data.data_manipulation import save_tif
 
-import sys
-from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from imaging_helpers_hpc.processing import axis_rotation, channel_flip
 # from imaging_helpers_hpc.gen_utils import log_wrapper
@@ -65,11 +66,15 @@ def save_and_log_data(
         f" lage_dir: {label_dir}"
         f" label_names: {in_path.name}"
     )
-    logger.info(f"Saving to lage_dir: {label_dir}")
-    logger.info(f"Saving to raw_dir: {raw_dir}")
 
-    save_tif(raw, raw_dir.as_posix(), [in_path.name + aug_id])
-    save_tif(labels, label_dir.as_posix(), [in_path.name + aug_id])
+    raw_file_name = in_path.stem + aug_id
+    lablel_file_name = in_path.stem + aug_id
+
+    logger.info(f"Saving raw to file: {raw_file_name} , Dir: {raw_dir}")
+    logger.info(f"Saving labelto file: {lablel_file_name}, Dir: {label_dir}")
+
+    save_tif(raw, raw_dir.as_posix(), [raw_file_name])
+    save_tif(labels, label_dir.as_posix(), [lablel_file_name])
 
 def generate_augmentation_jobs(num_axis=2, num_rotations=2) -> list[dict]:
     """
@@ -107,6 +112,19 @@ def apply_augmentation_set(image:np.ndarray, augmentation:dict):
     image = axis_rotation(image, augmentation['a'], augmentation['k'])
     return image
 
+def _drain_completed(futures: set, *, wait_for_all: bool = False) -> set:
+    """Wait for completed futures, raise on errors, return remaining futures."""
+    if not futures:
+        return futures
+    if wait_for_all:
+        done, futures = wait(futures)
+    else:
+        done, futures = wait(futures, return_when=FIRST_COMPLETED)
+    for f in done:
+        f.result()
+    return futures
+
+
 def convert_split(input_dir: Path, output_dir: Path, args:argparse.Namespace) -> None:
     raw_dir = output_dir / "raw"
     label_dir = output_dir / "label"
@@ -117,51 +135,66 @@ def convert_split(input_dir: Path, output_dir: Path, args:argparse.Namespace) ->
 
     if args.max_num_samples: input_paths = input_paths[0:int(args.max_num_samples)]
 
-    aug_jobs = generate_augmentation_jobs()
+    aug_jobs = generate_augmentation_jobs() if args.augment else []
     logger.info(f"Number of augmentation jobs: {len(aug_jobs)}")
     logger.debug(aug_jobs)
+    logger.info(f"Save workers: {args.workers}")
 
-    for index, in_path in enumerate(input_paths):
-        if (raw_dir / in_path.name.replace('.zarr', '.tif')).exists() and not args.clean:
-            logger.info(f"This path already exists, skipping: '{raw_dir / in_path.name}'")
-            continue
+    def process_samples(ex: ThreadPoolExecutor | None = None) -> None:
+        futures: set = set()
 
-        in_path = Path(in_path)
+        for index, in_path in enumerate(input_paths):
+            if (raw_dir / in_path.name.replace('.zarr', '.tif')).exists() and not args.clean:
+                logger.info(f"This path already exists, skipping: '{raw_dir / in_path.name}'")
+                continue
 
-        logger.info(f"Processing Sample [{index + 1} / {len(input_paths)}]: {in_path.name}")
+            in_path = Path(in_path)
 
-        raw = np.array(zarr.open(
-            in_path.__str__(), 
-            mode="r", 
-            path="volumes/raw"
-        ))
+            logger.info(f"/// Processing Sample [{index + 1} / {len(input_paths)}]: {in_path.name} ///")
 
-        labels = np.array(zarr.open(
-            in_path.__str__(), 
-            mode="r", 
-            path="volumes/gt_instances"
-        ))
+            raw = np.array(zarr.open(
+                in_path.__str__(),
+                mode="r",
+                path="volumes/raw"
+            ))
 
-        labels_merged = merge_instance_masks(labels)
+            labels = np.array(zarr.open(
+                in_path.__str__(),
+                mode="r",
+                path="volumes/gt_instances"
+            ))
 
-        if args.augment:
-            for a in aug_jobs:
-                raw_aug = apply_augmentation_set(raw, a)
-                labels_aug = axis_rotation(
-                    labels_merged[np.newaxis, ...], a['a'], a['k']
-                )[0]
+            labels_merged = merge_instance_masks(labels)
+
+            if args.augment:
+                assert ex is not None
+                for a in aug_jobs:
+                    raw_aug = apply_augmentation_set(raw, a)
+                    labels_aug = axis_rotation(
+                        labels_merged[np.newaxis, ...], a['a'], a['k']
+                    )[0]
+                    futures.add(ex.submit(
+                        save_and_log_data,
+                        raw_aug, raw_dir,
+                        labels_aug, label_dir,
+                        in_path, a['aug_id'],
+                    ))
+                    if len(futures) >= args.workers:
+                        futures = _drain_completed(futures)
+            else:
                 save_and_log_data(
-                    raw_aug, raw_dir,
-                    labels_aug, label_dir,
-                    in_path, a['aug_id']
+                    raw, raw_dir,
+                    labels_merged, label_dir,
+                    in_path, ''
                 )
-        else:
-            save_and_log_data(
-                raw, raw_dir,
-                labels_merged, label_dir,
-                in_path, ''
-            )
 
+        _drain_completed(futures, wait_for_all=True)
+
+    if args.augment:
+        with ThreadPoolExecutor(max_workers=args.workers) as ex:
+            process_samples(ex)
+    else:
+        process_samples()
 
 def get_args():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -212,6 +245,13 @@ def get_args():
         "--verbose-level",
         default='debug',
         help="verbose logging level"
+    )
+    parser.add_argument(
+        "-w",
+        "--workers",
+        type=int,
+        default=4,
+        help="Number of threads for parallel TIFF saves (default: 4). Use 1 for serial.",
     )
 
     return parser.parse_args()
