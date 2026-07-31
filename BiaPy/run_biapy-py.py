@@ -1,3 +1,4 @@
+import shutil
 import logging
 import argparse
 from pathlib import Path
@@ -82,7 +83,17 @@ def main():
             name=args.job_name, 
             run_id=args.run_id, 
         )
-        create_instance_channels(biapy.cfg)
+
+        # after BiaPy(...) so check_configuration has set the paths
+        for tag in ("TRAIN", "VAL"):  # add "TEST" if you preprocess that too
+            channel_dir = Path(getattr(biapy.cfg.DATA, tag).INSTANCE_CHANNELS_MASK_DIR)
+            if channel_dir.is_dir():
+                print(f"Removing existing channel dir: {channel_dir}")
+                shutil.rmtree(channel_dir)
+            # Create required BiaPy instance channel formats
+            create_instance_channels(biapy.cfg, data_type=tag.lower())
+    else:
+        raise ValueError(f"A valid mode was not give: {args.mode}")
 
     # if args.mode == 'train':
     #     biapy.cfg['TRAIN']['ENABLE'] = True
