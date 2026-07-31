@@ -1,7 +1,8 @@
 # BiaPy version: 3.6.8
 
 SYSTEM:
-    NUM_CPUS: -1
+    NUM_CPUS: 6
+    NUM_WORKERS: 6
 
 PROBLEM:
     TYPE: INSTANCE_SEG
@@ -27,12 +28,12 @@ PROBLEM:
 DATA: 
     PATCH_SIZE: (20, 128, 128, 3)
     TRAIN:
-        PATH: fisbe/biapy-py_channel-rot/train/raw
-        GT_PATH: fisbe/biapy-py_channel-rot/train/label
+        PATH: fisbe/biapy-data_channel-rot/train/raw
+        GT_PATH: fisbe/biapy-data_channel-rot/train/label
         IN_MEMORY: True
     VAL:
-        PATH: fisbe/biapy-py_channel-rot/val/raw
-        GT_PATH: fisbe/biapy-py_channel-rot/val/label
+        PATH: fisbe/biapy-data_channel-rot/val/raw
+        GT_PATH: fisbe/biapy-data_channel-rot/val/label
     TEST:
         PATH: fisbe/biapy-py_data/test/raw
         GT_PATH: fisbe/biapy-py_data/test/label
