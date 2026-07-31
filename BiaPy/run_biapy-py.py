@@ -4,6 +4,8 @@ from pathlib import Path
 from biapy import BiaPy
 # NOTE: build_config Does Not Exist !?
 # from biapy import build_config
+from biapy.config.config import update_dependencies
+from biapy.data.pre_processing import create_instance_channels
 
 # logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)
@@ -42,7 +44,7 @@ def get_args():
         '-m',
         '--mode',
         default='train',
-        help='Control config state, train or testing'
+        help='Control config state, train or testing or preprocessing'
     )
     parser.add_argument(
         '--job-name',
@@ -63,32 +65,47 @@ def main():
     #     filename=f"logging_{args.config_file}.txt",
     #     level=logging.WARNING,
     # )
+    if args.mode in ['test', 'train']:
+        biapy = BiaPy(
+            config=CONFIG_DIR / args.config_file, 
+            result_dir=RESULT_DIR.as_posix(), 
+            name=args.job_name, 
+            run_id=args.run_id, 
+            gpu='0'
+        )
+        biapy.cfg
+        biapy.run_job()
+    elif args.mode in ['preprocessing']:
+        biapy = BiaPy(
+            config=CONFIG_DIR / args.config_file, 
+            result_dir=RESULT_DIR.as_posix(), 
+            name=args.job_name, 
+            run_id=args.run_id, 
+        )
+        create_instance_channels(biapy.cfg)
 
-    biapy = BiaPy(
-        config=CONFIG_DIR / args.config_file, 
-        result_dir=RESULT_DIR, 
-        name=args.job_name, 
-        run_id=args.run_id, 
-        gpu='0'
-    )
-    biapy.cfg
+    # if args.mode == 'train':
+    #     biapy.cfg['TRAIN']['ENABLE'] = True
+    #     biapy.cfg['MODEL']['LOAD_CHECKPOINT'] = False
+    #     biapy.cfg['TEST']['ENABLE'] = False
 
-    if args.mode == 'train':
-        biapy.cfg['TRAIN']['ENABLE'] = True
-        biapy.cfg['MODEL']['LOAD_CHECKPOINT'] = False
+    # elif args.mode == 'test':
+    #     biapy.cfg['TRAIN']['ENABLE'] = False
+    #     biapy.cfg['MODEL']['LOAD_CHECKPOINT'] = True
+    #     biapy.cfg['TEST']['ENABLE'] = True
 
-    elif args.mode == 'test':
-        biapy.cfg['TEST']['ENABLE'] = True
-        biapy.cfg['MODEL']['LOAD_CHECKPOINT'] = True
+    # else:
+    #     # logger.error("argument mode is neither 'train' nor 'test' !")
+    #     raise ValueError("argument mode is neither 'train' nor 'test' !")
 
-    else:
-        # logger.error("argument mode is neither 'train' nor 'test' !")
-        raise ValueError("argument mode is neither 'train' nor 'test' !")
+    # NOTE: update_dependencies like this seems not intended. 
+    # However, at current biapy version, we need to update config. setting cfg['option'] here is too late.
+    # TODO: Update implementation here for proper api implementation (build_config()).
+    # update_dependencies(biapy.cfg)
 
     # biapy.print_config()       # the full resolved configuration
     # biapy.print_train_info()   # training overview: model, patch, epochs, LR, optimizer, augmentations, files
     # biapy.print_test_info()
-    biapy.run_job()
 
 if __name__ == "__main__":
     main()

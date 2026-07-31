@@ -12,21 +12,27 @@
 set -e
 module purge
 # >>>> Set Job Config >>>>
-# Usage: sbatch sbatch/biapy/biapy-py_sbatch.sh [config.yaml] [train|test]
-# Or use biapy-py_sbatch_chain.sh to submit train/test with dependencies.
+# Usage: sbatch sbatch/biapy/biapy-py_sbatch.sh [config.yaml] [train|test] [job_name] [run_id]
+# Or use biapy-py_sbatch_chain.sh (-j/-r) to submit train/test with dependencies.
 # Nested configs: biapy-py_v3/biapy-py_v3-train.yaml (job-name = biapy-py_v3).
+# Empty job_name ($3) derives from config path; run_id ($4) defaults to 0.
 config_file="${1:-biapy-py_v3/biapy-py_v3-train.yaml}"
 mode="${2:-train}"
+job_name_arg="${3:-}"
+run_id="${4:-0}"
 # <<<< Set Job Config <<<<
 
-# BiaPy --job-name: use stem directory for nested paths so train/test share checkpoints.
-if [[ "$config_file" == */* ]]; then
+# BiaPy --job-name: override if provided; else use stem directory for nested paths
+# so train/test share checkpoints.
+if [[ -n "$job_name_arg" ]]; then
+  job_name="$job_name_arg"
+elif [[ "$config_file" == */* ]]; then
   job_name="${config_file%/*}"
   job_name="${job_name##*/}"
 else
   job_name="${config_file%.*}"
 fi
-echo "SBATCH Run: ${config_file}, mode: ${mode}, job-name: ${job_name}"
+echo "SBATCH Run: ${config_file}, mode: ${mode}, job-name: ${job_name}, run-id: ${run_id}"
 
 # >>>> GPU Tracking >>>>
 GPU_LOGGER_PID=
@@ -52,4 +58,4 @@ singularity exec --nv \
         -c \"${config_file}\" \
         -m \"${mode}\" \
         --job-name \"${job_name}\" \
-        --run-id 0 "
+        --run-id \"${run_id}\" "
