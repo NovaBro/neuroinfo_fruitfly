@@ -1,7 +1,8 @@
 # BiaPy version: 3.6.8
 
 SYSTEM:
-    NUM_CPUS: -1
+    NUM_CPUS: 6
+    NUM_WORKERS: 6
 
 PROBLEM:
     TYPE: INSTANCE_SEG
@@ -33,6 +34,7 @@ DATA:
     VAL:
         PATH: fisbe/biapy-data_channel-rot/val/raw
         GT_PATH: fisbe/biapy-data_channel-rot/val/label
+        FROM_TRAIN: False
     TEST:
         PATH: fisbe/biapy-py_data/test/raw
         GT_PATH: fisbe/biapy-py_data/test/label

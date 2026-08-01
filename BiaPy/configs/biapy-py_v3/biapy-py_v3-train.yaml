@@ -34,6 +34,7 @@ DATA:
     VAL:
         PATH: fisbe/biapy-data_channel-rot/val/raw
         GT_PATH: fisbe/biapy-data_channel-rot/val/label
+        FROM_TRAIN: False
     TEST:
         PATH: fisbe/biapy-py_data/test/raw
         GT_PATH: fisbe/biapy-py_data/test/label
