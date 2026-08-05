@@ -3,13 +3,6 @@ import logging
 import argparse
 from pathlib import Path
 from biapy import BiaPy
-# NOTE: build_config Does Not Exist !?
-# from biapy import build_config
-from biapy.config.config import update_dependencies
-from biapy.data.pre_processing import create_instance_channels
-
-# logger = logging.getLogger(__name__)
-# logger.setLevel(logging.DEBUG)
 
 CONFIG_DIR = Path("BiaPy/configs")
 RESULT_DIR = Path('metrics/biapy')
@@ -21,13 +14,6 @@ def _patched_load(*args, **kwargs):
     kwargs["weights_only"] = False
     return _original_load(*args, **kwargs)
 torch.load = _patched_load
-
-
-# config_path = "/path/to/config.yaml"   # Path to your YAML configuration file
-# result_dir = "/path/to/results"        # Directory to store the results
-# job_name = "my_biapy_job"              # Name of the job
-# run_id = 1                             # Run ID for logging/versioning
-# gpu = "0"                              # GPU to use (as string, e.g., "0")
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -41,6 +27,7 @@ def get_args():
         default=RESULT_DIR,
         help=f'dir to store the results in {RESULT_DIR}'
     )
+
     parser.add_argument(
         '-m',
         '--mode',
@@ -62,61 +49,57 @@ def get_args():
 def main():
     args = get_args()
 
-    # logging.basicConfig(
-    #     filename=f"logging_{args.config_file}.txt",
-    #     level=logging.WARNING,
-    # )
-    if args.mode in ['test', 'train']:
-        biapy = BiaPy(
-            config=CONFIG_DIR / args.config_file, 
-            result_dir=RESULT_DIR.as_posix(), 
-            name=args.job_name, 
-            run_id=args.run_id, 
-            gpu='0'
-        )
-        biapy.cfg
-        biapy.run_job()
-    elif args.mode in ['preprocessing']:
-        biapy = BiaPy(
-            config=CONFIG_DIR / args.config_file, 
-            result_dir=RESULT_DIR.as_posix(), 
-            name=args.job_name, 
-            run_id=args.run_id, 
-        )
+    # BiaPy 3.7.0 only accepts str/dict/CfgNode, not Path.
+    config_path = (CONFIG_DIR / args.config_file).as_posix()
 
-        # after BiaPy(...) so check_configuration has set the paths
-        for tag in ("TRAIN", "VAL"):  # add "TEST" if you preprocess that too
-            channel_dir = Path(getattr(biapy.cfg.DATA, tag).INSTANCE_CHANNELS_MASK_DIR)
-            if channel_dir.is_dir():
-                print(f"Removing existing channel dir: {channel_dir}")
-                shutil.rmtree(channel_dir)
-            # Create required BiaPy instance channel formats
-            create_instance_channels(biapy.cfg, data_type=tag.lower())
-    else:
-        raise ValueError(f"A valid mode was not give: {args.mode}")
+    match args.mode:
+        case 'preprocessing':
+            biapy = BiaPy(
+                config=config_path, 
+                result_dir=RESULT_DIR.as_posix(), 
+                name=args.job_name, 
+                run_id=args.run_id, 
+                verbose=True
+            )
 
-    # if args.mode == 'train':
-    #     biapy.cfg['TRAIN']['ENABLE'] = True
-    #     biapy.cfg['MODEL']['LOAD_CHECKPOINT'] = False
-    #     biapy.cfg['TEST']['ENABLE'] = False
+        case 'train':
+            biapy = BiaPy(
+                config=config_path, 
+                result_dir=RESULT_DIR.as_posix(), 
+                name=args.job_name, 
+                run_id=args.run_id, 
+                gpu='0', 
+                verbose=True
+            )
+            
 
-    # elif args.mode == 'test':
-    #     biapy.cfg['TRAIN']['ENABLE'] = False
-    #     biapy.cfg['MODEL']['LOAD_CHECKPOINT'] = True
-    #     biapy.cfg['TEST']['ENABLE'] = True
+            biapy.update_config(
+                {
+                    'TRAIN.ENABLE':True,
+                    'TEST.ENABLE':False,
+                    'MODEL.LOAD_CHECKPOINT':False
+                }
+            )
+            biapy.train()
 
-    # else:
-    #     # logger.error("argument mode is neither 'train' nor 'test' !")
-    #     raise ValueError("argument mode is neither 'train' nor 'test' !")
+        case 'test':
+            biapy = BiaPy(
+                config=config_path, 
+                result_dir=RESULT_DIR.as_posix(), 
+                name=args.job_name, 
+                run_id=args.run_id, 
+                gpu='0', 
+                verbose=True
+            )
+            biapy.update_config(
+                {
+                    'TRAIN.ENABLE':False,
+                    'TEST.ENABLE':True,
+                    'MODEL.LOAD_CHECKPOINT':True
+                }
+            )
+            biapy.test()
 
-    # NOTE: update_dependencies like this seems not intended. 
-    # However, at current biapy version, we need to update config. setting cfg['option'] here is too late.
-    # TODO: Update implementation here for proper api implementation (build_config()).
-    # update_dependencies(biapy.cfg)
-
-    # biapy.print_config()       # the full resolved configuration
-    # biapy.print_train_info()   # training overview: model, patch, epochs, LR, optimizer, augmentations, files
-    # biapy.print_test_info()
 
 if __name__ == "__main__":
     main()

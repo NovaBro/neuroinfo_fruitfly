@@ -16,6 +16,8 @@ import sys
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from itertools import permutations
 from pathlib import Path
+import random
+from typing import Dict
 
 import numpy as np
 import zarr
@@ -52,9 +54,14 @@ def save_and_log_data(
     in_path:Path, aug_id:str
 ):
     # raw: (C, Z, Y, X) --> (1, Z, Y, X, C); labels: already merged (Z, Y, X) --> (1, Z, Y, X, 1)
-    raw = np.transpose(raw, (1, 2, 3, 0))
-    raw = raw[np.newaxis, ...]
-    labels = labels[np.newaxis, ..., np.newaxis]
+    # raw = np.transpose(raw, (1, 2, 3, 0))
+    # raw = raw[np.newaxis, ...]
+    # labels = labels[np.newaxis, ..., np.newaxis]
+
+    # ImageJ Tiffle Format: TZCYX
+        # raw: (C, Z, Y, X) --> (Z, C, Y, X); 
+        # labels: already merged (Z, Y, X)
+    raw = np.transpose(raw, (1, 0, 2, 3))
 
     logger.debug(
         f"\tSaving - raw.shape: {raw.shape}"
@@ -73,10 +80,19 @@ def save_and_log_data(
     logger.info(f"Saving raw to file: {raw_file_name} , Dir: {raw_dir}")
     logger.info(f"Saving labelto file: {lablel_file_name}, Dir: {label_dir}")
 
-    save_tif(raw, raw_dir.as_posix(), [raw_file_name])
-    save_tif(labels, label_dir.as_posix(), [lablel_file_name])
+    # save_tif(raw, raw_dir.as_posix(), [raw_file_name])
+    # save_tif(labels, label_dir.as_posix(), [lablel_file_name])
 
-def generate_augmentation_jobs(num_axis=2, num_rotations=2) -> list[dict]:
+    tifffile.imwrite(
+        (raw_dir / f"{raw_file_name}.tif").as_posix(), raw, 
+        imagej=True, metadata={"axes": "ZCYX"}
+    )
+    tifffile.imwrite(
+        (label_dir / f"{lablel_file_name}.tif").as_posix(), labels, 
+        imagej=True, metadata={"axes": "ZYX"}
+    )
+
+def generate_augmentation_jobs(num_channel_flips=2, num_axis=2, num_rotations=2) -> list[dict]:
     """
     Generate jobs for augmentation.
     c - channel flip order
@@ -85,7 +101,10 @@ def generate_augmentation_jobs(num_axis=2, num_rotations=2) -> list[dict]:
     """
     jobs = []
 
-    random_order = permutations([0, 1, 2], 3) # Get all permutations
+    all_orders = list(permutations([0, 1, 2], 3))
+    idx = np.random.choice(len(all_orders), size=num_channel_flips, replace=False)
+    random_order = [all_orders[i] for i in idx]
+
     for ro in random_order:
         # Channel Flipping
         augid = '_c' + ''.join([str(x) for x in ro])
