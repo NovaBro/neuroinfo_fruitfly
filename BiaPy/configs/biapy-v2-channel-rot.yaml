@@ -10,8 +10,8 @@ PROBLEM:
     INSTANCE_SEG:
         DATA_CHANNELS: ['F', 'C', 'Db', 'Dn']
         WATERSHED:
-            SEED_CHANNELS: ['F', 'Db']
-            SEED_CHANNELS_THRESH: ['auto', 'auto']
+            SEED_CHANNELS: ['F', 'Db', 'C', 'Dn']
+            SEED_CHANNELS_THRESH: ['auto', 'auto', 'auto', 'auto']
             TOPOGRAPHIC_SURFACE_CHANNEL: 'Db'
             GROWTH_MASK_CHANNELS: ['F']
             GROWTH_MASK_CHANNELS_THRESH: ['auto']
@@ -28,14 +28,16 @@ PROBLEM:
 DATA: 
     PATCH_SIZE: (20, 128, 128, 3)
     TRAIN:
-        PATH: fisbe/biapy-py_data/train/raw
-        GT_PATH: fisbe/biapy-py_data/train/label
+        PATH: fisbe/biapy-channel-rot/train/raw
+        GT_PATH: fisbe/biapy-channel-rot/train/label
         IN_MEMORY: True
     VAL:
-        SPLIT_TRAIN: 0.1
+        PATH: fisbe/biapy-channel-rot/val/raw
+        GT_PATH: fisbe/biapy-channel-rot/val/label
+        FROM_TRAIN: False
     TEST:
-        PATH: fisbe/biapy-py_data/test/raw
-        GT_PATH: fisbe/biapy-py_data/test/label
+        PATH: fisbe/biapy-no-aug/test/raw
+        GT_PATH: fisbe/biapy-no-aug/test/label
         IN_MEMORY: True
         LOAD_GT: True
         PADDING: (4,16,16)
@@ -72,4 +74,4 @@ TEST:
         INSTANCE_REFINEMENT:
             ENABLE: True
             OPERATIONS: ['remove_small_objects']
-            VALUES: [500]   # voxel count threshold — tune based on your smallest real neuron
+            VALUES: [250]   # voxel count threshold — tune based on your smallest real neuron

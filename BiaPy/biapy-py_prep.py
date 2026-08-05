@@ -154,15 +154,16 @@ def convert_split(input_dir: Path, output_dir: Path, args:argparse.Namespace) ->
 
     if args.max_num_samples: input_paths = input_paths[0:int(args.max_num_samples)]
 
-    aug_jobs = generate_augmentation_jobs() if args.augment else []
-    logger.info(f"Number of augmentation jobs: {len(aug_jobs)}")
-    logger.debug(aug_jobs)
     logger.info(f"Save workers: {args.workers}")
 
     def process_samples(ex: ThreadPoolExecutor | None = None) -> None:
         futures: set = set()
 
         for index, in_path in enumerate(input_paths):
+            aug_jobs = generate_augmentation_jobs() if args.augment else []
+            logger.info(f"Number of augmentation jobs: {len(aug_jobs)}")
+            logger.debug(aug_jobs)
+
             if (raw_dir / in_path.name.replace('.zarr', '.tif')).exists() and not args.clean:
                 logger.info(f"This path already exists, skipping: '{raw_dir / in_path.name}'")
                 continue
@@ -188,6 +189,14 @@ def convert_split(input_dir: Path, output_dir: Path, args:argparse.Namespace) ->
             if args.augment:
                 assert ex is not None
                 for a in aug_jobs:
+                    # NOTE: If want to check for already generated augmented data
+                    # aug_id = a["aug_id"]
+                    # raw_out = raw_dir / f"{in_path.stem}{aug_id}.tif"
+                    # label_out = label_dir / f"{in_path.stem}{aug_id}.tif"
+                    # if not args.clean and raw_out.exists() and label_out.exists():
+                    #     logger.info(f"Skipping existing augmented output: {raw_out}")
+                    #     continue
+
                     raw_aug = apply_augmentation_set(raw, a)
                     labels_aug = axis_rotation(
                         labels_merged[np.newaxis, ...], a['a'], a['k']

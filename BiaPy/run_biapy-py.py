@@ -6,6 +6,7 @@ import argparse
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+import yaml
 from tqdm import tqdm
 from biapy import BiaPy
 
@@ -137,6 +138,13 @@ def main():
             )
 
         case 'train':
+            # Snapshot YAML paths before BiaPy() — prepare_instance_data may
+            # rewrite DATA.TRAIN.GT_PATH to a multi-channel label_F... dir.
+            with open(config_path) as f:
+                yaml_cfg = yaml.safe_load(f)
+            train_raw = yaml_cfg['DATA']['TRAIN']['PATH']
+            train_gt = yaml_cfg['DATA']['TRAIN']['GT_PATH']
+
             biapy = BiaPy(
                 config=config_path, 
                 result_dir=RESULT_DIR.as_posix(), 
@@ -146,10 +154,16 @@ def main():
                 verbose=True
             )
 
-            pairs = list_train_pairs(
-                biapy.cfg.DATA.TRAIN.PATH,
-                biapy.cfg.DATA.TRAIN.GT_PATH,
+            print(
+                f'Staging train pairs from YAML PATH={train_raw} '
+                f'GT_PATH={train_gt}'
             )
+            print(
+                f'(after init) cfg DATA.TRAIN.GT_PATH='
+                f'{biapy.cfg.DATA.TRAIN.GT_PATH}'
+            )
+
+            pairs = list_train_pairs(train_raw, train_gt)
             partitions = partition_pairs(pairs, size=TRAIN_PARTITION_SIZE)
             print(
                 f'Train partitions: {len(partitions)} chunk(s) from '

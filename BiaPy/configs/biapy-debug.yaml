@@ -33,7 +33,8 @@ DATA:
         GT_PATH: fisbe/biapy-debug/train/label
         IN_MEMORY: True
     VAL:
-        SPLIT_TRAIN: 0.1
+        PATH: fisbe/biapy-debug/val/raw
+        GT_PATH: fisbe/biapy-debug/val/label
     TEST:
         PATH: fisbe/biapy-debug/test/raw
         GT_PATH: fisbe/biapy-debug/test/label
