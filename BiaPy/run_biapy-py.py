@@ -138,12 +138,11 @@ def main():
             )
 
         case 'train':
-            # Snapshot YAML paths before BiaPy() — prepare_instance_data may
-            # rewrite DATA.TRAIN.GT_PATH to a multi-channel label_F... dir.
+            # YAML GT_PATH is the raw instance-ID dir; BiaPy may rewrite it to a
+            # multi-channel label_F... dir during prepare_instance_data.
             with open(config_path) as f:
                 yaml_cfg = yaml.safe_load(f)
-            train_raw = yaml_cfg['DATA']['TRAIN']['PATH']
-            train_gt = yaml_cfg['DATA']['TRAIN']['GT_PATH']
+            yaml_train_gt = yaml_cfg['DATA']['TRAIN']['GT_PATH']
 
             biapy = BiaPy(
                 config=config_path, 
@@ -154,13 +153,26 @@ def main():
                 verbose=True
             )
 
-            print(
-                f'Staging train pairs from YAML PATH={train_raw} '
-                f'GT_PATH={train_gt}'
+            # Stage from post-init paths so multi-channel masks are used.
+            train_raw = biapy.cfg.DATA.TRAIN.PATH
+            train_gt = biapy.cfg.DATA.TRAIN.GT_PATH
+            data_channels = list(
+                biapy.cfg.PROBLEM.INSTANCE_SEG.DATA_CHANNELS or []
             )
+            if (
+                len(data_channels) > 1
+                and Path(train_gt).resolve() == Path(yaml_train_gt).resolve()
+            ):
+                raise RuntimeError(
+                    f'Expected BiaPy to rewrite DATA.TRAIN.GT_PATH to a '
+                    f'multi-channel label_F... dir for channels '
+                    f'{data_channels}, but it is still {train_gt!r}. '
+                    f'Run preprocessing first so the derived GT exists.'
+                )
+
             print(
-                f'(after init) cfg DATA.TRAIN.GT_PATH='
-                f'{biapy.cfg.DATA.TRAIN.GT_PATH}'
+                f'Staging train pairs from PATH={train_raw} '
+                f'GT_PATH={train_gt}'
             )
 
             pairs = list_train_pairs(train_raw, train_gt)
