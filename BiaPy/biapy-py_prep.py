@@ -32,6 +32,59 @@ from imaging_helpers_hpc.processing import axis_rotation, channel_flip
 
 logger = logging.getLogger()
 
+NUM_CHANNELS = 3
+
+
+def _dtype_max(dtype) -> float:
+    info = np.iinfo(dtype) if np.issubdtype(dtype, np.integer) else np.finfo(dtype)
+    return float(info.max)
+
+
+def _scale_clip_cast(raw_f32: np.ndarray, dtype) -> np.ndarray:
+    """Clip float32 intensities to ``dtype`` range and cast back."""
+    return np.clip(raw_f32, 0, _dtype_max(dtype)).astype(dtype, copy=False)
+
+
+def per_channel_multiplicative_scale(
+    raw: np.ndarray, scales: np.ndarray
+) -> np.ndarray:
+    """Multiply each channel of ``raw`` (C,Z,Y,X) by ``scales`` (C,)."""
+    scales = np.asarray(scales, dtype=np.float32)
+    if scales.shape != (raw.shape[0],):
+        raise ValueError(
+            f"channel scales shape {scales.shape} != ({raw.shape[0]},)"
+        )
+    out = raw.astype(np.float32, copy=False) * scales.reshape(-1, 1, 1, 1)
+    return _scale_clip_cast(out, raw.dtype)
+
+
+def per_instance_intensity_scale(
+    raw: np.ndarray,
+    instances: np.ndarray,
+    scales: np.ndarray,
+) -> np.ndarray:
+    """Scale raw voxels per instance mask; overlaps accumulate as a product.
+
+    Parameters
+    ----------
+    raw : (C, Z, Y, X)
+    instances : (I, Z, Y, X)
+    scales : (I,)
+    """
+    scales = np.asarray(scales, dtype=np.float32)
+    if scales.shape != (instances.shape[0],):
+        raise ValueError(
+            f"instance scales shape {scales.shape} != ({instances.shape[0]},)"
+        )
+    out = raw.astype(np.float32, copy=True)
+    for i, mask in enumerate(instances):
+        fg = mask > 0
+        if not np.any(fg):
+            continue
+        out[:, fg] *= scales[i]
+    return _scale_clip_cast(out, raw.dtype)
+
+
 def merge_instance_masks(stacked: np.ndarray) -> np.ndarray:
     """Merge per-instance binary masks (I, Z, Y, X) into one label volume (Z, Y, X). I is number of instances, not number of samples"""
     logger.debug("merge_instance_masks")
@@ -92,12 +145,27 @@ def save_and_log_data(
         imagej=True, metadata={"axes": "ZYX"}
     )
 
-def generate_augmentation_jobs(num_channel_flips=2, num_axis=2, num_rotations=2) -> list[dict]:
+def _sample_uniform(lo: float, hi: float, size: int) -> np.ndarray:
+    return np.random.uniform(lo, hi, size=size).astype(np.float32)
+
+
+def generate_augmentation_jobs(
+    num_channel_flips=1,
+    num_axis=1,
+    num_rotations=1,
+    *,
+    num_instances: int = 0,
+    channel_scale_range: tuple[float, float] | None = (0.25, 1.5),
+    instance_scale_range: tuple[float, float] | None = (0.25, 1.5),
+    enable_channel_scale: bool = True,
+    enable_instance_scale: bool = True,
+) -> list[dict]:
     """
     Generate jobs for augmentation.
     c - channel flip order
     a - rotation axis selection
     k - rotate number of 90 degrees
+    One intensity draw (channel / instance scales) per geometry job.
     """
     jobs = []
 
@@ -115,18 +183,50 @@ def generate_augmentation_jobs(num_channel_flips=2, num_axis=2, num_rotations=2)
         for a in rand_axis_idx:
             for k in rand_k_rotations:
                 aug_id = augid + f"_r{a}" + f"_k{k}"
-                jobs.append(
-                    {
-                        'aug_id': aug_id,
-                        'c' : ro,
-                        'a' : a,
-                        'k' : k
-                    }
-                )
+                job: dict = {
+                    'aug_id': aug_id,
+                    'c': ro,
+                    'a': a,
+                    'k': k,
+                }
+
+                if enable_channel_scale and channel_scale_range is not None:
+                    lo, hi = channel_scale_range
+                    channel_scales = _sample_uniform(lo, hi, NUM_CHANNELS)
+                    job['channel_scales'] = channel_scales
+                    job['aug_id'] += '_cs' + '_'.join(f'{s:.2f}' for s in channel_scales)
+
+                if (
+                    enable_instance_scale
+                    and instance_scale_range is not None
+                    and num_instances > 0
+                ):
+                    lo, hi = instance_scale_range
+                    job['instance_scales'] = _sample_uniform(lo, hi, num_instances)
+                    job['aug_id'] += '_is'
+
+                jobs.append(job)
 
     return jobs
 
-def apply_augmentation_set(image:np.ndarray, augmentation:dict):
+
+def apply_augmentation_set(
+    raw: np.ndarray,
+    augmentation: dict,
+    instances: np.ndarray | None = None,
+) -> np.ndarray:
+    """Apply intensity then geometry augs to raw (C,Z,Y,X). Labels are not modified."""
+    image = raw
+    if 'instance_scales' in augmentation:
+        if instances is None:
+            raise ValueError("instance_scales present but instances is None")
+        image = per_instance_intensity_scale(
+            image, instances, augmentation['instance_scales']
+        )
+    if 'channel_scales' in augmentation:
+        image = per_channel_multiplicative_scale(
+            image, augmentation['channel_scales']
+        )
     image = channel_flip(image, augmentation['c'])
     image = axis_rotation(image, augmentation['a'], augmentation['k'])
     return image
@@ -160,10 +260,6 @@ def convert_split(input_dir: Path, output_dir: Path, args:argparse.Namespace) ->
         futures: set = set()
 
         for index, in_path in enumerate(input_paths):
-            aug_jobs = generate_augmentation_jobs() if args.augment else []
-            logger.info(f"Number of augmentation jobs: {len(aug_jobs)}")
-            logger.debug(aug_jobs)
-
             if (raw_dir / in_path.name.replace('.zarr', '.tif')).exists() and not args.clean:
                 logger.info(f"This path already exists, skipping: '{raw_dir / in_path.name}'")
                 continue
@@ -188,6 +284,16 @@ def convert_split(input_dir: Path, output_dir: Path, args:argparse.Namespace) ->
 
             if args.augment:
                 assert ex is not None
+                aug_jobs = generate_augmentation_jobs(
+                    num_instances=labels.shape[0],
+                    channel_scale_range=tuple(args.channel_scale_range),
+                    instance_scale_range=tuple(args.instance_scale_range),
+                    enable_channel_scale=not args.no_channel_scale,
+                    enable_instance_scale=not args.no_instance_scale,
+                )
+                logger.info(f"Number of augmentation jobs: {len(aug_jobs)}")
+                logger.debug(aug_jobs)
+
                 for a in aug_jobs:
                     # NOTE: If want to check for already generated augmented data
                     # aug_id = a["aug_id"]
@@ -197,7 +303,7 @@ def convert_split(input_dir: Path, output_dir: Path, args:argparse.Namespace) ->
                     #     logger.info(f"Skipping existing augmented output: {raw_out}")
                     #     continue
 
-                    raw_aug = apply_augmentation_set(raw, a)
+                    raw_aug = apply_augmentation_set(raw, a, instances=labels)
                     labels_aug = axis_rotation(
                         labels_merged[np.newaxis, ...], a['a'], a['k']
                     )[0]
@@ -244,6 +350,32 @@ def get_args():
         action="store_true",
         help="Applies augmentation to data",
     )
+    parser.add_argument(
+        "--channel-scale-range",
+        nargs=2,
+        type=float,
+        default=[0.25, 1.5],
+        metavar=("LO", "HI"),
+        help="Per-channel multiplicative scale range (default: 0.25 1.5). Used with --augment.",
+    )
+    parser.add_argument(
+        "--instance-scale-range",
+        nargs=2,
+        type=float,
+        default=[0.25, 1.5],
+        metavar=("LO", "HI"),
+        help="Per-instance multiplicative scale range (default: 0.25 1.5). Used with --augment.",
+    )
+    parser.add_argument(
+        "--no-channel-scale",
+        action="store_true",
+        help="Disable per-channel intensity scaling when --augment is set.",
+    )
+    parser.add_argument(
+        "--no-instance-scale",
+        action="store_true",
+        help="Disable per-instance intensity scaling when --augment is set.",
+    )
 
     parser.add_argument(
         "-s",
@@ -284,9 +416,26 @@ def get_args():
 
     return parser.parse_args()
 
+def _validate_scale_range(name: str, lo: float, hi: float) -> None:
+    if not (0 < lo <= hi):
+        raise ValueError(f"{name} must satisfy 0 < lo <= hi, got ({lo}, {hi})")
+
+
 def main() -> None:
 
     args = get_args()
+
+    if args.augment:
+        _validate_scale_range(
+            "--channel-scale-range",
+            args.channel_scale_range[0],
+            args.channel_scale_range[1],
+        )
+        _validate_scale_range(
+            "--instance-scale-range",
+            args.instance_scale_range[0],
+            args.instance_scale_range[1],
+        )
 
     source_root = Path(args.input_dir).resolve()
     output_root = Path(args.output_dir).resolve()
