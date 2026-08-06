@@ -1,4 +1,5 @@
 import os
+import copy
 import random
 import shutil
 import tempfile
@@ -12,7 +13,7 @@ from biapy import BiaPy
 
 CONFIG_DIR = Path("BiaPy/configs")
 RESULT_DIR = Path('metrics/biapy')
-TRAIN_PARTITION_SIZE = 18
+TRAIN_PARTITION_SIZE = 6
 
 # Change to load weight safety!
 import torch
@@ -121,35 +122,76 @@ def stage_partition(pairs, dest_raw, dest_gt, workers):
     print(f'Finished staging {len(pairs)} pair(s) to {dest_raw.parent}')
 
 
+def load_base_config(config_path):
+    """Load YAML as a deep-copied dict (base values for mode overrides)."""
+    with open(config_path) as f:
+        return copy.deepcopy(yaml.safe_load(f))
+
+
+def apply_mode_overrides(cfg, mode):
+    """Overwrite ENABLE / LOAD_CHECKPOINT flags for the requested mode."""
+    cfg.setdefault('TRAIN', {})
+    cfg.setdefault('TEST', {})
+    cfg.setdefault('MODEL', {})
+
+    if mode == 'preprocessing':
+        # Init-only: leave TRAIN/TEST/MODEL flags as in the YAML base.
+        print(
+            f'Mode overrides (preprocessing): leaving YAML flags as-is '
+            f'(TRAIN.ENABLE={cfg["TRAIN"].get("ENABLE")}, '
+            f'TEST.ENABLE={cfg["TEST"].get("ENABLE")}, '
+            f'MODEL.LOAD_CHECKPOINT={cfg["MODEL"].get("LOAD_CHECKPOINT")})'
+        )
+        return cfg
+
+    if mode == 'train':
+        cfg['TRAIN']['ENABLE'] = True
+        cfg['TEST']['ENABLE'] = False
+        cfg['MODEL']['LOAD_CHECKPOINT'] = False
+    elif mode == 'test':
+        cfg['TRAIN']['ENABLE'] = False
+        cfg['TEST']['ENABLE'] = True
+        cfg['MODEL']['LOAD_CHECKPOINT'] = True
+    else:
+        raise ValueError(f'Unknown mode for overrides: {mode!r}')
+
+    print(
+        f'Mode overrides ({mode}): '
+        f'TRAIN.ENABLE={cfg["TRAIN"]["ENABLE"]}, '
+        f'TEST.ENABLE={cfg["TEST"]["ENABLE"]}, '
+        f'MODEL.LOAD_CHECKPOINT={cfg["MODEL"]["LOAD_CHECKPOINT"]}'
+    )
+    return cfg
+
+
 def main():
     args = get_args()
 
     # BiaPy 3.7.0 only accepts str/dict/CfgNode, not Path.
     config_path = (CONFIG_DIR / args.config_file).as_posix()
+    cfg = apply_mode_overrides(load_base_config(config_path), args.mode)
 
     match args.mode:
         case 'preprocessing':
             biapy = BiaPy(
-                config=config_path, 
-                result_dir=RESULT_DIR.as_posix(), 
-                name=args.job_name, 
-                run_id=args.run_id, 
+                config=cfg,
+                result_dir=RESULT_DIR.as_posix(),
+                name=args.job_name,
+                run_id=args.run_id,
                 verbose=True
             )
 
         case 'train':
             # YAML GT_PATH is the raw instance-ID dir; BiaPy may rewrite it to a
             # multi-channel label_F... dir during prepare_instance_data.
-            with open(config_path) as f:
-                yaml_cfg = yaml.safe_load(f)
-            yaml_train_gt = yaml_cfg['DATA']['TRAIN']['GT_PATH']
+            yaml_train_gt = cfg['DATA']['TRAIN']['GT_PATH']
 
             biapy = BiaPy(
-                config=config_path, 
-                result_dir=RESULT_DIR.as_posix(), 
-                name=args.job_name, 
-                run_id=args.run_id, 
-                gpu='0', 
+                config=cfg,
+                result_dir=RESULT_DIR.as_posix(),
+                name=args.job_name,
+                run_id=args.run_id,
+                gpu='0',
                 verbose=True
             )
 
@@ -219,21 +261,20 @@ def main():
 
         case 'test':
             biapy = BiaPy(
-                config=config_path, 
-                result_dir=RESULT_DIR.as_posix(), 
-                name=args.job_name, 
-                run_id=args.run_id, 
-                gpu='0', 
+                config=cfg,
+                result_dir=RESULT_DIR.as_posix(),
+                name=args.job_name,
+                run_id=args.run_id,
+                gpu='0',
                 verbose=True
             )
-            biapy.update_config(
-                {
-                    'TRAIN.ENABLE':False,
-                    'TEST.ENABLE':True,
-                    'MODEL.LOAD_CHECKPOINT':True
-                }
-            )
             biapy.test()
+
+        case _:
+            raise ValueError(
+                f'Unknown mode {args.mode!r}; '
+                f'expected preprocessing, train, or test'
+            )
 
 
 if __name__ == "__main__":
