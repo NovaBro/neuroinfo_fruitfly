@@ -1,25 +1,22 @@
 #!/bin/bash
-#SBATCH --job-name=biapy-debug-test
-#SBATCH --cpus-per-task=8
-#SBATCH --time=12:00:00
-#SBATCH --mem=512g
+# Resources (job-name, cpus, time, mem, GPU) are set by biapy-py_sbatch_chain.sh
+# or must be passed on the sbatch CLI for direct submits.
 
-#SBATCH --gres=gpu:1
-#SBATCH --constraint='h100|h200'
-# l40s a100
-
-#SBATCH --account=torch_pr_61_tandon_advanced
+#SBATCH --account=torch_pr_61_general
 #SBATCH --output=sbatch/biapy/%x-%j.out
 #SBATCH --error=sbatch/biapy/%x-%j.err
 
-# NOTE: For preprocessing deactivate gpu processes
-
 # >>>> Set Job Config >>>>
-# Usage: sbatch sbatch/biapy/biapy-py_sbatch.sh [config.yaml] [train|test|preprocessing] [job_name] [run_id]
-# Or use biapy-py_sbatch_chain.sh (-j/-r) to submit train/test with dependencies.
-# Nested configs: biapy-py_v3/biapy-py_v3-train.yaml (job-name = biapy-py_v3).
-# Empty job_name ($3) derives from config path; run_id ($4) defaults to 0.
-config_file="${1:-biapy-py_v3/biapy-py_v3-train.yaml}"
+# Usage:
+#   Prefer: ./sbatch/biapy/biapy-py_sbatch_chain.sh … (sets resources per mode)
+#   Direct: sbatch --job-name=… --cpus-per-task=… --time=… --mem=… \
+#             [--gres=gpu:1 --constraint='h100|h200'] \
+#             sbatch/biapy/biapy-py_sbatch.sh \
+#             [config.yaml] [train|test|preprocessing] [job_name] [run_id]
+# Direct submits MUST pass job-name/cpus/time/mem; train/test also need GPU flags.
+# Flat config e.g. biapy-v1-channel-rot.yaml; empty job_name ($3) derives from config path;
+# run_id ($4) defaults to 0.
+config_file="${1:-biapy-v1-channel-rot.yaml}"
 mode="${2:-train}"
 job_name_arg="${3:-}"
 run_id="${4:-0}"
@@ -40,7 +37,7 @@ else
 fi
 echo "SBATCH Run: ${config_file}, mode: ${mode}, job-name: ${job_name}, run-id: ${run_id}"
 
-# >>>> GPU Tracking >>>>
+# >>>> GPU Tracking (train/test only) >>>>
 GPU_LOGGER_PID=
 cleanup() {
   if [[ -n "$GPU_LOGGER_PID" ]]; then
@@ -49,14 +46,19 @@ cleanup() {
   fi
 }
 trap cleanup EXIT
-nohup nvidia-smi --query-gpu=timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total --format=csv -l 3 > "gpu_biapy-py_${job_name}_${mode}_${SLURM_JOB_ID}.csv" &
-GPU_LOGGER_PID=$!
+if [[ "$mode" == "train" || "$mode" == "test" ]]; then
+  nohup nvidia-smi --query-gpu=timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total --format=csv -l 3 > "gpu_log/gpu_biapy-py_${job_name}_${mode}_${SLURM_JOB_ID}.csv" &
+  GPU_LOGGER_PID=$!
+fi
 # <<<< GPU Tracking <<<<
 
-# Train Model
 # LD_PRELOAD conda libstdc++ so scipy's CXXABI_1.3.15 requirement is met
 # without putting all of $CONDA_PREFIX/lib on LD_LIBRARY_PATH (breaks CUDA).
-singularity exec --nv \
+singularity_args=(exec)
+if [[ "$mode" == "train" || "$mode" == "test" ]]; then
+  singularity_args+=(--nv)
+fi
+singularity "${singularity_args[@]}" \
     --overlay env/BiaPy_env.ext3:ro \
     /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
     /bin/bash -c "source /ext3/env.sh; \

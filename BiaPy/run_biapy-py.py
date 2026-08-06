@@ -217,6 +217,14 @@ def main():
                 f'GT_PATH={train_gt}'
             )
 
+            # YAML base name (e.g. label) vs BiaPy prepared multi-channel
+            # basename (e.g. label_F.erosion-0...). Stage into the prepared
+            # name and symlink the base name to it so both
+            # INSTANCE_CHANNELS_MASK_DIR == GT_PATH and
+            # INSTANCE_CHANNELS_MASK_DIR == GT_PATH+_F... checks succeed.
+            gt_base_name = Path(yaml_train_gt).name
+            gt_prepared_name = Path(train_gt).name
+
             pairs = list_train_pairs(train_raw, train_gt)
             partitions = partition_pairs(pairs, size=TRAIN_PARTITION_SIZE)
             print(
@@ -230,12 +238,29 @@ def main():
             )
             try:
                 for i, part in enumerate(partitions):
-                    part_raw = tmp_root / f'part_{i}' / 'raw'
-                    part_gt = tmp_root / f'part_{i}' / 'label'
+                    part_dir = tmp_root / f'part_{i}'
+                    part_raw = part_dir / 'raw'
+                    part_gt_prepared = part_dir / gt_prepared_name
+                    part_gt_base = part_dir / gt_base_name
+
                     stage_partition(
-                        part, part_raw, part_gt,
+                        part, part_raw, part_gt_prepared,
                         workers=biapy.cfg.SYSTEM.NUM_CPUS,
                     )
+
+                    if gt_base_name != gt_prepared_name:
+                        if part_gt_base.exists() or part_gt_base.is_symlink():
+                            if part_gt_base.is_dir() and not part_gt_base.is_symlink():
+                                shutil.rmtree(part_gt_base)
+                            else:
+                                part_gt_base.unlink()
+                        part_gt_base.symlink_to(
+                            part_gt_prepared.resolve(),
+                            target_is_directory=True,
+                        )
+                        part_gt = part_gt_base
+                    else:
+                        part_gt = part_gt_prepared
 
                     load_ckpt = i > 0
                     print(
