@@ -1,8 +1,8 @@
 # BiaPy version: 3.6.8
 
 SYSTEM:
-    NUM_CPUS: 6
-    NUM_WORKERS: 6
+    NUM_CPUS: 12
+    NUM_WORKERS: 12
 
 PROBLEM:
     TYPE: INSTANCE_SEG
@@ -18,7 +18,7 @@ PROBLEM:
             GROWTH_MASK_CHANNELS_THRESH: ['auto']
 
             DATA_REMOVE_BEFORE_MW: True
-            DATA_REMOVE_SMALL_OBJ_BEFORE: 500     # same rough voxel threshold as above
+            DATA_REMOVE_SMALL_OBJ_BEFORE: 250     # same rough voxel threshold as above
             SEED_MORPH_SEQUENCE: ['erode', 'dilate']
             SEED_MORPH_RADIUS: [1, 1]
             ERODE_AND_DILATE_GROWTH_MASK: True
@@ -58,8 +58,8 @@ MODEL:
 TRAIN:
     ENABLE: True
     OPTIMIZER: ADAMW
-    LR: 1.E-3
-    BATCH_SIZE: 30
+    LR: 3.E-3
+    BATCH_SIZE: 105
     EPOCHS: 30
     PATIENCE: 10
     LR_SCHEDULER:
@@ -73,4 +73,4 @@ TEST:
         INSTANCE_REFINEMENT:
             ENABLE: True
             OPERATIONS: ['remove_small_objects']
-            VALUES: [500]   # voxel count threshold — tune based on your smallest real neuron
+            VALUES: [250]   # voxel count threshold — tune based on your smallest real neuron

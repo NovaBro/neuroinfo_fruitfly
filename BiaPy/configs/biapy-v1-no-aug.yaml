@@ -1,8 +1,8 @@
 # BiaPy version: 3.6.8
 
 SYSTEM:
-    NUM_CPUS: 8
-    NUM_WORKERS: 8
+    NUM_CPUS: 12
+    NUM_WORKERS: 12
 
 PROBLEM:
     TYPE: INSTANCE_SEG
@@ -10,14 +10,15 @@ PROBLEM:
     INSTANCE_SEG:
         DATA_CHANNELS: ['F', 'C', 'Db', 'Dn']
         WATERSHED:
-            SEED_CHANNELS: ['F', 'Db']
-            SEED_CHANNELS_THRESH: ['auto', 'auto']
+            SEED_CHANNELS: ['C']
+            SEED_CHANNELS_THRESH: [0.3]
+            SEED_MORPH_SEQUENCE: []
             TOPOGRAPHIC_SURFACE_CHANNEL: 'Db'
             GROWTH_MASK_CHANNELS: ['F']
             GROWTH_MASK_CHANNELS_THRESH: ['auto']
 
             DATA_REMOVE_BEFORE_MW: True
-            DATA_REMOVE_SMALL_OBJ_BEFORE: 500     # same rough voxel threshold as above
+            DATA_REMOVE_SMALL_OBJ_BEFORE: 50     # same rough voxel threshold as above
             SEED_MORPH_SEQUENCE: ['erode', 'dilate']
             SEED_MORPH_RADIUS: [1, 1]
             ERODE_AND_DILATE_GROWTH_MASK: True
@@ -48,8 +49,13 @@ AUGMENTOR:
     HFLIP: False
     ZFLIP: False
 
+
+PATHS:
+    CHECKPOINT_FILE: metrics/biapy/biapy-v1-no-aug/checkpoints/biapy-v1-no-aug_0-checkpoint-best.pth
+
 MODEL:
     ARCHITECTURE: unet
+    # unet, seunet, unetr
     FEATURE_MAPS: [16, 32, 64, 128, 256]
     Z_DOWN: [1,1,1,1]
     LOAD_CHECKPOINT: False
@@ -65,11 +71,11 @@ TRAIN:
         NAME: 'onecycle'    # use one-cycle learning rate scheduler
   
 TEST:
-    ENABLE: False
+    ENABLE: True
     AUGMENTATION: False
     FULL_IMG: False
     POST_PROCESSING:
         INSTANCE_REFINEMENT:
             ENABLE: True
             OPERATIONS: ['remove_small_objects']
-            VALUES: [500]   # voxel count threshold — tune based on your smallest real neuron
+            VALUES: [50]   # voxel count threshold — tune based on your smallest real neuron

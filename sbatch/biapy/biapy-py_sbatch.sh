@@ -36,6 +36,7 @@ else
   job_name="${config_file%.*}"
 fi
 echo "SBATCH Run: ${config_file}, mode: ${mode}, job-name: ${job_name}, run-id: ${run_id}"
+echo "SLURM_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK:-unset}"
 
 # >>>> GPU Tracking (train/test only) >>>>
 GPU_LOGGER_PID=

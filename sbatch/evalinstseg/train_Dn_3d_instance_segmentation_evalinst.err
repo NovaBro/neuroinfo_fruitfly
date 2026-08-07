@@ -1,3 +1,0 @@
-INFO:    FUSE2FS (3): Warning: Mounting unchecked fs, running e2fsck is recommended.
-/opt/slurm/data/slurmd/job13166234/slurm_script: line 31: 2987588 Killed                  singularity exec --overlay env/evaluate.ext3:ro /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif /bin/bash -c 'source /ext3/env.sh; conda activate evalinstseg; cd evaluate-instance-segmentation; python -u biapy_eval.py --job_name=train_Dn_3d_instance_segmentation'
-[2026-07-09T13:10:45.796] error: Detected 1 oom_kill event in StepId=13166234.batch. Some of the step tasks have been OOM Killed.

@@ -1,0 +1,315 @@
+Output Data to fisbe/biapy-channel-rot
+running BiaPy/biapy_prep_main.py
+2026-08-06 13:47:50,451 - INFO     - main                     : source: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely
+2026-08-06 13:47:50,452 - INFO     - main                     : output: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot
+2026-08-06 13:47:50,455 - INFO     - main                     : Converting train, Found (18 volumes), Processing None
+2026-08-06 13:47:50,469 - INFO     - convert_split            : Save workers: 4
+2026-08-06 13:47:50,469 - INFO     - convert_split            : Augmentations enabled: False
+2026-08-06 13:47:50,471 - INFO     - process_samples          : /// Processing Sample [1 / 18]: R38F04-20181005_63_G3.zarr ///
+2026-08-06 13:47:50,471 - DEBUG    - _get_loop                : Creating Zarr event loop
+2026-08-06 13:47:50,471 - DEBUG    - __init__                 : Using selector: EpollSelector
+2026-08-06 13:47:52,591 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:47:52,591 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:47:52,591 - DEBUG    - merge_instance_masks     : 	before array.shape: (2, 431, 687, 684)
+2026-08-06 13:47:52,944 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:47:52,944 - DEBUG    - merge_instance_masks     : 	new merged.shape: (431, 687, 684)
+2026-08-06 13:47:52,945 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (431, 3, 687, 684) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: R38F04-20181005_63_G3.zarr
+2026-08-06 13:47:52,945 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (431, 687, 684) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: R38F04-20181005_63_G3.zarr
+2026-08-06 13:47:52,945 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:47:52,945 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:47:54,415 - INFO     - process_samples          : /// Processing Sample [2 / 18]: R38F04-20181005_63_G5.zarr ///
+2026-08-06 13:47:56,588 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:47:56,588 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:47:56,588 - DEBUG    - merge_instance_masks     : 	before array.shape: (3, 421, 687, 684)
+2026-08-06 13:47:57,089 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:47:57,090 - DEBUG    - merge_instance_masks     : 	new merged.shape: (421, 687, 684)
+2026-08-06 13:47:57,091 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (421, 3, 687, 684) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: R38F04-20181005_63_G5.zarr
+2026-08-06 13:47:57,091 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (421, 687, 684) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: R38F04-20181005_63_G5.zarr
+2026-08-06 13:47:57,091 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:47:57,091 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:47:58,642 - INFO     - process_samples          : /// Processing Sample [3 / 18]: R38F04-20181005_63_H1.zarr ///
+2026-08-06 13:48:00,795 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:48:00,795 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:48:00,795 - DEBUG    - merge_instance_masks     : 	before array.shape: (3, 399, 687, 684)
+2026-08-06 13:48:01,279 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:48:01,279 - DEBUG    - merge_instance_masks     : 	new merged.shape: (399, 687, 684)
+2026-08-06 13:48:01,281 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (399, 3, 687, 684) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: R38F04-20181005_63_H1.zarr
+2026-08-06 13:48:01,281 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (399, 687, 684) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: R38F04-20181005_63_H1.zarr
+2026-08-06 13:48:01,281 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:48:01,281 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:48:02,702 - INFO     - process_samples          : /// Processing Sample [4 / 18]: R53A10-20181019_64_A4.zarr ///
+2026-08-06 13:48:04,552 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:48:04,552 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:48:04,552 - DEBUG    - merge_instance_masks     : 	before array.shape: (1, 410, 683, 686)
+2026-08-06 13:48:04,721 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:48:04,721 - DEBUG    - merge_instance_masks     : 	new merged.shape: (410, 683, 686)
+2026-08-06 13:48:04,722 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (410, 3, 683, 686) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: R53A10-20181019_64_A4.zarr
+2026-08-06 13:48:04,722 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (410, 683, 686) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: R53A10-20181019_64_A4.zarr
+2026-08-06 13:48:04,723 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:48:04,723 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:48:06,142 - INFO     - process_samples          : /// Processing Sample [5 / 18]: R75E01-20181030_64_D1.zarr ///
+2026-08-06 13:48:08,262 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:48:08,262 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:48:08,262 - DEBUG    - merge_instance_masks     : 	before array.shape: (3, 401, 685, 685)
+2026-08-06 13:48:08,732 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:48:08,733 - DEBUG    - merge_instance_masks     : 	new merged.shape: (401, 685, 685)
+2026-08-06 13:48:08,734 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (401, 3, 685, 685) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: R75E01-20181030_64_D1.zarr
+2026-08-06 13:48:08,734 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (401, 685, 685) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: R75E01-20181030_64_D1.zarr
+2026-08-06 13:48:08,734 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:48:08,734 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:48:10,158 - INFO     - process_samples          : /// Processing Sample [6 / 18]: VT008647-20171222_63_D1.zarr ///
+2026-08-06 13:48:13,079 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:48:13,079 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:48:13,079 - DEBUG    - merge_instance_masks     : 	before array.shape: (7, 417, 685, 685)
+2026-08-06 13:48:14,173 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:48:14,173 - DEBUG    - merge_instance_masks     : 	new merged.shape: (417, 685, 685)
+2026-08-06 13:48:14,174 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (417, 3, 685, 685) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: VT008647-20171222_63_D1.zarr
+2026-08-06 13:48:14,174 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (417, 685, 685) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: VT008647-20171222_63_D1.zarr
+2026-08-06 13:48:14,174 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:48:14,174 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:48:15,586 - INFO     - process_samples          : /// Processing Sample [7 / 18]: VT008647-20171222_63_D2.zarr ///
+2026-08-06 13:48:18,306 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:48:18,307 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:48:18,307 - DEBUG    - merge_instance_masks     : 	before array.shape: (6, 412, 685, 685)
+2026-08-06 13:48:19,239 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:48:19,239 - DEBUG    - merge_instance_masks     : 	new merged.shape: (412, 685, 685)
+2026-08-06 13:48:19,241 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (412, 3, 685, 685) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: VT008647-20171222_63_D2.zarr
+2026-08-06 13:48:19,241 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (412, 685, 685) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: VT008647-20171222_63_D2.zarr
+2026-08-06 13:48:19,241 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:48:19,241 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:48:20,588 - INFO     - process_samples          : /// Processing Sample [8 / 18]: VT008647-20171222_63_E1.zarr ///
+2026-08-06 13:48:23,768 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:48:23,768 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:48:23,768 - DEBUG    - merge_instance_masks     : 	before array.shape: (8, 416, 685, 685)
+2026-08-06 13:48:25,031 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:48:25,031 - DEBUG    - merge_instance_masks     : 	new merged.shape: (416, 685, 685)
+2026-08-06 13:48:25,033 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (416, 3, 685, 685) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: VT008647-20171222_63_E1.zarr
+2026-08-06 13:48:25,033 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (416, 685, 685) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: VT008647-20171222_63_E1.zarr
+2026-08-06 13:48:25,033 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:48:25,033 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:48:26,441 - INFO     - process_samples          : /// Processing Sample [9 / 18]: VT019303-20171013_65_B6.zarr ///
+2026-08-06 13:48:28,303 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:48:28,304 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:48:28,304 - DEBUG    - merge_instance_masks     : 	before array.shape: (3, 362, 685, 686)
+2026-08-06 13:48:28,737 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:48:28,737 - DEBUG    - merge_instance_masks     : 	new merged.shape: (362, 685, 686)
+2026-08-06 13:48:28,738 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (362, 3, 685, 686) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: VT019303-20171013_65_B6.zarr
+2026-08-06 13:48:28,738 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (362, 685, 686) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: VT019303-20171013_65_B6.zarr
+2026-08-06 13:48:28,738 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:48:28,738 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:48:30,018 - INFO     - process_samples          : /// Processing Sample [10 / 18]: VT019307-20171013_65_F1.zarr ///
+2026-08-06 13:48:32,641 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:48:32,641 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:48:32,642 - DEBUG    - merge_instance_masks     : 	before array.shape: (6, 408, 685, 686)
+2026-08-06 13:48:33,604 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:48:33,604 - DEBUG    - merge_instance_masks     : 	new merged.shape: (408, 685, 686)
+2026-08-06 13:48:33,605 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (408, 3, 685, 686) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: VT019307-20171013_65_F1.zarr
+2026-08-06 13:48:33,605 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (408, 685, 686) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: VT019307-20171013_65_F1.zarr
+2026-08-06 13:48:33,605 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:48:33,605 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:48:35,008 - INFO     - process_samples          : /// Processing Sample [11 / 18]: VT033051-20171128_61_E2.zarr ///
+2026-08-06 13:48:36,966 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:48:36,966 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:48:36,966 - DEBUG    - merge_instance_masks     : 	before array.shape: (4, 345, 683, 686)
+2026-08-06 13:48:37,495 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:48:37,495 - DEBUG    - merge_instance_masks     : 	new merged.shape: (345, 683, 686)
+2026-08-06 13:48:37,496 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (345, 3, 683, 686) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: VT033051-20171128_61_E2.zarr
+2026-08-06 13:48:37,496 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (345, 683, 686) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: VT033051-20171128_61_E2.zarr
+2026-08-06 13:48:37,496 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:48:37,496 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:48:38,675 - INFO     - process_samples          : /// Processing Sample [12 / 18]: VT033051-20171128_61_E4.zarr ///
+2026-08-06 13:48:40,429 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:48:40,430 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:48:40,430 - DEBUG    - merge_instance_masks     : 	before array.shape: (2, 379, 683, 686)
+2026-08-06 13:48:40,734 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:48:40,734 - DEBUG    - merge_instance_masks     : 	new merged.shape: (379, 683, 686)
+2026-08-06 13:48:40,736 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (379, 3, 683, 686) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: VT033051-20171128_61_E4.zarr
+2026-08-06 13:48:40,736 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (379, 683, 686) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: VT033051-20171128_61_E4.zarr
+2026-08-06 13:48:40,736 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:48:40,736 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:48:41,981 - INFO     - process_samples          : /// Processing Sample [13 / 18]: VT040433-20170919_63_D6.zarr ///
+2026-08-06 13:48:44,749 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:48:44,749 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:48:44,749 - DEBUG    - merge_instance_masks     : 	before array.shape: (8, 372, 683, 686)
+2026-08-06 13:48:45,885 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:48:45,886 - DEBUG    - merge_instance_masks     : 	new merged.shape: (372, 683, 686)
+2026-08-06 13:48:45,887 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (372, 3, 683, 686) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: VT040433-20170919_63_D6.zarr
+2026-08-06 13:48:45,887 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (372, 683, 686) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: VT040433-20170919_63_D6.zarr
+2026-08-06 13:48:45,887 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:48:45,887 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:48:47,155 - INFO     - process_samples          : /// Processing Sample [14 / 18]: VT047848-20171020_66_I2.zarr ///
+2026-08-06 13:48:50,957 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:48:50,957 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:48:50,957 - DEBUG    - merge_instance_masks     : 	before array.shape: (4, 388, 889, 863)
+2026-08-06 13:48:51,936 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:48:51,937 - DEBUG    - merge_instance_masks     : 	new merged.shape: (388, 889, 863)
+2026-08-06 13:48:51,938 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (388, 3, 889, 863) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: VT047848-20171020_66_I2.zarr
+2026-08-06 13:48:51,938 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (388, 889, 863) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: VT047848-20171020_66_I2.zarr
+2026-08-06 13:48:51,938 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:48:51,938 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:48:54,105 - INFO     - process_samples          : /// Processing Sample [15 / 18]: VT047848-20171020_66_I3.zarr ///
+2026-08-06 13:48:56,761 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:48:56,761 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:48:56,761 - DEBUG    - merge_instance_masks     : 	before array.shape: (3, 390, 1058, 907)
+2026-08-06 13:48:57,699 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:48:57,699 - DEBUG    - merge_instance_masks     : 	new merged.shape: (390, 1058, 907)
+2026-08-06 13:48:57,701 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (390, 3, 1058, 907) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: VT047848-20171020_66_I3.zarr
+2026-08-06 13:48:57,701 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (390, 1058, 907) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: VT047848-20171020_66_I3.zarr
+2026-08-06 13:48:57,701 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:48:57,701 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:49:00,368 - INFO     - process_samples          : /// Processing Sample [16 / 18]: VT047848-20171020_66_I5.zarr ///
+2026-08-06 13:49:08,197 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:49:08,197 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:49:08,197 - DEBUG    - merge_instance_masks     : 	before array.shape: (12, 401, 982, 895)
+2026-08-06 13:49:11,582 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:49:11,582 - DEBUG    - merge_instance_masks     : 	new merged.shape: (401, 982, 895)
+2026-08-06 13:49:11,584 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (401, 3, 982, 895) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: VT047848-20171020_66_I5.zarr
+2026-08-06 13:49:11,584 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (401, 982, 895) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: VT047848-20171020_66_I5.zarr
+2026-08-06 13:49:11,584 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:49:11,584 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:49:14,162 - INFO     - process_samples          : /// Processing Sample [17 / 18]: VT047848-20171020_66_J2.zarr ///
+2026-08-06 13:49:18,951 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:49:18,951 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:49:18,951 - DEBUG    - merge_instance_masks     : 	before array.shape: (5, 404, 934, 911)
+2026-08-06 13:49:20,340 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:49:20,340 - DEBUG    - merge_instance_masks     : 	new merged.shape: (404, 934, 911)
+2026-08-06 13:49:20,343 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (404, 3, 934, 911) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: VT047848-20171020_66_J2.zarr
+2026-08-06 13:49:20,343 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (404, 934, 911) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: VT047848-20171020_66_J2.zarr
+2026-08-06 13:49:20,343 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:49:20,343 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:49:22,771 - INFO     - process_samples          : /// Processing Sample [18 / 18]: VT061467-20180911_62_E5.zarr ///
+2026-08-06 13:49:25,155 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:49:25,155 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:49:25,155 - DEBUG    - merge_instance_masks     : 	before array.shape: (4, 423, 687, 684)
+2026-08-06 13:49:25,802 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:49:25,803 - DEBUG    - merge_instance_masks     : 	new merged.shape: (423, 687, 684)
+2026-08-06 13:49:25,804 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (423, 3, 687, 684) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw raw_names: VT061467-20180911_62_E5.zarr
+2026-08-06 13:49:25,804 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (423, 687, 684) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label label_names: VT061467-20180911_62_E5.zarr
+2026-08-06 13:49:25,804 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/raw
+2026-08-06 13:49:25,804 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/train/label
+2026-08-06 13:49:27,301 - INFO     - main                     : Converting val, Found (5 volumes), Processing None
+2026-08-06 13:49:27,311 - INFO     - convert_split            : Save workers: 4
+2026-08-06 13:49:27,311 - INFO     - convert_split            : Augmentations enabled: False
+2026-08-06 13:49:27,313 - INFO     - process_samples          : /// Processing Sample [1 / 5]: R22C03-20180918_66_J2.zarr ///
+2026-08-06 13:49:28,587 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:49:28,587 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:49:28,587 - DEBUG    - merge_instance_masks     : 	before array.shape: (2, 399, 683, 686)
+2026-08-06 13:49:28,905 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:49:28,906 - DEBUG    - merge_instance_masks     : 	new merged.shape: (399, 683, 686)
+2026-08-06 13:49:28,906 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (399, 3, 683, 686) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/raw raw_names: R22C03-20180918_66_J2.zarr
+2026-08-06 13:49:28,906 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (399, 683, 686) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/label label_names: R22C03-20180918_66_J2.zarr
+2026-08-06 13:49:28,906 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/raw
+2026-08-06 13:49:28,906 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/label
+2026-08-06 13:49:30,261 - INFO     - process_samples          : /// Processing Sample [2 / 5]: VT012403-20171128_61_B2.zarr ///
+2026-08-06 13:49:32,428 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:49:32,428 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:49:32,428 - DEBUG    - merge_instance_masks     : 	before array.shape: (5, 369, 683, 686)
+2026-08-06 13:49:33,144 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:49:33,144 - DEBUG    - merge_instance_masks     : 	new merged.shape: (369, 683, 686)
+2026-08-06 13:49:33,145 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (369, 3, 683, 686) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/raw raw_names: VT012403-20171128_61_B2.zarr
+2026-08-06 13:49:33,145 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (369, 683, 686) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/label label_names: VT012403-20171128_61_B2.zarr
+2026-08-06 13:49:33,145 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/raw
+2026-08-06 13:49:33,145 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/label
+2026-08-06 13:49:34,385 - INFO     - process_samples          : /// Processing Sample [3 / 5]: VT033614-20171124_64_H1.zarr ///
+2026-08-06 13:49:36,412 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:49:36,412 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:49:36,412 - DEBUG    - merge_instance_masks     : 	before array.shape: (4, 379, 685, 686)
+2026-08-06 13:49:37,008 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:49:37,009 - DEBUG    - merge_instance_masks     : 	new merged.shape: (379, 685, 686)
+2026-08-06 13:49:37,010 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (379, 3, 685, 686) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/raw raw_names: VT033614-20171124_64_H1.zarr
+2026-08-06 13:49:37,010 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (379, 685, 686) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/label label_names: VT033614-20171124_64_H1.zarr
+2026-08-06 13:49:37,010 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/raw
+2026-08-06 13:49:37,010 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/label
+2026-08-06 13:49:38,297 - INFO     - process_samples          : /// Processing Sample [4 / 5]: VT033614-20171124_64_H5.zarr ///
+2026-08-06 13:49:40,333 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:49:40,334 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:49:40,334 - DEBUG    - merge_instance_masks     : 	before array.shape: (3, 395, 685, 686)
+2026-08-06 13:49:40,786 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:49:40,786 - DEBUG    - merge_instance_masks     : 	new merged.shape: (395, 685, 686)
+2026-08-06 13:49:40,788 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (395, 3, 685, 686) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/raw raw_names: VT033614-20171124_64_H5.zarr
+2026-08-06 13:49:40,788 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (395, 685, 686) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/label label_names: VT033614-20171124_64_H5.zarr
+2026-08-06 13:49:40,788 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/raw
+2026-08-06 13:49:40,788 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/label
+2026-08-06 13:49:42,118 - INFO     - process_samples          : /// Processing Sample [5 / 5]: VT041298-20171114_63_C3.zarr ///
+2026-08-06 13:49:44,626 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:49:44,626 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:49:44,626 - DEBUG    - merge_instance_masks     : 	before array.shape: (7, 356, 687, 684)
+2026-08-06 13:49:45,565 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:49:45,565 - DEBUG    - merge_instance_masks     : 	new merged.shape: (356, 687, 684)
+2026-08-06 13:49:45,566 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (356, 3, 687, 684) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/raw raw_names: VT041298-20171114_63_C3.zarr
+2026-08-06 13:49:45,566 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (356, 687, 684) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/label label_names: VT041298-20171114_63_C3.zarr
+2026-08-06 13:49:45,566 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/raw
+2026-08-06 13:49:45,566 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/val/label
+2026-08-06 13:49:46,798 - INFO     - main                     : Converting test, Found (7 volumes), Processing None
+2026-08-06 13:49:46,809 - INFO     - convert_split            : Save workers: 4
+2026-08-06 13:49:46,809 - INFO     - convert_split            : Augmentations enabled: False
+2026-08-06 13:49:46,810 - INFO     - process_samples          : /// Processing Sample [1 / 7]: JRC_SS04989-20160318_24_A2.zarr ///
+2026-08-06 13:49:48,888 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:49:48,889 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:49:48,889 - DEBUG    - merge_instance_masks     : 	before array.shape: (3, 390, 680, 680)
+2026-08-06 13:49:49,343 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:49:49,343 - DEBUG    - merge_instance_masks     : 	new merged.shape: (390, 680, 680)
+2026-08-06 13:49:49,344 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (390, 3, 680, 680) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw raw_names: JRC_SS04989-20160318_24_A2.zarr
+2026-08-06 13:49:49,344 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (390, 680, 680) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label label_names: JRC_SS04989-20160318_24_A2.zarr
+2026-08-06 13:49:49,344 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw
+2026-08-06 13:49:49,344 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label
+2026-08-06 13:49:50,668 - INFO     - process_samples          : /// Processing Sample [2 / 7]: R14A02-20180905_65_A6.zarr ///
+2026-08-06 13:49:53,424 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:49:53,425 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:49:53,425 - DEBUG    - merge_instance_masks     : 	before array.shape: (7, 385, 685, 686)
+2026-08-06 13:49:54,454 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:49:54,454 - DEBUG    - merge_instance_masks     : 	new merged.shape: (385, 685, 686)
+2026-08-06 13:49:54,455 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (385, 3, 685, 686) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw raw_names: R14A02-20180905_65_A6.zarr
+2026-08-06 13:49:54,455 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (385, 685, 686) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label label_names: R14A02-20180905_65_A6.zarr
+2026-08-06 13:49:54,455 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw
+2026-08-06 13:49:54,455 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label
+2026-08-06 13:49:55,754 - INFO     - process_samples          : /// Processing Sample [3 / 7]: R54A09-20181019_64_H1.zarr ///
+2026-08-06 13:49:56,895 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:49:56,895 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:49:56,895 - DEBUG    - merge_instance_masks     : 	before array.shape: (1, 430, 683, 686)
+2026-08-06 13:49:57,076 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:49:57,076 - DEBUG    - merge_instance_masks     : 	new merged.shape: (430, 683, 686)
+2026-08-06 13:49:57,077 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (430, 3, 683, 686) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw raw_names: R54A09-20181019_64_H1.zarr
+2026-08-06 13:49:57,077 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (430, 683, 686) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label label_names: R54A09-20181019_64_H1.zarr
+2026-08-06 13:49:57,077 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw
+2026-08-06 13:49:57,077 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label
+2026-08-06 13:49:58,590 - INFO     - process_samples          : /// Processing Sample [4 / 7]: VT011145-20171222_63_I1.zarr ///
+2026-08-06 13:50:01,981 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:50:01,981 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:50:01,981 - DEBUG    - merge_instance_masks     : 	before array.shape: (9, 417, 685, 685)
+2026-08-06 13:50:03,408 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:50:03,408 - DEBUG    - merge_instance_masks     : 	new merged.shape: (417, 685, 685)
+2026-08-06 13:50:03,409 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (417, 3, 685, 685) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw raw_names: VT011145-20171222_63_I1.zarr
+2026-08-06 13:50:03,409 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (417, 685, 685) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label label_names: VT011145-20171222_63_I1.zarr
+2026-08-06 13:50:03,409 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw
+2026-08-06 13:50:03,409 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label
+2026-08-06 13:50:04,839 - INFO     - process_samples          : /// Processing Sample [5 / 7]: VT027175-20171031_62_H3.zarr ///
+2026-08-06 13:50:06,345 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:50:06,345 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:50:06,345 - DEBUG    - merge_instance_masks     : 	before array.shape: (3, 425, 687, 684)
+2026-08-06 13:50:06,838 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:50:06,839 - DEBUG    - merge_instance_masks     : 	new merged.shape: (425, 687, 684)
+2026-08-06 13:50:06,840 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (425, 3, 687, 684) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw raw_names: VT027175-20171031_62_H3.zarr
+2026-08-06 13:50:06,840 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (425, 687, 684) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label label_names: VT027175-20171031_62_H3.zarr
+2026-08-06 13:50:06,840 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw
+2026-08-06 13:50:06,840 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label
+2026-08-06 13:50:08,278 - INFO     - process_samples          : /// Processing Sample [6 / 7]: VT027175-20171031_62_H4.zarr ///
+2026-08-06 13:50:10,914 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:50:10,914 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:50:10,914 - DEBUG    - merge_instance_masks     : 	before array.shape: (6, 409, 687, 684)
+2026-08-06 13:50:11,852 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:50:11,852 - DEBUG    - merge_instance_masks     : 	new merged.shape: (409, 687, 684)
+2026-08-06 13:50:11,853 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (409, 3, 687, 684) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw raw_names: VT027175-20171031_62_H4.zarr
+2026-08-06 13:50:11,853 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (409, 687, 684) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label label_names: VT027175-20171031_62_H4.zarr
+2026-08-06 13:50:11,853 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw
+2026-08-06 13:50:11,853 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label
+2026-08-06 13:50:13,283 - INFO     - process_samples          : /// Processing Sample [7 / 7]: VT050157-20171110_61_C1.zarr ///
+2026-08-06 13:50:15,474 - DEBUG    - merge_instance_masks     : merge_instance_masks
+2026-08-06 13:50:15,474 - DEBUG    - merge_instance_masks     : 	before array.ndim: 4
+2026-08-06 13:50:15,474 - DEBUG    - merge_instance_masks     : 	before array.shape: (5, 377, 683, 686)
+2026-08-06 13:50:16,213 - DEBUG    - merge_instance_masks     : 	new merged.ndim: 3
+2026-08-06 13:50:16,213 - DEBUG    - merge_instance_masks     : 	new merged.shape: (377, 683, 686)
+2026-08-06 13:50:16,215 - DEBUG    - save_and_log_data        : 	Saving - raw.shape: (377, 3, 683, 686) raw_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw raw_names: VT050157-20171110_61_C1.zarr
+2026-08-06 13:50:16,215 - DEBUG    - save_and_log_data        : 	Saving - labels.shape: (377, 683, 686) label_dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label label_names: VT050157-20171110_61_C1.zarr
+2026-08-06 13:50:16,215 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/raw
+2026-08-06 13:50:16,215 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-rot/test/label

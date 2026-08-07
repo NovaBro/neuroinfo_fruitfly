@@ -1,2 +1,0 @@
-/opt/slurm/data/slurmd/job13165896/slurm_script: line 31: 1791078 Killed                  singularity exec --overlay env/evaluate.ext3:ro /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif /bin/bash -c 'source /ext3/env.sh; conda activate evalinstseg; cd evaluate-instance-segmentation; python -u biapy_eval.py --job_name=train_Dn_0707'
-[2026-07-09T12:18:02.520] error: Detected 1 oom_kill event in StepId=13165896.batch. Some of the step tasks have been OOM Killed.

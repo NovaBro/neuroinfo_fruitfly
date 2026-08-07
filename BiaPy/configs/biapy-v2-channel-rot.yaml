@@ -1,8 +1,8 @@
 # BiaPy version: 3.6.8
 
 SYSTEM:
-    NUM_CPUS: 6
-    NUM_WORKERS: 6
+    NUM_CPUS: 12
+    NUM_WORKERS: 12
 
 PROBLEM:
     TYPE: INSTANCE_SEG
@@ -10,14 +10,14 @@ PROBLEM:
     INSTANCE_SEG:
         DATA_CHANNELS: ['F', 'C', 'Db', 'Dn']
         WATERSHED:
-            SEED_CHANNELS: ['F', 'Db', 'C', 'Dn']
-            SEED_CHANNELS_THRESH: ['auto', 'auto', 'auto', 'auto']
+            SEED_CHANNELS: ['F', 'C']
+            SEED_CHANNELS_THRESH: ['auto', 'auto']
             TOPOGRAPHIC_SURFACE_CHANNEL: 'Db'
             GROWTH_MASK_CHANNELS: ['F']
             GROWTH_MASK_CHANNELS_THRESH: ['auto']
 
             DATA_REMOVE_BEFORE_MW: True
-            DATA_REMOVE_SMALL_OBJ_BEFORE: 500     # same rough voxel threshold as above
+            DATA_REMOVE_SMALL_OBJ_BEFORE: 250     # same rough voxel threshold as above
             SEED_MORPH_SEQUENCE: ['erode', 'dilate']
             SEED_MORPH_RADIUS: [1, 1]
             ERODE_AND_DILATE_GROWTH_MASK: True
@@ -32,9 +32,8 @@ DATA:
         GT_PATH: fisbe/biapy-channel-rot/train/label
         IN_MEMORY: True
     VAL:
-        PATH: fisbe/biapy-channel-rot/val/raw
-        GT_PATH: fisbe/biapy-channel-rot/val/label
-        FROM_TRAIN: False
+        PATH: fisbe/biapy-no-aug/val/raw
+        GT_PATH: fisbe/biapy-no-aug/val/label
     TEST:
         PATH: fisbe/biapy-no-aug/test/raw
         GT_PATH: fisbe/biapy-no-aug/test/label
@@ -43,12 +42,14 @@ DATA:
         PADDING: (4,16,16)
 
 AUGMENTOR:
-    ENABLE: True
-    RANDOM_ROT: True
-    AUG_SAMPLES: True
-    VFLIP: True
-    HFLIP: True
-    ZFLIP: True
+    ENABLE: False
+    RANDOM_ROT: False
+    VFLIP: False
+    HFLIP: False
+    ZFLIP: False
+
+PATHS:
+    CHECKPOINT_FILE: metrics/biapy/biapy-v1-channel-rot/checkpoints/biapy-v1-channel-rot_0-checkpoint-best.pth
 
 MODEL:
     ARCHITECTURE: unet
@@ -59,15 +60,15 @@ MODEL:
 TRAIN:
     ENABLE: True
     OPTIMIZER: ADAMW
-    LR: 1.E-3
-    BATCH_SIZE: 45
+    LR: 3.E-3
+    BATCH_SIZE: 105
     EPOCHS: 30
     PATIENCE: 10
     LR_SCHEDULER:
         NAME: 'onecycle'    # use one-cycle learning rate scheduler
   
 TEST:
-    ENABLE: False
+    ENABLE: True
     AUGMENTATION: False
     FULL_IMG: False
     POST_PROCESSING:

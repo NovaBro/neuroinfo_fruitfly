@@ -24,13 +24,42 @@ REPO_ROOT = _repo_root()
 
 # --- paths -----------------------------------------------------------------
 
-# Base directory that holds every BiaPy experiment output. Each "prediction
-# set" is a run directory somewhere beneath it that contains a
-# ``per_image_instances`` folder (e.g.
+# Primary base directory for BiaPy experiment output (kept for env/compat).
+# Each "prediction set" is a run directory somewhere beneath a results base
+# that contains a ``per_image_instances`` folder (e.g.
 # ``<base>/train_3d_instance_segmentation/results/train_3d_instance_segmentation_1``).
 BIAPY_RESULTS_BASE = Path(
     os.environ.get("BIAPY_RESULTS_BASE", REPO_ROOT / "BiaPy/results")
 )
+
+
+def _parse_results_bases() -> tuple[Path, ...]:
+    """Bases scanned for prediction sets.
+
+    ``BIAPY_RESULTS_BASES`` (colon-separated) overrides the default list when
+    set; otherwise ``BIAPY_RESULTS_BASE`` plus ``metrics/biapy`` are used.
+    """
+    raw = os.environ.get("BIAPY_RESULTS_BASES")
+    if raw:
+        bases = [Path(p) for p in raw.split(":") if p.strip()]
+    else:
+        bases = [
+            BIAPY_RESULTS_BASE,
+            REPO_ROOT / "metrics" / "biapy",
+        ]
+    # Deduplicate while preserving order; resolve for stable comparisons.
+    seen: set[Path] = set()
+    out: list[Path] = []
+    for b in bases:
+        resolved = b.resolve()
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        out.append(resolved)
+    return tuple(out)
+
+
+BIAPY_RESULTS_BASES: tuple[Path, ...] = _parse_results_bases()
 
 # Default prediction set used when a caller does not specify one.
 BIAPY_RESULT_ROOT = Path(
@@ -54,36 +83,60 @@ def _instances_dir(result_root: Path | str | None = None) -> Path:
     return _result_root(result_root) / "per_image_instances"
 
 
+def _under_any_base(path: Path) -> bool:
+    """Return True when ``path`` is equal to or beneath any results base."""
+    path = path.resolve()
+    for base in BIAPY_RESULTS_BASES:
+        if path == base or base in path.parents:
+            return True
+    return False
+
+
+def _base_label(base: Path) -> str:
+    """Short label for a results base (path relative to repo when possible)."""
+    try:
+        return str(base.resolve().relative_to(REPO_ROOT.resolve()))
+    except ValueError:
+        return base.name
+
+
 # --- prediction sets -------------------------------------------------------
 
 def discover_prediction_sets() -> list[dict]:
     """List every prediction set (run dir with a ``per_image_instances`` folder).
 
-  Each entry is ``{"id", "name", "path", "default"}`` where ``id`` is the run
-  directory's path relative to :data:`BIAPY_RESULTS_BASE` (a stable handle the
-  web client passes back to select that set).
+  Scans every directory in :data:`BIAPY_RESULTS_BASES`. Each entry is
+  ``{"id", "name", "path", "default"}`` where ``id`` is the run directory's
+  path relative to :data:`REPO_ROOT` (unique across bases so
+  ``BiaPy/results/...`` and ``metrics/biapy/...`` do not collide).
   """
-    base = BIAPY_RESULTS_BASE.resolve()
     default_root = BIAPY_RESULT_ROOT.resolve()
+    repo = REPO_ROOT.resolve()
     sets: list[dict] = []
-    if not base.is_dir():
-        return sets
-    for inst_dir in sorted(base.glob("**/per_image_instances")):
-        if not inst_dir.is_dir():
+    for base in BIAPY_RESULTS_BASES:
+        if not base.is_dir():
             continue
-        run_dir = inst_dir.parent.resolve()
-        try:
-            rel = run_dir.relative_to(base)
-        except ValueError:
-            continue
-        sets.append(
-            {
-                "id": str(rel),
-                "name": run_dir.name,
-                "path": str(run_dir),
-                "default": run_dir == default_root,
-            }
-        )
+        label = _base_label(base)
+        for inst_dir in sorted(base.glob("**/per_image_instances")):
+            if not inst_dir.is_dir():
+                continue
+            run_dir = inst_dir.parent.resolve()
+            try:
+                rel_id = str(run_dir.relative_to(repo))
+            except ValueError:
+                # Outside the repo: fall back to base-relative id with label.
+                try:
+                    rel_id = f"{label}/{run_dir.relative_to(base)}"
+                except ValueError:
+                    continue
+            sets.append(
+                {
+                    "id": rel_id,
+                    "name": f"{label} · {run_dir.name}",
+                    "path": str(run_dir),
+                    "default": run_dir == default_root,
+                }
+            )
     if sets and not any(s["default"] for s in sets):
         sets[0]["default"] = True
     return sets
@@ -92,17 +145,35 @@ def discover_prediction_sets() -> list[dict]:
 def resolve_prediction_set_root(set_id: str | None = None) -> Path:
     """Map a prediction-set ``id`` back to its result root directory.
 
-  ``None``/empty selects the default set. Raises ``ValueError`` for ids that
-  escape :data:`BIAPY_RESULTS_BASE` and ``FileNotFoundError`` when the set has
-  no ``per_image_instances`` folder.
+  ``None``/empty selects the default set. Prefers repo-relative ids produced
+  by :func:`discover_prediction_sets`; falls back to ids relative to
+  :data:`BIAPY_RESULTS_BASE` for backward compatibility. Raises ``ValueError``
+  when the id escapes every results base, and ``FileNotFoundError`` when the
+  set has no ``per_image_instances`` folder.
   """
     if not set_id:
         return BIAPY_RESULT_ROOT
-    base = BIAPY_RESULTS_BASE.resolve()
-    root = (base / set_id).resolve()
-    if root != base and base not in root.parents:
-        raise ValueError(f"Prediction set {set_id!r} is outside {base}")
-    if not (root / "per_image_instances").is_dir():
+
+    candidates: list[Path] = [
+        (REPO_ROOT / set_id).resolve(),
+        (BIAPY_RESULTS_BASE / set_id).resolve(),  # legacy bare relative ids
+    ]
+    root: Path | None = None
+    for candidate in candidates:
+        if _under_any_base(candidate) and (candidate / "per_image_instances").is_dir():
+            root = candidate
+            break
+
+    if root is None:
+        # Distinguish "escaped" vs "missing instances" for clearer errors.
+        repo_candidate = (REPO_ROOT / set_id).resolve()
+        if not _under_any_base(repo_candidate) and not _under_any_base(
+            (BIAPY_RESULTS_BASE / set_id).resolve()
+        ):
+            raise ValueError(
+                f"Prediction set {set_id!r} is outside "
+                f"{[str(b) for b in BIAPY_RESULTS_BASES]}"
+            )
         raise FileNotFoundError(
             f"No per_image_instances folder for prediction set {set_id!r}"
         )

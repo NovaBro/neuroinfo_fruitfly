@@ -1,9 +1,9 @@
 INFO:    FUSE2FS (3): Warning: Mounting unchecked fs, running e2fsck is recommended.
-INFO:     Started server process [3557952]
+INFO:     Started server process [1611669]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-9:16:51 AM [vite] warning: `esbuild` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `oxc` instead.
+9:25:59 AM [vite] warning: `esbuild` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `oxc` instead.
 `optimizeDeps.rollupOptions` / `ssr.optimizeDeps.rollupOptions` is deprecated. Use `optimizeDeps.rolldownOptions` instead. Note that this option may be set by a plugin. Set VITE_DEPRECATION_TRACE=1 to see where it is called.
 [vite:react-babel] We recommend switching to `@vitejs/plugin-react-oxc` for improved performance. More information at https://vite.dev/rolldown
-[2026-07-28T10:55:11.451] error: *** JOB 14885737 ON cs606 CANCELLED AT 2026-07-28T10:55:11 DUE to SIGNAL Terminated ***
+[2026-08-06T11:54:53.900] error: *** JOB 15430986 ON cs623 CANCELLED AT 2026-08-06T11:54:53 DUE to SIGNAL Terminated ***

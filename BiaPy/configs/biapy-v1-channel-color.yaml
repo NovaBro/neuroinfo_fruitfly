@@ -1,0 +1,90 @@
+# BiaPy version: 3.6.8
+
+SYSTEM:
+    NUM_CPUS: 12
+    NUM_WORKERS: 12
+
+PROBLEM:
+    TYPE: INSTANCE_SEG
+    NDIM: 3D
+    INSTANCE_SEG:
+        DATA_CHANNELS: ['F', 'C', 'Db', 'Dn']
+        WATERSHED:
+            SEED_CHANNELS: ['F', 'C']
+            SEED_CHANNELS_THRESH: ['auto', 'auto']
+            TOPOGRAPHIC_SURFACE_CHANNEL: 'Db'
+            GROWTH_MASK_CHANNELS: ['F']
+            GROWTH_MASK_CHANNELS_THRESH: ['auto']
+
+            SEED_MORPH_SEQUENCE: ['erode', 'dilate']
+            SEED_MORPH_RADIUS: [1, 1]
+            ERODE_AND_DILATE_GROWTH_MASK: True
+            FORE_EROSION_RADIUS: 1
+            FORE_DILATION_RADIUS: 1
+            DATA_CHECK_MW: True
+
+DATA: 
+    PATCH_SIZE: (20, 128, 128, 3)
+    NORMALIZATION:
+        TYPE: scale_range
+    TRAIN:
+        PATH: fisbe/biapy-channel-color/train/raw
+        GT_PATH: fisbe/biapy-channel-color/train/label
+        IN_MEMORY: True
+    VAL:
+        PATH: fisbe/biapy-channel-color/val/raw
+        GT_PATH: fisbe/biapy-channel-color/val/label
+    TEST:
+        PATH: fisbe/biapy-no-aug/test/raw
+        GT_PATH: fisbe/biapy-no-aug/test/label
+        IN_MEMORY: True
+        LOAD_GT: True
+        PADDING: (4,16,16)
+
+AUGMENTOR:
+    ENABLE: True
+    AUG_SAMPLES: True          # inspect augs under PATHS.DA_SAMPLES
+    # DA_PROB: 0.5               # older docs; newer BiaPy uses per-aug *_PROB
+    # keep what you have
+    RANDOM_ROT: True
+    VFLIP: True
+    HFLIP: True
+    ZFLIP: True
+    # --- intensity (highest priority for your issue) ---
+    BRIGHTNESS: True
+    BRIGHTNESS_FACTOR: (-0.3, 0.3)   # default ±0.1 is mild; widen first
+    CONTRAST: True
+    CONTRAST_FACTOR: (-0.3, 0.3)
+    GAMMA_CONTRAST: True
+    GC_GAMMA: (0.7, 1.5)            # default (1.25, 1.75) only darkens; include <1 to lift dim signal
+    # --- noise (dim neurons ↔ background) ---
+    GAUSSIAN_NOISE: True
+    GAUSSIAN_NOISE_VAR: 0.02         # start low; raise if still too clean
+    # POISSON_NOISE: True            # optional; confocal-ish
+    # --- MCFO color stochasticity ---
+    CHANNEL_SHUFFLE: True            
+    # --- broken / gappy signal (use lightly) ---
+    DROPOUT: True
+    DROP_RANGE: (0, 0.1)
+    # MISSING_SECTIONS: True         # z-gaps; optional
+
+MODEL:
+    ARCHITECTURE: unet
+    FEATURE_MAPS: [16, 32, 64, 128, 256]
+    Z_DOWN: [1,1,1,1]
+    LOAD_CHECKPOINT: False
+
+TRAIN:
+    ENABLE: True
+    OPTIMIZER: ADAMW
+    LR: 3.E-3
+    BATCH_SIZE: 105
+    EPOCHS: 30
+    PATIENCE: 10
+    LR_SCHEDULER:
+        NAME: 'onecycle'    # use one-cycle learning rate scheduler
+  
+TEST:
+    ENABLE: True
+    AUGMENTATION: False
+    FULL_IMG: False

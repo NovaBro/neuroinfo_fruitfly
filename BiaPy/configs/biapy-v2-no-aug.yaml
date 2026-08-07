@@ -1,29 +1,28 @@
 # BiaPy version: 3.6.8
 
 SYSTEM:
-    NUM_CPUS: 6
-    NUM_WORKERS: 6
+    NUM_CPUS: 12
+    NUM_WORKERS: 12
 
 PROBLEM:
     TYPE: INSTANCE_SEG
     NDIM: 3D
     INSTANCE_SEG:
-        DATA_CHANNELS: ['F', 'C', 'Db', 'Dn']
-        WATERSHED:
-            SEED_CHANNELS: ['F', 'Db', 'C', 'Dn']
-            SEED_CHANNELS_THRESH: ['auto', 'auto', 'auto', 'auto']
-            TOPOGRAPHIC_SURFACE_CHANNEL: 'Db'
-            GROWTH_MASK_CHANNELS: ['F']
-            GROWTH_MASK_CHANNELS_THRESH: ['auto']
+      DATA_CHANNELS: ['F', 'P']
+      DATA_CHANNELS_EXTRA_OPTS:
+        - P:
+            type: 'skeleton'   # not 'centroid' — centroids are useless for long arbors
+            dilation: 1        # try 1 first; 2 if seeds are too sparse/broken
+            erosion: 0
+      DATA_CHANNEL_WEIGHTS: (1.0, 2.0)   # upweight sparse P vs dense F
+      WATERSHED:
+        SEED_CHANNELS: ['P']
+        SEED_CHANNELS_THRESH: ['auto']    # or try 0.3–0.5 after inspecting P
+        TOPOGRAPHIC_SURFACE_CHANNEL: 'F'
+        GROWTH_MASK_CHANNELS: ['F']
+        GROWTH_MASK_CHANNELS_THRESH: ['auto']
+        DATA_CHECK_MW: True
 
-            DATA_REMOVE_BEFORE_MW: True
-            DATA_REMOVE_SMALL_OBJ_BEFORE: 500     # same rough voxel threshold as above
-            SEED_MORPH_SEQUENCE: ['erode', 'dilate']
-            SEED_MORPH_RADIUS: [1, 1]
-            ERODE_AND_DILATE_GROWTH_MASK: True
-            FORE_EROSION_RADIUS: 1
-            FORE_DILATION_RADIUS: 1
-            DATA_CHECK_MW: True
 
 DATA: 
     PATCH_SIZE: (20, 128, 128, 3)
@@ -34,7 +33,6 @@ DATA:
     VAL:
         PATH: fisbe/biapy-no-aug/val/raw
         GT_PATH: fisbe/biapy-no-aug/val/label
-        FROM_TRAIN: False
     TEST:
         PATH: fisbe/biapy-no-aug/test/raw
         GT_PATH: fisbe/biapy-no-aug/test/label
@@ -43,12 +41,15 @@ DATA:
         PADDING: (4,16,16)
 
 AUGMENTOR:
-    ENABLE: True
-    RANDOM_ROT: True
-    AUG_SAMPLES: True
-    VFLIP: True
-    HFLIP: True
-    ZFLIP: True
+    ENABLE: False
+    RANDOM_ROT: False
+    VFLIP: False
+    HFLIP: False
+    ZFLIP: False
+
+
+PATHS:
+    CHECKPOINT_FILE: metrics/biapy/biapy-v1-no-aug/checkpoints/biapy-v1-no-aug_0-checkpoint-best.pth
 
 MODEL:
     ARCHITECTURE: unet
@@ -59,19 +60,19 @@ MODEL:
 TRAIN:
     ENABLE: True
     OPTIMIZER: ADAMW
-    LR: 1.E-3
-    BATCH_SIZE: 45
+    LR: 6.E-3
+    BATCH_SIZE: 180
     EPOCHS: 30
     PATIENCE: 10
     LR_SCHEDULER:
         NAME: 'onecycle'    # use one-cycle learning rate scheduler
   
 TEST:
-    ENABLE: False
+    ENABLE: True
     AUGMENTATION: False
     FULL_IMG: False
     POST_PROCESSING:
         INSTANCE_REFINEMENT:
             ENABLE: True
             OPERATIONS: ['remove_small_objects']
-            VALUES: [250]   # voxel count threshold — tune based on your smallest real neuron
+            VALUES: [50]   # voxel count threshold — tune based on your smallest real neuron

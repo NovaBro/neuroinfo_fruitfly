@@ -13,7 +13,7 @@ from biapy import BiaPy
 
 CONFIG_DIR = Path("BiaPy/configs")
 RESULT_DIR = Path('metrics/biapy')
-TRAIN_PARTITION_SIZE = 6
+TRAIN_PARTITION_SIZE = 18
 
 # Change to load weight safety!
 import torch
@@ -52,6 +52,13 @@ def get_args():
         '--run-id',
         default='0',
         help='Run ID for logging/versioning'
+    )
+    parser.add_argument(
+        '--num-cpus',
+        type=int,
+        default=None,
+        help='Override SYSTEM.NUM_CPUS/NUM_WORKERS '
+             '(default: SLURM_CPUS_PER_TASK, else YAML)',
     )
     return parser.parse_args()
 
@@ -164,12 +171,37 @@ def apply_mode_overrides(cfg, mode):
     return cfg
 
 
+def apply_cpu_overrides(cfg, n_cpus=None):
+    """Set SYSTEM.NUM_CPUS/NUM_WORKERS from CLI or SLURM_CPUS_PER_TASK."""
+    cfg.setdefault('SYSTEM', {})
+    if n_cpus is None:
+        env = os.environ.get('SLURM_CPUS_PER_TASK')
+        if env:
+            n_cpus = int(env)
+    if n_cpus is None:
+        print(
+            'CPU overrides: none '
+            f'(SYSTEM.NUM_CPUS={cfg["SYSTEM"].get("NUM_CPUS")}, '
+            f'SYSTEM.NUM_WORKERS={cfg["SYSTEM"].get("NUM_WORKERS")})'
+        )
+        return cfg
+
+    cfg['SYSTEM']['NUM_CPUS'] = n_cpus
+    cfg['SYSTEM']['NUM_WORKERS'] = -1
+    print(
+        f'CPU overrides: SYSTEM.NUM_CPUS={n_cpus}, '
+        f'SYSTEM.NUM_WORKERS={n_cpus}'
+    )
+    return cfg
+
+
 def main():
     args = get_args()
 
     # BiaPy 3.7.0 only accepts str/dict/CfgNode, not Path.
     config_path = (CONFIG_DIR / args.config_file).as_posix()
     cfg = apply_mode_overrides(load_base_config(config_path), args.mode)
+    cfg = apply_cpu_overrides(cfg, args.num_cpus)
 
     match args.mode:
         case 'preprocessing':
