@@ -23,6 +23,12 @@ def get_args():
     parser.add_argument("--job-name", type=str)
     parser.add_argument("--run-id", default=0, type=str)
     parser.add_argument("--split", default='test', help="Either train, test, or val", type=str)
+    parser.add_argument(
+        "--from-scratch",
+        action="store_true",
+        default=False,
+        help="Recompute metrics even if cached .toml results already exist",
+    )
 
     args = parser.parse_args()
     return args
@@ -57,7 +63,7 @@ def tiff_to_zarr(tiff_path, zarr_path, zarr_key="volumes/pred_instance"):
 
 def main(args:argparse.Namespace):
     config_name = args.config_name
-    job_name = config_name
+    job_name = args.job_name
     run_id = args.run_id
     gt_root = ROOT_DIR / f"fisbe/completely/{args.split}"
 
@@ -65,7 +71,7 @@ def main(args:argparse.Namespace):
     print(f"run_id: {run_id}")
 
     experiment_dir = RESULT_ROOT_DIR / f"{config_name}/results/{job_name}_{run_id}"
-    assert experiment_dir.exists(), "Experiment doesn't exist! Maybe run it? or wrong path!"
+    assert experiment_dir.exists(), f"Experiment doesn't exist! Maybe run it? or wrong path! ({experiment_dir})"
     tiff_dir = experiment_dir / "per_image_instances"
     zarr_dir = experiment_dir / "per_image_instances_zarr"
 
@@ -85,31 +91,47 @@ def main(args:argparse.Namespace):
         zarr_dir.mkdir(parents=True, exist_ok=True)
         print(f"Number of files to process: {len(tif_files)}")
         for idx, tif in enumerate(tif_files):
-            print(f"Converting [{idx} / {len(tif_files)}]: {tif}")
+            print(f"Converting [{idx + 1} / {len(tif_files)}]: {tif}")
             tiff_to_zarr(tif, zarr_dir / f"{tiff_stem(tif)}.zarr")
+        zarr_files = list(zarr_dir.glob("*.zarr"))
 
-    for zarr_file in zarr_dir.glob("*.zarr"):
-        zarr_file_name = zarr_file.name
-        # zarr_file_path = zarr_file.as_posix()
-        gt_file_path = (gt_root / zarr_file_name).as_posix()
+    print(f"Evaluating [ {len(zarr_files) + 1} ] Files:")
+    for idx, res_file in enumerate(zarr_dir.glob("*.zarr")):
+        print(f"Evaluating [{idx + 1} / {len(zarr_files)}]: {res_file}")
+        res_file_name = res_file.name
+        res_file = res_file.as_posix()
+        gt_file_path = (gt_root / res_file_name).as_posix()
         # print("res_file_path:", zarr_file_path)
+        print("res_file_name:", res_file_name)
+        print("res_file_path:", res_file)
         print("gt_file_path:", gt_file_path)
-        print("res_file:", zarr_file)
-        print("res_file_name:", zarr_file_name)
         metrics = evaluate_file(
-            # res_file=zarr_file_path,
-            res_file=zarr_file,
+            res_file=res_file,
             res_key="volumes/pred_instance",
             gt_file=gt_file_path,
             gt_key="volumes/gt_instances",
             out_dir=out_dir,
             ndim=3,
-            app="flylight",
+            localization_criterion="cldice",
+            assignment_strategy="greedy",
+            remove_small_components=500,
+            evaluate_false_labels=True,
+            add_general_metrics=[
+                "avg_gt_skel_coverage",
+                "avg_f1_cov_score",
+                "false_merge",
+                "false_split",
+                "avg_gt_cov_dim",
+                "avg_gt_cov_overlap",
+            ],
+            fm_thresh=0.1,
+            fs_thresh=0.05,
+            eval_dim=True,
+            visualize_type="neuron",
             partly=False,
-
-            remove_small_components=800
+            from_scratch=args.from_scratch,
         )
-        metric_file = out_dir / f"{zarr_file_name}.toml"
+        metric_file = out_dir / f"{res_file_name}.toml"
         print(f"Dumping metrics to toml file ({metric_file})")
         toml.dump(metrics, open(metric_file, "w"))
         print("Metrics:", metrics)
