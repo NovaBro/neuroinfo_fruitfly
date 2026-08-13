@@ -62,8 +62,13 @@ def per_instance_intensity_scale(
     return _scale_clip_cast(out, raw.dtype)
 
 
-def _sample_uniform(lo: float, hi: float, size: int) -> np.ndarray:
-    return np.random.uniform(lo, hi, size=size).astype(np.float32)
+def _sample_scalings(lo: float, hi: float, size: int) -> np.ndarray:
+    distance = hi - lo
+    margin = distance * 0.25
+    low_range = np.random.uniform(lo, lo + margin, size=int(np.floor(size / 2))).astype(np.float32)
+    high_range = np.random.uniform(hi - margin, hi, size=int(np.ceil(size / 2))).astype(np.float32)
+    # return np.random.uniform(lo, hi, size=size).astype(np.float32)
+    return np.random.permutation(np.concat([low_range, high_range]))
 
 
 def generate_augmentation_jobs(
@@ -76,8 +81,10 @@ def generate_augmentation_jobs(
     num_rotations: int = 1,
     enable_channel_scale: bool = False,
     channel_scale_range: tuple[float, float] | None = (0.25, 1.5),
+    num_channel_scales: int = 1,
     enable_instance_scale: bool = False,
     instance_scale_range: tuple[float, float] | None = (0.25, 1.5),
+    num_instance_scales: int = 1,
 ) -> list[dict]:
     """
     Generate jobs for the enabled augmentations.
@@ -107,44 +114,50 @@ def generate_augmentation_jobs(
         axis_choices = [0]
         k_choices = [0]
 
+    n_cs = num_channel_scales if enable_channel_scale else 1
+    n_is = num_instance_scales if enable_instance_scale else 1
+
     jobs = []
     for ro in channel_orders:
         for a in axis_choices:
             for k in k_choices:
-                aug_id = ""
-                job: dict = {
-                    "c": ro,
-                    "a": int(a),
-                    "k": int(k),
-                }
+                for _cs_i in range(n_cs):
+                    for is_i in range(n_is):
+                        aug_id = ""
+                        job: dict = {
+                            "c": ro,
+                            "a": int(a),
+                            "k": int(k),
+                        }
 
-                if enable_channel_flip:
-                    aug_id += "_c" + "".join(str(x) for x in ro)
-                if enable_rotate:
-                    aug_id += f"_r{a}" + f"_k{k}"
+                        if enable_channel_flip:
+                            aug_id += "_c" + "".join(str(x) for x in ro)
+                        if enable_rotate:
+                            aug_id += f"_r{a}" + f"_k{k}"
 
-                if enable_channel_scale and channel_scale_range is not None:
-                    lo, hi = channel_scale_range
-                    channel_scales = _sample_uniform(lo, hi, NUM_CHANNELS)
-                    job["channel_scales"] = channel_scales
-                    aug_id += "_cs" + "_".join(f"{s:.2f}" for s in channel_scales)
+                        if enable_channel_scale and channel_scale_range is not None:
+                            lo, hi = channel_scale_range
+                            channel_scales = _sample_scalings(lo, hi, NUM_CHANNELS)
+                            job["channel_scales"] = channel_scales
+                            aug_id += "_cs" + "_".join(f"{s:.2f}" for s in channel_scales)
 
-                if (
-                    enable_instance_scale
-                    and instance_scale_range is not None
-                    and num_instances > 0
-                ):
-                    lo, hi = instance_scale_range
-                    job["instance_scales"] = _sample_uniform(lo, hi, num_instances)
-                    aug_id += "_is"
+                        if (
+                            enable_instance_scale
+                            and instance_scale_range is not None
+                            and num_instances > 0
+                        ):
+                            lo, hi = instance_scale_range
+                            instance_scales = _sample_scalings(lo, hi, num_instances)
+                            job["instance_scales"] = instance_scales
+                            aug_id += f"_is{is_i}" + "_".join(f"{s:.2f}" for s in instance_scales)
 
-                if not aug_id:
-                    # Intensity-only path where instance scale was skipped (0 instances)
-                    # and channel scale somehow empty — should not happen; keep stable id.
-                    aug_id = "_aug"
+                        if not aug_id:
+                            # Intensity-only path where instance scale was skipped (0 instances)
+                            # and channel scale somehow empty — should not happen; keep stable id.
+                            aug_id = "_aug"
 
-                job["aug_id"] = aug_id
-                jobs.append(job)
+                        job["aug_id"] = aug_id
+                        jobs.append(job)
 
     return jobs
 

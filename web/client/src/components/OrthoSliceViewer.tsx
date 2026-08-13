@@ -9,7 +9,11 @@ import {
 } from "../api/client";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import {
+  CHANNEL_GAIN_MAX,
+  CHANNEL_GAIN_MIN,
+  ChannelGains,
   DEFAULT_BRIGHTNESS,
+  DEFAULT_CHANNEL_GAINS,
   DEFAULT_CONTRAST,
   DISPLAY_MAX,
   DISPLAY_MIN,
@@ -33,6 +37,9 @@ function axisSize(meta: SampleMeta, axis: AxisKind): number {
 
 export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
   const [channel, setChannel] = useState<ChannelParam>(0);
+  const [channelGains, setChannelGains] = useState<ChannelGains>(
+    DEFAULT_CHANNEL_GAINS,
+  );
   const [brightness, setBrightness] = useState(DEFAULT_BRIGHTNESS);
   const [contrast, setContrast] = useState(DEFAULT_CONTRAST);
   const [axis, setAxis] = useState<AxisKind>("z");
@@ -60,6 +67,7 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
 
   useEffect(() => {
     setIndex(Math.floor(maxIndex / 2));
+    setChannelGains(DEFAULT_CHANNEL_GAINS);
     setBrightness(DEFAULT_BRIGHTNESS);
     setContrast(DEFAULT_CONTRAST);
   }, [sampleName]);
@@ -156,6 +164,62 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
             ))}
           </div>
         </div>
+
+        {channel === "all" && (
+          <>
+            <div className="ortho-viewer__group ortho-viewer__group--slider">
+              <span className="ortho-viewer__label">
+                Red intensity ({channelGains.r}%)
+              </span>
+              <input
+                type="range"
+                min={CHANNEL_GAIN_MIN}
+                max={CHANNEL_GAIN_MAX}
+                value={channelGains.r}
+                onChange={(e) =>
+                  setChannelGains({
+                    ...channelGains,
+                    r: Number(e.target.value),
+                  })
+                }
+              />
+            </div>
+            <div className="ortho-viewer__group ortho-viewer__group--slider">
+              <span className="ortho-viewer__label">
+                Green intensity ({channelGains.g}%)
+              </span>
+              <input
+                type="range"
+                min={CHANNEL_GAIN_MIN}
+                max={CHANNEL_GAIN_MAX}
+                value={channelGains.g}
+                onChange={(e) =>
+                  setChannelGains({
+                    ...channelGains,
+                    g: Number(e.target.value),
+                  })
+                }
+              />
+            </div>
+            <div className="ortho-viewer__group ortho-viewer__group--slider">
+              <span className="ortho-viewer__label">
+                Blue intensity ({channelGains.b}%)
+              </span>
+              <input
+                type="range"
+                min={CHANNEL_GAIN_MIN}
+                max={CHANNEL_GAIN_MAX}
+                value={channelGains.b}
+                onChange={(e) =>
+                  setChannelGains({
+                    ...channelGains,
+                    b: Number(e.target.value),
+                  })
+                }
+              />
+            </div>
+          </>
+        )}
 
         <div className="ortho-viewer__group ortho-viewer__group--slider">
           <span className="ortho-viewer__label">Brightness ({brightness}%)</span>
@@ -282,6 +346,7 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
             alt={`${sampleName} raw ${viewMode}`}
             brightness={brightness}
             contrast={contrast}
+            channelGains={channel === "all" ? channelGains : undefined}
           />
         ) : (
           <p className="ortho-viewer__placeholder">Raw channel off</p>

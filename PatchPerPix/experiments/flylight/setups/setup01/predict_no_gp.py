@@ -208,30 +208,46 @@ def predict(**config):
                 chunks_batch.append(raw_b)
 
             logger.info("Predicting..")
-            pred_code_affs, pred_fgbg_numinst = \
-                model(raw=torch.as_tensor(np.stack(chunks_batch, axis=0), device=device))
+            raw_batch = torch.as_tensor(
+                np.stack(chunks_batch, axis=0), device=device)
 
-            for b in range(len(chunks_batch)):
-                code_affs = pred_code_affs[b].cpu().detach().numpy()
-                fgbg_numinst = pred_fgbg_numinst[b].cpu().detach().numpy()
+            # inference_mode: no autograd graph is retained. Without it the
+            # whole valid-UNet activation stack is kept alive per forward pass,
+            # which is what forces tiny test_input_shape_valid / batch_size.
+            # autocast fp16: the code_affs head has prod(patchshape) channels
+            # (343 for 7x7x7), so its output tensor dominates GPU memory.
+            with torch.inference_mode(), torch.autocast(
+                    device_type=device.type,
+                    dtype=torch.float16,
+                    enabled=(device.type == "cuda")):
+                pred_code_affs, pred_fgbg_numinst = model(raw=raw_batch)
 
-                slices = slices_batch[b]
-                slices_global = [slices[0]]
-                slices_local = [slice(None)]
-                for sidx, slc in enumerate(slices[-len(shape):]):
-                    slc_s = slc.start + context[sidx] - context[sidx]
-                    slc_e = min(shape[sidx] + context[sidx],
-                                slc.stop - context[sidx]) - context[sidx]
-                    slices_global.append(slice(slc_s, slc_e))
-                    slices_local.append(slice(0, slc_e - slc_s))
+                for b in range(len(chunks_batch)):
+                    # output zarrs are float16 anyway; cast on-device so the
+                    # device->host copy of the 343-channel tensor is halved
+                    code_affs = pred_code_affs[b].to(torch.float16).cpu().numpy()
+                    fgbg_numinst = \
+                        pred_fgbg_numinst[b].to(torch.float16).cpu().numpy()
 
-                logger.info("B%d: Slices global: %s, Slices local: %s",
-                            b, slices_global, slices_local)
+                    slices = slices_batch[b]
+                    slices_global = [slices[0]]
+                    slices_local = [slice(None)]
+                    for sidx, slc in enumerate(slices[-len(shape):]):
+                        slc_s = slc.start + context[sidx] - context[sidx]
+                        slc_e = min(shape[sidx] + context[sidx],
+                                    slc.stop - context[sidx]) - context[sidx]
+                        slices_global.append(slice(slc_s, slc_e))
+                        slices_local.append(slice(0, slc_e - slc_s))
 
-                out_zf[code_aff_key][tuple(slices_global)] = \
-                    code_affs[tuple(slices_local)]
-                out_zf[fgbg_numinst_key][tuple(slices_global)] = \
-                    fgbg_numinst[tuple(slices_local)]
+                    logger.info("B%d: Slices global: %s, Slices local: %s",
+                                b, slices_global, slices_local)
+
+                    out_zf[code_aff_key][tuple(slices_global)] = \
+                        code_affs[tuple(slices_local)]
+                    out_zf[fgbg_numinst_key][tuple(slices_global)] = \
+                        fgbg_numinst[tuple(slices_local)]
+
+            del raw_batch, pred_code_affs, pred_fgbg_numinst
 
 
     # if config.get("normalization"):

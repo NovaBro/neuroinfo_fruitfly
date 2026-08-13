@@ -89,12 +89,14 @@ def convert_split(input_dir: Path, output_dir: Path, args: argparse.Namespace) -
                         if args.channel_scale_range is not None
                         else None
                     ),
+                    num_channel_scales=args.num_channel_scales or 1,
                     enable_instance_scale=args.instance_scale,
                     instance_scale_range=(
                         tuple(args.instance_scale_range)
                         if args.instance_scale_range is not None
                         else None
                     ),
+                    num_instance_scales=args.num_instance_scales or 1,
                 )
                 logger.info(f"Number of augmentation jobs: {len(aug_jobs)}")
                 logger.debug(aug_jobs)

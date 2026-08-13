@@ -1,0 +1,11 @@
+INFO:    FUSE2FS (3): Warning: Mounting unchecked fs, running e2fsck is recommended.
+usage: biapy_prep_main.py [-h] -o OUTPUT_DIR [-i INPUT_DIR] [--channel-flip]
+                          [--num-channel-flips N] [--rotate] [--num-axes N]
+                          [--num-rotations N] [--channel-scale]
+                          [--channel-scale-range LO HI]
+                          [--num-channel-scales N] [--instance-scale]
+                          [--instance-scale-range LO HI]
+                          [--num-instance-scales N] [-s SPLITS [SPLITS ...]]
+                          [--max-num-samples MAX_NUM_SAMPLES] [-c]
+                          [-l LOG_OUTPUT] [-v VERBOSE_LEVEL] [-w WORKERS]
+biapy_prep_main.py: error: argument --channel-scale-range: expected 2 arguments

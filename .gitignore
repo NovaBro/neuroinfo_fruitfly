@@ -2,18 +2,23 @@
 .vscode/
 /.vscode
 env/
+pyrightconfig.json
 
 # Data
 downloads/
 fisbe/
 *.h5j
 *.tif
+metrics/
 
 /data
 /skeletons
 /__pycache__
 __pycache__
 *.DS_Store
+
+# BiaPy
+BiaPy/results
 
 # PatchPerPix
 PatchPerPix/experiments/ppp_experiments/

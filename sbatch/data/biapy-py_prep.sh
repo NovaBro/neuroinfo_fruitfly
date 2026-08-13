@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=biapy-channel-rot
+#SBATCH --job-name=biapy-instance-scale
 #SBATCH --cpus-per-task=12
 #SBATCH --time=4:00:00
 #SBATCH --mem=256g
@@ -26,11 +26,8 @@ singularity exec --nv \
     python3 -u BiaPy/biapy_prep_main.py \
         -o ${output_dir} \
         -s train val test \
-        --channel-flip \
-        --num-channel-flips 3 \
-        --rotate \
-        --num-axes 3 \
-        --num-rotations 3 \
+        --instance-scale \
+        --num-instance-scales 4 \
         -v info \
         -c \
         -w ${SLURM_CPUS_PER_TASK} \
@@ -38,15 +35,21 @@ singularity exec --nv \
 
 # --max-num-samples 2 \
 
+# Channel-Rot
 # --channel-flip \
 # --num-channel-flips 3 \
 # --rotate \
 # --num-axes 3 \
 # --num-rotations 3 \
 
+# Channel Scale
 # --channel-scale \
-# --channel-scale-range \
+# --num-channel-scales 4 \
+# --channel-scale-range \ MUST PROVIDE VALUES
+
+# Instance Scale
 # --instance-scale \
-# --instance-scale-range \
+# --num-instance-scales 4 \
+# --instance-scale-range \ MUST PROVIDE VALUES
 
 

@@ -3,7 +3,13 @@ import {
   RAW_CHANNEL_CHOICES,
   VOLUME_MAX_SIZE_OPTIONS,
 } from "../api/client";
-import { DISPLAY_MAX, DISPLAY_MIN } from "../utils/displayAdjust";
+import {
+  CHANNEL_GAIN_MAX,
+  CHANNEL_GAIN_MIN,
+  ChannelGains,
+  DISPLAY_MAX,
+  DISPLAY_MIN,
+} from "../utils/displayAdjust";
 import { RangeSlider } from "./RangeSlider";
 import "./VolumeViewer3D.css";
 
@@ -11,6 +17,8 @@ interface VolumeControlsProps {
   channel: ChannelParam;
   onChannelChange: (channel: ChannelParam) => void;
   channelCount: number;
+  channelGains: ChannelGains;
+  onChannelGainsChange: (gains: ChannelGains) => void;
   brightness: number;
   onBrightnessChange: (value: number) => void;
   contrast: number;
@@ -34,6 +42,8 @@ export function VolumeControls({
   channel,
   onChannelChange,
   channelCount,
+  channelGains,
+  onChannelGainsChange,
   brightness,
   onBrightnessChange,
   contrast,
@@ -82,6 +92,32 @@ export function VolumeControls({
           ))}
         </div>
       </div>
+
+      {channel === "all" && (
+        <>
+          <RangeSlider
+            label={`Red intensity (${channelGains.r}%)`}
+            min={CHANNEL_GAIN_MIN}
+            max={CHANNEL_GAIN_MAX}
+            value={channelGains.r}
+            onChange={(r) => onChannelGainsChange({ ...channelGains, r })}
+          />
+          <RangeSlider
+            label={`Green intensity (${channelGains.g}%)`}
+            min={CHANNEL_GAIN_MIN}
+            max={CHANNEL_GAIN_MAX}
+            value={channelGains.g}
+            onChange={(g) => onChannelGainsChange({ ...channelGains, g })}
+          />
+          <RangeSlider
+            label={`Blue intensity (${channelGains.b}%)`}
+            min={CHANNEL_GAIN_MIN}
+            max={CHANNEL_GAIN_MAX}
+            value={channelGains.b}
+            onChange={(b) => onChannelGainsChange({ ...channelGains, b })}
+          />
+        </>
+      )}
 
       <RangeSlider
         label={`Brightness (${brightness}%)`}

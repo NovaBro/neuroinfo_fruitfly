@@ -131,14 +131,18 @@ class LossWrapper(torch.nn.Module):
         loss = loss_patch + loss_fg
 
         if pred_logits_affs.numel() > 0:
-            self.summaries['jaccard_patch'][0] = self.jaccard(torch.flatten(
-                pred_logits_affs), torch.flatten(gt_affs_samples))
-            self.summaries['accuracy_patch'][0] = self.accuracy(torch.flatten(
-                pred_logits_affs), torch.flatten(gt_affs_samples))
-            self.summaries['accuracy2_patch'][0] = self.accuracy2(torch.flatten(
-                pred_logits_affs), torch.flatten(gt_affs_samples))
-            self.summaries['mse_patch'][0] = self.mse(torch.flatten(
-                torch.sigmoid(pred_logits_affs)), torch.flatten(gt_affs_samples))
+            # Diagnostics only: never needed for backprop, and on the dense
+            # patch path (train_code=false) the flattened tensor is huge
+            # (~7.5e9 elems at batch 15), so torchmetrics' boolean intermediates
+            # OOM. no_grad lets them free immediately instead of being retained.
+            with torch.no_grad():
+                p_affs = torch.flatten(pred_logits_affs)
+                g_affs = torch.flatten(gt_affs_samples)
+                self.summaries['jaccard_patch'][0] = self.jaccard(p_affs, g_affs)
+                self.summaries['accuracy_patch'][0] = self.accuracy(p_affs, g_affs)
+                self.summaries['accuracy2_patch'][0] = self.accuracy2(p_affs, g_affs)
+                self.summaries['mse_patch'][0] = self.mse(
+                    torch.sigmoid(p_affs), g_affs)
 
         if self.overlapping_inst:
             gt_fgbg_loss = torch.nn.functional.one_hot(
@@ -148,14 +152,13 @@ class LossWrapper(torch.nn.Module):
         else:
             pred_logits_fg = torch.sigmoid(pred_logits_fg)
 
-        self.summaries['jaccard_fg'][0] = self.jaccard(torch.flatten(
-            pred_logits_fg), torch.flatten(gt_fgbg_loss))
-        self.summaries['accuracy_fg'][0] = self.accuracy(torch.flatten(
-            pred_logits_fg), torch.flatten(gt_fgbg_loss))
-        self.summaries['accuracy2_fg'][0] = self.accuracy2(torch.flatten(
-            pred_logits_fg), torch.flatten(gt_fgbg_loss))
-        self.summaries['mse_fg'][0] = self.mse(torch.flatten(
-            pred_logits_fg), torch.flatten(gt_fgbg_loss))
+        with torch.no_grad():
+            p_fg = torch.flatten(pred_logits_fg)
+            g_fg = torch.flatten(gt_fgbg_loss)
+            self.summaries['jaccard_fg'][0] = self.jaccard(p_fg, g_fg)
+            self.summaries['accuracy_fg'][0] = self.accuracy(p_fg, g_fg)
+            self.summaries['accuracy2_fg'][0] = self.accuracy2(p_fg, g_fg)
+            self.summaries['mse_fg'][0] = self.mse(p_fg, g_fg)
 
         self.summaries['loss'][0] = loss
         self.summaries['loss_patch'][0] = loss_patch

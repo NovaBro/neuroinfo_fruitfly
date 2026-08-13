@@ -13,6 +13,8 @@ logger = logging.getLogger(__name__)
 _DEFAULT_NUM_CHANNEL_FLIPS = 1
 _DEFAULT_NUM_AXES = 1
 _DEFAULT_NUM_ROTATIONS = 1
+_DEFAULT_NUM_CHANNEL_SCALES = 1
+_DEFAULT_NUM_INSTANCE_SCALES = 1
 _DEFAULT_SCALE_RANGE = (0.25, 1.5)
 
 
@@ -81,6 +83,13 @@ def get_args():
         help=f"Channel scale range (default: {_DEFAULT_SCALE_RANGE[0]} {_DEFAULT_SCALE_RANGE[1]}). Requires --channel-scale.",
     )
     parser.add_argument(
+        "--num-channel-scales",
+        type=int,
+        default=None,
+        metavar="N",
+        help=f"Number of channel-scale draws to sample (default: {_DEFAULT_NUM_CHANNEL_SCALES}). Requires --channel-scale.",
+    )
+    parser.add_argument(
         "--instance-scale",
         action="store_true",
         help="Enable per-instance multiplicative intensity scaling.",
@@ -92,6 +101,13 @@ def get_args():
         default=None,
         metavar=("LO", "HI"),
         help=f"Instance scale range (default: {_DEFAULT_SCALE_RANGE[0]} {_DEFAULT_SCALE_RANGE[1]}). Requires --instance-scale.",
+    )
+    parser.add_argument(
+        "--num-instance-scales",
+        type=int,
+        default=None,
+        metavar="N",
+        help=f"Number of instance-scale draws to sample (default: {_DEFAULT_NUM_INSTANCE_SCALES}). Requires --instance-scale.",
     )
 
     parser.add_argument(
@@ -152,7 +168,13 @@ def normalize_aug_args(args: argparse.Namespace) -> None:
         args.channel_scale, args.channel_scale_range, "--channel-scale-range", "--channel-scale"
     )
     _require_enable(
+        args.channel_scale, args.num_channel_scales, "--num-channel-scales", "--channel-scale"
+    )
+    _require_enable(
         args.instance_scale, args.instance_scale_range, "--instance-scale-range", "--instance-scale"
+    )
+    _require_enable(
+        args.instance_scale, args.num_instance_scales, "--num-instance-scales", "--instance-scale"
     )
 
     if args.channel_flip and args.num_channel_flips is None:
@@ -162,10 +184,16 @@ def normalize_aug_args(args: argparse.Namespace) -> None:
             args.num_axes = _DEFAULT_NUM_AXES
         if args.num_rotations is None:
             args.num_rotations = _DEFAULT_NUM_ROTATIONS
-    if args.channel_scale and args.channel_scale_range is None:
-        args.channel_scale_range = list(_DEFAULT_SCALE_RANGE)
-    if args.instance_scale and args.instance_scale_range is None:
-        args.instance_scale_range = list(_DEFAULT_SCALE_RANGE)
+    if args.channel_scale:
+        if args.channel_scale_range is None:
+            args.channel_scale_range = list(_DEFAULT_SCALE_RANGE)
+        if args.num_channel_scales is None:
+            args.num_channel_scales = _DEFAULT_NUM_CHANNEL_SCALES
+    if args.instance_scale:
+        if args.instance_scale_range is None:
+            args.instance_scale_range = list(_DEFAULT_SCALE_RANGE)
+        if args.num_instance_scales is None:
+            args.num_instance_scales = _DEFAULT_NUM_INSTANCE_SCALES
 
     if args.channel_scale:
         _validate_scale_range(
@@ -173,12 +201,14 @@ def normalize_aug_args(args: argparse.Namespace) -> None:
             args.channel_scale_range[0],
             args.channel_scale_range[1],
         )
+        _validate_positive_count("--num-channel-scales", args.num_channel_scales)
     if args.instance_scale:
         _validate_scale_range(
             "--instance-scale-range",
             args.instance_scale_range[0],
             args.instance_scale_range[1],
         )
+        _validate_positive_count("--num-instance-scales", args.num_instance_scales)
 
 
 def _require_enable(enabled: bool, value, param_flag: str, enable_flag: str) -> None:
@@ -189,6 +219,11 @@ def _require_enable(enabled: bool, value, param_flag: str, enable_flag: str) -> 
 def _validate_scale_range(name: str, lo: float, hi: float) -> None:
     if not (0 < lo <= hi):
         raise ValueError(f"{name} must satisfy 0 < lo <= hi, got ({lo}, {hi})")
+
+
+def _validate_positive_count(name: str, n: int) -> None:
+    if n < 1:
+        raise ValueError(f"{name} must be >= 1, got {n}")
 
 
 def setup_logging(verbose_level: str, log_output: str) -> None:
@@ -206,7 +241,7 @@ def setup_logging(verbose_level: str, log_output: str) -> None:
         level=log_level,
         format="%(asctime)s - %(levelname)-8s - %(funcName)-25s: %(message)s",
         handlers=[
-            logging.FileHandler(f"{log_output}", "w"),
+            logging.FileHandler(f"{log_output}.txt", "w"),
             logging.StreamHandler(sys.stdout),
         ],
     )

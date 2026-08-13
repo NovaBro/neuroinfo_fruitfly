@@ -623,3 +623,5 @@ TRAIN:
 [08:12:03.719573] ###########################
 [08:12:03.721254] You select to create ['F', 'C', 'Db', 'Dn'] channels from given instance labels and no file is detected in fisbe/biapy-channel-rot/train/label_F.erosion-0.dilation-0_C.mode-thick_Db.val_type-norm.act-sigmoid.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3 . So let's prepare the data. This process will be done just once!
 [08:12:03.760449] Creating Y_train channels . . .
+[14:50:41.865382] DATA.TRAIN.GT_PATH changed from fisbe/biapy-channel-rot/train/label to fisbe/biapy-channel-rot/train/label_F.erosion-0.dilation-0_C.mode-thick_Db.val_type-norm.act-sigmoid.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+[14:50:41.867695] DATA.TEST.GT_PATH changed from fisbe/biapy-no-aug/test/label to fisbe/biapy-no-aug/test/label_F.erosion-0.dilation-0_C.mode-thick_Db.val_type-norm.act-sigmoid.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3

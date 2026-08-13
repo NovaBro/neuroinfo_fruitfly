@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH --job-name=EI-BP-v4
-#SBATCH --cpus-per-task=8
-#SBATCH --time=06:00:00
-#SBATCH --mem=64g
+#SBATCH --job-name=EI-BP-v1
+#SBATCH --cpus-per-task=4
+#SBATCH --time=04:00:00
+#SBATCH --mem=32g
 #SBATCH --account=torch_pr_61_general
 #SBATCH --output=sbatch/evalinstseg/%x-%j.out
 #SBATCH --error=sbatch/evalinstseg/%x-%j.err
@@ -16,9 +16,9 @@ singularity exec \
     conda activate evalinstseg; \
     cd evaluate-instance-segmentation; \
     python -u biapy_eval.py \
-    --config-name=biapy-py_v4 \
-    --job-name=biapy-py_v4 \
-    --run-id=data-channel \
+    --config-name=biapy-v1-no-aug \
+    --job-name=biapy-v1-no-aug \
+    --run-id=0 \
     --from-scratch"
 
 

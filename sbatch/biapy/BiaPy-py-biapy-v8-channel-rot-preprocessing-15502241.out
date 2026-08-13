@@ -1,0 +1,629 @@
+SBATCH Run: biapy-v8-channel-rot.yaml, mode: preprocessing, job-name: biapy-v8-channel-rot, run-id: 0
+SLURM_CPUS_PER_TASK=8
+running BiaPy/run_biapy-py.py
+Mode overrides (preprocessing): leaving YAML flags as-is (TRAIN.ENABLE=True, TEST.ENABLE=True, MODEL.LOAD_CHECKPOINT=False)
+CPU overrides: SYSTEM.NUM_CPUS=8, SYSTEM.NUM_WORKERS=8
+Date     : 2026-08-07 21:14:44
+Arguments: Namespace(config={'SYSTEM': {'NUM_CPUS': 8, 'NUM_WORKERS': -1}, 'PROBLEM': {'TYPE': 'INSTANCE_SEG', 'NDIM': '3D', 'INSTANCE_SEG': {'DATA_CHANNELS': ['F', 'P'], 'DATA_CHANNELS_EXTRA_OPTS': [{'P': {'type': 'skeleton', 'dilation': 2}}], 'DATA_CHANNEL_WEIGHTS': '(1.0, 10.0)', 'WATERSHED': {'SEED_CHANNELS': ['P'], 'SEED_CHANNELS_THRESH': ['auto'], 'TOPOGRAPHIC_SURFACE_CHANNEL': 'F', 'GROWTH_MASK_CHANNELS': ['F'], 'GROWTH_MASK_CHANNELS_THRESH': ['auto'], 'DATA_CHECK_MW': True}}}, 'DATA': {'PATCH_SIZE': '(20, 384, 384, 3)', 'TRAIN': {'PATH': 'fisbe/biapy-channel-rot/train/raw', 'GT_PATH': 'fisbe/biapy-channel-rot/train/label', 'IN_MEMORY': True}, 'VAL': {'PATH': 'fisbe/biapy-no-aug/val/raw', 'GT_PATH': 'fisbe/biapy-no-aug/val/label'}, 'TEST': {'PATH': 'fisbe/biapy-no-aug/test/raw', 'GT_PATH': 'fisbe/biapy-no-aug/test/label', 'IN_MEMORY': True, 'LOAD_GT': True, 'PADDING': '(4,16,16)'}}, 'AUGMENTOR': {'ENABLE': False, 'RANDOM_ROT': False, 'VFLIP': False, 'HFLIP': False, 'ZFLIP': False}, 'PATHS': {'CHECKPOINT_FILE': 'metrics/biapy/biapy-v5-no-aug/checkpoints/biapy-v4-no-aug_0-checkpoint-best.pth'}, 'MODEL': {'ARCHITECTURE': 'unet', 'FEATURE_MAPS': [16, 32, 64, 128, 256], 'Z_DOWN': [1, 1, 1, 1], 'LOAD_CHECKPOINT': False}, 'TRAIN': {'ENABLE': True, 'OPTIMIZER': 'ADAMW', 'LR': 0.0008, 'BATCH_SIZE': 20, 'EPOCHS': 60, 'PATIENCE': 20, 'LR_SCHEDULER': {'NAME': 'onecycle'}}, 'TEST': {'ENABLE': True, 'AUGMENTATION': False, 'FULL_IMG': False, 'POST_PROCESSING': {'INSTANCE_REFINEMENT': {'ENABLE': True, 'OPERATIONS': ['remove_small_objects'], 'VALUES': [50]}}}}, result_dir='metrics/biapy', name='biapy-v8-channel-rot', run_id='0', gpu='', world_size=1, local_rank=-1, dist_on_itp=False, dist_url='env://', dist_backend='nccl')
+Job      : biapy-v8-channel-rot_0
+BiaPy    : 3.7.0
+Python   : 3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:34:02) [GCC 14.3.0]
+PyTorch  : 2.12.1+cu130
+The following changes were made in order to adapt the input configuration:
+Not using distributed mode
+[21:14:44.159105] **** Using 'cpu' for training
+[21:14:44.261976] CPU budget(total)=8 | per_rank=8 | main_threads=4 | num_workers(per_rank)=3 | world_size=1
+[21:14:44.285501] Configuration details:
+[21:14:44.285532] AUGMENTOR:
+  AFFINE_MODE: reflect
+  AUG_NUM_SAMPLES: 10
+  AUG_SAMPLES: True
+  BRIGHTNESS: False
+  BRIGHTNESS_FACTOR: (-0.1, 0.1)
+  BRIGHTNESS_PROB: 0.5
+  CBLUR_DOWN_RANGE: (2, 8)
+  CBLUR_INSIDE: True
+  CBLUR_SIZE: (0.2, 0.4)
+  CHANNEL_SHUFFLE: False
+  CHANNEL_SHUFFLE_PROB: 0.5
+  CMIX_SIZE: (0.2, 0.4)
+  CNOISE_NB_ITERATIONS: (1, 3)
+  CNOISE_SCALE: (0.05, 0.1)
+  CNOISE_SIZE: (0.2, 0.4)
+  CONTRAST: False
+  CONTRAST_FACTOR: (-0.1, 0.1)
+  CONTRAST_PROB: 0.5
+  COUT_APPLY_TO_MASK: False
+  COUT_CVAL: 0.0
+  COUT_NB_ITERATIONS: (1, 3)
+  COUT_SIZE: (0.05, 0.3)
+  CUTBLUR: False
+  CUTBLUR_PROB: 0.5
+  CUTMIX: False
+  CUTMIX_PROB: 0.5
+  CUTNOISE: False
+  CUTNOISE_PROB: 0.5
+  CUTOUT: False
+  CUTOUT_PROB: 0.5
+  DRAW_GRID: True
+  DROPOUT: False
+  DROPOUT_PROB: 0.5
+  DROP_RANGE: (0, 0.2)
+  ELASTIC: False
+  ELASTIC_PROB: 0.5
+  ENABLE: False
+  E_ALPHA: (12, 16)
+  E_MODE: constant
+  E_SIGMA: 4
+  GAMMA_CONTRAST: False
+  GAMMA_CONTRAST_PROB: 0.5
+  GAUSSIAN_NOISE: False
+  GAUSSIAN_NOISE_MEAN: 0.0
+  GAUSSIAN_NOISE_PROB: 0.5
+  GAUSSIAN_NOISE_USE_INPUT_IMG_MEAN_AND_VAR: False
+  GAUSSIAN_NOISE_VAR: 0.05
+  GC_GAMMA: (1.25, 1.75)
+  GRAYSCALE: False
+  GRAYSCALE_PROB: 0.5
+  GRIDMASK: False
+  GRIDMASK_PROB: 0.5
+  GRID_D_RANGE: (0.4, 1)
+  GRID_INVERT: False
+  GRID_RATIO: 0.6
+  GRID_ROTATE: 1.0
+  G_BLUR: False
+  G_BLUR_PROB: 0.5
+  G_SIGMA: (1.0, 2.0)
+  HFLIP: False
+  HFLIP_PROB: 0.5
+  MB_KERNEL: (3, 7)
+  MEDIAN_BLUR: False
+  MEDIAN_BLUR_PROB: 0.5
+  MISALIGNMENT: False
+  MISALIGNMENT_PROB: 0.5
+  MISSING_SECTIONS: False
+  MISSING_SECTIONS_PROB: 0.5
+  MISSP_CHANNEL_PB: 0.5
+  MISSP_ITERATIONS: (10, 30)
+  MOTB_K_RANGE: (8, 12)
+  MOTION_BLUR: False
+  MOTION_BLUR_PROB: 0.5
+  MS_DISPLACEMENT: 16
+  MS_ROTATE_RATIO: 0.5
+  PEPPER: False
+  PEPPER_AMOUNT: 0.05
+  PEPPER_PROB: 0.5
+  POISSON_NOISE: False
+  POISSON_NOISE_PROB: 0.5
+  RANDOM_ROT: False
+  RANDOM_ROT_PROB: 0.5
+  RANDOM_ROT_RANGE: (-180, 180)
+  ROT90: False
+  ROT90_PROB: 0.5
+  SALT: False
+  SALT_AMOUNT: 0.05
+  SALT_AND_PEPPER: False
+  SALT_AND_PEPPER_AMOUNT: 0.05
+  SALT_AND_PEPPER_PROB: 0.5
+  SALT_AND_PEPPER_PROP: 0.5
+  SALT_PROB: 0.5
+  SHEAR: False
+  SHEAR_PROB: 0.5
+  SHEAR_RANGE: (-20, 20)
+  SHIFT: False
+  SHIFT_PROB: 0.5
+  SHIFT_RANGE: (0.1, 0.2)
+  SHUFFLE_TRAIN_DATA_EACH_EPOCH: True
+  SHUFFLE_VAL_DATA_EACH_EPOCH: False
+  VFLIP: False
+  VFLIP_PROB: 0.5
+  ZFLIP: False
+  ZFLIP_PROB: 0.5
+  ZOOM: False
+  ZOOM_IN_Z: False
+  ZOOM_PROB: 0.5
+  ZOOM_RANGE: (0.5, 1.5)
+DATA:
+  CHECK_GENERATORS: False
+  FILTER_BY_IMAGE: False
+  FORCE_RGB: False
+  NORMALIZATION:
+    PERC_CLIP:
+      ENABLE: False
+      LOWER_PERC: -1.0
+      LOWER_VALUE: [-1.0]
+      UPPER_PERC: -1.0
+      UPPER_VALUE: [-1.0]
+    TYPE: zero_mean_unit_variance
+    ZERO_MEAN_UNIT_VAR:
+      MEAN_VAL: [-1.0]
+      STD_VAL: [-1.0]
+  N_CLASSES: 2
+  PATCH_SIZE: (20, 384, 384, 3)
+  PREPROCESS:
+    CANNY:
+      ENABLE: False
+      HIGH_THRESHOLD: None
+      LOW_THRESHOLD: None
+    CLAHE:
+      CLIP_LIMIT: 0.01
+      ENABLE: False
+      KERNEL_SIZE: None
+    GAUSSIAN_BLUR:
+      CHANNEL_AXIS: None
+      ENABLE: False
+      MODE: nearest
+      SIGMA: 1
+    MATCH_HISTOGRAM:
+      ENABLE: False
+      REFERENCE_PATH: user_data/test/x
+    MEDIAN_BLUR:
+      ENABLE: False
+      KERNEL_SIZE: (3, 3, 1)
+    RESIZE:
+      ANTI_ALIASING: False
+      CLIP: True
+      CVAL: 0.0
+      ENABLE: False
+      MODE: reflect
+      ORDER: 1
+      OUTPUT_SHAPE: (512, 512)
+      PRESERVE_RANGE: True
+    TEST: False
+    TRAIN: False
+    VAL: False
+    ZOOM:
+      ENABLE: False
+      ZOOM_FACTOR: [1, 1, 1, 1, 1]
+  REFLECT_TO_COMPLETE_SHAPE: True
+  SAVE_FILTERED_IMAGES: False
+  SAVE_FILTERED_IMAGES_NUM: 3
+  TEST:
+    BINARY_MASKS: fisbe/biapy-no-aug/test/raw/../bin_mask
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy-no-aug/test/label_detection_masks_2
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy-no-aug/test/label
+    INPUT_IMG_AXES_ORDER: TZCYX
+    INPUT_MASK_AXES_ORDER: TZCYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-no-aug/test/label_F.erosion-0.dilation-0_P.type-skeleton.dilation-2.erosion-0
+    IN_MEMORY: True
+    LOAD_GT: True
+    MEDIAN_PADDING: False
+    OVERLAP: (0, 0, 0)
+    PADDING: (4, 16, 16)
+    PATH: fisbe/biapy-no-aug/test/raw
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy-no-aug/test/raw_ssl_source
+    USE_VAL_AS_TEST: False
+  TRAIN:
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy-channel-rot/train/label_detection_masks_2
+    EXTRACT_RANDOM_PATCH: False
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy-channel-rot/train/label
+    INPUT_IMG_AXES_ORDER: TZCYX
+    INPUT_MASK_AXES_ORDER: TZCYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-channel-rot/train/label_F.erosion-0.dilation-0_P.type-skeleton.dilation-2.erosion-0
+    IN_MEMORY: True
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: fisbe/biapy-channel-rot/train/raw
+    PROBABILITY_MAP: False
+    REPLICATE: 0
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy-channel-rot/train/raw_ssl_source
+    W_BACKGROUND: 0.06
+    W_FOREGROUND: 0.94
+  VAL:
+    CROSS_VAL: False
+    CROSS_VAL_FOLD: 1
+    CROSS_VAL_NFOLD: 5
+    DETECTION_MASK_DIR: fisbe/biapy-no-aug/val/label_detection_masks_2
+    DIST_EVAL: True
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    FROM_TRAIN: True
+    GT_PATH: fisbe/biapy-no-aug/val/label
+    INPUT_IMG_AXES_ORDER: TZCYX
+    INPUT_MASK_AXES_ORDER: TZCYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-no-aug/val/label_F.erosion-0.dilation-0_P.type-skeleton.dilation-2.erosion-0
+    IN_MEMORY: True
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: fisbe/biapy-no-aug/val/raw
+    RANDOM: True
+    RESOLUTION: (1, 1, 1)
+    SPLIT_TRAIN: 0.1
+    SSL_SOURCE_DIR: fisbe/biapy-no-aug/val/raw_ssl_source
+LOG:
+  CHART_CREATION_FREQ: 5
+  LOG_DIR: metrics/biapy/biapy-v8-channel-rot/logs
+  LOG_FILE_PREFIX: biapy-v8-channel-rot_0
+  TENSORBOARD_LOG_DIR: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/tensorboard
+LOSS:
+  CLASS_REBALANCE: none
+  CLASS_WEIGHTS: []
+  CONTRAST:
+    ENABLE: False
+    MEMORY_SIZE: 5000
+    PIXEL_UPD_FREQ: 10
+    PROJ_DIM: 256
+  CYCLEGAN:
+    ALPHA_PERCEPTUAL: 0.0
+    DELTA_MSE: 0.0
+    GAMMA_SSIM: 1.0
+    LAMBDA_GAN: 1.0
+    LAMBDA_RECON: 10.0
+  IGNORE_INDEX: -1
+  TYPE: 
+  WEIGHTS: [1.0, 1.0]
+MODEL:
+  ACTIVATION: elu
+  ARCHITECTURE: unet
+  BMZ:
+    EXPORT:
+      AUTHORS: []
+      CITE: []
+      DATASET_INFO: [{}]
+      DESCRIPTION: 
+      DOCUMENTATION: 
+      ENABLE: False
+      LICENSE: CC-BY-4.0
+      MODEL_NAME: 
+      MODEL_VERSION: 0.1.0
+      REUSE_BMZ_CONFIG: False
+      TAGS: []
+    SOURCE_MODEL_ID: 
+  CONVNEXT_LAYER_SCALE: 1e-06
+  CONVNEXT_SD_PROB: 0.1
+  CONVNEXT_STEM_K_SIZE: 2
+  CONV_BLOCK_ORDER: conv_norm_act
+  CONV_LAYERS: [2, 2, 2, 2, 2]
+  DROPOUT_VALUES: [0.0, 0.0, 0.0, 0.0, 0.0]
+  FEATURE_MAPS: [16, 32, 64, 128, 256]
+  FREEZE_LAYERS_MATCHING: []
+  HRNET:
+    BLOCK_TYPE: BASIC
+    HEAD_TYPE: FCN
+    NUM_BLOCKS: [[4, 4], [4, 4, 4], [4, 4, 4, 4]]
+    NUM_BRANCHES: [2, 3, 4]
+    NUM_CHANNELS: [[18, 36], [18, 36, 72], [18, 36, 72, 144]]
+    NUM_MODULES: [1, 4, 3]
+    NUM_STAGES: 3
+    VARIANT: W48
+    YX_DOWN: [0, 0, 0]
+    Z_DOWN: [0, 0, 0]
+  ISOTROPY: [True, True, True, True, True]
+  ITEMS_TO_LOAD_FROM_CHECKPOINT: ['weights', 'norm', 'model_arch']
+  KERNEL_SIZE: 3
+  LARGER_IO: False
+  LOAD_CHECKPOINT: False
+  LOAD_CHECKPOINT_EPOCH: best_on_val
+  MAE_DEC_HIDDEN_SIZE: 512
+  MAE_DEC_MLP_DIMS: 2048
+  MAE_DEC_NUM_HEADS: 16
+  MAE_DEC_NUM_LAYERS: 8
+  MAE_MASK_RATIO: 0.5
+  MAE_MASK_TYPE: grid
+  NAFNET:
+    ARCHITECTURE_D: patchgan
+    DEC_BLK_NUMS: [2, 2, 2, 2]
+    DW_EXPAND: 2
+    ENC_BLK_NUMS: [2, 2, 4, 8]
+    FFN_EXPAND: 2
+    MIDDLE_BLK_NUM: 12
+    PATCHGAN:
+      BASE_FILTERS: 64
+    WIDTH: 16
+  NORMALIZATION: in
+  OUT_CHECKPOINT_FORMAT: pth
+  RCAN_CONV_FILTERS: 16
+  RCAN_RCAB_BLOCK_NUM: 20
+  RCAN_REDUCTION_RATIO: 16
+  RCAN_RG_BLOCK_NUM: 10
+  RCAN_UPSCALING_LAYER: True
+  SAVE_CKPT_FREQ: -1
+  SKIP_UNMATCHED_LAYERS: False
+  SOURCE: biapy
+  STUNET:
+    PRETRAINED: False
+    VARIANT: base
+  TORCHVISION_MODEL_NAME: 
+  UNETR_VIT_HIDD_MULT: -1
+  UNETR_VIT_MODEL: custom
+  UNETR_VIT_NUM_FILTERS: 16
+  UNET_SR_UPSAMPLE_POSITION: pre
+  UPSAMPLE_LAYER: convtranspose
+  VIT_EMBED_DIM: 768
+  VIT_MLP_RATIO: 4.0
+  VIT_MODEL: custom
+  VIT_NORM_EPS: 1e-06
+  VIT_NUM_HEADS: 12
+  VIT_NUM_LAYERS: 12
+  VIT_PRETRAINED_WEIGHTS: 
+  VIT_TOKEN_SIZE: 16
+  YX_DOWN: [2, 2, 2, 2]
+  Z_DOWN: [1, 1, 1, 1]
+PATHS:
+  BMZ_EXPORT_PATH: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/BMZ_files
+  CHARTS: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/charts
+  CHECKPOINT: metrics/biapy/biapy-v8-channel-rot/checkpoints
+  CHECKPOINT_FILE: metrics/biapy/biapy-v5-no-aug/checkpoints/biapy-v4-no-aug_0-checkpoint-best.pth
+  DA_SAMPLES: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/aug
+  FIL_SAMPLES_DIR: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/filtering_information
+  GEN_CHECKS: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/gen_check
+  GEN_MASK_CHECKS: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/gen_mask_check
+  MAE_OUT_DIR: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/MAE_checks
+  PROB_MAP_DIR: metrics/biapy/biapy-v8-channel-rot/prob_map
+  PROB_MAP_FILENAME: prob_map.npy
+  PROFILER: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/profiler
+  RESULT_DIR:
+    AS_3D_STACK: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/as_3d_stack
+    AS_3D_STACK_BIN: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/as_3d_stack_binarized
+    AS_3D_STACK_POST_PROCESSING: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/as_3d_stack_post_processing
+    DET_ASSOC_POINTS: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/point_associations
+    DET_LOCAL_MAX_COORDS_CHECK: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/per_image_local_max_check
+    DET_LOCAL_MAX_COORDS_CHECK_POST_PROCESSING: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/per_image_local_max_check_post_processing
+    FULL_IMAGE: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/full_image
+    FULL_IMAGE_BIN: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/full_image_binarized
+    FULL_IMAGE_INSTANCES: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/full_image_instances
+    FULL_IMAGE_POST_PROCESSING: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/full_image_post_processing
+    INST_ASSOC_POINTS: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/instance_associations
+    PATH: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0
+    PER_IMAGE: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/per_image
+    PER_IMAGE_BIN: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/per_image_binarized
+    PER_IMAGE_INSTANCES: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/per_image_instances
+    PER_IMAGE_POST_PROCESSING: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/per_image_post_processing
+  TEST_FULL_GT_H5: fisbe/biapy-no-aug/test/label/h5
+  TEST_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/test_FP_instance_channels
+  TRAIN_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/train_FP_instance_channels
+  VAL_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/val_FP_instance_channels
+  WATERSHED_DIR: metrics/biapy/biapy-v8-channel-rot/results/biapy-v8-channel-rot_0/watershed
+PROBLEM:
+  DENOISING:
+    LOAD_GT_DATA: False
+    N2V_MANIPULATOR: uniform_withCP
+    N2V_NEIGHBORHOOD_RADIUS: 5
+    N2V_PERC_PIX: 0.198
+    N2V_STRUCTMASK: False
+  DETECTION:
+    CENTRAL_POINT_DILATION: [2]
+    CHECK_POINTS_CREATED: True
+    CLASS_REBALANCE_WITHIN_CHANNELS: True
+    DATA_CHANNEL_WEIGHTS: (1, 1)
+    DATA_CHECK_MW: False
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+  IMAGE_TO_IMAGE:
+    CHANNELS_PER_HEAD_INFO: []
+    MULTIPLE_RAW_ONE_TARGET_LOADER: False
+    OUTPUT_CHANNELS: 1
+    OUTPUT_CHANNEL_ACT: []
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+  INSTANCE_SEG:
+    BORDER_EXTRA_WEIGHTS: 
+    CELLPOSE:
+      DIAMETER: 0.0
+      DIAM_MEAN: 30.0
+      FG_THRESH: 0.5
+      FLOW_THRESHOLD: 0.4
+      N_STEPS: 200
+      SCALE_RANGE: 0.5
+      TEST_DOUBLE_INFERENCE: True
+    CHANNELS_PER_HEAD_INFO: []
+    CLASS_REBALANCE_WITHIN_CHANNELS: True
+    DATA_CHANNELS: ['F', 'P']
+    DATA_CHANNELS_EXTRA_OPTS: [{'P': {'type': 'skeleton', 'dilation': 2, 'erosion': 0}, 'F': {'erosion': 0, 'dilation': 0}}]
+    DATA_CHANNELS_LOSSES: ['bce', 'bce']
+    DATA_CHANNEL_WEIGHTS: (1.0, 10.0)
+    EMBEDSEG:
+      FG_THRESH: 0.5
+      GRID_SIZE: -1
+      MIN_MASK_SUM: 0
+      MIN_UNCLUSTERED_SUM: 0
+      SEED_THRESH: 0.9
+    INSTANCE_CREATION_PROCESS: watershed
+    OMNIPOSE:
+      FLOW_THRESHOLD: 0.4
+      MASK_THRESHOLD: 0.0
+      NITER: 0
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+    STARDIST:
+      GRID: []
+      NMS_IOU_THRESH: 0.3
+      PROB_THRESH: 0.4
+    SYNAPSES:
+      BLOB_LOG_MAX_SIGMA: 10
+      BLOB_LOG_MIN_SIGMA: 5
+      BLOB_LOG_NUM_SIGMA: 2
+      EXCLUDE_BORDER: False
+      MIN_TH_TO_BE_PEAK: 0.2
+      PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+      POINT_CREATION_FUNCTION: peak_local_max
+      REMOVE_CLOSE_POINTS_RADIUS_BY_MASK: False
+      REMOVE_CLOSE_POST_POINTS_RADIUS: 0
+      REMOVE_CLOSE_PRE_POINTS_RADIUS: 0
+      TH_TYPE: auto
+    TYPE: regular
+    WATERSHED:
+      BY_2D_SLICES: False
+      DATA_CHECK_MW: True
+      DATA_REMOVE_BEFORE_MW: False
+      DATA_REMOVE_SMALL_OBJ_BEFORE: 10
+      ERODE_AND_DILATE_GROWTH_MASK: False
+      FORE_DILATION_RADIUS: 5
+      FORE_EROSION_RADIUS: 5
+      GROWTH_MASK_CHANNELS: ['F']
+      GROWTH_MASK_CHANNELS_THRESH: ['auto']
+      SEED_CHANNELS: ['P']
+      SEED_CHANNELS_THRESH: ['auto']
+      SEED_MORPH_RADIUS: []
+      SEED_MORPH_SEQUENCE: []
+      TOPOGRAPHIC_SURFACE_CHANNEL: F
+  NDIM: 3D
+  PRINT_OLD_KEY_CHANGES: True
+  SELF_SUPERVISED:
+    NOISE: 0.2
+    PRETEXT_TASK: crappify
+    RESIZING_FACTOR: 4
+  SEMANTIC_SEG:
+    IGNORE_CLASS_ID: 0
+  SUPER_RESOLUTION:
+    UPSCALING: (1, 1, 1)
+  TYPE: INSTANCE_SEG
+SYSTEM:
+  DEVICE: cpu
+  NUM_CPUS: 8
+  NUM_GPUS: 0
+  NUM_WORKERS: -1
+  PIN_MEM: True
+  SEED: 0
+TEST:
+  ANALIZE_2D_IMGS_AS_3D_STACK: False
+  AUGMENTATION: False
+  AUGMENTATION_GROUP: auto
+  AUGMENTATION_MODE: mean
+  BY_CHUNKS:
+    ENABLE: False
+    FLUSH_EACH: 100
+    PHASES: ['prediction', 'instance_creation', 'instance_merging']
+    SAVE_OUT_TIF: False
+    WORKFLOW_PROCESS:
+      ENABLE: True
+      INSTANCE_SEG_HALO: -1
+      INSTANCE_SEG_MERGE_IOU_TH: 0.3
+      TYPE: chunk_by_chunk
+    Z_END: -1
+    Z_START: -1
+  DET_BLOB_LOG_MAX_SIGMA: 10
+  DET_BLOB_LOG_MIN_SIGMA: 5
+  DET_BLOB_LOG_NUM_SIGMA: 2
+  DET_EXCLUDE_BORDER: False
+  DET_IGNORE_POINTS_OUTSIDE_BOX: []
+  DET_MIN_TH_TO_BE_PEAK: 0.2
+  DET_PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+  DET_POINT_CREATION_FUNCTION: peak_local_max
+  DET_TH_TYPE: manual
+  DET_TOLERANCE: 10
+  ENABLE: True
+  FULL_IMG: False
+  MATCHING_STATS: True
+  MATCHING_STATS_BY_IMAGE: True
+  MATCHING_STATS_THS: [0.3, 0.5, 0.75]
+  MATCHING_STATS_THS_COLORED_IMG: []
+  METRICS: ['iou']
+  METRICS_IN_CPU: False
+  POST_PROCESSING:
+    APPLY_MASK: False
+    DET_WATERSHED: False
+    DET_WATERSHED_DONUTS_CLASSES: [-1]
+    DET_WATERSHED_DONUTS_NUCLEUS_DIAMETER: 30
+    DET_WATERSHED_DONUTS_PATCH: [13, 120, 120]
+    DET_WATERSHED_FIRST_DILATION: [-1, -1]
+    INSTANCE_REFINEMENT:
+      ENABLE: True
+      OPERATIONS: ['remove_small_objects']
+      VALUES: [50]
+    MEASURE_PROPERTIES:
+      ENABLE: False
+      EXTRA_PROPS: []
+      REMOVE_BY_PROPERTIES:
+        ENABLE: False
+        PROPS: []
+        SIGNS: []
+        VALUES: []
+    MEDIAN_FILTER: False
+    MEDIAN_FILTER_AXIS: []
+    MEDIAN_FILTER_SIZE: []
+    REMOVE_CLOSE_POINTS: False
+    REMOVE_CLOSE_POINTS_RADIUS: 0
+    REPARE_LARGE_BLOBS_SIZE: -1
+    VORONOI_ON_MASK: False
+    VORONOI_TH: 0.0
+  REDUCE_MEMORY: False
+  REUSE_PREDICTIONS: False
+  SAVE_MODEL_RAW_OUTPUT: True
+  VERBOSE: True
+TRAIN:
+  BATCH_SIZE: 20
+  CHECKPOINT_MONITOR: val_loss
+  ENABLE: True
+  EPOCHS: 60
+  GRADIENT_CLIP_NORM: 0.0
+  LR: [0.0008]
+  LR_SCHEDULER:
+    MIN_LR: [-1.0]
+    NAME: onecycle
+    REDUCEONPLATEAU_FACTOR: 0.5
+    REDUCEONPLATEAU_PATIENCE: -1
+    WARMUP_COSINE_DECAY_EPOCHS: -1
+  METRICS: ['iou']
+  OPTIMIZER: ['ADAMW']
+  OPT_BETAS: [[0.9, 0.999]]
+  PATIENCE: 20
+  VERBOSE: False
+  W_DECAY: 0.02
+[21:14:44.433682] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+[21:14:44.433733] Initializing Instance_Segmentation_Workflow
+[21:14:44.433742] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+
+[21:14:44.531391] Creating normalization module . . .
+[21:14:44.531461] Normalization module created with the following configuration:
+[21:14:44.531472]   type: zero_mean_unit_variance
+[21:14:44.531479]   target_type: mask
+[21:14:44.531486]   out_dtype: float32
+[21:14:44.531494]   norm_target: False
+[21:14:44.531500]   percentile_clip: False
+[21:14:44.531510]   per_lower_bound: -1.0
+[21:14:44.531516]   per_upper_bound: -1.0
+[21:14:44.531533]   lower_bound_val: [-1.0]
+[21:14:44.531540]   upper_bound_val: [-1.0]
+[21:14:44.531546]   mean: [-1.0]
+[21:14:44.531553]   std: [-1.0]
+[21:14:44.531580] ###########################
+[21:14:44.531587] #  PREPARE INSTANCE DATA  #
+[21:14:44.531593] ###########################
+[21:14:44.532360] You select to create ['F', 'P'] channels from given instance labels and no file is detected in fisbe/biapy-channel-rot/train/label_F.erosion-0.dilation-0_P.type-skeleton.dilation-2.erosion-0 . So let's prepare the data. This process will be done just once!
+[21:14:44.555976] Creating Y_train channels . . .
+[23:28:53.830275] You select to create ['F', 'P'] channels from given instance labels and no file is detected in fisbe/biapy-no-aug/test/label_F.erosion-0.dilation-0_P.type-skeleton.dilation-2.erosion-0 . So let's prepare the data. This process will be done just once!
+[23:28:53.834504] Creating Y_test channels . . .
+[23:30:20.369938] DATA.TRAIN.GT_PATH changed from fisbe/biapy-channel-rot/train/label to fisbe/biapy-channel-rot/train/label_F.erosion-0.dilation-0_P.type-skeleton.dilation-2.erosion-0
+[23:30:20.370381] DATA.TEST.GT_PATH changed from fisbe/biapy-no-aug/test/label to fisbe/biapy-no-aug/test/label_F.erosion-0.dilation-0_P.type-skeleton.dilation-2.erosion-0

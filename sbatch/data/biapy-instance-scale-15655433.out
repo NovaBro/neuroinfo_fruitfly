@@ -1,0 +1,316 @@
+Output Data to fisbe/biapy-instance-scale
+running BiaPy/biapy_prep_main.py
+2026-08-12 16:08:57,282 - INFO     - main                     : source: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely
+2026-08-12 16:08:57,282 - INFO     - main                     : output: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale
+2026-08-12 16:08:57,285 - INFO     - main                     : Removing directory: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train
+2026-08-12 16:08:57,683 - INFO     - main                     : Converting train, Found (18 volumes), Processing None
+2026-08-12 16:08:57,692 - INFO     - convert_split            : Save workers: 12
+2026-08-12 16:08:57,692 - INFO     - convert_split            : Augmentations enabled: True
+2026-08-12 16:08:57,692 - INFO     - process_samples          : /// Processing Sample [1 / 18]: R38F04-20181005_63_G3.zarr ///
+2026-08-12 16:09:00,264 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:09:03,921 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3_is01.26_0.54 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:09:03,921 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3_is01.26_0.54, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:09:07,981 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3_is10.52_1.31 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:09:07,981 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3_is10.52_1.31, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:09:11,957 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3_is21.34_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:09:11,957 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3_is21.34_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:09:15,849 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3_is30.46_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:09:15,849 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3_is30.46_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:09:15,850 - INFO     - process_samples          : /// Processing Sample [2 / 18]: R38F04-20181005_63_G5.zarr ///
+2026-08-12 16:09:19,419 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:09:23,929 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5_is01.45_0.30_1.32 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:09:23,929 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5_is01.45_0.30_1.32, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:09:28,709 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5_is11.20_0.35_1.23 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:09:28,709 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5_is11.20_0.35_1.23, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:09:33,673 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5_is20.42_1.48_1.22 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:09:33,673 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5_is20.42_1.48_1.22, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:09:38,430 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5_is31.40_1.37_0.55 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:09:38,431 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5_is31.40_1.37_0.55, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:09:38,431 - INFO     - process_samples          : /// Processing Sample [3 / 18]: R38F04-20181005_63_H1.zarr ///
+2026-08-12 16:09:42,045 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:09:46,359 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1_is01.40_0.27_1.22 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:09:46,359 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1_is01.40_0.27_1.22, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:09:51,080 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1_is11.48_0.29_1.38 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:09:51,080 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1_is11.48_0.29_1.38, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:09:55,536 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1_is21.48_1.47_0.43 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:09:55,536 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1_is21.48_1.47_0.43, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:10:00,099 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1_is31.45_1.25_0.27 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:10:00,099 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1_is31.45_1.25_0.27, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:10:00,100 - INFO     - process_samples          : /// Processing Sample [4 / 18]: R53A10-20181019_64_A4.zarr ///
+2026-08-12 16:10:02,918 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:10:05,401 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4_is01.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:10:05,402 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4_is01.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:10:08,065 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4_is11.38 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:10:08,065 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4_is11.38, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:10:10,697 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4_is21.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:10:10,697 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4_is21.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:10:13,574 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4_is31.43 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:10:13,574 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4_is31.43, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:10:13,574 - INFO     - process_samples          : /// Processing Sample [5 / 18]: R75E01-20181030_64_D1.zarr ///
+2026-08-12 16:10:16,808 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:10:21,081 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1_is01.34_0.29_1.31 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:10:21,081 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1_is01.34_0.29_1.31, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:10:25,585 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1_is11.30_1.29_0.50 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:10:25,585 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1_is11.30_1.29_0.50, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:10:30,491 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1_is21.35_0.55_1.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:10:30,491 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1_is21.35_0.55_1.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:10:34,880 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1_is30.49_1.47_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:10:34,880 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1_is30.49_1.47_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:10:34,881 - INFO     - process_samples          : /// Processing Sample [6 / 18]: VT008647-20171222_63_D1.zarr ///
+2026-08-12 16:10:39,510 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:10:47,720 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1_is01.25_0.44_1.29_0.43_1.27_0.32_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:10:47,720 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1_is01.25_0.44_1.29_0.43_1.27_0.32_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:10:56,127 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1_is11.46_0.31_1.22_1.31_0.44_1.43_0.43 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:10:56,127 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1_is11.46_0.31_1.22_1.31_0.44_1.43_0.43, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:11:04,825 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1_is21.20_1.39_1.26_0.31_0.36_0.28_1.27 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:11:04,826 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1_is21.20_1.39_1.26_0.31_0.36_0.28_1.27, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:11:13,273 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1_is30.32_1.42_0.29_1.32_1.22_1.31_0.31 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:11:13,274 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1_is30.32_1.42_0.29_1.32_1.22_1.31_0.31, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:11:13,274 - INFO     - process_samples          : /// Processing Sample [7 / 18]: VT008647-20171222_63_D2.zarr ///
+2026-08-12 16:11:17,602 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:11:24,808 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2_is00.47_1.45_0.46_1.48_1.35_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:11:24,809 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2_is00.47_1.45_0.46_1.48_1.35_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:11:32,367 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2_is10.37_1.28_1.34_0.28_1.19_0.38 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:11:32,367 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2_is10.37_1.28_1.34_0.28_1.19_0.38, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:11:39,680 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2_is20.44_0.51_1.26_1.40_1.47_0.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:11:39,680 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2_is20.44_0.51_1.26_1.40_1.47_0.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:11:47,125 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2_is30.41_0.47_1.33_1.26_0.42_1.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:11:47,125 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2_is30.41_0.47_1.33_1.26_0.42_1.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:11:47,125 - INFO     - process_samples          : /// Processing Sample [8 / 18]: VT008647-20171222_63_E1.zarr ///
+2026-08-12 16:11:52,203 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:12:01,354 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1_is00.33_1.42_1.46_0.56_1.49_1.26_0.26_0.40 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:12:01,354 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1_is00.33_1.42_1.46_0.56_1.49_1.26_0.26_0.40, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:12:10,692 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1_is10.42_0.42_1.42_0.50_0.54_1.23_1.28_1.30 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:12:10,692 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1_is10.42_0.42_1.42_0.50_0.54_1.23_1.28_1.30, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:12:20,088 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1_is20.26_1.19_1.42_0.36_0.38_1.49_0.51_1.31 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:12:20,088 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1_is20.26_1.19_1.42_0.36_0.38_1.49_0.51_1.31, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:12:29,489 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1_is31.32_0.32_1.22_0.45_0.48_1.28_0.38_1.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:12:29,489 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1_is31.32_0.32_1.22_0.45_0.48_1.28_0.38_1.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:12:29,490 - INFO     - process_samples          : /// Processing Sample [9 / 18]: VT019303-20171013_65_B6.zarr ///
+2026-08-12 16:12:32,357 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:12:36,211 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6_is01.46_1.34_0.45 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:12:36,211 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6_is01.46_1.34_0.45, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:12:40,301 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6_is11.46_0.34_1.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:12:40,301 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6_is11.46_0.34_1.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:12:44,753 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6_is20.34_1.24_1.46 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:12:44,753 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6_is20.34_1.24_1.46, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:12:51,701 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6_is30.27_1.28_1.19 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:12:51,701 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6_is30.27_1.28_1.19, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:12:51,701 - INFO     - process_samples          : /// Processing Sample [10 / 18]: VT019307-20171013_65_F1.zarr ///
+2026-08-12 16:12:56,474 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:13:08,305 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1_is01.22_1.47_0.26_0.35_1.21_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:13:08,305 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1_is01.22_1.47_0.26_0.35_1.21_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:13:19,184 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1_is11.34_1.35_0.36_0.31_1.31_0.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:13:19,185 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1_is11.34_1.35_0.36_0.31_1.31_0.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:13:30,964 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1_is20.29_0.53_1.38_1.27_0.38_1.32 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:13:30,964 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1_is20.29_0.53_1.38_1.27_0.38_1.32, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:13:45,324 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1_is31.21_0.29_1.33_0.35_1.44_0.33 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:13:45,324 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1_is31.21_0.29_1.33_0.35_1.44_0.33, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:13:45,332 - INFO     - process_samples          : /// Processing Sample [11 / 18]: VT033051-20171128_61_E2.zarr ///
+2026-08-12 16:13:50,119 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:13:56,647 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2_is01.27_1.21_0.28_0.50 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:13:56,647 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2_is01.27_1.21_0.28_0.50, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:14:02,837 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2_is11.21_0.31_1.27_0.49 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:14:02,837 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2_is11.21_0.31_1.27_0.49, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:14:09,859 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2_is21.36_0.56_1.30_0.31 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:14:09,859 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2_is21.36_0.56_1.30_0.31, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:14:16,881 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2_is31.36_0.36_0.50_1.34 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:14:16,881 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2_is31.36_0.36_0.50_1.34, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:14:16,882 - INFO     - process_samples          : /// Processing Sample [12 / 18]: VT033051-20171128_61_E4.zarr ///
+2026-08-12 16:14:20,440 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:14:27,626 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4_is01.35_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:14:27,626 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4_is01.35_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:14:34,518 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4_is10.42_1.40 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:14:34,518 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4_is10.42_1.40, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:14:39,417 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4_is21.37_0.36 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:14:39,417 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4_is21.37_0.36, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:14:43,412 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4_is30.38_1.46 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:14:43,412 - INFO     - process_samples          : /// Processing Sample [13 / 18]: VT040433-20170919_63_D6.zarr ///
+2026-08-12 16:14:43,412 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4_is30.38_1.46, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:14:48,764 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:15:00,182 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6_is01.50_1.36_0.35_0.56_0.26_1.39_0.36_1.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:15:00,182 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6_is01.50_1.36_0.35_0.56_0.26_1.39_0.36_1.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:15:12,032 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6_is11.19_1.39_0.26_0.47_1.35_0.32_1.46_0.50 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:15:12,032 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6_is11.19_1.39_0.26_0.47_1.35_0.32_1.46_0.50, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:15:22,438 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6_is20.43_0.25_0.47_0.50_1.27_1.21_1.28_1.25 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:15:22,438 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6_is20.43_0.25_0.47_0.50_1.27_1.21_1.28_1.25, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:15:31,841 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6_is30.39_1.27_1.30_0.48_1.29_0.50_1.46_0.53 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:15:31,841 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6_is30.39_1.27_1.30_0.48_1.29_0.50_1.46_0.53, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:15:31,841 - INFO     - process_samples          : /// Processing Sample [14 / 18]: VT047848-20171020_66_I2.zarr ///
+2026-08-12 16:15:38,534 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:15:49,829 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2_is01.45_1.28_0.48_0.31 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:15:49,829 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2_is01.45_1.28_0.48_0.31, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:16:01,363 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2_is10.29_1.24_1.40_0.46 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:16:01,363 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2_is10.29_1.24_1.40_0.46, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:16:11,581 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2_is21.33_1.49_0.46_0.30 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:16:11,582 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2_is21.33_1.49_0.46_0.30, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:16:21,653 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2_is30.44_0.35_1.34_1.47 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:16:21,653 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2_is30.44_0.35_1.34_1.47, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:16:21,654 - INFO     - process_samples          : /// Processing Sample [15 / 18]: VT047848-20171020_66_I3.zarr ///
+2026-08-12 16:16:27,467 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:16:37,911 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3_is01.44_1.30_0.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:16:37,912 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3_is01.44_1.30_0.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:16:56,119 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3_is11.43_1.27_0.49 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:16:56,119 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3_is11.43_1.27_0.49, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:17:12,012 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3_is21.44_0.36_1.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:17:12,012 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3_is21.44_0.36_1.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:17:27,011 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3_is31.50_0.45_1.31 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:17:27,011 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3_is31.50_0.45_1.31, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:17:27,011 - INFO     - process_samples          : /// Processing Sample [16 / 18]: VT047848-20171020_66_I5.zarr ///
+2026-08-12 16:17:44,478 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:18:14,024 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5_is00.53_1.30_1.26_0.55_0.54_0.32_1.49_1.31_0.32_0.27_1.45_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:18:14,024 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5_is00.53_1.30_1.26_0.55_0.54_0.32_1.49_1.31_0.32_0.27_1.45_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:18:45,722 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5_is11.22_1.40_1.27_0.32_0.37_1.25_0.38_0.35_1.41_0.36_1.38_0.53 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:18:45,723 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5_is11.22_1.40_1.27_0.32_0.37_1.25_0.38_0.35_1.41_0.36_1.38_0.53, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:19:14,960 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5_is20.50_1.43_1.34_0.49_0.47_1.38_1.25_0.28_1.48_0.31_1.22_0.49 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:19:14,961 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5_is20.50_1.43_1.34_0.49_0.47_1.38_1.25_0.28_1.48_0.31_1.22_0.49, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:19:50,481 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5_is31.21_0.41_0.30_0.37_1.23_0.30_1.24_0.35_1.22_0.40_1.37_1.45 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:19:50,482 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5_is31.21_0.41_0.30_0.37_1.23_0.30_1.24_0.35_1.22_0.40_1.37_1.45, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:19:50,482 - INFO     - process_samples          : /// Processing Sample [17 / 18]: VT047848-20171020_66_J2.zarr ///
+2026-08-12 16:19:59,785 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:20:12,784 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2_is00.33_1.38_0.28_1.25_1.49 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:20:12,784 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2_is00.33_1.38_0.28_1.25_1.49, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:20:32,098 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2_is11.21_1.23_0.28_1.25_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:20:32,098 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2_is11.21_1.23_0.28_1.25_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:20:56,747 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2_is21.44_1.23_1.21_0.34_0.47 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:20:56,748 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2_is21.44_1.23_1.21_0.34_0.47, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:21:19,261 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2_is31.35_1.44_0.50_1.35_0.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:21:19,261 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2_is31.35_1.44_0.50_1.35_0.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:21:19,263 - INFO     - process_samples          : /// Processing Sample [18 / 18]: VT061467-20180911_62_E5.zarr ///
+2026-08-12 16:21:25,775 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:21:33,958 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5_is01.49_0.36_1.33_0.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:21:33,958 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5_is01.49_0.36_1.33_0.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:21:40,525 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5_is10.43_1.26_1.37_0.52 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:21:40,525 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5_is10.43_1.26_1.37_0.52, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:21:47,293 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5_is21.42_0.54_1.35_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:21:47,293 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5_is21.42_0.54_1.35_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:21:57,010 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5_is30.38_1.26_1.21_0.53 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/raw
+2026-08-12 16:21:57,010 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5_is30.38_1.26_1.21_0.53, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/train/label
+2026-08-12 16:21:59,528 - INFO     - main                     : Removing directory: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val
+2026-08-12 16:21:59,638 - INFO     - main                     : Converting val, Found (5 volumes), Processing None
+2026-08-12 16:21:59,644 - INFO     - convert_split            : Save workers: 12
+2026-08-12 16:21:59,644 - INFO     - convert_split            : Augmentations enabled: True
+2026-08-12 16:21:59,644 - INFO     - process_samples          : /// Processing Sample [1 / 5]: R22C03-20180918_66_J2.zarr ///
+2026-08-12 16:22:02,144 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:22:10,161 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2_is01.23_0.54 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:22:10,161 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2_is01.23_0.54, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:22:16,138 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2_is11.34_0.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:22:16,138 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2_is11.34_0.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:22:20,575 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2_is20.30_1.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:22:20,575 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2_is20.30_1.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:22:24,972 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2_is31.29_0.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:22:24,972 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2_is31.29_0.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:22:24,973 - INFO     - process_samples          : /// Processing Sample [2 / 5]: VT012403-20171128_61_B2.zarr ///
+2026-08-12 16:22:29,164 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:22:35,675 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2_is00.52_1.26_0.52_1.35_1.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:22:35,675 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2_is00.52_1.26_0.52_1.35_1.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:22:42,381 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2_is11.37_0.50_0.42_1.48_1.46 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:22:42,382 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2_is11.37_0.50_0.42_1.48_1.46, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:22:51,603 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2_is21.27_0.51_1.49_1.25_0.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:22:51,603 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2_is21.27_0.51_1.49_1.25_0.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:23:02,841 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2_is30.55_0.55_1.40_1.26_1.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:23:02,841 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2_is30.55_0.55_1.40_1.26_1.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:23:02,842 - INFO     - process_samples          : /// Processing Sample [3 / 5]: VT033614-20171124_64_H1.zarr ///
+2026-08-12 16:23:09,565 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:23:19,626 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1_is00.39_1.33_1.27_0.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:23:19,626 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1_is00.39_1.33_1.27_0.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:23:29,518 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1_is10.30_1.33_0.25_1.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:23:29,518 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1_is10.30_1.33_0.25_1.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:23:39,968 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1_is21.22_1.25_0.37_0.52 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:23:39,969 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1_is21.22_1.25_0.37_0.52, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:23:47,250 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1_is30.36_1.41_1.49_0.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:23:47,251 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1_is30.36_1.41_1.49_0.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:23:47,258 - INFO     - process_samples          : /// Processing Sample [4 / 5]: VT033614-20171124_64_H5.zarr ///
+2026-08-12 16:23:50,961 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:23:56,069 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5_is01.29_1.31_0.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:23:56,070 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5_is01.29_1.31_0.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:24:01,305 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5_is11.19_1.22_0.30 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:24:01,305 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5_is11.19_1.22_0.30, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:24:09,847 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5_is21.19_0.45_1.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:24:09,847 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5_is21.19_0.45_1.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:24:19,247 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5_is30.44_1.29_1.30 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:24:19,247 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5_is30.44_1.29_1.30, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:24:19,247 - INFO     - process_samples          : /// Processing Sample [5 / 5]: VT041298-20171114_63_C3.zarr ///
+2026-08-12 16:24:26,213 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:24:38,537 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3_is01.43_0.45_0.55_1.40_0.27_1.48_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:24:38,537 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3_is01.43_0.45_0.55_1.40_0.27_1.48_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:24:50,070 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3_is11.41_1.26_1.22_0.37_0.52_0.53_1.20 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:24:50,070 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3_is11.41_1.26_1.22_0.37_0.52_0.53_1.20, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:24:59,515 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3_is20.44_1.19_0.51_0.39_1.39_1.21_1.27 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:24:59,516 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3_is20.44_1.19_0.51_0.39_1.39_1.21_1.27, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:25:07,618 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3_is31.37_0.50_0.50_1.50_1.21_0.40_1.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/raw
+2026-08-12 16:25:07,618 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3_is31.37_0.50_0.50_1.50_1.21_0.40_1.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/val/label
+2026-08-12 16:25:09,078 - INFO     - main                     : Removing directory: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test
+2026-08-12 16:25:09,202 - INFO     - main                     : Converting test, Found (7 volumes), Processing None
+2026-08-12 16:25:09,208 - INFO     - convert_split            : Save workers: 12
+2026-08-12 16:25:09,209 - INFO     - convert_split            : Augmentations enabled: True
+2026-08-12 16:25:09,209 - INFO     - process_samples          : /// Processing Sample [1 / 7]: JRC_SS04989-20160318_24_A2.zarr ///
+2026-08-12 16:25:12,109 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:25:20,392 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2_is01.48_1.19_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:25:20,393 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2_is01.48_1.19_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:25:30,381 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2_is10.54_1.40_1.34 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:25:30,381 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2_is10.54_1.40_1.34, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:25:36,675 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2_is21.31_1.34_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:25:36,675 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2_is21.31_1.34_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:25:42,540 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2_is30.50_1.36_1.40 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:25:42,540 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2_is30.50_1.36_1.40, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:25:42,540 - INFO     - process_samples          : /// Processing Sample [2 / 7]: R14A02-20180905_65_A6.zarr ///
+2026-08-12 16:25:51,637 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:26:05,357 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6_is00.30_0.32_1.32_1.41_0.47_1.28_1.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:26:05,357 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6_is00.30_0.32_1.32_1.41_0.47_1.28_1.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:26:17,792 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6_is11.47_0.54_1.20_0.34_1.32_0.44_1.47 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:26:17,792 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6_is11.47_0.54_1.20_0.34_1.32_0.44_1.47, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:26:30,272 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6_is21.48_1.20_1.27_0.52_0.44_1.27_0.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:26:30,272 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6_is21.48_1.20_1.27_0.52_0.44_1.27_0.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:26:43,081 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6_is31.40_1.37_0.32_1.33_1.42_0.25_0.31 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:26:43,081 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6_is31.40_1.37_0.32_1.33_1.42_0.25_0.31, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:26:43,082 - INFO     - process_samples          : /// Processing Sample [3 / 7]: R54A09-20181019_64_H1.zarr ///
+2026-08-12 16:26:45,982 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:26:50,031 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1_is01.40 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:26:50,031 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1_is01.40, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:26:54,676 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1_is11.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:26:54,677 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1_is11.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:26:58,465 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1_is21.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:26:58,465 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1_is21.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:27:02,133 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1_is31.22 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:27:02,133 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1_is31.22, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:27:02,133 - INFO     - process_samples          : /// Processing Sample [4 / 7]: VT011145-20171222_63_I1.zarr ///
+2026-08-12 16:27:09,150 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:27:20,440 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1_is00.49_1.46_1.40_1.36_1.32_1.35_0.39_0.27_0.53 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:27:20,440 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1_is00.49_1.46_1.40_1.36_1.32_1.35_0.39_0.27_0.53, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:27:31,827 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1_is10.49_0.32_0.44_1.29_1.21_1.47_0.52_1.32_1.23 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:27:31,827 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1_is10.49_0.32_0.44_1.29_1.21_1.47_0.52_1.32_1.23, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:27:43,370 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1_is21.28_1.21_0.40_0.48_0.41_1.25_1.36_0.33_1.23 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:27:43,370 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1_is21.28_1.21_0.40_0.48_0.41_1.25_1.36_0.33_1.23, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:27:54,900 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1_is31.41_0.55_0.35_1.21_0.45_1.44_1.43_1.26_0.53 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:27:54,900 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1_is31.41_0.55_0.35_1.21_0.45_1.44_1.43_1.26_0.53, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:27:54,900 - INFO     - process_samples          : /// Processing Sample [5 / 7]: VT027175-20171031_62_H3.zarr ///
+2026-08-12 16:27:58,435 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:28:03,898 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3_is01.40_1.32_0.25 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:28:03,898 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3_is01.40_1.32_0.25, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:28:09,593 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3_is11.35_1.30_0.51 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:28:09,594 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3_is11.35_1.30_0.51, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:28:15,272 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3_is21.23_1.41_0.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:28:15,273 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3_is21.23_1.41_0.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:28:21,131 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3_is30.32_1.21_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:28:21,131 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3_is30.32_1.21_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:28:21,132 - INFO     - process_samples          : /// Processing Sample [6 / 7]: VT027175-20171031_62_H4.zarr ///
+2026-08-12 16:28:26,786 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:28:34,980 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4_is00.35_0.49_1.43_0.40_1.48_1.47 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:28:34,980 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4_is00.35_0.49_1.43_0.40_1.48_1.47, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:28:43,445 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4_is10.37_0.40_1.22_1.21_0.31_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:28:43,445 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4_is10.37_0.40_1.22_1.21_0.31_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:28:51,993 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4_is21.38_1.31_0.38_0.52_0.30_1.49 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:28:51,993 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4_is21.38_1.31_0.38_0.52_0.30_1.49, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:29:00,461 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4_is30.47_1.45_1.40_0.46_0.40_1.20 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:29:00,462 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4_is30.47_1.45_1.40_0.46_0.40_1.20, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:29:00,462 - INFO     - process_samples          : /// Processing Sample [7 / 7]: VT050157-20171110_61_C1.zarr ///
+2026-08-12 16:29:05,110 - INFO     - process_samples          : Number of augmentation jobs: 4
+2026-08-12 16:29:11,741 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1_is01.39_0.33_1.21_1.31_0.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:29:11,741 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1_is01.39_0.33_1.21_1.31_0.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:29:18,606 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1_is10.29_1.34_1.45_0.52_1.34 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:29:18,606 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1_is10.29_1.34_1.45_0.52_1.34, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:29:25,599 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1_is21.19_1.39_0.45_1.25_0.38 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:29:25,599 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1_is21.19_1.39_0.45_1.25_0.38, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label
+2026-08-12 16:29:32,526 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1_is31.45_0.30_1.46_0.31_1.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/raw
+2026-08-12 16:29:32,526 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1_is31.45_0.30_1.46_0.31_1.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-instance-scale/test/label

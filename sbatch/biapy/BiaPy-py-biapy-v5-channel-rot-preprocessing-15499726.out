@@ -1,0 +1,15 @@
+SBATCH Run: biapy-v5-channel-rot.yaml, mode: preprocessing, job-name: biapy-v5-channel-rot, run-id: 0
+SLURM_CPUS_PER_TASK=8
+running BiaPy/run_biapy-py.py
+Mode overrides (preprocessing): leaving YAML flags as-is (TRAIN.ENABLE=True, TEST.ENABLE=True, MODEL.LOAD_CHECKPOINT=False)
+CPU overrides: SYSTEM.NUM_CPUS=8, SYSTEM.NUM_WORKERS=8
+Date     : 2026-08-07 19:52:17
+Arguments: Namespace(config={'SYSTEM': {'NUM_CPUS': 8, 'NUM_WORKERS': -1}, 'PROBLEM': {'TYPE': 'INSTANCE_SEG', 'NDIM': '3D', 'INSTANCE_SEG': {'DATA_CHANNELS': ['F', 'Db'], 'DATA_CHANNELS_EXTRA_OPTS': None, 'DATA_CHANNEL_WEIGHTS': '(1.0, 10.0)', 'WATERSHED': {'SEED_CHANNELS': ['Db'], 'SEED_CHANNELS_THRESH': ['auto'], 'TOPOGRAPHIC_SURFACE_CHANNEL': 'F', 'GROWTH_MASK_CHANNELS': ['F'], 'GROWTH_MASK_CHANNELS_THRESH': ['auto'], 'DATA_CHECK_MW': True}}}, 'DATA': {'PATCH_SIZE': '(2, 384, 384, 3)', 'TRAIN': {'PATH': 'fisbe/biapy-channel-rot/train/raw', 'GT_PATH': 'fisbe/biapy-channel-rot/train/label', 'IN_MEMORY': True}, 'VAL': {'PATH': 'fisbe/biapy-no-aug/val/raw', 'GT_PATH': 'fisbe/biapy-no-aug/val/label'}, 'TEST': {'PATH': 'fisbe/biapy-no-aug/test/raw', 'GT_PATH': 'fisbe/biapy-no-aug/test/label', 'IN_MEMORY': True, 'LOAD_GT': True, 'PADDING': '(4,16,16)'}}, 'AUGMENTOR': {'ENABLE': False, 'RANDOM_ROT': False, 'VFLIP': False, 'HFLIP': False, 'ZFLIP': False}, 'PATHS': {'CHECKPOINT_FILE': 'metrics/biapy/biapy-v5-no-aug/checkpoints/biapy-v4-no-aug_0-checkpoint-best.pth'}, 'MODEL': {'ARCHITECTURE': 'unet', 'FEATURE_MAPS': [16, 32, 64, 128, 256], 'Z_DOWN': [1, 1, 1, 1], 'LOAD_CHECKPOINT': False}, 'TRAIN': {'ENABLE': True, 'OPTIMIZER': 'ADAMW', 'LR': 0.002, 'BATCH_SIZE': 50, 'EPOCHS': 60, 'PATIENCE': 20, 'LR_SCHEDULER': {'NAME': 'onecycle'}}, 'TEST': {'ENABLE': True, 'AUGMENTATION': False, 'FULL_IMG': False, 'POST_PROCESSING': {'INSTANCE_REFINEMENT': {'ENABLE': True, 'OPERATIONS': ['remove_small_objects'], 'VALUES': [50]}}}}, result_dir='metrics/biapy', name='biapy-v5-channel-rot', run_id='0', gpu='', world_size=1, local_rank=-1, dist_on_itp=False, dist_url='env://', dist_backend='nccl')
+Job      : biapy-v5-channel-rot_0
+BiaPy    : 3.7.0
+Python   : 3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:34:02) [GCC 14.3.0]
+PyTorch  : 2.12.1+cu130
+The following changes were made in order to adapt the input configuration:
+Not using distributed mode
+[19:52:17.522685] **** Using 'cpu' for training
+[19:52:17.627463] CPU budget(total)=8 | per_rank=8 | main_threads=4 | num_workers(per_rank)=3 | world_size=1

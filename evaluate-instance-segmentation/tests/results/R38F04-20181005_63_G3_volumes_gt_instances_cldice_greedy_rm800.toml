@@ -1,0 +1,156 @@
+[general]
+"Num GT" = 2
+"Num Pred" = 2
+TP_05 = 2
+TP_05_rel = 1.0
+TP_05_cldice = [ 1.0, 1.0,]
+avg_TP_05_cldice = 1.0
+gt_skel_coverage = [ 1.0, 1.0,]
+avg_gt_skel_coverage = 1.0
+avg_f1_cov_score = 1.0
+FM = 0
+FS = 0
+GT_dim = 0
+TP_05_dim = 0
+TP_05_rel_dim = 0.0
+gt_covs_dim = []
+avg_gt_cov_dim = 0
+GT_overlap = 0
+TP_05_overlap = 0
+TP_05_rel_overlap = 0.0
+gt_covs_overlap = []
+avg_gt_cov_overlap = 0
+
+[confusion_matrix]
+avAP = 1.0
+avAP59 = 1.0
+avAP19 = 1.0
+avFscore = 1.0
+avFscore59 = 1.0
+avFscore19 = 1.0
+
+[confusion_matrix.th_0_1]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0
+
+[confusion_matrix.th_0_2]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0
+
+[confusion_matrix.th_0_3]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0
+
+[confusion_matrix.th_0_4]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0
+
+[confusion_matrix.th_0_5]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0
+
+[confusion_matrix.th_0_6]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0
+
+[confusion_matrix.th_0_7]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0
+
+[confusion_matrix.th_0_8]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0
+
+[confusion_matrix.th_0_9]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0
+
+[confusion_matrix.th_0_55]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0
+
+[confusion_matrix.th_0_65]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0
+
+[confusion_matrix.th_0_75]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0
+
+[confusion_matrix.th_0_85]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0
+
+[confusion_matrix.th_0_95]
+AP_TP = 2
+AP_FP = 0
+AP_FN = 0
+precision = 1.0
+recall = 1.0
+AP = 1.0
+fscore = 1.0

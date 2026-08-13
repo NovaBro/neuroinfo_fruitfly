@@ -5,7 +5,8 @@ Two sources live under each prediction set's result root:
 1. ``tests/metrics/<stem>.zarr.toml`` — the BiaPy instance-segmentation
    metrics TOML (``[general]`` + per-threshold ``[confusion_matrix.*]``).
 2. ``test_results_metrics.csv`` — a one-row-per-sample CSV keyed by the
-   ``<stem>.zarr.tiff`` filename, with IoU and per-threshold columns.
+   input filename (``<stem>.zarr.tiff`` or plain ``<stem>.tif`` /
+   ``<stem>.tiff``), with IoU and per-threshold columns.
 
 Both are grouped by detection threshold here so the client can render them as
 compact tables.
@@ -101,7 +102,13 @@ def _num(value: str):
 
 def _csv_row_keys(stem: str) -> set[str]:
     """Filenames the CSV may use for ``stem``'s row."""
-    return {f"{stem}.zarr.tiff", f"{stem}.zarr.tif", f"{stem}.zarr"}
+    return {
+        f"{stem}.zarr.tiff",
+        f"{stem}.zarr.tif",
+        f"{stem}.zarr",
+        f"{stem}.tiff",
+        f"{stem}.tif",
+    }
 
 
 def _parse_csv_row(row: dict[str, str]) -> dict:

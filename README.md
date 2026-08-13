@@ -73,6 +73,11 @@ python -u run_ppp.py \
 Very helpful tutorial on getting started and details.
 https://biapy.readthedocs.io/en/latest/workflows/semantic_segmentation.html
 
+NOTE: 
+PROBLEM.INSTANCE_SEG.DATA_CHANNELS and .DATA_CHANNELS_EXTRA_OPTS cause new data cache generation!
+Issue for running multiple parallele process that may need to read / write from same folder!
+
+### WARNING MAY BE OUTDATED
 ```bash
 # datapreprocessing to tiff
 # /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy/prepare_tiff_data.py
@@ -81,7 +86,7 @@ https://biapy.readthedocs.io/en/latest/workflows/semantic_segmentation.html
 srun --cpus-per-task=8 --time 2:00:00 --mem=32g --account=torch_pr_61_general --pty /bin/bash
 # Whatever env you use (BiaPy_env), make sure it hase toml installed
 
-python3 neuroinfo_fruitfly/fisbe/biapy/prepare_tiff_data.py --splits test train val
+python3 BiaPy/biapy_prep_tiff.py --splits test train val
 ```
 
 Adjust experiment test and training parameters in `BiaPy/3d_instance_segmentation.yaml`
@@ -113,7 +118,7 @@ biapy \
 Then you can directly run the sbatch scripts in `BiaPy/biapy.sh` by `sbatch BiaPy/biapy.sh`
 
 ## Evaluation
-NOTE: For `BiaPy` model, must run the `BiaPy/my_metric_prep_util.py` script to get zarr file format instead of tif.
+NOTE: For `BiaPy` model, must run the `BiaPy/evalinstseg_prep_zarr.py` script to get zarr file format instead of tif.
 For this project, run the evaluation through sbatch, `sbatch sbatch/evalinstseg/evalinstseg_sbatch.sh`.
 
 ```bash

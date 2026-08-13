@@ -1,0 +1,36 @@
+INFO:    FUSE2FS (3): Warning: Mounting unchecked fs, running e2fsck is recommended.
+/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/check_configuration.py:395: UserWarning: Seems that the channels requested are custom so BiaPy did not fill some variables by default. You will need to fill the following variables: PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH, PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH.
+  warnings.warn(
+stage_partition:   0%|          | 0/18 [00:00<?, ?pair/s]stage_partition:   6%|5         | 1/18 [00:05<01:30,  5.35s/pair]stage_partition:  17%|#6        | 3/18 [00:08<00:36,  2.43s/pair]stage_partition:  33%|###3      | 6/18 [00:08<00:12,  1.06s/pair]stage_partition: 100%|##########| 18/18 [00:08<00:00,  2.03pair/s]
+  0%|          | 0/1890 [00:00<?, ?it/s]  0%|          | 1/1890 [00:01<33:58,  1.08s/it]  5%|4         | 89/1890 [00:02<00:36, 48.72it/s]  9%|9         | 173/1890 [00:03<00:30, 56.82it/s] 14%|#3        | 257/1890 [00:04<00:28, 58.18it/s] 18%|#8        | 341/1890 [00:06<00:26, 59.12it/s] 25%|##5       | 481/1890 [00:07<00:19, 72.88it/s] 30%|##9       | 565/1890 [00:09<00:19, 67.75it/s] 34%|###4      | 649/1890 [00:10<00:19, 64.64it/s] 42%|####1     | 789/1890 [00:12<00:14, 74.40it/s] 46%|####6     | 873/1890 [00:17<00:28, 35.39it/s] 51%|#####     | 957/1890 [00:25<00:41, 22.61it/s] 55%|#####5    | 1041/1890 [00:31<00:45, 18.60it/s] 55%|#####5    | 1041/1890 [00:44<00:45, 18.60it/s] 60%|#####9    | 1125/1890 [00:56<01:33,  8.16it/s] 76%|#######6  | 1443/1890 [01:21<00:42, 10.52it/s] 76%|#######6  | 1443/1890 [01:34<00:42, 10.52it/s] 86%|########5 | 1623/1890 [01:48<00:30,  8.77it/s] 95%|#########5| 1803/1890 [01:52<00:07, 11.85it/s]100%|##########| 1890/1890 [01:52<00:00, 16.80it/s]
+  0%|          | 0/1890 [00:00<?, ?it/s]  0%|          | 1/1890 [00:06<3:17:28,  6.27s/it]  5%|4         | 89/1890 [00:15<04:38,  6.46it/s]   9%|9         | 173/1890 [00:19<02:37, 10.87it/s] 14%|#3        | 257/1890 [00:23<01:56, 13.97it/s] 18%|#8        | 341/1890 [00:31<02:08, 12.08it/s] 25%|##5       | 481/1890 [00:39<01:37, 14.39it/s] 30%|##9       | 565/1890 [00:47<01:39, 13.25it/s] 34%|###4      | 649/1890 [01:00<02:02, 10.10it/s] 42%|####1     | 789/1890 [01:06<01:24, 13.07it/s] 46%|####6     | 873/1890 [01:10<01:11, 14.31it/s] 51%|#####     | 957/1890 [01:16<01:06, 14.08it/s] 55%|#####5    | 1041/1890 [01:22<00:58, 14.62it/s] 55%|#####5    | 1041/1890 [01:32<00:58, 14.62it/s] 60%|#####9    | 1125/1890 [01:35<01:12, 10.56it/s] 76%|#######6  | 1443/1890 [01:39<00:20, 21.94it/s] 86%|########5 | 1623/1890 [01:43<00:10, 26.48it/s] 95%|#########5| 1803/1890 [01:48<00:02, 30.03it/s]100%|##########| 1890/1890 [01:48<00:00, 17.48it/s]
+  0%|          | 0/220 [00:00<?, ?it/s]  0%|          | 1/220 [00:09<35:59,  9.86s/it] 37%|###6      | 81/220 [00:18<00:25,  5.35it/s]100%|##########| 220/220 [00:18<00:00, 12.20it/s]
+  0%|          | 0/220 [00:00<?, ?it/s]  0%|          | 1/220 [00:03<11:17,  3.09s/it] 37%|###6      | 81/220 [00:08<00:13, 10.04it/s]100%|##########| 220/220 [00:08<00:00, 24.53it/s]
+  0%|          | 0/1 [00:00<?, ?it/s]100%|##########| 1/1 [00:00<00:00,  1.08it/s]100%|##########| 1/1 [00:00<00:00,  1.08it/s]
+  0%|          | 0/1 [00:00<?, ?it/s]100%|##########| 1/1 [00:01<00:00,  1.46s/it]100%|##########| 1/1 [00:01<00:00,  1.46s/it]
+Traceback (most recent call last):
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 338, in <module>
+    main()
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 314, in main
+    biapy.train()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 892, in train
+    self.workflow.train()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/base_workflow.py", line 997, in train
+    train_stats, iterations_done = train_one_epoch(
+                                   ^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/train_engine.py", line 125, in train_one_epoch
+    outputs = model_call_func(batch, is_train=True)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/base_workflow.py", line 786, in model_call_func
+    pred = self.model(in_img)
+           ^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/models/unet.py", line 412, in forward
+    outs = torch.cat(outs, dim=1)
+           ^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 338.00 MiB. GPU 0 has a total capacity of 44.39 GiB of which 241.31 MiB is free. Including non-PyTorch memory, this process has 44.12 GiB memory in use. Of the allocated memory 43.48 GiB is allocated by PyTorch, and 151.64 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

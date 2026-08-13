@@ -13,7 +13,12 @@ import { VolumeControls } from "./VolumeControls";
 import { Volume3DView } from "./Volume3DView";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { CameraSync } from "../utils/cameraSync";
-import { DEFAULT_BRIGHTNESS, DEFAULT_CONTRAST } from "../utils/displayAdjust";
+import {
+  ChannelGains,
+  DEFAULT_BRIGHTNESS,
+  DEFAULT_CHANNEL_GAINS,
+  DEFAULT_CONTRAST,
+} from "../utils/displayAdjust";
 import {
   createRenderWindow,
   fitCamera,
@@ -62,6 +67,9 @@ export function VolumeViewer3D({
   const [linkViews, setLinkViews] = useState(true);
   const [vtkReady, setVtkReady] = useState(false);
   const [channel, setChannel] = useState<ChannelParam>(0);
+  const [channelGains, setChannelGains] = useState<ChannelGains>(
+    DEFAULT_CHANNEL_GAINS,
+  );
   const [brightness, setBrightness] = useState(DEFAULT_BRIGHTNESS);
   const [contrast, setContrast] = useState(DEFAULT_CONTRAST);
   const [maxSize, setMaxSize] = useState(DEFAULT_VOLUME_MAX_SIZE);
@@ -158,6 +166,7 @@ export function VolumeViewer3D({
 
   useEffect(() => {
     setChannel(0);
+    setChannelGains(DEFAULT_CHANNEL_GAINS);
     setBrightness(DEFAULT_BRIGHTNESS);
     setContrast(DEFAULT_CONTRAST);
     setMaxSize(DEFAULT_VOLUME_MAX_SIZE);
@@ -181,11 +190,12 @@ export function VolumeViewer3D({
     const vtk = vtkRef.current;
     if (!vtk) return;
 
-    for (const ctrl of [vtk.raw, vtk.predicted, vtk.gt]) {
-      ctrl.refreshScalars(brightness, contrast);
-    }
+    const rawGains = channel === "all" ? channelGains : undefined;
+    vtk.raw.refreshScalars(brightness, contrast, rawGains);
+    vtk.predicted.refreshScalars(brightness, contrast);
+    vtk.gt.refreshScalars(brightness, contrast);
     renderScene();
-  }, [vtkReady, brightness, contrast, renderScene]);
+  }, [vtkReady, channel, channelGains, brightness, contrast, renderScene]);
 
   useEffect(() => {
     if (!vtkReady) return;
@@ -293,7 +303,14 @@ export function VolumeViewer3D({
           });
           if (cancelled || vtkGenerationRef.current !== generation) return;
 
-          vtk!.raw.applyData(rawVol, rawMode, brightness, contrast);
+          vtk!.raw.applyData(
+            rawVol,
+            rawMode,
+            brightness,
+            contrast,
+            1,
+            rawMode === "rgb" ? channelGains : undefined,
+          );
           fitOrRender();
 
           const [z, y, x] = rawVol.shape;
@@ -387,6 +404,8 @@ export function VolumeViewer3D({
         channel={channel}
         onChannelChange={setChannel}
         channelCount={channelCount}
+        channelGains={channelGains}
+        onChannelGainsChange={setChannelGains}
         brightness={brightness}
         onBrightnessChange={setBrightness}
         contrast={contrast}
@@ -449,6 +468,7 @@ export function VolumeViewer3D({
           maxSize={debouncedMaxSize}
           brightness={brightness}
           contrast={contrast}
+          channelGains={channelGains}
           cameraSync={cameraSync}
           syncId="sub-raw"
         />

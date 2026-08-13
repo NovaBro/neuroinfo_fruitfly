@@ -1,0 +1,24 @@
+/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/check_configuration.py:395: UserWarning: Seems that the channels requested are custom so BiaPy did not fill some variables by default. You will need to fill the following variables: PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH, PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 338, in <module>
+    main()
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 328, in main
+    biapy.test()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 918, in test
+    self.workflow.test()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/base_workflow.py", line 1389, in test
+    self.prepare_model()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/base_workflow.py", line 890, in prepare_model
+    self.start_epoch, self.checkpoint_path = load_model_checkpoint(
+                                             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/utils/misc.py", line 612, in load_model_checkpoint
+    model_without_ddp.load_state_dict(checkpoint_state_dict, strict=True)
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 2638, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for U_Net:
+	size mismatch for heads.0.weight: copying a param with shape torch.Size([4, 16, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([3, 16, 1, 1, 1]).
+	size mismatch for heads.0.bias: copying a param with shape torch.Size([4]) from checkpoint, the shape in current model is torch.Size([3]).

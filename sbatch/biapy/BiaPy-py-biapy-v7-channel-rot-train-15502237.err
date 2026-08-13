@@ -1,0 +1,95 @@
+/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/check_configuration.py:395: UserWarning: Seems that the channels requested are custom so BiaPy did not fill some variables by default. You will need to fill the following variables: PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH, PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH.
+  warnings.warn(
+stage_partition:   0%|          | 0/18 [00:00<?, ?pair/s]stage_partition:   6%|5         | 1/18 [00:04<01:17,  4.54s/pair]stage_partition:  33%|###3      | 6/18 [00:07<00:13,  1.12s/pair]stage_partition:  94%|#########4| 17/18 [00:11<00:00,  1.81pair/s]stage_partition: 100%|##########| 18/18 [00:11<00:00,  1.56pair/s]
+  0%|          | 0/2003 [00:00<?, ?it/s]  0%|          | 1/2003 [00:00<31:15,  1.07it/s]  7%|7         | 141/2003 [00:01<00:16, 114.49it/s] 14%|#4        | 281/2003 [00:02<00:10, 166.41it/s] 21%|##1       | 421/2003 [00:02<00:08, 193.00it/s] 25%|##5       | 505/2003 [00:03<00:08, 177.57it/s] 29%|##9       | 589/2003 [00:03<00:08, 167.36it/s] 36%|###6      | 729/2003 [00:04<00:06, 191.72it/s] 41%|####      | 813/2003 [00:04<00:06, 175.09it/s] 45%|####4     | 897/2003 [00:05<00:06, 164.85it/s] 52%|#####1    | 1037/2003 [00:06<00:05, 187.34it/s] 56%|#####5    | 1121/2003 [00:06<00:05, 172.90it/s] 60%|######    | 1205/2003 [00:07<00:04, 164.30it/s] 64%|######4   | 1289/2003 [00:07<00:04, 161.81it/s] 65%|######5   | 1306/2003 [00:08<00:04, 152.18it/s] 66%|######5   | 1320/2003 [00:08<00:04, 143.57it/s] 67%|######6   | 1333/2003 [00:08<00:04, 135.19it/s] 67%|######7   | 1345/2003 [00:08<00:05, 127.45it/s] 68%|######7   | 1356/2003 [00:08<00:05, 120.32it/s] 68%|######8   | 1366/2003 [00:09<00:15, 41.81it/s]  77%|#######6  | 1539/2003 [00:10<00:04, 99.04it/s] 91%|######### | 1815/2003 [00:11<00:01, 164.79it/s]100%|##########| 2003/2003 [00:11<00:00, 167.59it/s]
+  0%|          | 0/2003 [00:00<?, ?it/s]  0%|          | 1/2003 [00:02<1:14:34,  2.23s/it]  7%|7         | 141/2003 [00:04<00:48, 38.66it/s] 14%|#4        | 281/2003 [00:06<00:33, 51.20it/s] 21%|##1       | 421/2003 [00:08<00:27, 58.40it/s] 25%|##5       | 505/2003 [00:10<00:28, 52.67it/s] 29%|##9       | 589/2003 [00:12<00:29, 48.01it/s] 36%|###6      | 729/2003 [00:14<00:23, 55.06it/s] 41%|####      | 813/2003 [00:16<00:23, 50.53it/s] 45%|####4     | 897/2003 [00:18<00:24, 45.66it/s] 52%|#####1    | 1037/2003 [00:20<00:18, 52.79it/s] 56%|#####5    | 1121/2003 [00:22<00:17, 49.17it/s] 60%|######    | 1205/2003 [00:24<00:16, 47.09it/s] 64%|######4   | 1289/2003 [00:26<00:15, 46.67it/s] 65%|######4   | 1294/2003 [00:26<00:15, 46.05it/s] 65%|######4   | 1299/2003 [00:27<00:15, 45.21it/s] 65%|######5   | 1303/2003 [00:27<00:15, 44.35it/s] 65%|######5   | 1307/2003 [00:27<00:16, 43.28it/s] 65%|######5   | 1311/2003 [00:27<00:16, 42.00it/s] 66%|######5   | 1315/2003 [00:27<00:16, 40.49it/s] 66%|######5   | 1319/2003 [00:27<00:17, 38.92it/s] 66%|######6   | 1323/2003 [00:27<00:18, 37.30it/s] 66%|######6   | 1327/2003 [00:28<00:18, 35.72it/s] 66%|######6   | 1330/2003 [00:28<00:19, 34.62it/s] 67%|######6   | 1333/2003 [00:28<00:20, 33.50it/s] 67%|######6   | 1336/2003 [00:28<00:20, 32.55it/s] 67%|######6   | 1339/2003 [00:28<00:20, 31.80it/s] 67%|######6   | 1342/2003 [00:28<00:21, 31.12it/s] 67%|######7   | 1345/2003 [00:28<00:21, 30.62it/s] 67%|######7   | 1348/2003 [00:28<00:21, 30.11it/s] 67%|######7   | 1351/2003 [00:28<00:21, 29.72it/s] 68%|######7   | 1354/2003 [00:29<00:21, 29.50it/s] 68%|######7   | 1357/2003 [00:29<00:22, 29.26it/s] 68%|######7   | 1360/2003 [00:30<01:37,  6.61it/s] 77%|#######6  | 1539/2003 [00:33<00:10, 45.97it/s] 91%|######### | 1815/2003 [00:35<00:02, 79.33it/s]100%|##########| 2003/2003 [00:35<00:00, 56.09it/s]
+  0%|          | 0/172 [00:00<?, ?it/s]  1%|          | 1/172 [00:01<05:36,  1.97s/it] 52%|#####1    | 89/172 [00:03<00:02, 31.62it/s]100%|##########| 172/172 [00:03<00:00, 50.65it/s]
+  0%|          | 0/172 [00:00<?, ?it/s]  1%|          | 1/172 [00:00<02:49,  1.01it/s] 52%|#####1    | 89/172 [00:02<00:01, 41.54it/s]100%|##########| 172/172 [00:02<00:00, 70.71it/s]
+  0%|          | 0/1 [00:00<?, ?it/s]100%|##########| 1/1 [00:00<00:00, 22.57it/s]
+  0%|          | 0/1 [00:00<?, ?it/s]100%|##########| 1/1 [00:00<00:00, 21.10it/s]
+Traceback (most recent call last):
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 338, in <module>
+    main()
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 314, in main
+    biapy.train()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 892, in train
+    self.workflow.train()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/base_workflow.py", line 997, in train
+    train_stats, iterations_done = train_one_epoch(
+                                   ^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/train_engine.py", line 125, in train_one_epoch
+    outputs = model_call_func(batch, is_train=True)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/base_workflow.py", line 786, in model_call_func
+    pred = self.model(in_img)
+           ^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/models/unet.py", line 389, in forward
+    x = up(x, blocks[-i - 1])
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/models/blocks.py", line 667, in forward
+    out = self.conv_block(out)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/models/blocks.py", line 191, in forward
+    out = self.block(x)
+          ^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/container.py", line 253, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/models/blocks.py", line 191, in forward
+    out = self.block(x)
+          ^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/container.py", line 253, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/instancenorm.py", line 133, in forward
+    return self._apply_instance_norm(input)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/instancenorm.py", line 55, in _apply_instance_norm
+    return F.instance_norm(
+           ^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/functional.py", line 2905, in instance_norm
+    return torch.instance_norm(
+           ^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 900.00 MiB. GPU 0 has a total capacity of 44.39 GiB of which 501.31 MiB is free. Including non-PyTorch memory, this process has 43.83 GiB memory in use. Of the allocated memory 43.20 GiB is allocated by PyTorch, and 140.24 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

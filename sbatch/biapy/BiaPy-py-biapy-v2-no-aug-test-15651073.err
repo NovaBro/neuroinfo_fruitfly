@@ -1,0 +1,3 @@
+[2026-08-12T13:07:10.997] error: TMPDIR [/state/partition1/job-15651073] is not writeable
+[2026-08-12T13:07:10.997] error: Setting TMPDIR to /tmp
+[31mFATAL:  [0m Couldn't determine user account information: user: unknown userid 3674245

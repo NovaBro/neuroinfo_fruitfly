@@ -1,0 +1,77 @@
+# BiaPy version: 3.6.8
+
+SYSTEM:
+    NUM_CPUS: 12
+    NUM_WORKERS: 12
+
+PROBLEM:
+    TYPE: INSTANCE_SEG
+    NDIM: 3D
+    INSTANCE_SEG:
+      DATA_CHANNELS: ['F', 'P']
+      DATA_CHANNELS_EXTRA_OPTS:
+        - P:
+            type: 'skeleton'
+            dilation: 2
+      DATA_CHANNEL_WEIGHTS: (1.0, 10.0)
+      WATERSHED:
+        SEED_CHANNELS: ['P']             # keep seeds simple: trust P
+        SEED_CHANNELS_THRESH: ['auto']
+        TOPOGRAPHIC_SURFACE_CHANNEL: 'F'
+        GROWTH_MASK_CHANNELS: ['F']
+        GROWTH_MASK_CHANNELS_THRESH: ['auto']
+        DATA_CHECK_MW: True
+
+
+DATA: 
+    PATCH_SIZE: (20, 384, 384, 3)
+    TRAIN:
+        PATH: fisbe/biapy-channel-rot/train/raw
+        GT_PATH: fisbe/biapy-channel-rot/train/label
+        IN_MEMORY: True
+    VAL:
+        PATH: fisbe/biapy-no-aug/val/raw
+        GT_PATH: fisbe/biapy-no-aug/val/label
+    TEST:
+        PATH: fisbe/biapy-no-aug/test/raw
+        GT_PATH: fisbe/biapy-no-aug/test/label
+        IN_MEMORY: True
+        LOAD_GT: True
+        PADDING: (4,16,16)
+
+AUGMENTOR:
+    ENABLE: False
+    RANDOM_ROT: False
+    VFLIP: False
+    HFLIP: False
+    ZFLIP: False
+
+
+PATHS:
+    CHECKPOINT_FILE: metrics/biapy/biapy-v8-channel-rot/checkpoints/biapy-v8-channel-rot_0-checkpoint-best.pth
+
+MODEL:
+    ARCHITECTURE: unet
+    FEATURE_MAPS: [16, 32, 64, 128, 256]
+    Z_DOWN: [1,1,1,1]
+    LOAD_CHECKPOINT: False
+
+TRAIN:
+    ENABLE: True
+    OPTIMIZER: ADAMW
+    LR: 2.E-4
+    BATCH_SIZE: 5
+    EPOCHS: 60
+    PATIENCE: 20
+    LR_SCHEDULER:
+        NAME: 'onecycle'    # use one-cycle learning rate scheduler
+  
+TEST:
+    ENABLE: True
+    AUGMENTATION: False
+    FULL_IMG: False
+    POST_PROCESSING:
+        INSTANCE_REFINEMENT:
+            ENABLE: True
+            OPERATIONS: ['remove_small_objects']
+            VALUES: [50]   # voxel count threshold — tune based on your smallest real neuron

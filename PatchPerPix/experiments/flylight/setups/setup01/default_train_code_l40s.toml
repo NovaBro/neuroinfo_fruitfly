@@ -23,7 +23,7 @@ shift_intensity = false
 add_partly = false
 sample_fg_points = false
 # Limit volumes for faster iteration during local debugging
-max_train_samples = 10
+max_train_samples = 18
 max_val_samples = 10
 cross_val_folders = ["val_data", "test_data"]
 
@@ -63,7 +63,8 @@ num_fmaps = 20
 # num_fmaps = 30
 # network_style = "SwinUNETR"
 # num_fmaps = 24
-decode_batch_size = 1024
+# decode_batch_size = 1024
+decode_batch_size = 800
 
 [model.autoencoder]
 train_net_name = "train_net"
@@ -99,10 +100,11 @@ clipmax = 1500
 val_log_step = 50
 len_epoch = 100
 batch_size = 15
+# 15 - 30g
 num_gpus = 1
 # num_workers=1 skips PreCache so the first batch returns immediately
-num_workers = 6
-cache_size = 8
+num_workers = 16
+cache_size = 40
 max_iterations = 800
 checkpoints = 50 
 snapshots = 10
@@ -122,10 +124,9 @@ oversample_complete = 3
 
 [prediction]
 output_format = "zarr"
-num_workers = 5
+num_workers = 16
 cache_size = 40
-# bs=4 OOMs at test_input_shape_valid 156^3 on RTX 3060 12GB; bs=1 fits
-batch_size = 1
+batch_size = 16
 aff_key = "volumes/pred_affs"
 code_key = "volumes/pred_code"
 # fg_key = "volumes/pred_fg"
@@ -150,7 +151,7 @@ numinst_threshs = [ [0.9, 0.1],]
 checkpoints = [0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600]
 
 [testing]
-num_workers = 5
+num_workers = 16
 
 [vote_instances]
 patch_threshold = 0.5
@@ -161,7 +162,7 @@ only_bb = true
 ignore_small_comps = 200
 num_parallel_samples = 1
 num_parallel_blocks = 1
-num_workers = 8
+num_workers = 16
 chunksize = [ 92, 92, 92,]
 sampling = 1.0
 debug = false
@@ -210,7 +211,7 @@ prob_based_consensus = false
 numinst_threshs = [ 0.9, 0.1,]
 
 [evaluation]
-num_workers = 5
+num_workers = 16
 from_scratch = false
 res_key = "vote_instances"
 metric = "general.avg_f1_cov_score"

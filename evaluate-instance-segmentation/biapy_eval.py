@@ -47,6 +47,8 @@ def tiff_to_zarr(tiff_path, zarr_path, zarr_key="volumes/pred_instance"):
     """Load a TIFF and write it as a Zarr group array under ``zarr_key``."""
     # Load TIFF file as numpy array
     arr = np.squeeze(tifffile.imread(tiff_path))
+    if not np.issubdtype(arr.dtype, np.integer):
+        arr = np.rint(arr).astype(np.int32)
     print(f"Shape: {arr.shape}")
 
     # Create or open the Zarr file and store the array
@@ -59,6 +61,16 @@ def tiff_to_zarr(tiff_path, zarr_path, zarr_key="volumes/pred_instance"):
     g.create_dataset(dataset, data=arr, overwrite=True)
 
     print(f"Converted {tiff_path} -> {zarr_path}:{zarr_key}")
+
+
+def pred_zarr_needs_int_cast(zarr_path, zarr_key="volumes/pred_instance"):
+    """True if pred_instance is missing or not an integer dtype."""
+    try:
+        root = zarr.open(zarr_path, mode="r")
+        arr = root[zarr_key]
+    except Exception:
+        return True
+    return not np.issubdtype(arr.dtype, np.integer)
 
 
 def main(args:argparse.Namespace):
@@ -78,20 +90,46 @@ def main(args:argparse.Namespace):
     out_dir = RESULT_ROOT_DIR / f"{config_name}/results/{job_name}_{run_id}/eval-inst_metrics/{args.split}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # If no zarr predictions yet, convert BiaPy TIFFs from per_image_instances
+    # Convert missing and/or non-integer pred Zarrs from BiaPy TIFFs
     zarr_files = list(zarr_dir.glob("*.zarr")) if zarr_dir.exists() else []
     tif_files = sorted(
         p for p in tiff_dir.glob("*.tif*") if p.suffix.lower() in {".tif", ".tiff"}
     ) if tiff_dir.exists() else []
-    if len(zarr_files) < len(tif_files):
+
+    # Decide which TIFFs to (re)write as integer-label Zarrs:
+    # 1) no matching Zarr yet, or 2) Zarr exists but pred_instance is non-integer
+    # (e.g. float32 from an earlier conversion). Equal TIFF/Zarr counts alone must
+    # not skip reconversion, or float preds would keep failing in filter_components.
+    tif_by_stem = {tiff_stem(tif): tif for tif in tif_files}
+    existing_stems = {zpath.stem for zpath in zarr_files}
+    tifs_to_convert = []
+    seen_stems = set()
+
+    # Case 1: TIFF with no Zarr yet
+    for tif in tif_files:
+        stem = tiff_stem(tif)
+        if stem not in existing_stems and stem not in seen_stems:
+            tifs_to_convert.append(tif)
+            seen_stems.add(stem)
+
+    # Case 2: existing Zarr with non-integer labels; rebuild from the matching TIFF
+    for zarr_path in zarr_files:
+        stem = zarr_path.stem
+        if stem in seen_stems:
+            continue
+        if pred_zarr_needs_int_cast(zarr_path) and stem in tif_by_stem:
+            tifs_to_convert.append(tif_by_stem[stem])
+            seen_stems.add(stem)
+
+    if tifs_to_convert:
         print(
-            f"There are more tif files than zarr files ({len(zarr_files)})! "
-            f"Converting ({len(tif_files)}) tif to zarr files now"
+            f"Converting ({len(tifs_to_convert)}) tif to integer-label zarr files "
+            f"(missing and/or non-integer preds)"
         )
         zarr_dir.mkdir(parents=True, exist_ok=True)
-        print(f"Number of files to process: {len(tif_files)}")
-        for idx, tif in enumerate(tif_files):
-            print(f"Converting [{idx + 1} / {len(tif_files)}]: {tif}")
+        print(f"Number of files to process: {len(tifs_to_convert)}")
+        for idx, tif in enumerate(tifs_to_convert):
+            print(f"Converting [{idx + 1} / {len(tifs_to_convert)}]: {tif}")
             tiff_to_zarr(tif, zarr_dir / f"{tiff_stem(tif)}.zarr")
         zarr_files = list(zarr_dir.glob("*.zarr"))
 

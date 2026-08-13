@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChannelParam, fetchVolumeData, VolumeKind } from "../api/client";
 import { CameraSync } from "../utils/cameraSync";
+import { ChannelGains } from "../utils/displayAdjust";
 import {
   createRenderWindow,
   fitCamera,
@@ -27,6 +28,8 @@ interface Volume3DViewProps {
   maxSize: number;
   brightness: number;
   contrast: number;
+  /** Per-channel intensity for raw RGB mode; ignored for instance overlays. */
+  channelGains?: ChannelGains;
   /** Shared camera-link group; when set, this view registers under `syncId`. */
   cameraSync?: CameraSync;
   syncId?: string;
@@ -52,6 +55,7 @@ export function Volume3DView({
   maxSize,
   brightness,
   contrast,
+  channelGains,
   cameraSync,
   syncId,
 }: Volume3DViewProps) {
@@ -136,7 +140,14 @@ export function Volume3DView({
           signal: controller.signal,
         });
         if (cancelled || generationRef.current !== generation) return;
-        ctx!.layer.applyData(vol, mode, brightness, contrast);
+        ctx!.layer.applyData(
+          vol,
+          mode,
+          brightness,
+          contrast,
+          1,
+          mode === "rgb" ? channelGains : undefined,
+        );
         fitAndRender();
         requestAnimationFrame(() => {
           if (!cancelled && generationRef.current === generation) fitAndRender();
@@ -160,16 +171,20 @@ export function Volume3DView({
       cancelled = true;
       controller.abort();
     };
-    // brightness/contrast are intentionally excluded: the effect below re-maps
-    // them without a re-fetch (matches VolumeViewer3D's load/refresh split).
+    // brightness/contrast/channelGains are intentionally excluded: the effect
+    // below re-maps them without a re-fetch (matches VolumeViewer3D's split).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, sampleName, volume, channel, mode, maxSize, fitAndRender, renderScene]);
 
   useEffect(() => {
     if (!ready) return;
-    ctxRef.current?.layer.refreshScalars(brightness, contrast);
+    ctxRef.current?.layer.refreshScalars(
+      brightness,
+      contrast,
+      mode === "rgb" ? channelGains : undefined,
+    );
     renderScene();
-  }, [ready, brightness, contrast, renderScene]);
+  }, [ready, brightness, contrast, channelGains, mode, renderScene]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     const ctx = ctxRef.current;

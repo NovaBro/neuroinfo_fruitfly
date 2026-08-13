@@ -113,21 +113,56 @@ def _mp_spawn_context():
     return mp.get_context("spawn")
 
 
+def _fork_target_ref(func):
+    while hasattr(func, '__wrapped__'):
+        func = func.__wrapped__
+    return func.__module__, func.__qualname__
+
+
+def _resolve_callable(module_name, qualname):
+    if module_name == '__main__':
+        mod = sys.modules['__main__']
+    else:
+        mod = importlib.import_module(module_name)
+    obj = mod
+    for part in qualname.split('.'):
+        obj = getattr(obj, part)
+    while hasattr(obj, '__wrapped__'):
+        obj = obj.__wrapped__
+    return obj
+
+
+def _fork_worker(module_name, qualname, args, kwargs):
+    func = _resolve_callable(module_name, qualname)
+    func(*args, **kwargs)
+
+
+def _fork_return_worker(module_name, qualname, args, kwargs, result_queue):
+    func = _resolve_callable(module_name, qualname)
+    func(*(args + (result_queue,)), **kwargs)
+
+
 def fork(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        p = None
         try:
-            logger.info("forking %s", func)
+            module_name, qualname = _fork_target_ref(func)
+            logger.info("forking %s.%s", module_name, qualname)
             ctx = _mp_spawn_context()
-            p = ctx.Process(target=func, args=args, kwargs=kwargs)
+            p = ctx.Process(
+                target=_fork_worker,
+                args=(module_name, qualname, args, kwargs),
+            )
             p.start()
             p.join()
             if p.exitcode != 0:
                 raise RuntimeError("child process died")
         except KeyboardInterrupt:
             print("Caught KeyboardInterrupt, terminating workers")
-            p.terminate()
-            p.join()
+            if p is not None:
+                p.terminate()
+                p.join()
             os._exit(-1)
 
     return wrapper
@@ -136,12 +171,16 @@ def fork(func):
 def fork_return(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        p = None
         try:
-            logger.info("forking %s", func)
+            module_name, qualname = _fork_target_ref(func)
+            logger.info("forking %s.%s", module_name, qualname)
             ctx = _mp_spawn_context()
             q = ctx.Queue()
-            p = ctx.Process(target=func,
-                           args=args + (q,), kwargs=kwargs)
+            p = ctx.Process(
+                target=_fork_return_worker,
+                args=(module_name, qualname, args, kwargs, q),
+            )
             p.start()
             results = None
             while p.is_alive():
@@ -157,8 +196,9 @@ def fork_return(func):
             return results
         except KeyboardInterrupt:
             print("Caught KeyboardInterrupt, terminating workers")
-            p.terminate()
-            p.join()
+            if p is not None:
+                p.terminate()
+                p.join()
             os._exit(-1)
 
     return wrapper
@@ -1267,9 +1307,11 @@ def evaluate_sample(config, args, data, sample, inst_folder, output_folder,
                                 )
 
     else:
+        ndim = len(config['data']['voxel_size'])
         return evaluate_file(
-            sample_path, gt_path, res_key=config['evaluation']['res_key'],
-            gt_key=gt_key, out_dir=output_folder, suffix="",
+            sample_path, gt_path, ndim, output_folder,
+            res_key=config['evaluation']['res_key'],
+            gt_key=gt_key, suffix="",
             foreground_only=config['evaluation'].get('foreground_only', False),
             debug=config['general']['debug'],
             from_scratch=config['evaluation'].get('from_scratch', False),

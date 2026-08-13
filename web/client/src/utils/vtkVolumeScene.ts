@@ -8,7 +8,7 @@ import vtkVolumeMapper from "@kitware/vtk.js/Rendering/Core/VolumeMapper";
 import vtkGenericRenderWindow from "@kitware/vtk.js/Rendering/Misc/GenericRenderWindow";
 import vtkInteractorStyleTrackballCamera from "@kitware/vtk.js/Interaction/Style/InteractorStyleTrackballCamera";
 import { VolumeData } from "../api/client";
-import { remapVolumeUint8 } from "./displayAdjust";
+import { ChannelGains, remapVolumeUint8 } from "./displayAdjust";
 
 export type VolumeMode = "raw" | "rgb" | "instance_rgb";
 
@@ -158,12 +158,15 @@ function setLayerScalars(
   components: number,
   brightness: number,
   contrast: number,
+  channelGains?: ChannelGains,
 ) {
   const displayData = remapVolumeUint8(
     source,
     brightness,
     contrast,
     components,
+    // Per-channel gains only apply to raw RGB, never to instance label colors.
+    components === 3 ? channelGains : undefined,
   );
   const scalars = vtkDataArray.newInstance({
     name: "Scalars",
@@ -183,6 +186,7 @@ function applyVolumeData(
   brightness: number,
   contrast: number,
   opacity = 1,
+  channelGains?: ChannelGains,
 ) {
   configureVolumeProperty(layer, mode, opacity);
 
@@ -193,7 +197,14 @@ function applyVolumeData(
   layer.imageData.setSpacing([1, oy / ox, oz / ox]);
   layer.imageData.setOrigin([0, 0, 0]);
 
-  setLayerScalars(layer, vol.data, vol.components, brightness, contrast);
+  setLayerScalars(
+    layer,
+    vol.data,
+    vol.components,
+    brightness,
+    contrast,
+    mode === "rgb" ? channelGains : undefined,
+  );
   updateMapperSampling(layer);
 }
 
@@ -223,8 +234,10 @@ export class VolumeLayerController {
   readonly layer: VolumeLayer;
   visible = false;
   source: VolumeData | null = null;
+  private mode: VolumeMode;
 
   constructor(mode: VolumeMode) {
+    this.mode = mode;
     this.layer = createVolumeLayer(mode);
   }
 
@@ -239,15 +252,29 @@ export class VolumeLayerController {
     brightness: number,
     contrast: number,
     opacity = 1,
+    channelGains?: ChannelGains,
   ) {
-    applyVolumeData(this.layer, vol, mode, brightness, contrast, opacity);
+    this.mode = mode;
+    applyVolumeData(
+      this.layer,
+      vol,
+      mode,
+      brightness,
+      contrast,
+      opacity,
+      channelGains,
+    );
     this.source = vol;
     this.layer.volume.setVisibility(true);
     this.visible = true;
   }
 
-  /** Re-remap the cached source for new brightness/contrast (no re-fetch). */
-  refreshScalars(brightness: number, contrast: number) {
+  /** Re-remap the cached source for new brightness/contrast/gains (no re-fetch). */
+  refreshScalars(
+    brightness: number,
+    contrast: number,
+    channelGains?: ChannelGains,
+  ) {
     if (!this.visible || !this.source) return;
     setLayerScalars(
       this.layer,
@@ -255,6 +282,7 @@ export class VolumeLayerController {
       this.source.components,
       brightness,
       contrast,
+      this.mode === "rgb" ? channelGains : undefined,
     );
   }
 

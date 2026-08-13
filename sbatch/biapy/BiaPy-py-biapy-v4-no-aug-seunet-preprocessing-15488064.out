@@ -624,3 +624,5 @@ TRAIN:
 [12:06:07.210854] ###########################
 [12:06:07.213301] You select to create ['F', 'T', 'P'] channels from given instance labels and no file is detected in fisbe/biapy-no-aug/test/label_F.erosion-0.dilation-0_T.thickness-2_P.type-skeleton.dilation-1.erosion-0 . So let's prepare the data. This process will be done just once!
 [12:06:07.214510] Creating Y_test channels . . .
+[12:11:51.978933] DATA.TRAIN.GT_PATH changed from fisbe/biapy-no-aug/train/label to fisbe/biapy-no-aug/train/label_F.erosion-0.dilation-0_T.thickness-2_P.type-skeleton.dilation-1.erosion-0
+[12:11:51.979552] DATA.TEST.GT_PATH changed from fisbe/biapy-no-aug/test/label to fisbe/biapy-no-aug/test/label_F.erosion-0.dilation-0_T.thickness-2_P.type-skeleton.dilation-1.erosion-0

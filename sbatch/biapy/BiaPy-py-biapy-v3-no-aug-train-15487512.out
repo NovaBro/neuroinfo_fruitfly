@@ -1,0 +1,1435 @@
+SBATCH Run: biapy-v3-no-aug.yaml, mode: train, job-name: biapy-v3-no-aug, run-id: 0
+SLURM_CPUS_PER_TASK=16
+running BiaPy/run_biapy-py.py
+Mode overrides (train): TRAIN.ENABLE=True, TEST.ENABLE=False, MODEL.LOAD_CHECKPOINT=False
+CPU overrides: SYSTEM.NUM_CPUS=16, SYSTEM.NUM_WORKERS=16
+Date     : 2026-08-07 12:52:11
+Arguments: Namespace(config={'SYSTEM': {'NUM_CPUS': 16, 'NUM_WORKERS': -1}, 'PROBLEM': {'TYPE': 'INSTANCE_SEG', 'NDIM': '3D', 'INSTANCE_SEG': {'DATA_CHANNELS': ['F', 'T'], 'DATA_CHANNELS_EXTRA_OPTS': [{'T': {'thickness': 2}}], 'DATA_CHANNEL_WEIGHTS': '(1.0, 2.0)', 'WATERSHED': {'SEED_CHANNELS': ['F', 'T'], 'SEED_CHANNELS_THRESH': ['auto', 'auto'], 'TOPOGRAPHIC_SURFACE_CHANNEL': 'F', 'GROWTH_MASK_CHANNELS': ['F'], 'GROWTH_MASK_CHANNELS_THRESH': ['auto'], 'DATA_CHECK_MW': True}}}, 'DATA': {'PATCH_SIZE': '(20, 128, 128, 3)', 'TRAIN': {'PATH': 'fisbe/biapy-no-aug/train/raw', 'GT_PATH': 'fisbe/biapy-no-aug/train/label', 'IN_MEMORY': True}, 'VAL': {'PATH': 'fisbe/biapy-no-aug/val/raw', 'GT_PATH': 'fisbe/biapy-no-aug/val/label'}, 'TEST': {'PATH': 'fisbe/biapy-no-aug/test/raw', 'GT_PATH': 'fisbe/biapy-no-aug/test/label', 'IN_MEMORY': True, 'LOAD_GT': True, 'PADDING': '(4,16,16)'}}, 'AUGMENTOR': {'ENABLE': False, 'RANDOM_ROT': False, 'VFLIP': False, 'HFLIP': False, 'ZFLIP': False}, 'PATHS': {'CHECKPOINT_FILE': 'metrics/biapy/biapy-v1-no-aug/checkpoints/biapy-v1-no-aug_0-checkpoint-best.pth'}, 'MODEL': {'ARCHITECTURE': 'unet', 'FEATURE_MAPS': [16, 32, 64, 128, 256], 'Z_DOWN': [1, 1, 1, 1], 'LOAD_CHECKPOINT': False}, 'TRAIN': {'ENABLE': True, 'OPTIMIZER': 'ADAMW', 'LR': 0.006, 'BATCH_SIZE': 180, 'EPOCHS': 30, 'PATIENCE': 10, 'LR_SCHEDULER': {'NAME': 'onecycle'}}, 'TEST': {'ENABLE': False, 'AUGMENTATION': False, 'FULL_IMG': False, 'POST_PROCESSING': {'INSTANCE_REFINEMENT': {'ENABLE': True, 'OPERATIONS': ['remove_small_objects'], 'VALUES': [50]}}}}, result_dir='metrics/biapy', name='biapy-v3-no-aug', run_id='0', gpu='0', world_size=1, local_rank=-1, dist_on_itp=False, dist_url='env://', dist_backend='nccl')
+Job      : biapy-v3-no-aug_0
+BiaPy    : 3.7.0
+Python   : 3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:34:02) [GCC 14.3.0]
+PyTorch  : 2.12.1+cu130
+The following changes were made in order to adapt the input configuration:
+Not using distributed mode
+[12:52:12.073215] **** Using GPU: 'cuda' for training
+[12:52:12.191657] CPU budget(total)=16 | per_rank=16 | main_threads=4 | num_workers(per_rank)=8 | world_size=1
+[12:52:12.217386] Configuration details:
+[12:52:12.217403] AUGMENTOR:
+  AFFINE_MODE: reflect
+  AUG_NUM_SAMPLES: 10
+  AUG_SAMPLES: True
+  BRIGHTNESS: False
+  BRIGHTNESS_FACTOR: (-0.1, 0.1)
+  BRIGHTNESS_PROB: 0.5
+  CBLUR_DOWN_RANGE: (2, 8)
+  CBLUR_INSIDE: True
+  CBLUR_SIZE: (0.2, 0.4)
+  CHANNEL_SHUFFLE: False
+  CHANNEL_SHUFFLE_PROB: 0.5
+  CMIX_SIZE: (0.2, 0.4)
+  CNOISE_NB_ITERATIONS: (1, 3)
+  CNOISE_SCALE: (0.05, 0.1)
+  CNOISE_SIZE: (0.2, 0.4)
+  CONTRAST: False
+  CONTRAST_FACTOR: (-0.1, 0.1)
+  CONTRAST_PROB: 0.5
+  COUT_APPLY_TO_MASK: False
+  COUT_CVAL: 0.0
+  COUT_NB_ITERATIONS: (1, 3)
+  COUT_SIZE: (0.05, 0.3)
+  CUTBLUR: False
+  CUTBLUR_PROB: 0.5
+  CUTMIX: False
+  CUTMIX_PROB: 0.5
+  CUTNOISE: False
+  CUTNOISE_PROB: 0.5
+  CUTOUT: False
+  CUTOUT_PROB: 0.5
+  DRAW_GRID: True
+  DROPOUT: False
+  DROPOUT_PROB: 0.5
+  DROP_RANGE: (0, 0.2)
+  ELASTIC: False
+  ELASTIC_PROB: 0.5
+  ENABLE: False
+  E_ALPHA: (12, 16)
+  E_MODE: constant
+  E_SIGMA: 4
+  GAMMA_CONTRAST: False
+  GAMMA_CONTRAST_PROB: 0.5
+  GAUSSIAN_NOISE: False
+  GAUSSIAN_NOISE_MEAN: 0.0
+  GAUSSIAN_NOISE_PROB: 0.5
+  GAUSSIAN_NOISE_USE_INPUT_IMG_MEAN_AND_VAR: False
+  GAUSSIAN_NOISE_VAR: 0.05
+  GC_GAMMA: (1.25, 1.75)
+  GRAYSCALE: False
+  GRAYSCALE_PROB: 0.5
+  GRIDMASK: False
+  GRIDMASK_PROB: 0.5
+  GRID_D_RANGE: (0.4, 1)
+  GRID_INVERT: False
+  GRID_RATIO: 0.6
+  GRID_ROTATE: 1.0
+  G_BLUR: False
+  G_BLUR_PROB: 0.5
+  G_SIGMA: (1.0, 2.0)
+  HFLIP: False
+  HFLIP_PROB: 0.5
+  MB_KERNEL: (3, 7)
+  MEDIAN_BLUR: False
+  MEDIAN_BLUR_PROB: 0.5
+  MISALIGNMENT: False
+  MISALIGNMENT_PROB: 0.5
+  MISSING_SECTIONS: False
+  MISSING_SECTIONS_PROB: 0.5
+  MISSP_CHANNEL_PB: 0.5
+  MISSP_ITERATIONS: (10, 30)
+  MOTB_K_RANGE: (8, 12)
+  MOTION_BLUR: False
+  MOTION_BLUR_PROB: 0.5
+  MS_DISPLACEMENT: 16
+  MS_ROTATE_RATIO: 0.5
+  PEPPER: False
+  PEPPER_AMOUNT: 0.05
+  PEPPER_PROB: 0.5
+  POISSON_NOISE: False
+  POISSON_NOISE_PROB: 0.5
+  RANDOM_ROT: False
+  RANDOM_ROT_PROB: 0.5
+  RANDOM_ROT_RANGE: (-180, 180)
+  ROT90: False
+  ROT90_PROB: 0.5
+  SALT: False
+  SALT_AMOUNT: 0.05
+  SALT_AND_PEPPER: False
+  SALT_AND_PEPPER_AMOUNT: 0.05
+  SALT_AND_PEPPER_PROB: 0.5
+  SALT_AND_PEPPER_PROP: 0.5
+  SALT_PROB: 0.5
+  SHEAR: False
+  SHEAR_PROB: 0.5
+  SHEAR_RANGE: (-20, 20)
+  SHIFT: False
+  SHIFT_PROB: 0.5
+  SHIFT_RANGE: (0.1, 0.2)
+  SHUFFLE_TRAIN_DATA_EACH_EPOCH: True
+  SHUFFLE_VAL_DATA_EACH_EPOCH: False
+  VFLIP: False
+  VFLIP_PROB: 0.5
+  ZFLIP: False
+  ZFLIP_PROB: 0.5
+  ZOOM: False
+  ZOOM_IN_Z: False
+  ZOOM_PROB: 0.5
+  ZOOM_RANGE: (0.5, 1.5)
+DATA:
+  CHECK_GENERATORS: False
+  FILTER_BY_IMAGE: False
+  FORCE_RGB: False
+  NORMALIZATION:
+    PERC_CLIP:
+      ENABLE: False
+      LOWER_PERC: -1.0
+      LOWER_VALUE: [-1.0]
+      UPPER_PERC: -1.0
+      UPPER_VALUE: [-1.0]
+    TYPE: zero_mean_unit_variance
+    ZERO_MEAN_UNIT_VAR:
+      MEAN_VAL: [-1.0]
+      STD_VAL: [-1.0]
+  N_CLASSES: 2
+  PATCH_SIZE: (20, 128, 128, 3)
+  PREPROCESS:
+    CANNY:
+      ENABLE: False
+      HIGH_THRESHOLD: None
+      LOW_THRESHOLD: None
+    CLAHE:
+      CLIP_LIMIT: 0.01
+      ENABLE: False
+      KERNEL_SIZE: None
+    GAUSSIAN_BLUR:
+      CHANNEL_AXIS: None
+      ENABLE: False
+      MODE: nearest
+      SIGMA: 1
+    MATCH_HISTOGRAM:
+      ENABLE: False
+      REFERENCE_PATH: user_data/test/x
+    MEDIAN_BLUR:
+      ENABLE: False
+      KERNEL_SIZE: (3, 3, 1)
+    RESIZE:
+      ANTI_ALIASING: False
+      CLIP: True
+      CVAL: 0.0
+      ENABLE: False
+      MODE: reflect
+      ORDER: 1
+      OUTPUT_SHAPE: (512, 512)
+      PRESERVE_RANGE: True
+    TEST: False
+    TRAIN: False
+    VAL: False
+    ZOOM:
+      ENABLE: False
+      ZOOM_FACTOR: [1, 1, 1, 1, 1]
+  REFLECT_TO_COMPLETE_SHAPE: True
+  SAVE_FILTERED_IMAGES: False
+  SAVE_FILTERED_IMAGES_NUM: 3
+  TEST:
+    BINARY_MASKS: fisbe/biapy-no-aug/test/raw/../bin_mask
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy-no-aug/test/label_detection_masks_2
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy-no-aug/test/label
+    INPUT_IMG_AXES_ORDER: TZCYX
+    INPUT_MASK_AXES_ORDER: TZCYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-no-aug/test/label_F.erosion-0.dilation-0_T.thickness-2
+    IN_MEMORY: True
+    LOAD_GT: True
+    MEDIAN_PADDING: False
+    OVERLAP: (0, 0, 0)
+    PADDING: (4, 16, 16)
+    PATH: fisbe/biapy-no-aug/test/raw
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy-no-aug/test/raw_ssl_source
+    USE_VAL_AS_TEST: False
+  TRAIN:
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy-no-aug/train/label_detection_masks_2
+    EXTRACT_RANDOM_PATCH: False
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy-no-aug/train/label
+    INPUT_IMG_AXES_ORDER: TZCYX
+    INPUT_MASK_AXES_ORDER: TZCYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-no-aug/train/label_F.erosion-0.dilation-0_T.thickness-2
+    IN_MEMORY: True
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: fisbe/biapy-no-aug/train/raw
+    PROBABILITY_MAP: False
+    REPLICATE: 0
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy-no-aug/train/raw_ssl_source
+    W_BACKGROUND: 0.06
+    W_FOREGROUND: 0.94
+  VAL:
+    CROSS_VAL: False
+    CROSS_VAL_FOLD: 1
+    CROSS_VAL_NFOLD: 5
+    DETECTION_MASK_DIR: fisbe/biapy-no-aug/val/label_detection_masks_2
+    DIST_EVAL: True
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    FROM_TRAIN: True
+    GT_PATH: fisbe/biapy-no-aug/val/label
+    INPUT_IMG_AXES_ORDER: TZCYX
+    INPUT_MASK_AXES_ORDER: TZCYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-no-aug/val/label_F.erosion-0.dilation-0_T.thickness-2
+    IN_MEMORY: True
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: fisbe/biapy-no-aug/val/raw
+    RANDOM: True
+    RESOLUTION: (1, 1, 1)
+    SPLIT_TRAIN: 0.1
+    SSL_SOURCE_DIR: fisbe/biapy-no-aug/val/raw_ssl_source
+LOG:
+  CHART_CREATION_FREQ: 5
+  LOG_DIR: metrics/biapy/biapy-v3-no-aug/logs
+  LOG_FILE_PREFIX: biapy-v3-no-aug_0
+  TENSORBOARD_LOG_DIR: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/tensorboard
+LOSS:
+  CLASS_REBALANCE: none
+  CLASS_WEIGHTS: []
+  CONTRAST:
+    ENABLE: False
+    MEMORY_SIZE: 5000
+    PIXEL_UPD_FREQ: 10
+    PROJ_DIM: 256
+  CYCLEGAN:
+    ALPHA_PERCEPTUAL: 0.0
+    DELTA_MSE: 0.0
+    GAMMA_SSIM: 1.0
+    LAMBDA_GAN: 1.0
+    LAMBDA_RECON: 10.0
+  IGNORE_INDEX: -1
+  TYPE: 
+  WEIGHTS: [1.0, 1.0]
+MODEL:
+  ACTIVATION: elu
+  ARCHITECTURE: unet
+  BMZ:
+    EXPORT:
+      AUTHORS: []
+      CITE: []
+      DATASET_INFO: [{}]
+      DESCRIPTION: 
+      DOCUMENTATION: 
+      ENABLE: False
+      LICENSE: CC-BY-4.0
+      MODEL_NAME: 
+      MODEL_VERSION: 0.1.0
+      REUSE_BMZ_CONFIG: False
+      TAGS: []
+    SOURCE_MODEL_ID: 
+  CONVNEXT_LAYER_SCALE: 1e-06
+  CONVNEXT_SD_PROB: 0.1
+  CONVNEXT_STEM_K_SIZE: 2
+  CONV_BLOCK_ORDER: conv_norm_act
+  CONV_LAYERS: [2, 2, 2, 2, 2]
+  DROPOUT_VALUES: [0.0, 0.0, 0.0, 0.0, 0.0]
+  FEATURE_MAPS: [16, 32, 64, 128, 256]
+  FREEZE_LAYERS_MATCHING: []
+  HRNET:
+    BLOCK_TYPE: BASIC
+    HEAD_TYPE: FCN
+    NUM_BLOCKS: [[4, 4], [4, 4, 4], [4, 4, 4, 4]]
+    NUM_BRANCHES: [2, 3, 4]
+    NUM_CHANNELS: [[18, 36], [18, 36, 72], [18, 36, 72, 144]]
+    NUM_MODULES: [1, 4, 3]
+    NUM_STAGES: 3
+    VARIANT: W48
+    YX_DOWN: [0, 0, 0]
+    Z_DOWN: [0, 0, 0]
+  ISOTROPY: [True, True, True, True, True]
+  ITEMS_TO_LOAD_FROM_CHECKPOINT: ['weights', 'norm', 'model_arch']
+  KERNEL_SIZE: 3
+  LARGER_IO: False
+  LOAD_CHECKPOINT: False
+  LOAD_CHECKPOINT_EPOCH: best_on_val
+  MAE_DEC_HIDDEN_SIZE: 512
+  MAE_DEC_MLP_DIMS: 2048
+  MAE_DEC_NUM_HEADS: 16
+  MAE_DEC_NUM_LAYERS: 8
+  MAE_MASK_RATIO: 0.5
+  MAE_MASK_TYPE: grid
+  NAFNET:
+    ARCHITECTURE_D: patchgan
+    DEC_BLK_NUMS: [2, 2, 2, 2]
+    DW_EXPAND: 2
+    ENC_BLK_NUMS: [2, 2, 4, 8]
+    FFN_EXPAND: 2
+    MIDDLE_BLK_NUM: 12
+    PATCHGAN:
+      BASE_FILTERS: 64
+    WIDTH: 16
+  NORMALIZATION: in
+  OUT_CHECKPOINT_FORMAT: pth
+  RCAN_CONV_FILTERS: 16
+  RCAN_RCAB_BLOCK_NUM: 20
+  RCAN_REDUCTION_RATIO: 16
+  RCAN_RG_BLOCK_NUM: 10
+  RCAN_UPSCALING_LAYER: True
+  SAVE_CKPT_FREQ: -1
+  SKIP_UNMATCHED_LAYERS: False
+  SOURCE: biapy
+  STUNET:
+    PRETRAINED: False
+    VARIANT: base
+  TORCHVISION_MODEL_NAME: 
+  UNETR_VIT_HIDD_MULT: -1
+  UNETR_VIT_MODEL: custom
+  UNETR_VIT_NUM_FILTERS: 16
+  UNET_SR_UPSAMPLE_POSITION: pre
+  UPSAMPLE_LAYER: convtranspose
+  VIT_EMBED_DIM: 768
+  VIT_MLP_RATIO: 4.0
+  VIT_MODEL: custom
+  VIT_NORM_EPS: 1e-06
+  VIT_NUM_HEADS: 12
+  VIT_NUM_LAYERS: 12
+  VIT_PRETRAINED_WEIGHTS: 
+  VIT_TOKEN_SIZE: 16
+  YX_DOWN: [2, 2, 2, 2]
+  Z_DOWN: [1, 1, 1, 1]
+PATHS:
+  BMZ_EXPORT_PATH: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/BMZ_files
+  CHARTS: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/charts
+  CHECKPOINT: metrics/biapy/biapy-v3-no-aug/checkpoints
+  CHECKPOINT_FILE: metrics/biapy/biapy-v1-no-aug/checkpoints/biapy-v1-no-aug_0-checkpoint-best.pth
+  DA_SAMPLES: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/aug
+  FIL_SAMPLES_DIR: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/filtering_information
+  GEN_CHECKS: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/gen_check
+  GEN_MASK_CHECKS: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/gen_mask_check
+  MAE_OUT_DIR: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/MAE_checks
+  PROB_MAP_DIR: metrics/biapy/biapy-v3-no-aug/prob_map
+  PROB_MAP_FILENAME: prob_map.npy
+  PROFILER: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/profiler
+  RESULT_DIR:
+    AS_3D_STACK: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/as_3d_stack
+    AS_3D_STACK_BIN: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/as_3d_stack_binarized
+    AS_3D_STACK_POST_PROCESSING: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/as_3d_stack_post_processing
+    DET_ASSOC_POINTS: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/point_associations
+    DET_LOCAL_MAX_COORDS_CHECK: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/per_image_local_max_check
+    DET_LOCAL_MAX_COORDS_CHECK_POST_PROCESSING: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/per_image_local_max_check_post_processing
+    FULL_IMAGE: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/full_image
+    FULL_IMAGE_BIN: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/full_image_binarized
+    FULL_IMAGE_INSTANCES: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/full_image_instances
+    FULL_IMAGE_POST_PROCESSING: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/full_image_post_processing
+    INST_ASSOC_POINTS: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/instance_associations
+    PATH: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0
+    PER_IMAGE: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/per_image
+    PER_IMAGE_BIN: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/per_image_binarized
+    PER_IMAGE_INSTANCES: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/per_image_instances
+    PER_IMAGE_POST_PROCESSING: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/per_image_post_processing
+  TEST_FULL_GT_H5: fisbe/biapy-no-aug/test/label/h5
+  TEST_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/test_FT_instance_channels
+  TRAIN_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/train_FT_instance_channels
+  VAL_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/val_FT_instance_channels
+  WATERSHED_DIR: metrics/biapy/biapy-v3-no-aug/results/biapy-v3-no-aug_0/watershed
+PROBLEM:
+  DENOISING:
+    LOAD_GT_DATA: False
+    N2V_MANIPULATOR: uniform_withCP
+    N2V_NEIGHBORHOOD_RADIUS: 5
+    N2V_PERC_PIX: 0.198
+    N2V_STRUCTMASK: False
+  DETECTION:
+    CENTRAL_POINT_DILATION: [2]
+    CHECK_POINTS_CREATED: True
+    CLASS_REBALANCE_WITHIN_CHANNELS: True
+    DATA_CHANNEL_WEIGHTS: (1, 1)
+    DATA_CHECK_MW: False
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+  IMAGE_TO_IMAGE:
+    CHANNELS_PER_HEAD_INFO: []
+    MULTIPLE_RAW_ONE_TARGET_LOADER: False
+    OUTPUT_CHANNELS: 1
+    OUTPUT_CHANNEL_ACT: []
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+  INSTANCE_SEG:
+    BORDER_EXTRA_WEIGHTS: 
+    CELLPOSE:
+      DIAMETER: 0.0
+      DIAM_MEAN: 30.0
+      FG_THRESH: 0.5
+      FLOW_THRESHOLD: 0.4
+      N_STEPS: 200
+      SCALE_RANGE: 0.5
+      TEST_DOUBLE_INFERENCE: True
+    CHANNELS_PER_HEAD_INFO: []
+    CLASS_REBALANCE_WITHIN_CHANNELS: True
+    DATA_CHANNELS: ['F', 'T']
+    DATA_CHANNELS_EXTRA_OPTS: [{'T': {'thickness': 2}, 'F': {'erosion': 0, 'dilation': 0}}]
+    DATA_CHANNELS_LOSSES: ['bce', 'bce']
+    DATA_CHANNEL_WEIGHTS: (1.0, 2.0)
+    EMBEDSEG:
+      FG_THRESH: 0.5
+      GRID_SIZE: -1
+      MIN_MASK_SUM: 0
+      MIN_UNCLUSTERED_SUM: 0
+      SEED_THRESH: 0.9
+    INSTANCE_CREATION_PROCESS: watershed
+    OMNIPOSE:
+      FLOW_THRESHOLD: 0.4
+      MASK_THRESHOLD: 0.0
+      NITER: 0
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+    STARDIST:
+      GRID: []
+      NMS_IOU_THRESH: 0.3
+      PROB_THRESH: 0.4
+    SYNAPSES:
+      BLOB_LOG_MAX_SIGMA: 10
+      BLOB_LOG_MIN_SIGMA: 5
+      BLOB_LOG_NUM_SIGMA: 2
+      EXCLUDE_BORDER: False
+      MIN_TH_TO_BE_PEAK: 0.2
+      PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+      POINT_CREATION_FUNCTION: peak_local_max
+      REMOVE_CLOSE_POINTS_RADIUS_BY_MASK: False
+      REMOVE_CLOSE_POST_POINTS_RADIUS: 0
+      REMOVE_CLOSE_PRE_POINTS_RADIUS: 0
+      TH_TYPE: auto
+    TYPE: regular
+    WATERSHED:
+      BY_2D_SLICES: False
+      DATA_CHECK_MW: True
+      DATA_REMOVE_BEFORE_MW: False
+      DATA_REMOVE_SMALL_OBJ_BEFORE: 10
+      ERODE_AND_DILATE_GROWTH_MASK: False
+      FORE_DILATION_RADIUS: 5
+      FORE_EROSION_RADIUS: 5
+      GROWTH_MASK_CHANNELS: ['F']
+      GROWTH_MASK_CHANNELS_THRESH: ['auto']
+      SEED_CHANNELS: ['F', 'T']
+      SEED_CHANNELS_THRESH: ['auto', 'auto']
+      SEED_MORPH_RADIUS: []
+      SEED_MORPH_SEQUENCE: []
+      TOPOGRAPHIC_SURFACE_CHANNEL: F
+  NDIM: 3D
+  PRINT_OLD_KEY_CHANGES: True
+  SELF_SUPERVISED:
+    NOISE: 0.2
+    PRETEXT_TASK: crappify
+    RESIZING_FACTOR: 4
+  SEMANTIC_SEG:
+    IGNORE_CLASS_ID: 0
+  SUPER_RESOLUTION:
+    UPSCALING: (1, 1, 1)
+  TYPE: INSTANCE_SEG
+SYSTEM:
+  DEVICE: cpu
+  NUM_CPUS: 16
+  NUM_GPUS: 1
+  NUM_WORKERS: -1
+  PIN_MEM: True
+  SEED: 0
+TEST:
+  ANALIZE_2D_IMGS_AS_3D_STACK: False
+  AUGMENTATION: False
+  AUGMENTATION_GROUP: auto
+  AUGMENTATION_MODE: mean
+  BY_CHUNKS:
+    ENABLE: False
+    FLUSH_EACH: 100
+    PHASES: ['prediction', 'instance_creation', 'instance_merging']
+    SAVE_OUT_TIF: False
+    WORKFLOW_PROCESS:
+      ENABLE: True
+      INSTANCE_SEG_HALO: -1
+      INSTANCE_SEG_MERGE_IOU_TH: 0.3
+      TYPE: chunk_by_chunk
+    Z_END: -1
+    Z_START: -1
+  DET_BLOB_LOG_MAX_SIGMA: 10
+  DET_BLOB_LOG_MIN_SIGMA: 5
+  DET_BLOB_LOG_NUM_SIGMA: 2
+  DET_EXCLUDE_BORDER: False
+  DET_IGNORE_POINTS_OUTSIDE_BOX: []
+  DET_MIN_TH_TO_BE_PEAK: 0.2
+  DET_PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+  DET_POINT_CREATION_FUNCTION: peak_local_max
+  DET_TH_TYPE: manual
+  DET_TOLERANCE: 10
+  ENABLE: False
+  FULL_IMG: False
+  MATCHING_STATS: True
+  MATCHING_STATS_BY_IMAGE: True
+  MATCHING_STATS_THS: [0.3, 0.5, 0.75]
+  MATCHING_STATS_THS_COLORED_IMG: []
+  METRICS: ['iou']
+  METRICS_IN_CPU: False
+  POST_PROCESSING:
+    APPLY_MASK: False
+    DET_WATERSHED: False
+    DET_WATERSHED_DONUTS_CLASSES: [-1]
+    DET_WATERSHED_DONUTS_NUCLEUS_DIAMETER: 30
+    DET_WATERSHED_DONUTS_PATCH: [13, 120, 120]
+    DET_WATERSHED_FIRST_DILATION: [-1, -1]
+    INSTANCE_REFINEMENT:
+      ENABLE: True
+      OPERATIONS: ['remove_small_objects']
+      VALUES: [50]
+    MEASURE_PROPERTIES:
+      ENABLE: False
+      EXTRA_PROPS: []
+      REMOVE_BY_PROPERTIES:
+        ENABLE: False
+        PROPS: []
+        SIGNS: []
+        VALUES: []
+    MEDIAN_FILTER: False
+    MEDIAN_FILTER_AXIS: []
+    MEDIAN_FILTER_SIZE: []
+    REMOVE_CLOSE_POINTS: False
+    REMOVE_CLOSE_POINTS_RADIUS: 0
+    REPARE_LARGE_BLOBS_SIZE: -1
+    VORONOI_ON_MASK: False
+    VORONOI_TH: 0.0
+  REDUCE_MEMORY: False
+  REUSE_PREDICTIONS: False
+  SAVE_MODEL_RAW_OUTPUT: True
+  VERBOSE: True
+TRAIN:
+  BATCH_SIZE: 180
+  CHECKPOINT_MONITOR: val_loss
+  ENABLE: True
+  EPOCHS: 30
+  GRADIENT_CLIP_NORM: 0.0
+  LR: [0.006]
+  LR_SCHEDULER:
+    MIN_LR: [-1.0]
+    NAME: onecycle
+    REDUCEONPLATEAU_FACTOR: 0.5
+    REDUCEONPLATEAU_PATIENCE: -1
+    WARMUP_COSINE_DECAY_EPOCHS: -1
+  METRICS: ['iou']
+  OPTIMIZER: ['ADAMW']
+  OPT_BETAS: [[0.9, 0.999]]
+  PATIENCE: 10
+  VERBOSE: False
+  W_DECAY: 0.02
+[12:52:12.419117] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+[12:52:12.419141] Initializing Instance_Segmentation_Workflow
+[12:52:12.419151] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+
+[12:52:12.760240] Creating normalization module . . .
+[12:52:12.760277] Normalization module created with the following configuration:
+[12:52:12.760286]   type: zero_mean_unit_variance
+[12:52:12.760292]   target_type: mask
+[12:52:12.760303]   out_dtype: float32
+[12:52:12.760310]   norm_target: False
+[12:52:12.760315]   percentile_clip: False
+[12:52:12.760323]   per_lower_bound: -1.0
+[12:52:12.760329]   per_upper_bound: -1.0
+[12:52:12.760342]   lower_bound_val: [-1.0]
+[12:52:12.760348]   upper_bound_val: [-1.0]
+[12:52:12.760353]   mean: [-1.0]
+[12:52:12.760359]   std: [-1.0]
+[12:52:12.760377] ###########################
+[12:52:12.760383] #  PREPARE INSTANCE DATA  #
+[12:52:12.760388] ###########################
+[12:52:12.761792] DATA.TRAIN.GT_PATH changed from fisbe/biapy-no-aug/train/label to fisbe/biapy-no-aug/train/label_F.erosion-0.dilation-0_T.thickness-2
+[12:52:12.762111] Staging train pairs from PATH=fisbe/biapy-no-aug/train/raw GT_PATH=fisbe/biapy-no-aug/train/label_F.erosion-0.dilation-0_T.thickness-2
+[12:52:12.793612] Train partitions: 1 chunk(s) from 18 sample(s), max size 18
+[12:52:12.793830] Staging 18 train pair(s) → /state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0 (16 workers)
+[12:52:14.397637] Finished staging 18 pair(s) to /state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0
+[12:52:14.397943] Partition 1/1: 18 sample(s), LOAD_CHECKPOINT=False
+[12:52:14.398421] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+[12:52:14.398432] Initializing Instance_Segmentation_Workflow
+[12:52:14.398437] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+
+[12:52:14.399976] Creating normalization module . . .
+[12:52:14.400006] Normalization module created with the following configuration:
+[12:52:14.400014]   type: zero_mean_unit_variance
+[12:52:14.400020]   target_type: mask
+[12:52:14.400026]   out_dtype: float32
+[12:52:14.400031]   norm_target: False
+[12:52:14.400036]   percentile_clip: False
+[12:52:14.400043]   per_lower_bound: -1.0
+[12:52:14.400048]   per_upper_bound: -1.0
+[12:52:14.400054]   lower_bound_val: [-1.0]
+[12:52:14.400059]   upper_bound_val: [-1.0]
+[12:52:14.400065]   mean: [-1.0]
+[12:52:14.400071]   std: [-1.0]
+[12:52:14.400091] ###########################
+[12:52:14.400098] #  PREPARE INSTANCE DATA  #
+[12:52:14.400103] ###########################
+[12:52:14.400313] ##########################
+[12:52:14.400321] #   LOAD TRAINING DATA   #
+[12:52:14.400326] ##########################
+[12:52:14.400395] ### LOAD ###
+[12:52:14.400710] Gathering raw images for training data . . .
+[12:53:45.684433] Gathering labels for training data . . .
+[12:54:02.619256] Checking training raw and label images' shapes . . .
+[12:54:02.630753] Creating validation data from train . . .
+[12:54:03.284397] Raw images chosen for training: ['/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/R38F04-20181005_63_G3.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/R38F04-20181005_63_H1.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/R53A10-20181019_64_A4.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/R75E01-20181030_64_D1.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/VT008647-20171222_63_D1.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/VT008647-20171222_63_E1.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/VT019303-20171013_65_B6.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/VT019307-20171013_65_F1.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/VT033051-20171128_61_E2.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/VT033051-20171128_61_E4.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/VT040433-20170919_63_D6.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/VT047848-20171020_66_I2.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/VT047848-20171020_66_I3.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/VT047848-20171020_66_I5.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/VT047848-20171020_66_J2.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/VT061467-20180911_62_E5.tif']
+[12:54:03.284466] Raw images chosen for validation: ['/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/R38F04-20181005_63_G5.tif', '/state/partition1/job-15487512/biapy_train_parts_biapy-v3-no-aug_0/part_0/raw/VT008647-20171222_63_D2.tif']
+[12:54:03.284473] * Loading train images . . .
+[12:54:16.198882] *** Loaded data shape is (13724, 20, 128, 128)
+[12:54:16.198948] * Loading train GT . . .
+[12:54:20.470124] *** Loaded data shape is (13724, 20, 128, 128)
+[12:54:20.470147] * Loading validation images . . .
+[12:54:23.786655] *** Loaded data shape is (1548, 20, 128, 128)
+[12:54:23.786681] * Loading validation GT . . .
+[12:54:24.441379] *** Loaded data shape is (1548, 20, 128, 128)
+[12:54:24.441402] ### LOAD RESULTS ###
+[12:54:24.441413] *** Loaded train data shape is: (13724, 20, 128, 128)
+[12:54:24.441422] *** Loaded train GT shape is: (13724, 20, 128, 128)
+[12:54:24.441442] *** Loaded validation data shape is: (1548, 20, 128, 128)
+[12:54:24.441449] *** Loaded validation GT shape is: (1548, 20, 128, 128)
+[12:54:24.441454] ### END LOAD ###
+[12:54:24.441502] ###############
+[12:54:24.441509] # Build model #
+[12:54:24.441514] ###############
+[12:54:24.467078] Selected output channels:
+[12:54:24.467103]   - 0 channel for F+T output
+[12:54:28.751201] ============================================================================================================================================
+Layer (type:depth-idx)                                            Input Shape               Output Shape              Param #
+============================================================================================================================================
+U_Net                                                             [1, 3, 20, 128, 128]      [1, 2, 20, 128, 128]      --
+├─ModuleList: 1-7                                                 --                        --                        (recursive)
+│    └─ConvBlock: 2-1                                             [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    └─Sequential: 3-1                                       [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    │    └─ConvBlock: 4-1                                   [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    │    │    └─Sequential: 5-1                             [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─Conv3d: 6-1                            [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     1,312
+│    │    │    │    │    └─InstanceNorm3d: 6-2                    [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    └─ELU: 6-3                               [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    └─ConvBlock: 4-2                                   [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    └─Sequential: 5-2                             [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─Conv3d: 6-4                            [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     6,928
+│    │    │    │    │    └─InstanceNorm3d: 6-5                    [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    └─ELU: 6-6                               [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+├─ModuleList: 1-8                                                 --                        --                        --
+│    └─MaxPool3d: 2-2                                             [1, 16, 20, 128, 128]     [1, 16, 20, 64, 64]       --
+├─ModuleList: 1-7                                                 --                        --                        (recursive)
+│    └─ConvBlock: 2-3                                             [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    └─Sequential: 3-2                                       [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    └─ConvBlock: 4-3                                   [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─Sequential: 5-3                             [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─Conv3d: 6-7                            [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       13,856
+│    │    │    │    │    └─InstanceNorm3d: 6-8                    [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    └─ELU: 6-9                               [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    └─ConvBlock: 4-4                                   [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─Sequential: 5-4                             [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─Conv3d: 6-10                           [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       27,680
+│    │    │    │    │    └─InstanceNorm3d: 6-11                   [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    └─ELU: 6-12                              [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+├─ModuleList: 1-8                                                 --                        --                        --
+│    └─MaxPool3d: 2-4                                             [1, 32, 20, 64, 64]       [1, 32, 20, 32, 32]       --
+├─ModuleList: 1-7                                                 --                        --                        (recursive)
+│    └─ConvBlock: 2-5                                             [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    └─Sequential: 3-3                                       [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    └─ConvBlock: 4-5                                   [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    └─Sequential: 5-5                             [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─Conv3d: 6-13                           [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       55,360
+│    │    │    │    │    └─InstanceNorm3d: 6-14                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    └─ELU: 6-15                              [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    └─ConvBlock: 4-6                                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    └─Sequential: 5-6                             [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─Conv3d: 6-16                           [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       110,656
+│    │    │    │    │    └─InstanceNorm3d: 6-17                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    └─ELU: 6-18                              [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+├─ModuleList: 1-8                                                 --                        --                        --
+│    └─MaxPool3d: 2-6                                             [1, 64, 20, 32, 32]       [1, 64, 20, 16, 16]       --
+├─ModuleList: 1-7                                                 --                        --                        (recursive)
+│    └─ConvBlock: 2-7                                             [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    └─Sequential: 3-4                                       [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    │    └─ConvBlock: 4-7                                   [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    │    │    └─Sequential: 5-7                             [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─Conv3d: 6-19                           [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      221,312
+│    │    │    │    │    └─InstanceNorm3d: 6-20                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    └─ELU: 6-21                              [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    └─ConvBlock: 4-8                                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    └─Sequential: 5-8                             [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─Conv3d: 6-22                           [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      442,496
+│    │    │    │    │    └─InstanceNorm3d: 6-23                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    └─ELU: 6-24                              [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+├─ModuleList: 1-8                                                 --                        --                        --
+│    └─MaxPool3d: 2-8                                             [1, 128, 20, 16, 16]      [1, 128, 20, 8, 8]        --
+├─ConvBlock: 1-9                                                  [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    └─Sequential: 2-9                                            [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    └─ConvBlock: 3-5                                        [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    └─Sequential: 4-9                                  [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    │    └─Conv3d: 5-9                                 [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        884,992
+│    │    │    │    └─InstanceNorm3d: 5-10                        [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        512
+│    │    │    │    └─ELU: 5-11                                   [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    └─ConvBlock: 3-6                                        [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    └─Sequential: 4-10                                 [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    │    └─Conv3d: 5-12                                [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        1,769,728
+│    │    │    │    └─InstanceNorm3d: 5-13                        [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        512
+│    │    │    │    └─ELU: 5-14                                   [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+├─ModuleList: 1-10                                                --                        --                        --
+│    └─ModuleList: 2-10                                           --                        --                        --
+│    │    └─UpBlock: 3-7                                          [1, 256, 20, 8, 8]        [1, 128, 20, 16, 16]      --
+│    │    │    └─Sequential: 4-11                                 [1, 256, 20, 8, 8]        [1, 128, 20, 16, 16]      --
+│    │    │    │    └─ConvTranspose3d: 5-15                       [1, 256, 20, 8, 8]        [1, 128, 20, 16, 16]      131,200
+│    │    │    │    └─InstanceNorm3d: 5-16                        [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    └─ELU: 5-17                                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    └─ConvBlock: 4-12                                  [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    └─Sequential: 5-18                            [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─ConvBlock: 6-25                        [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    │    └─Sequential: 7-1                   [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    │    │    └─Conv3d: 8-1                  [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      884,864
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-2          [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    │    │    └─ELU: 8-3                     [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─ConvBlock: 6-26                        [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    │    └─Sequential: 7-2                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    │    │    └─Conv3d: 8-4                  [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      442,496
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-5          [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    │    │    └─ELU: 8-6                     [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    └─UpBlock: 3-8                                          [1, 128, 20, 16, 16]      [1, 64, 20, 32, 32]       --
+│    │    │    └─Sequential: 4-13                                 [1, 128, 20, 16, 16]      [1, 64, 20, 32, 32]       --
+│    │    │    │    └─ConvTranspose3d: 5-19                       [1, 128, 20, 16, 16]      [1, 64, 20, 32, 32]       32,832
+│    │    │    │    └─InstanceNorm3d: 5-20                        [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    └─ELU: 5-21                                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    └─ConvBlock: 4-14                                  [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    └─Sequential: 5-22                            [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─ConvBlock: 6-27                        [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    │    │    └─Sequential: 7-3                   [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    │    │    │    └─Conv3d: 8-7                  [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       221,248
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-8          [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    │    │    └─ELU: 8-9                     [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─ConvBlock: 6-28                        [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    │    └─Sequential: 7-4                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    │    │    └─Conv3d: 8-10                 [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       110,656
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-11         [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    │    │    └─ELU: 8-12                    [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    └─UpBlock: 3-9                                          [1, 64, 20, 32, 32]       [1, 32, 20, 64, 64]       --
+│    │    │    └─Sequential: 4-15                                 [1, 64, 20, 32, 32]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─ConvTranspose3d: 5-23                       [1, 64, 20, 32, 32]       [1, 32, 20, 64, 64]       8,224
+│    │    │    │    └─InstanceNorm3d: 5-24                        [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    └─ELU: 5-25                                   [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    └─ConvBlock: 4-16                                  [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─Sequential: 5-26                            [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─ConvBlock: 6-29                        [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    │    └─Sequential: 7-5                   [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    │    │    └─Conv3d: 8-13                 [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       55,328
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-14         [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    │    │    └─ELU: 8-15                    [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─ConvBlock: 6-30                        [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    │    └─Sequential: 7-6                   [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    │    │    └─Conv3d: 8-16                 [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       27,680
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-17         [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    │    │    └─ELU: 8-18                    [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    └─UpBlock: 3-10                                         [1, 32, 20, 64, 64]       [1, 16, 20, 128, 128]     --
+│    │    │    └─Sequential: 4-17                                 [1, 32, 20, 64, 64]       [1, 16, 20, 128, 128]     --
+│    │    │    │    └─ConvTranspose3d: 5-27                       [1, 32, 20, 64, 64]       [1, 16, 20, 128, 128]     2,064
+│    │    │    │    └─InstanceNorm3d: 5-28                        [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    └─ELU: 5-29                                   [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    └─ConvBlock: 4-18                                  [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    └─Sequential: 5-30                            [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─ConvBlock: 6-31                        [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    │    └─Sequential: 7-7                   [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    │    │    └─Conv3d: 8-19                 [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     13,840
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-20         [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    │    │    └─ELU: 8-21                    [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─ConvBlock: 6-32                        [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    │    └─Sequential: 7-8                   [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    │    │    └─Conv3d: 8-22                 [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     6,928
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-23         [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    │    │    └─ELU: 8-24                    [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+├─Sequential: 1-11                                                --                        --                        --
+│    └─Conv3d: 2-11                                               [1, 16, 20, 128, 128]     [1, 2, 20, 128, 128]      34
+============================================================================================================================================
+Total params: 5,475,138
+Trainable params: 5,475,138
+Non-trainable params: 0
+Total mult-adds (Units.GIGABYTES): 46.20
+============================================================================================================================================
+Input size (MB): 3.93
+Forward/backward pass size (MB): 802.16
+Params size (MB): 21.90
+Estimated Total Size (MB): 827.99
+============================================================================================================================================
+[12:54:28.810279] ##############################
+[12:54:28.810304] #  PREPARE TRAIN GENERATORS  #
+[12:54:28.810310] ##############################
+[12:54:28.810459] Initializing train data generator . . .
+[12:54:28.818049] Checking which channel of the mask needs normalization . . .
+[12:54:28.828025] Normalization config used for X (first sample): {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 11.583572387695312, 'std': 29.775192260742188}, '1': {'mean': 14.236202239990234, 'std': 22.730344772338867}, '2': {'mean': 8.931414604187012, 'std': 20.761493682861328}}}
+[12:54:28.828046] Normalization config used for Y: {'target_type': 'mask', 'orig_dtype': 'uint8', 'per_channel_info': {0: {'type': 'bin', 'div': False}, 1: {'type': 'bin', 'div': False}}}
+[12:54:28.828124] Initializing val data generator . . .
+[12:54:28.832525] Checking which channel of the mask needs normalization . . .
+[12:54:28.841681] Normalization config used for X (first sample): {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 15.214138984680176, 'std': 32.789772033691406}, '1': {'mean': 122.04827880859375, 'std': 157.21343994140625}, '2': {'mean': 8.255851745605469, 'std': 11.738826751708984}}}
+[12:54:28.841701] Normalization config used for Y: {'target_type': 'mask', 'orig_dtype': 'uint8', 'per_channel_info': {0: {'type': 'bin', 'div': False}, 1: {'type': 'bin', 'div': False}}}
+[12:54:28.841762] Train/val generators with 8 workers
+[12:54:28.841770] Effective batch size: 180
+[12:54:28.841776] Sampler_train = None
+[12:54:28.854974] #######################
+[12:54:28.854998] # Prepare logging tool #
+[12:54:28.855005] #######################
+[12:54:28.872480] AdamW (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    decoupled_weight_decay: True
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    lr: 0.006
+    maximize: False
+    weight_decay: 0.02
+)
+[12:54:28.872591] #####################
+[12:54:28.872600] #  TRAIN THE MODEL  #
+[12:54:28.872606] #####################
+[12:54:28.872614] Start training in epoch 1 - Total: 30
+[12:54:28.872628] ~~~ Epoch 1/30 ~~~
+
+[12:55:20.938219] Epoch: [1]  [ 0/77]  eta: 1:06:43  loss: 2.1686 (2.1686)  IoU (F channel): 0.0005 (0.0005)  IoU (T channel): 0.0000 (0.0000)  lr: 0.000240  iter-time: 51.9964
+[12:55:31.231474] Epoch: [1]  [10/77]  eta: 0:06:19  loss: 1.8841 (1.9180)  IoU (F channel): 0.0017 (0.0022)  IoU (T channel): 0.0000 (0.0000)  lr: 0.000244  iter-time: 5.6626
+[12:55:41.543501] Epoch: [1]  [20/77]  eta: 0:03:17  loss: 1.7584 (1.8141)  IoU (F channel): 0.0031 (0.0029)  IoU (T channel): 0.0000 (0.0000)  lr: 0.000253  iter-time: 1.0302
+[12:55:51.863269] Epoch: [1]  [30/77]  eta: 0:02:05  loss: 1.6487 (1.7483)  IoU (F channel): 0.0042 (0.0036)  IoU (T channel): 0.0000 (0.0000)  lr: 0.000268  iter-time: 1.0315
+[12:56:02.189064] Epoch: [1]  [40/77]  eta: 0:01:24  loss: 1.5712 (1.6977)  IoU (F channel): 0.0046 (0.0040)  IoU (T channel): 0.0001 (0.0001)  lr: 0.000290  iter-time: 1.0322
+[12:56:12.518484] Epoch: [1]  [50/77]  eta: 0:00:54  loss: 1.5039 (1.6545)  IoU (F channel): 0.0054 (0.0044)  IoU (T channel): 0.0001 (0.0001)  lr: 0.000317  iter-time: 1.0327
+[12:56:22.848085] Epoch: [1]  [60/77]  eta: 0:00:31  loss: 1.4461 (1.6163)  IoU (F channel): 0.0068 (0.0051)  IoU (T channel): 0.0001 (0.0001)  lr: 0.000350  iter-time: 1.0329
+[12:56:33.173540] Epoch: [1]  [70/77]  eta: 0:00:12  loss: 1.3935 (1.5810)  IoU (F channel): 0.0107 (0.0059)  IoU (T channel): 0.0000 (0.0002)  lr: 0.000388  iter-time: 1.0327
+[12:56:50.452091] Epoch: [1]  [76/77]  eta: 0:00:01  loss: 1.3568 (1.5608)  IoU (F channel): 0.0117 (0.0065)  IoU (T channel): 0.0001 (0.0002)  lr: 0.000414  iter-time: 1.5868
+[12:56:50.452210] Epoch: [1] Total time: 0:02:21 (1.8387 s / it)
+[12:56:50.452252] [Train] averaged stats: loss: 1.3568 (1.5608)  IoU (F channel): 0.0117 (0.0065)  IoU (T channel): 0.0001 (0.0002)  lr: 0.000414
+[12:56:53.183671] Epoch: [1]  [0/9]  eta: 0:00:24  loss: 1.3003 (1.3003)  IoU (F channel): 0.0009 (0.0009)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.7302
+[12:56:59.443124] Epoch: [1]  [8/9]  eta: 0:00:00  loss: 1.3041 (1.3025)  IoU (F channel): 0.0158 (0.0242)  IoU (T channel): 0.0000 (0.0002)  iter-time: 0.9988
+[12:56:59.443304] Epoch: [1] Total time: 0:00:08 (0.9989 s / it)
+[12:56:59.443334] [Val] averaged stats: loss: 1.3041 (1.3025)  IoU (F channel): 0.0158 (0.0242)  IoU (T channel): 0.0000 (0.0002)
+[12:56:59.443513] Val loss improved from inf to 1.3025151491165161, saving model to metrics/biapy/biapy-v3-no-aug/checkpoints/biapy-v3-no-aug_0-checkpoint-best.pth
+[12:56:59.617515] [Val] best loss: 1.3025 best  IoU (F channel): 0.0242 IoU (T channel): 0.0002 
+[12:56:59.624703] [Time] 2.5m 2.5m/1.3h
+
+[12:56:59.624725] ~~~ Epoch 2/30 ~~~
+
+[12:57:03.373603] Epoch: [2]  [ 0/77]  eta: 0:04:48  loss: 1.3036 (1.3036)  IoU (F channel): 0.0130 (0.0130)  IoU (T channel): 0.0001 (0.0001)  lr: 0.000419  iter-time: 3.7470
+[12:57:13.697279] Epoch: [2]  [10/77]  eta: 0:01:25  loss: 1.2735 (1.2758)  IoU (F channel): 0.0182 (0.0190)  IoU (T channel): 0.0001 (0.0012)  lr: 0.000467  iter-time: 1.2791
+[12:57:24.018494] Epoch: [2]  [20/77]  eta: 0:01:06  loss: 1.2457 (1.2499)  IoU (F channel): 0.0204 (0.0229)  IoU (T channel): 0.0000 (0.0018)  lr: 0.000520  iter-time: 1.0321
+[12:57:34.341275] Epoch: [2]  [30/77]  eta: 0:00:52  loss: 1.1906 (1.2241)  IoU (F channel): 0.0306 (0.0282)  IoU (T channel): 0.0000 (0.0023)  lr: 0.000579  iter-time: 1.0321
+[12:57:44.672174] Epoch: [2]  [40/77]  eta: 0:00:40  loss: 1.1423 (1.1991)  IoU (F channel): 0.0403 (0.0333)  IoU (T channel): 0.0000 (0.0021)  lr: 0.000643  iter-time: 1.0326
+[12:57:55.004456] Epoch: [2]  [50/77]  eta: 0:00:29  loss: 1.0947 (1.1741)  IoU (F channel): 0.0543 (0.0391)  IoU (T channel): 0.0005 (0.0026)  lr: 0.000713  iter-time: 1.0331
+[12:58:05.334124] Epoch: [2]  [60/77]  eta: 0:00:18  loss: 1.0423 (1.1488)  IoU (F channel): 0.0675 (0.0456)  IoU (T channel): 0.0000 (0.0023)  lr: 0.000787  iter-time: 1.0330
+[12:58:15.657916] Epoch: [2]  [70/77]  eta: 0:00:07  loss: 0.9917 (1.1230)  IoU (F channel): 0.0841 (0.0513)  IoU (T channel): 0.0000 (0.0021)  lr: 0.000866  iter-time: 1.0326
+[12:58:21.087813] Epoch: [2]  [76/77]  eta: 0:00:01  loss: 0.9571 (1.1072)  IoU (F channel): 0.0858 (0.0554)  IoU (T channel): 0.0000 (0.0028)  lr: 0.000916  iter-time: 0.9941
+[12:58:21.087911] Epoch: [2] Total time: 0:01:21 (1.0580 s / it)
+[12:58:21.087947] [Train] averaged stats: loss: 0.9571 (1.1072)  IoU (F channel): 0.0858 (0.0554)  IoU (T channel): 0.0000 (0.0028)  lr: 0.000916
+[12:58:24.174817] Epoch: [2]  [0/9]  eta: 0:00:27  loss: 0.8943 (0.8943)  IoU (F channel): 0.0119 (0.0119)  IoU (T channel): 0.0000 (0.0000)  iter-time: 3.0861
+[12:58:26.507869] Epoch: [2]  [8/9]  eta: 0:00:00  loss: 0.9014 (0.9041)  IoU (F channel): 0.0952 (0.1018)  IoU (T channel): 0.0000 (0.0000)  iter-time: 0.6021
+[12:58:26.507973] Epoch: [2] Total time: 0:00:05 (0.6022 s / it)
+[12:58:26.507994] [Val] averaged stats: loss: 0.9014 (0.9041)  IoU (F channel): 0.0952 (0.1018)  IoU (T channel): 0.0000 (0.0000)
+[12:58:26.508157] Val loss improved from 1.3025151491165161 to 0.9041222731272379, saving model to metrics/biapy/biapy-v3-no-aug/checkpoints/biapy-v3-no-aug_0-checkpoint-best.pth
+[12:58:26.610362] [Val] best loss: 0.9041 best  IoU (F channel): 0.1018 IoU (T channel): 0.0000 
+[12:58:26.619704] [Time] 1.4m 4.0m/46.0m
+
+[12:58:26.619736] ~~~ Epoch 3/30 ~~~
+
+[12:58:29.960751] Epoch: [3]  [ 0/77]  eta: 0:04:17  loss: 0.9019 (0.9019)  IoU (F channel): 0.0931 (0.0931)  IoU (T channel): 0.0000 (0.0000)  lr: 0.000924  iter-time: 3.3403
+[12:58:40.342840] Epoch: [3]  [10/77]  eta: 0:01:23  loss: 0.8696 (0.8721)  IoU (F channel): 0.0931 (0.1028)  IoU (T channel): 0.0000 (0.0035)  lr: 0.001011  iter-time: 1.2474
+[12:58:50.697370] Epoch: [3]  [20/77]  eta: 0:01:05  loss: 0.8342 (0.8414)  IoU (F channel): 0.1108 (0.1224)  IoU (T channel): 0.0000 (0.0020)  lr: 0.001102  iter-time: 1.0367
+[12:59:01.053897] Epoch: [3]  [30/77]  eta: 0:00:52  loss: 0.7727 (0.8111)  IoU (F channel): 0.1292 (0.1254)  IoU (T channel): 0.0000 (0.0026)  lr: 0.001197  iter-time: 1.0355
+[12:59:11.418897] Epoch: [3]  [40/77]  eta: 0:00:40  loss: 0.7112 (0.7806)  IoU (F channel): 0.1538 (0.1345)  IoU (T channel): 0.0000 (0.0032)  lr: 0.001297  iter-time: 1.0360
+[12:59:21.776360] Epoch: [3]  [50/77]  eta: 0:00:29  loss: 0.6513 (0.7500)  IoU (F channel): 0.1575 (0.1406)  IoU (T channel): 0.0000 (0.0026)  lr: 0.001400  iter-time: 1.0360
+[12:59:32.141642] Epoch: [3]  [60/77]  eta: 0:00:18  loss: 0.5884 (0.7200)  IoU (F channel): 0.1579 (0.1481)  IoU (T channel): 0.0000 (0.0024)  lr: 0.001506  iter-time: 1.0360
+[12:59:42.498097] Epoch: [3]  [70/77]  eta: 0:00:07  loss: 0.5357 (0.6906)  IoU (F channel): 0.1994 (0.1599)  IoU (T channel): 0.0000 (0.0029)  lr: 0.001616  iter-time: 1.0360
+[12:59:47.933383] Epoch: [3]  [76/77]  eta: 0:00:01  loss: 0.5043 (0.6730)  IoU (F channel): 0.1994 (0.1606)  IoU (T channel): 0.0000 (0.0026)  lr: 0.001684  iter-time: 0.9969
+[12:59:47.933654] Epoch: [3] Total time: 0:01:21 (1.0560 s / it)
+[12:59:47.933729] [Train] averaged stats: loss: 0.5043 (0.6730)  IoU (F channel): 0.1994 (0.1606)  IoU (T channel): 0.0000 (0.0026)  lr: 0.001684
+[12:59:50.675224] Epoch: [3]  [0/9]  eta: 0:00:24  loss: 0.4317 (0.4317)  IoU (F channel): 0.0462 (0.0462)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.7406
+[12:59:53.307040] Epoch: [3]  [8/9]  eta: 0:00:00  loss: 0.4495 (0.4601)  IoU (F channel): 0.2730 (0.2310)  IoU (T channel): 0.0000 (0.0000)  iter-time: 0.5969
+[12:59:53.307146] Epoch: [3] Total time: 0:00:05 (0.5970 s / it)
+[12:59:53.307164] [Val] averaged stats: loss: 0.4495 (0.4601)  IoU (F channel): 0.2730 (0.2310)  IoU (T channel): 0.0000 (0.0000)
+[12:59:53.307317] Val loss improved from 0.9041222731272379 to 0.46014353301790023, saving model to metrics/biapy/biapy-v3-no-aug/checkpoints/biapy-v3-no-aug_0-checkpoint-best.pth
+[12:59:53.418776] [Val] best loss: 0.4601 best  IoU (F channel): 0.2310 IoU (T channel): 0.0000 
+[12:59:53.426680] [Time] 1.4m 5.4m/45.9m
+
+[12:59:53.426699] ~~~ Epoch 4/30 ~~~
+
+[12:59:57.032435] Epoch: [4]  [ 0/77]  eta: 0:04:37  loss: 0.4427 (0.4427)  IoU (F channel): 0.3384 (0.3384)  IoU (T channel): 0.0000 (0.0000)  lr: 0.001695  iter-time: 3.6046
+[13:00:07.441440] Epoch: [4]  [10/77]  eta: 0:01:25  loss: 0.4177 (0.4177)  IoU (F channel): 0.2471 (0.2317)  IoU (T channel): 0.0000 (0.0000)  lr: 0.001810  iter-time: 1.2738
+[13:00:17.802042] Epoch: [4]  [20/77]  eta: 0:01:06  loss: 0.3837 (0.3922)  IoU (F channel): 0.2255 (0.2388)  IoU (T channel): 0.0000 (0.0006)  lr: 0.001928  iter-time: 1.0383
+[13:00:28.167287] Epoch: [4]  [30/77]  eta: 0:00:52  loss: 0.3392 (0.3683)  IoU (F channel): 0.2378 (0.2461)  IoU (T channel): 0.0000 (0.0008)  lr: 0.002048  iter-time: 1.0362
+[13:00:38.528869] Epoch: [4]  [40/77]  eta: 0:00:40  loss: 0.2955 (0.3457)  IoU (F channel): 0.2660 (0.2568)  IoU (T channel): 0.0000 (0.0007)  lr: 0.002171  iter-time: 1.0362
+[13:00:48.886893] Epoch: [4]  [50/77]  eta: 0:00:29  loss: 0.2549 (0.3251)  IoU (F channel): 0.3150 (0.2729)  IoU (T channel): 0.0000 (0.0018)  lr: 0.002295  iter-time: 1.0359
+[13:00:59.249044] Epoch: [4]  [60/77]  eta: 0:00:18  loss: 0.2261 (0.3067)  IoU (F channel): 0.3311 (0.2831)  IoU (T channel): 0.0000 (0.0025)  lr: 0.002421  iter-time: 1.0359
+[13:01:09.604845] Epoch: [4]  [70/77]  eta: 0:00:07  loss: 0.1919 (0.2890)  IoU (F channel): 0.3133 (0.2916)  IoU (T channel): 0.0000 (0.0031)  lr: 0.002549  iter-time: 1.0358
+[13:01:15.042649] Epoch: [4]  [76/77]  eta: 0:00:01  loss: 0.1803 (0.2793)  IoU (F channel): 0.3657 (0.2972)  IoU (T channel): 0.0000 (0.0034)  lr: 0.002626  iter-time: 0.9968
+[13:01:15.042811] Epoch: [4] Total time: 0:01:21 (1.0599 s / it)
+[13:01:15.042838] [Train] averaged stats: loss: 0.1803 (0.2793)  IoU (F channel): 0.3657 (0.2972)  IoU (T channel): 0.0000 (0.0034)  lr: 0.002626
+[13:01:17.947183] Epoch: [4]  [0/9]  eta: 0:00:26  loss: 0.1445 (0.1445)  IoU (F channel): 0.1911 (0.1911)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.9036
+[13:01:20.555936] Epoch: [4]  [8/9]  eta: 0:00:00  loss: 0.1518 (0.1676)  IoU (F channel): 0.3835 (0.3063)  IoU (T channel): 0.0000 (0.0000)  iter-time: 0.6124
+[13:01:20.556110] Epoch: [4] Total time: 0:00:05 (0.6125 s / it)
+[13:01:20.556134] [Val] averaged stats: loss: 0.1518 (0.1676)  IoU (F channel): 0.3835 (0.3063)  IoU (T channel): 0.0000 (0.0000)
+[13:01:20.556308] Val loss improved from 0.46014353301790023 to 0.1676025390625, saving model to metrics/biapy/biapy-v3-no-aug/checkpoints/biapy-v3-no-aug_0-checkpoint-best.pth
+[13:01:20.658839] [Val] best loss: 0.1676 best  IoU (F channel): 0.3063 IoU (T channel): 0.0000 
+[13:01:20.666291] [Time] 1.5m 6.9m/46.1m
+
+[13:01:20.666322] ~~~ Epoch 5/30 ~~~
+
+[13:01:24.460766] Epoch: [5]  [ 0/77]  eta: 0:04:52  loss: 0.1523 (0.1523)  IoU (F channel): 0.2160 (0.2160)  IoU (T channel): 0.0000 (0.0000)  lr: 0.002639  iter-time: 3.7922
+[13:01:34.820109] Epoch: [5]  [10/77]  eta: 0:01:26  loss: 0.1450 (0.1450)  IoU (F channel): 0.3301 (0.3314)  IoU (T channel): 0.0000 (0.0020)  lr: 0.002768  iter-time: 1.2864
+[13:01:45.175677] Epoch: [5]  [20/77]  eta: 0:01:06  loss: 0.1325 (0.1367)  IoU (F channel): 0.3474 (0.3382)  IoU (T channel): 0.0000 (0.0023)  lr: 0.002898  iter-time: 1.0356
+[13:01:55.542887] Epoch: [5]  [30/77]  eta: 0:00:52  loss: 0.1222 (0.1301)  IoU (F channel): 0.3553 (0.3394)  IoU (T channel): 0.0000 (0.0018)  lr: 0.003028  iter-time: 1.0360
+[13:02:05.908882] Epoch: [5]  [40/77]  eta: 0:00:40  loss: 0.1123 (0.1257)  IoU (F channel): 0.3700 (0.3432)  IoU (T channel): 0.0000 (0.0014)  lr: 0.003159  iter-time: 1.0365
+[13:02:16.270182] Epoch: [5]  [50/77]  eta: 0:00:29  loss: 0.1085 (0.1227)  IoU (F channel): 0.2718 (0.3239)  IoU (T channel): 0.0000 (0.0012)  lr: 0.003290  iter-time: 1.0363
+[13:02:26.633465] Epoch: [5]  [60/77]  eta: 0:00:18  loss: 0.1009 (0.1182)  IoU (F channel): 0.2544 (0.3187)  IoU (T channel): 0.0000 (0.0011)  lr: 0.003420  iter-time: 1.0361
+[13:02:36.988004] Epoch: [5]  [70/77]  eta: 0:00:07  loss: 0.0910 (0.1135)  IoU (F channel): 0.3069 (0.3235)  IoU (T channel): 0.0000 (0.0010)  lr: 0.003550  iter-time: 1.0358
+[13:02:42.429769] Epoch: [5]  [76/77]  eta: 0:00:01  loss: 0.0861 (0.1110)  IoU (F channel): 0.3393 (0.3222)  IoU (T channel): 0.0000 (0.0009)  lr: 0.003627  iter-time: 0.9970
+[13:02:42.429880] Epoch: [5] Total time: 0:01:21 (1.0619 s / it)
+[13:02:42.429914] [Train] averaged stats: loss: 0.0861 (0.1110)  IoU (F channel): 0.3393 (0.3222)  IoU (T channel): 0.0000 (0.0009)  lr: 0.003627
+[13:02:45.536432] Epoch: [5]  [0/9]  eta: 0:00:27  loss: 0.0606 (0.0606)  IoU (F channel): 0.1529 (0.1529)  IoU (T channel): 0.0000 (0.0000)  iter-time: 3.1056
+[13:02:47.946194] Epoch: [5]  [8/9]  eta: 0:00:00  loss: 0.0716 (0.0907)  IoU (F channel): 0.4516 (0.3247)  IoU (T channel): 0.0000 (0.0004)  iter-time: 0.6128
+[13:02:47.946353] Epoch: [5] Total time: 0:00:05 (0.6129 s / it)
+[13:02:47.946374] [Val] averaged stats: loss: 0.0716 (0.0907)  IoU (F channel): 0.4516 (0.3247)  IoU (T channel): 0.0000 (0.0004)
+[13:02:47.946524] Val loss improved from 0.1676025390625 to 0.09068376363979445, saving model to metrics/biapy/biapy-v3-no-aug/checkpoints/biapy-v3-no-aug_0-checkpoint-best.pth
+[13:02:48.045922] [Val] best loss: 0.0907 best  IoU (F channel): 0.3247 IoU (T channel): 0.0004 
+[13:02:48.052665] Creating training plots . . .
+[13:02:53.652171] [Time] 1.5m 8.4m/48.7m
+
+[13:02:53.652212] ~~~ Epoch 6/30 ~~~
+
+[13:02:57.255005] Epoch: [6]  [ 0/77]  eta: 0:04:37  loss: 0.0779 (0.0779)  IoU (F channel): 0.3297 (0.3297)  IoU (T channel): 0.0000 (0.0000)  lr: 0.003640  iter-time: 3.5998
+[13:03:07.667142] Epoch: [6]  [10/77]  eta: 0:01:25  loss: 0.0758 (0.0734)  IoU (F channel): 0.3297 (0.3433)  IoU (T channel): 0.0000 (0.0004)  lr: 0.003768  iter-time: 1.2738
+[13:03:18.026503] Epoch: [6]  [20/77]  eta: 0:01:06  loss: 0.0674 (0.0686)  IoU (F channel): 0.3351 (0.3438)  IoU (T channel): 0.0000 (0.0002)  lr: 0.003895  iter-time: 1.0385
+[13:03:28.384545] Epoch: [6]  [30/77]  eta: 0:00:52  loss: 0.0594 (0.0645)  IoU (F channel): 0.3626 (0.3513)  IoU (T channel): 0.0000 (0.0006)  lr: 0.004020  iter-time: 1.0358
+[13:03:38.743782] Epoch: [6]  [40/77]  eta: 0:00:40  loss: 0.0527 (0.0612)  IoU (F channel): 0.3831 (0.3563)  IoU (T channel): 0.0000 (0.0008)  lr: 0.004143  iter-time: 1.0358
+[13:03:49.105421] Epoch: [6]  [50/77]  eta: 0:00:29  loss: 0.0479 (0.0583)  IoU (F channel): 0.3632 (0.3562)  IoU (T channel): 0.0000 (0.0007)  lr: 0.004264  iter-time: 1.0359
+[13:03:59.460272] Epoch: [6]  [60/77]  eta: 0:00:18  loss: 0.0460 (0.0564)  IoU (F channel): 0.3394 (0.3562)  IoU (T channel): 0.0000 (0.0006)  lr: 0.004383  iter-time: 1.0357
+[13:04:09.816737] Epoch: [6]  [70/77]  eta: 0:00:07  loss: 0.0450 (0.0547)  IoU (F channel): 0.3265 (0.3565)  IoU (T channel): 0.0000 (0.0016)  lr: 0.004499  iter-time: 1.0355
+[13:04:15.258764] Epoch: [6]  [76/77]  eta: 0:00:01  loss: 0.0448 (0.0537)  IoU (F channel): 0.3092 (0.3544)  IoU (T channel): 0.0000 (0.0016)  lr: 0.004568  iter-time: 0.9969
+[13:04:15.258862] Epoch: [6] Total time: 0:01:21 (1.0598 s / it)
+[13:04:15.258893] [Train] averaged stats: loss: 0.0448 (0.0537)  IoU (F channel): 0.3092 (0.3544)  IoU (T channel): 0.0000 (0.0016)  lr: 0.004568
+[13:04:17.437889] Epoch: [6]  [0/9]  eta: 0:00:19  loss: 0.0295 (0.0295)  IoU (F channel): 0.0676 (0.0676)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.1781
+[13:04:20.821516] Epoch: [6]  [8/9]  eta: 0:00:00  loss: 0.0400 (0.0605)  IoU (F channel): 0.3726 (0.2803)  IoU (T channel): 0.0000 (0.0000)  iter-time: 0.6179
+[13:04:20.821603] Epoch: [6] Total time: 0:00:05 (0.6180 s / it)
+[13:04:20.821620] [Val] averaged stats: loss: 0.0400 (0.0605)  IoU (F channel): 0.3726 (0.2803)  IoU (T channel): 0.0000 (0.0000)
+[13:04:20.821769] Val loss improved from 0.09068376363979445 to 0.06048880931403902, saving model to metrics/biapy/biapy-v3-no-aug/checkpoints/biapy-v3-no-aug_0-checkpoint-best.pth
+[13:04:20.924990] [Val] best loss: 0.0605 best  IoU (F channel): 0.2803 IoU (T channel): 0.0000 
+[13:04:20.930999] [Time] 1.5m 9.9m/46.2m
+
+[13:04:20.931018] ~~~ Epoch 7/30 ~~~
+
+[13:04:24.914684] Epoch: [7]  [ 0/77]  eta: 0:05:06  loss: 0.0370 (0.0370)  IoU (F channel): 0.2497 (0.2497)  IoU (T channel): 0.0000 (0.0000)  lr: 0.004579  iter-time: 3.9826
+[13:04:35.294196] Epoch: [7]  [10/77]  eta: 0:01:27  loss: 0.0375 (0.0385)  IoU (F channel): 0.3998 (0.3970)  IoU (T channel): 0.0000 (0.0079)  lr: 0.004690  iter-time: 1.3056
+[13:04:45.648916] Epoch: [7]  [20/77]  eta: 0:01:07  loss: 0.0370 (0.0372)  IoU (F channel): 0.3564 (0.3840)  IoU (T channel): 0.0000 (0.0041)  lr: 0.004798  iter-time: 1.0366
+[13:04:56.005509] Epoch: [7]  [30/77]  eta: 0:00:53  loss: 0.0373 (0.0393)  IoU (F channel): 0.3334 (0.3585)  IoU (T channel): 0.0000 (0.0039)  lr: 0.004902  iter-time: 1.0355
+[13:05:06.365207] Epoch: [7]  [40/77]  eta: 0:00:40  loss: 0.0435 (0.0399)  IoU (F channel): 0.3498 (0.3564)  IoU (T channel): 0.0000 (0.0049)  lr: 0.005003  iter-time: 1.0357
+[13:05:16.714905] Epoch: [7]  [50/77]  eta: 0:00:29  loss: 0.0335 (0.0385)  IoU (F channel): 0.3498 (0.3580)  IoU (T channel): 0.0000 (0.0041)  lr: 0.005100  iter-time: 1.0354
+[13:05:27.073560] Epoch: [7]  [60/77]  eta: 0:00:18  loss: 0.0309 (0.0372)  IoU (F channel): 0.3368 (0.3533)  IoU (T channel): 0.0000 (0.0035)  lr: 0.005193  iter-time: 1.0353
+[13:05:37.425864] Epoch: [7]  [70/77]  eta: 0:00:07  loss: 0.0304 (0.0362)  IoU (F channel): 0.3369 (0.3532)  IoU (T channel): 0.0000 (0.0030)  lr: 0.005282  iter-time: 1.0354
+[13:05:42.865852] Epoch: [7]  [76/77]  eta: 0:00:01  loss: 0.0296 (0.0355)  IoU (F channel): 0.3515 (0.3537)  IoU (T channel): 0.0000 (0.0028)  lr: 0.005333  iter-time: 0.9968
+[13:05:42.865957] Epoch: [7] Total time: 0:01:21 (1.0641 s / it)
+[13:05:42.865985] [Train] averaged stats: loss: 0.0296 (0.0355)  IoU (F channel): 0.3515 (0.3537)  IoU (T channel): 0.0000 (0.0028)  lr: 0.005333
+[13:05:46.167044] Epoch: [7]  [0/9]  eta: 0:00:29  loss: 0.0178 (0.0178)  IoU (F channel): 0.0992 (0.0992)  IoU (T channel): 0.0000 (0.0000)  iter-time: 3.3003
+[13:05:48.501024] Epoch: [7]  [8/9]  eta: 0:00:00  loss: 0.0245 (0.0478)  IoU (F channel): 0.4647 (0.3451)  IoU (T channel): 0.0000 (0.0000)  iter-time: 0.6260
+[13:05:48.501132] Epoch: [7] Total time: 0:00:05 (0.6261 s / it)
+[13:05:48.501153] [Val] averaged stats: loss: 0.0245 (0.0478)  IoU (F channel): 0.4647 (0.3451)  IoU (T channel): 0.0000 (0.0000)
+[13:05:48.501302] Val loss improved from 0.06048880931403902 to 0.0477623153063986, saving model to metrics/biapy/biapy-v3-no-aug/checkpoints/biapy-v3-no-aug_0-checkpoint-best.pth
+[13:05:48.603828] [Val] best loss: 0.0478 best  IoU (F channel): 0.3451 IoU (T channel): 0.0000 
+[13:05:48.609767] [Time] 1.5m 11.3m/46.4m
+
+[13:05:48.609786] ~~~ Epoch 8/30 ~~~
+
+[13:05:52.229289] Epoch: [8]  [ 0/77]  eta: 0:04:38  loss: 0.0293 (0.0293)  IoU (F channel): 0.3605 (0.3605)  IoU (T channel): 0.0000 (0.0000)  lr: 0.005341  iter-time: 3.6166
+[13:06:02.648661] Epoch: [8]  [10/77]  eta: 0:01:25  loss: 0.0282 (0.0285)  IoU (F channel): 0.3605 (0.3690)  IoU (T channel): 0.0000 (0.0079)  lr: 0.005422  iter-time: 1.2759
+[13:06:13.007608] Epoch: [8]  [20/77]  eta: 0:01:06  loss: 0.0269 (0.0268)  IoU (F channel): 0.3902 (0.3828)  IoU (T channel): 0.0000 (0.0091)  lr: 0.005498  iter-time: 1.0388
+[13:06:23.369444] Epoch: [8]  [30/77]  eta: 0:00:52  loss: 0.0250 (0.0264)  IoU (F channel): 0.3831 (0.3760)  IoU (T channel): 0.0000 (0.0230)  lr: 0.005569  iter-time: 1.0359
+[13:06:33.728424] Epoch: [8]  [40/77]  eta: 0:00:40  loss: 0.0234 (0.0256)  IoU (F channel): 0.3595 (0.3807)  IoU (T channel): 0.0000 (0.0179)  lr: 0.005636  iter-time: 1.0359
+[13:06:44.080290] Epoch: [8]  [50/77]  eta: 0:00:29  loss: 0.0225 (0.0251)  IoU (F channel): 0.3830 (0.3841)  IoU (T channel): 0.0000 (0.0144)  lr: 0.005697  iter-time: 1.0354
+[13:06:54.441732] Epoch: [8]  [60/77]  eta: 0:00:18  loss: 0.0213 (0.0247)  IoU (F channel): 0.3830 (0.3811)  IoU (T channel): 0.0000 (0.0126)  lr: 0.005752  iter-time: 1.0356
+[13:07:04.793083] Epoch: [8]  [70/77]  eta: 0:00:07  loss: 0.0213 (0.0243)  IoU (F channel): 0.3643 (0.3809)  IoU (T channel): 0.0000 (0.0115)  lr: 0.005803  iter-time: 1.0355
+[13:07:10.232324] Epoch: [8]  [76/77]  eta: 0:00:01  loss: 0.0212 (0.0241)  IoU (F channel): 0.3582 (0.3807)  IoU (T channel): 0.0000 (0.0126)  lr: 0.005830  iter-time: 0.9967
+[13:07:10.232450] Epoch: [8] Total time: 0:01:21 (1.0600 s / it)
+[13:07:10.232488] [Train] averaged stats: loss: 0.0212 (0.0241)  IoU (F channel): 0.3582 (0.3807)  IoU (T channel): 0.0000 (0.0126)  lr: 0.005830
+[13:07:13.166799] Epoch: [8]  [0/9]  eta: 0:00:26  loss: 0.0116 (0.0116)  IoU (F channel): 0.1720 (0.1720)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.9335
+[13:07:15.500580] Epoch: [8]  [8/9]  eta: 0:00:00  loss: 0.0189 (0.0394)  IoU (F channel): 0.4858 (0.3580)  IoU (T channel): 0.0000 (0.0000)  iter-time: 0.5852
+[13:07:15.500689] Epoch: [8] Total time: 0:00:05 (0.5853 s / it)
+[13:07:15.500710] [Val] averaged stats: loss: 0.0189 (0.0394)  IoU (F channel): 0.4858 (0.3580)  IoU (T channel): 0.0000 (0.0000)
+[13:07:15.500862] Val loss improved from 0.0477623153063986 to 0.03943297318700287, saving model to metrics/biapy/biapy-v3-no-aug/checkpoints/biapy-v3-no-aug_0-checkpoint-best.pth
+[13:07:15.631747] [Val] best loss: 0.0394 best  IoU (F channel): 0.3580 IoU (T channel): 0.0000 
+[13:07:15.637562] [Time] 1.5m 12.8m/46.1m
+
+[13:07:15.637581] ~~~ Epoch 9/30 ~~~
+
+[13:07:19.014651] Epoch: [9]  [ 0/77]  eta: 0:04:19  loss: 0.0205 (0.0205)  IoU (F channel): 0.3310 (0.3310)  IoU (T channel): 0.0000 (0.0000)  lr: 0.005835  iter-time: 3.3758
+[13:07:29.374803] Epoch: [9]  [10/77]  eta: 0:01:23  loss: 0.0213 (0.0236)  IoU (F channel): 0.3954 (0.3664)  IoU (T channel): 0.0000 (0.0144)  lr: 0.005876  iter-time: 1.2486
+[13:07:39.739449] Epoch: [9]  [20/77]  eta: 0:01:05  loss: 0.0220 (0.0229)  IoU (F channel): 0.3750 (0.3685)  IoU (T channel): 0.0000 (0.0126)  lr: 0.005911  iter-time: 1.0361
+[13:07:50.097786] Epoch: [9]  [30/77]  eta: 0:00:52  loss: 0.0208 (0.0222)  IoU (F channel): 0.3470 (0.3703)  IoU (T channel): 0.0000 (0.0095)  lr: 0.005940  iter-time: 1.0360
+[13:08:00.456931] Epoch: [9]  [40/77]  eta: 0:00:40  loss: 0.0197 (0.0221)  IoU (F channel): 0.3470 (0.3652)  IoU (T channel): 0.0000 (0.0089)  lr: 0.005964  iter-time: 1.0358
+[13:08:10.814957] Epoch: [9]  [50/77]  eta: 0:00:29  loss: 0.0209 (0.0219)  IoU (F channel): 0.3929 (0.3688)  IoU (T channel): 0.0000 (0.0071)  lr: 0.005981  iter-time: 1.0358
+[13:08:21.178459] Epoch: [9]  [60/77]  eta: 0:00:18  loss: 0.0207 (0.0216)  IoU (F channel): 0.3929 (0.3691)  IoU (T channel): 0.0000 (0.0061)  lr: 0.005993  iter-time: 1.0360
+[13:08:31.532845] Epoch: [9]  [70/77]  eta: 0:00:07  loss: 0.0179 (0.0210)  IoU (F channel): 0.4083 (0.3766)  IoU (T channel): 0.0000 (0.0117)  lr: 0.005999  iter-time: 1.0358
+[13:08:36.975525] Epoch: [9]  [76/77]  eta: 0:00:01  loss: 0.0173 (0.0207)  IoU (F channel): 0.4083 (0.3798)  IoU (T channel): 0.0020 (0.0113)  lr: 0.006000  iter-time: 0.9971
+[13:08:36.975619] Epoch: [9] Total time: 0:01:21 (1.0563 s / it)
+[13:08:36.975646] [Train] averaged stats: loss: 0.0173 (0.0207)  IoU (F channel): 0.4083 (0.3798)  IoU (T channel): 0.0020 (0.0113)  lr: 0.006000
+[13:08:39.930968] Epoch: [9]  [0/9]  eta: 0:00:26  loss: 0.0124 (0.0124)  IoU (F channel): 0.0064 (0.0064)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.9546
+[13:08:42.263789] Epoch: [9]  [8/9]  eta: 0:00:00  loss: 0.0233 (0.0549)  IoU (F channel): 0.5452 (0.3749)  IoU (T channel): 0.0000 (0.0000)  iter-time: 0.5875
+[13:08:42.263957] Epoch: [9] Total time: 0:00:05 (0.5875 s / it)
+[13:08:42.263979] [Val] averaged stats: loss: 0.0233 (0.0549)  IoU (F channel): 0.5452 (0.3749)  IoU (T channel): 0.0000 (0.0000)
+[13:08:42.264109] [Val] best loss: 0.0394 best  IoU (F channel): 0.3580 IoU (T channel): 0.0000 
+EarlyStopping counter: 1 out of 10
+[13:08:42.277742] [Time] 1.4m 14.2m/46.0m
+
+[13:08:42.277761] ~~~ Epoch 10/30 ~~~
+
+[13:08:45.460823] Epoch: [10]  [ 0/77]  eta: 0:04:05  loss: 0.0138 (0.0138)  IoU (F channel): 0.4390 (0.4390)  IoU (T channel): 0.0000 (0.0000)  lr: 0.006000  iter-time: 3.1823
+[13:08:56.194271] Epoch: [10]  [10/77]  eta: 0:01:24  loss: 0.0168 (0.0170)  IoU (F channel): 0.3927 (0.4066)  IoU (T channel): 0.0000 (0.0129)  lr: 0.005999  iter-time: 1.2650
+[13:09:06.534274] Epoch: [10]  [20/77]  eta: 0:01:05  loss: 0.0168 (0.0171)  IoU (F channel): 0.4029 (0.4107)  IoU (T channel): 0.0000 (0.0274)  lr: 0.005997  iter-time: 1.0536
+[13:09:16.870403] Epoch: [10]  [30/77]  eta: 0:00:52  loss: 0.0159 (0.0169)  IoU (F channel): 0.4144 (0.4060)  IoU (T channel): 0.0068 (0.0360)  lr: 0.005994  iter-time: 1.0337
+[13:09:27.201932] Epoch: [10]  [40/77]  eta: 0:00:40  loss: 0.0162 (0.0181)  IoU (F channel): 0.4144 (0.4014)  IoU (T channel): 0.0000 (0.0275)  lr: 0.005990  iter-time: 1.0333
+[13:09:37.536505] Epoch: [10]  [50/77]  eta: 0:00:29  loss: 0.0238 (0.0211)  IoU (F channel): 0.3916 (0.3775)  IoU (T channel): 0.0000 (0.0221)  lr: 0.005985  iter-time: 1.0332
+[13:09:47.866100] Epoch: [10]  [60/77]  eta: 0:00:18  loss: 0.0231 (0.0210)  IoU (F channel): 0.3167 (0.3767)  IoU (T channel): 0.0000 (0.0185)  lr: 0.005978  iter-time: 1.0331
+[13:09:58.196057] Epoch: [10]  [70/77]  eta: 0:00:07  loss: 0.0197 (0.0210)  IoU (F channel): 0.3564 (0.3744)  IoU (T channel): 0.0000 (0.0164)  lr: 0.005971  iter-time: 1.0329
+[13:10:03.623361] Epoch: [10]  [76/77]  eta: 0:00:01  loss: 0.0195 (0.0208)  IoU (F channel): 0.3590 (0.3767)  IoU (T channel): 0.0000 (0.0154)  lr: 0.005966  iter-time: 0.9945
+[13:10:03.623466] Epoch: [10] Total time: 0:01:21 (1.0564 s / it)
+[13:10:03.623504] [Train] averaged stats: loss: 0.0195 (0.0208)  IoU (F channel): 0.3590 (0.3767)  IoU (T channel): 0.0000 (0.0154)  lr: 0.005966
+[13:10:07.136240] Epoch: [10]  [0/9]  eta: 0:00:31  loss: 0.0083 (0.0083)  IoU (F channel): 0.1463 (0.1463)  IoU (T channel): 0.0000 (0.0000)  iter-time: 3.5117
+[13:10:09.472217] Epoch: [10]  [8/9]  eta: 0:00:00  loss: 0.0137 (0.0359)  IoU (F channel): 0.3200 (0.2815)  IoU (T channel): 0.0000 (0.0000)  iter-time: 0.6497
+[13:10:09.472320] Epoch: [10] Total time: 0:00:05 (0.6498 s / it)
+[13:10:09.472341] [Val] averaged stats: loss: 0.0137 (0.0359)  IoU (F channel): 0.3200 (0.2815)  IoU (T channel): 0.0000 (0.0000)
+[13:10:09.472507] Val loss improved from 0.03943297318700287 to 0.0358738996502426, saving model to metrics/biapy/biapy-v3-no-aug/checkpoints/biapy-v3-no-aug_0-checkpoint-best.pth
+[13:10:09.602418] [Val] best loss: 0.0359 best  IoU (F channel): 0.2815 IoU (T channel): 0.0000 
+[13:10:09.608798] Creating training plots . . .
+[13:10:13.390553] [Time] 1.5m 15.7m/47.6m
+
+[13:10:13.390587] ~~~ Epoch 11/30 ~~~
+
+[13:10:16.986557] Epoch: [11]  [ 0/77]  eta: 0:04:36  loss: 0.0161 (0.0161)  IoU (F channel): 0.2417 (0.2417)  IoU (T channel): 0.0000 (0.0000)  lr: 0.005965  iter-time: 3.5925
+[13:10:27.371616] Epoch: [11]  [10/77]  eta: 0:01:25  loss: 0.0206 (0.0191)  IoU (F channel): 0.3284 (0.3308)  IoU (T channel): 0.0000 (0.0108)  lr: 0.005955  iter-time: 1.2706
+[13:10:37.706112] Epoch: [11]  [20/77]  eta: 0:01:05  loss: 0.0173 (0.0180)  IoU (F channel): 0.3647 (0.3590)  IoU (T channel): 0.0000 (0.0071)  lr: 0.005945  iter-time: 1.0359
+[13:10:48.031734] Epoch: [11]  [30/77]  eta: 0:00:52  loss: 0.0168 (0.0175)  IoU (F channel): 0.3776 (0.3617)  IoU (T channel): 0.0000 (0.0048)  lr: 0.005933  iter-time: 1.0329
+[13:10:58.370069] Epoch: [11]  [40/77]  eta: 0:00:40  loss: 0.0168 (0.0175)  IoU (F channel): 0.3834 (0.3698)  IoU (T channel): 0.0000 (0.0092)  lr: 0.005920  iter-time: 1.0331
+[13:11:08.701466] Epoch: [11]  [50/77]  eta: 0:00:29  loss: 0.0150 (0.0170)  IoU (F channel): 0.3959 (0.3747)  IoU (T channel): 0.0019 (0.0155)  lr: 0.005906  iter-time: 1.0334
+[13:11:19.028293] Epoch: [11]  [60/77]  eta: 0:00:18  loss: 0.0149 (0.0167)  IoU (F channel): 0.3725 (0.3780)  IoU (T channel): 0.0000 (0.0139)  lr: 0.005891  iter-time: 1.0328
+[13:11:29.361028] Epoch: [11]  [70/77]  eta: 0:00:07  loss: 0.0160 (0.0168)  IoU (F channel): 0.3607 (0.3802)  IoU (T channel): 0.0000 (0.0149)  lr: 0.005875  iter-time: 1.0329
+[13:11:34.786304] Epoch: [11]  [76/77]  eta: 0:00:01  loss: 0.0160 (0.0166)  IoU (F channel): 0.3903 (0.3816)  IoU (T channel): 0.0000 (0.0138)  lr: 0.005865  iter-time: 0.9943
+[13:11:34.786515] Epoch: [11] Total time: 0:01:21 (1.0571 s / it)
+[13:11:34.786585] [Train] averaged stats: loss: 0.0160 (0.0166)  IoU (F channel): 0.3903 (0.3816)  IoU (T channel): 0.0000 (0.0138)  lr: 0.005865
+[13:11:37.540491] Epoch: [11]  [0/9]  eta: 0:00:24  loss: 0.0091 (0.0091)  IoU (F channel): 0.0076 (0.0076)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.7531
+[13:11:40.052400] Epoch: [11]  [8/9]  eta: 0:00:00  loss: 0.0168 (0.0440)  IoU (F channel): 0.4804 (0.3579)  IoU (T channel): 0.0000 (0.0000)  iter-time: 0.5850
+[13:11:40.052507] Epoch: [11] Total time: 0:00:05 (0.5850 s / it)
+[13:11:40.052527] [Val] averaged stats: loss: 0.0168 (0.0440)  IoU (F channel): 0.4804 (0.3579)  IoU (T channel): 0.0000 (0.0000)
+[13:11:40.052664] [Val] best loss: 0.0359 best  IoU (F channel): 0.2815 IoU (T channel): 0.0000 
+EarlyStopping counter: 1 out of 10
+[13:11:40.063165] [Time] 1.4m 17.2m/46.1m
+
+[13:11:40.063179] ~~~ Epoch 12/30 ~~~
+
+[13:11:44.097282] Epoch: [12]  [ 0/77]  eta: 0:05:10  loss: 0.0100 (0.0100)  IoU (F channel): 0.3915 (0.3915)  IoU (T channel): 0.0000 (0.0000)  lr: 0.005863  iter-time: 4.0331
+[13:11:54.503141] Epoch: [12]  [10/77]  eta: 0:01:27  loss: 0.0154 (0.0161)  IoU (F channel): 0.4013 (0.4026)  IoU (T channel): 0.0000 (0.0010)  lr: 0.005845  iter-time: 1.3125
+[13:12:04.845846] Epoch: [12]  [20/77]  eta: 0:01:07  loss: 0.0147 (0.0156)  IoU (F channel): 0.3803 (0.3838)  IoU (T channel): 0.0000 (0.0028)  lr: 0.005826  iter-time: 1.0373
+[13:12:15.192400] Epoch: [12]  [30/77]  eta: 0:00:53  loss: 0.0144 (0.0156)  IoU (F channel): 0.3765 (0.3822)  IoU (T channel): 0.0000 (0.0104)  lr: 0.005806  iter-time: 1.0344
+[13:12:25.530604] Epoch: [12]  [40/77]  eta: 0:00:41  loss: 0.0128 (0.0150)  IoU (F channel): 0.3961 (0.3885)  IoU (T channel): 0.0000 (0.0079)  lr: 0.005785  iter-time: 1.0341
+[13:12:35.865311] Epoch: [12]  [50/77]  eta: 0:00:29  loss: 0.0125 (0.0148)  IoU (F channel): 0.4100 (0.3941)  IoU (T channel): 0.0000 (0.0207)  lr: 0.005763  iter-time: 1.0335
+[13:12:46.200789] Epoch: [12]  [60/77]  eta: 0:00:18  loss: 0.0144 (0.0147)  IoU (F channel): 0.4163 (0.3995)  IoU (T channel): 0.0016 (0.0221)  lr: 0.005740  iter-time: 1.0334
+[13:12:56.530972] Epoch: [12]  [70/77]  eta: 0:00:07  loss: 0.0148 (0.0148)  IoU (F channel): 0.3985 (0.3961)  IoU (T channel): 0.0000 (0.0191)  lr: 0.005715  iter-time: 1.0332
+[13:13:01.960539] Epoch: [12]  [76/77]  eta: 0:00:01  loss: 0.0159 (0.0151)  IoU (F channel): 0.3726 (0.3978)  IoU (T channel): 0.0000 (0.0189)  lr: 0.005700  iter-time: 0.9947
+[13:13:01.960647] Epoch: [12] Total time: 0:01:21 (1.0636 s / it)
+[13:13:01.960687] [Train] averaged stats: loss: 0.0159 (0.0151)  IoU (F channel): 0.3726 (0.3978)  IoU (T channel): 0.0000 (0.0189)  lr: 0.005700
+[13:13:05.119611] Epoch: [12]  [0/9]  eta: 0:00:28  loss: 0.0095 (0.0095)  IoU (F channel): 0.0044 (0.0044)  IoU (T channel): 0.0000 (0.0000)  iter-time: 3.1580
+[13:13:07.455014] Epoch: [12]  [8/9]  eta: 0:00:00  loss: 0.0204 (0.0497)  IoU (F channel): 0.5618 (0.3743)  IoU (T channel): 0.0000 (0.0000)  iter-time: 0.6103
+[13:13:07.455156] Epoch: [12] Total time: 0:00:05 (0.6104 s / it)
+[13:13:07.455179] [Val] averaged stats: loss: 0.0204 (0.0497)  IoU (F channel): 0.5618 (0.3743)  IoU (T channel): 0.0000 (0.0000)
+[13:13:07.455320] [Val] best loss: 0.0359 best  IoU (F channel): 0.2815 IoU (T channel): 0.0000 
+EarlyStopping counter: 2 out of 10
+[13:13:07.465943] [Time] 1.5m 18.6m/46.3m
+
+[13:13:07.465962] ~~~ Epoch 13/30 ~~~
+
+[13:13:11.763774] Epoch: [13]  [ 0/77]  eta: 0:05:30  loss: 0.0140 (0.0140)  IoU (F channel): 0.5071 (0.5071)  IoU (T channel): 0.0000 (0.0000)  lr: 0.005698  iter-time: 4.2964
+[13:13:22.142395] Epoch: [13]  [10/77]  eta: 0:01:29  loss: 0.0140 (0.0153)  IoU (F channel): 0.3574 (0.4047)  IoU (T channel): 0.0104 (0.0465)  lr: 0.005672  iter-time: 1.3340
+[13:13:32.498130] Epoch: [13]  [20/77]  eta: 0:01:07  loss: 0.0148 (0.0148)  IoU (F channel): 0.3574 (0.3977)  IoU (T channel): 0.0021 (0.0439)  lr: 0.005645  iter-time: 1.0366
+[13:13:42.857863] Epoch: [13]  [30/77]  eta: 0:00:53  loss: 0.0141 (0.0146)  IoU (F channel): 0.3833 (0.4023)  IoU (T channel): 0.0019 (0.0492)  lr: 0.005617  iter-time: 1.0357
+[13:13:53.217708] Epoch: [13]  [40/77]  eta: 0:00:41  loss: 0.0135 (0.0142)  IoU (F channel): 0.3833 (0.4033)  IoU (T channel): 0.0000 (0.0402)  lr: 0.005588  iter-time: 1.0359
+[13:14:03.586423] Epoch: [13]  [50/77]  eta: 0:00:29  loss: 0.0127 (0.0139)  IoU (F channel): 0.3993 (0.4038)  IoU (T channel): 0.0000 (0.0408)  lr: 0.005558  iter-time: 1.0363
+[13:14:13.950891] Epoch: [13]  [60/77]  eta: 0:00:18  loss: 0.0122 (0.0136)  IoU (F channel): 0.3968 (0.4046)  IoU (T channel): 0.0000 (0.0398)  lr: 0.005527  iter-time: 1.0365
+[13:14:24.304061] Epoch: [13]  [70/77]  eta: 0:00:07  loss: 0.0125 (0.0136)  IoU (F channel): 0.3959 (0.4072)  IoU (T channel): 0.0000 (0.0486)  lr: 0.005495  iter-time: 1.0358
+[13:14:29.742646] Epoch: [13]  [76/77]  eta: 0:00:01  loss: 0.0125 (0.0136)  IoU (F channel): 0.3795 (0.4017)  IoU (T channel): 0.0000 (0.0513)  lr: 0.005475  iter-time: 0.9968
+[13:14:29.742870] Epoch: [13] Total time: 0:01:22 (1.0685 s / it)
+[13:14:29.742899] [Train] averaged stats: loss: 0.0125 (0.0136)  IoU (F channel): 0.3795 (0.4017)  IoU (T channel): 0.0000 (0.0513)  lr: 0.005475
+[13:14:32.097925] Epoch: [13]  [0/9]  eta: 0:00:21  loss: 0.0072 (0.0072)  IoU (F channel): 0.0463 (0.0463)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.3543
+[13:14:34.746823] Epoch: [13]  [8/9]  eta: 0:00:00  loss: 0.0213 (0.0415)  IoU (F channel): 0.5463 (0.3787)  IoU (T channel): 0.0000 (0.0136)  iter-time: 0.5559
+[13:14:34.746928] Epoch: [13] Total time: 0:00:05 (0.5559 s / it)
+[13:14:34.746950] [Val] averaged stats: loss: 0.0213 (0.0415)  IoU (F channel): 0.5463 (0.3787)  IoU (T channel): 0.0000 (0.0136)
+[13:14:34.747097] [Val] best loss: 0.0359 best  IoU (F channel): 0.2815 IoU (T channel): 0.0000 
+EarlyStopping counter: 3 out of 10
+[13:14:34.756719] [Time] 1.5m 20.1m/46.3m
+
+[13:14:34.756736] ~~~ Epoch 14/30 ~~~
+
+[13:14:38.778614] Epoch: [14]  [ 0/77]  eta: 0:05:09  loss: 0.0144 (0.0144)  IoU (F channel): 0.4388 (0.4388)  IoU (T channel): 0.0000 (0.0000)  lr: 0.005472  iter-time: 4.0204
+[13:14:49.149908] Epoch: [14]  [10/77]  eta: 0:01:27  loss: 0.0131 (0.0129)  IoU (F channel): 0.4141 (0.3939)  IoU (T channel): 0.0000 (0.0516)  lr: 0.005439  iter-time: 1.3082
+[13:14:59.488714] Epoch: [14]  [20/77]  eta: 0:01:07  loss: 0.0110 (0.0121)  IoU (F channel): 0.3962 (0.4032)  IoU (T channel): 0.0000 (0.0599)  lr: 0.005404  iter-time: 1.0354
+[13:15:09.818064] Epoch: [14]  [30/77]  eta: 0:00:53  loss: 0.0106 (0.0117)  IoU (F channel): 0.4088 (0.4036)  IoU (T channel): 0.0000 (0.0536)  lr: 0.005369  iter-time: 1.0333
+[13:15:20.150812] Epoch: [14]  [40/77]  eta: 0:00:40  loss: 0.0115 (0.0121)  IoU (F channel): 0.4088 (0.4048)  IoU (T channel): 0.0045 (0.0553)  lr: 0.005333  iter-time: 1.0330
+[13:15:30.489275] Epoch: [14]  [50/77]  eta: 0:00:29  loss: 0.0121 (0.0121)  IoU (F channel): 0.4134 (0.4091)  IoU (T channel): 0.0270 (0.0546)  lr: 0.005296  iter-time: 1.0335
+[13:15:40.828510] Epoch: [14]  [60/77]  eta: 0:00:18  loss: 0.0121 (0.0122)  IoU (F channel): 0.4309 (0.4162)  IoU (T channel): 0.0231 (0.0592)  lr: 0.005258  iter-time: 1.0338
+[13:15:51.158167] Epoch: [14]  [70/77]  eta: 0:00:07  loss: 0.0130 (0.0123)  IoU (F channel): 0.4309 (0.4175)  IoU (T channel): 0.0070 (0.0521)  lr: 0.005219  iter-time: 1.0333
+[13:15:56.589053] Epoch: [14]  [76/77]  eta: 0:00:01  loss: 0.0128 (0.0124)  IoU (F channel): 0.4026 (0.4162)  IoU (T channel): 0.0027 (0.0505)  lr: 0.005195  iter-time: 0.9948
+[13:15:56.589155] Epoch: [14] Total time: 0:01:21 (1.0628 s / it)
+[13:15:56.589187] [Train] averaged stats: loss: 0.0128 (0.0124)  IoU (F channel): 0.4026 (0.4162)  IoU (T channel): 0.0027 (0.0505)  lr: 0.005195
+[13:15:59.772618] Epoch: [14]  [0/9]  eta: 0:00:28  loss: 0.0069 (0.0069)  IoU (F channel): 0.0650 (0.0650)  IoU (T channel): 0.0000 (0.0000)  iter-time: 3.1827
+[13:16:02.109634] Epoch: [14]  [8/9]  eta: 0:00:00  loss: 0.0103 (0.0317)  IoU (F channel): 0.5666 (0.4127)  IoU (T channel): 0.0000 (0.0006)  iter-time: 0.6133
+[13:16:02.109765] Epoch: [14] Total time: 0:00:05 (0.6133 s / it)
+[13:16:02.109786] [Val] averaged stats: loss: 0.0103 (0.0317)  IoU (F channel): 0.5666 (0.4127)  IoU (T channel): 0.0000 (0.0006)
+[13:16:02.109955] Val loss improved from 0.0358738996502426 to 0.031701587683831654, saving model to metrics/biapy/biapy-v3-no-aug/checkpoints/biapy-v3-no-aug_0-checkpoint-best.pth
+[13:16:02.244058] [Val] best loss: 0.0317 best  IoU (F channel): 0.4127 IoU (T channel): 0.0006 
+[13:16:02.252016] [Time] 1.5m 21.6m/46.3m
+
+[13:16:02.252049] ~~~ Epoch 15/30 ~~~
+
+[13:16:06.777463] Epoch: [15]  [ 0/77]  eta: 0:05:48  loss: 0.0143 (0.0143)  IoU (F channel): 0.5426 (0.5426)  IoU (T channel): 0.0000 (0.0000)  lr: 0.005191  iter-time: 4.5243
+[13:16:17.192979] Epoch: [15]  [10/77]  eta: 0:01:30  loss: 0.0116 (0.0124)  IoU (F channel): 0.4859 (0.4478)  IoU (T channel): 0.0000 (0.0758)  lr: 0.005151  iter-time: 1.3581
+[13:16:27.551051] Epoch: [15]  [20/77]  eta: 0:01:08  loss: 0.0105 (0.0113)  IoU (F channel): 0.4180 (0.4316)  IoU (T channel): 0.0000 (0.0401)  lr: 0.005110  iter-time: 1.0386
+[13:16:37.917532] Epoch: [15]  [30/77]  eta: 0:00:54  loss: 0.0105 (0.0114)  IoU (F channel): 0.4458 (0.4443)  IoU (T channel): 0.0000 (0.0578)  lr: 0.005068  iter-time: 1.0361
+[13:16:48.284013] Epoch: [15]  [40/77]  eta: 0:00:41  loss: 0.0117 (0.0116)  IoU (F channel): 0.4462 (0.4363)  IoU (T channel): 0.0664 (0.0573)  lr: 0.005026  iter-time: 1.0365
+[13:16:58.641818] Epoch: [15]  [50/77]  eta: 0:00:29  loss: 0.0110 (0.0115)  IoU (F channel): 0.4176 (0.4314)  IoU (T channel): 0.0028 (0.0519)  lr: 0.004982  iter-time: 1.0361
+[13:17:09.003738] Epoch: [15]  [60/77]  eta: 0:00:18  loss: 0.0110 (0.0117)  IoU (F channel): 0.4193 (0.4355)  IoU (T channel): 0.0148 (0.0559)  lr: 0.004938  iter-time: 1.0359
+[13:17:19.356869] Epoch: [15]  [70/77]  eta: 0:00:07  loss: 0.0117 (0.0115)  IoU (F channel): 0.4370 (0.4316)  IoU (T channel): 0.0268 (0.0552)  lr: 0.004893  iter-time: 1.0357
+[13:17:24.798044] Epoch: [15]  [76/77]  eta: 0:00:01  loss: 0.0102 (0.0113)  IoU (F channel): 0.4576 (0.4323)  IoU (T channel): 0.0000 (0.0541)  lr: 0.004866  iter-time: 0.9970
+[13:17:24.798271] Epoch: [15] Total time: 0:01:22 (1.0720 s / it)
+[13:17:24.798302] [Train] averaged stats: loss: 0.0102 (0.0113)  IoU (F channel): 0.4576 (0.4323)  IoU (T channel): 0.0000 (0.0541)  lr: 0.004866
+[13:17:27.355478] Epoch: [15]  [0/9]  eta: 0:00:23  loss: 0.0083 (0.0083)  IoU (F channel): 0.0175 (0.0175)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.5563
+[13:17:30.064248] Epoch: [15]  [8/9]  eta: 0:00:00  loss: 0.0127 (0.0385)  IoU (F channel): 0.5614 (0.3817)  IoU (T channel): 0.0000 (0.0007)  iter-time: 0.5850
+[13:17:30.064371] Epoch: [15] Total time: 0:00:05 (0.5850 s / it)
+[13:17:30.064393] [Val] averaged stats: loss: 0.0127 (0.0385)  IoU (F channel): 0.5614 (0.3817)  IoU (T channel): 0.0000 (0.0007)
+[13:17:30.064540] [Val] best loss: 0.0317 best  IoU (F channel): 0.4127 IoU (T channel): 0.0006 
+[13:17:30.073918] Creating training plots . . .
+EarlyStopping counter: 1 out of 10
+[13:17:33.678799] [Time] 1.5m 23.1m/47.5m
+
+[13:17:33.678826] ~~~ Epoch 16/30 ~~~
+
+[13:17:37.101425] Epoch: [16]  [ 0/77]  eta: 0:04:23  loss: 0.0087 (0.0087)  IoU (F channel): 0.4210 (0.4210)  IoU (T channel): 0.0000 (0.0000)  lr: 0.004861  iter-time: 3.4202
+[13:17:47.457509] Epoch: [16]  [10/77]  eta: 0:01:23  loss: 0.0106 (0.0106)  IoU (F channel): 0.4371 (0.4312)  IoU (T channel): 0.0000 (0.0857)  lr: 0.004815  iter-time: 1.2523
+[13:17:57.819052] Epoch: [16]  [20/77]  eta: 0:01:05  loss: 0.0100 (0.0105)  IoU (F channel): 0.4336 (0.4320)  IoU (T channel): 0.0000 (0.0660)  lr: 0.004769  iter-time: 1.0358
+[13:18:08.178840] Epoch: [16]  [30/77]  eta: 0:00:52  loss: 0.0110 (0.0109)  IoU (F channel): 0.4336 (0.4344)  IoU (T channel): 0.0089 (0.0761)  lr: 0.004721  iter-time: 1.0359
+[13:18:18.540477] Epoch: [16]  [40/77]  eta: 0:00:40  loss: 0.0111 (0.0117)  IoU (F channel): 0.4104 (0.4261)  IoU (T channel): 0.0436 (0.0856)  lr: 0.004673  iter-time: 1.0359
+[13:18:28.902873] Epoch: [16]  [50/77]  eta: 0:00:29  loss: 0.0115 (0.0118)  IoU (F channel): 0.3980 (0.4272)  IoU (T channel): 0.0436 (0.0783)  lr: 0.004624  iter-time: 1.0361
+[13:18:39.265893] Epoch: [16]  [60/77]  eta: 0:00:18  loss: 0.0114 (0.0117)  IoU (F channel): 0.3980 (0.4261)  IoU (T channel): 0.0000 (0.0675)  lr: 0.004575  iter-time: 1.0362
+[13:18:49.615563] Epoch: [16]  [70/77]  eta: 0:00:07  loss: 0.0118 (0.0116)  IoU (F channel): 0.3982 (0.4234)  IoU (T channel): 0.0000 (0.0661)  lr: 0.004525  iter-time: 1.0356
+[13:18:55.055646] Epoch: [16]  [76/77]  eta: 0:00:01  loss: 0.0110 (0.0115)  IoU (F channel): 0.4227 (0.4238)  IoU (T channel): 0.0000 (0.0627)  lr: 0.004495  iter-time: 0.9968
+[13:18:55.055746] Epoch: [16] Total time: 0:01:21 (1.0568 s / it)
+[13:18:55.055774] [Train] averaged stats: loss: 0.0110 (0.0115)  IoU (F channel): 0.4227 (0.4238)  IoU (T channel): 0.0000 (0.0627)  lr: 0.004495
+[13:18:57.883806] Epoch: [16]  [0/9]  eta: 0:00:25  loss: 0.0064 (0.0064)  IoU (F channel): 0.1415 (0.1415)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.8273
+[13:19:00.297080] Epoch: [16]  [8/9]  eta: 0:00:00  loss: 0.0105 (0.0278)  IoU (F channel): 0.5384 (0.3917)  IoU (T channel): 0.0000 (0.0119)  iter-time: 0.5823
+[13:19:00.297191] Epoch: [16] Total time: 0:00:05 (0.5823 s / it)
+[13:19:00.297210] [Val] averaged stats: loss: 0.0105 (0.0278)  IoU (F channel): 0.5384 (0.3917)  IoU (T channel): 0.0000 (0.0119)
+[13:19:00.297387] Val loss improved from 0.031701587683831654 to 0.02776655735861924, saving model to metrics/biapy/biapy-v3-no-aug/checkpoints/biapy-v3-no-aug_0-checkpoint-best.pth
+[13:19:00.408369] [Val] best loss: 0.0278 best  IoU (F channel): 0.3917 IoU (T channel): 0.0119 
+[13:19:00.414711] [Time] 1.4m 24.5m/46.2m
+
+[13:19:00.414730] ~~~ Epoch 17/30 ~~~
+
+[13:19:05.071112] Epoch: [17]  [ 0/77]  eta: 0:05:58  loss: 0.0119 (0.0119)  IoU (F channel): 0.4341 (0.4341)  IoU (T channel): 0.2289 (0.2289)  lr: 0.004490  iter-time: 4.6542
+[13:19:15.431606] Epoch: [17]  [10/77]  eta: 0:01:31  loss: 0.0114 (0.0115)  IoU (F channel): 0.4383 (0.4562)  IoU (T channel): 0.1015 (0.1126)  lr: 0.004439  iter-time: 1.3649
+[13:19:25.785951] Epoch: [17]  [20/77]  eta: 0:01:08  loss: 0.0105 (0.0108)  IoU (F channel): 0.4383 (0.4490)  IoU (T channel): 0.0039 (0.0787)  lr: 0.004388  iter-time: 1.0356
+[13:19:36.148895] Epoch: [17]  [30/77]  eta: 0:00:54  loss: 0.0105 (0.0112)  IoU (F channel): 0.3959 (0.4256)  IoU (T channel): 0.0000 (0.0762)  lr: 0.004336  iter-time: 1.0358
+[13:19:46.510026] Epoch: [17]  [40/77]  eta: 0:00:41  loss: 0.0125 (0.0122)  IoU (F channel): 0.3895 (0.4228)  IoU (T channel): 0.0087 (0.0681)  lr: 0.004283  iter-time: 1.0361
+[13:19:56.873174] Epoch: [17]  [50/77]  eta: 0:00:29  loss: 0.0130 (0.0125)  IoU (F channel): 0.3895 (0.4179)  IoU (T channel): 0.0420 (0.0750)  lr: 0.004230  iter-time: 1.0361
+[13:20:07.244318] Epoch: [17]  [60/77]  eta: 0:00:18  loss: 0.0143 (0.0132)  IoU (F channel): 0.3436 (0.4031)  IoU (T channel): 0.0545 (0.0703)  lr: 0.004177  iter-time: 1.0366
+[13:20:17.594681] Epoch: [17]  [70/77]  eta: 0:00:07  loss: 0.0138 (0.0131)  IoU (F channel): 0.3186 (0.3958)  IoU (T channel): 0.0018 (0.0629)  lr: 0.004123  iter-time: 1.0360
+[13:20:23.037934] Epoch: [17]  [76/77]  eta: 0:00:01  loss: 0.0120 (0.0129)  IoU (F channel): 0.3474 (0.3938)  IoU (T channel): 0.0000 (0.0589)  lr: 0.004091  iter-time: 0.9971
+[13:20:23.038039] Epoch: [17] Total time: 0:01:22 (1.0730 s / it)
+[13:20:23.038070] [Train] averaged stats: loss: 0.0120 (0.0129)  IoU (F channel): 0.3474 (0.3938)  IoU (T channel): 0.0000 (0.0589)  lr: 0.004091
+[13:20:25.821863] Epoch: [17]  [0/9]  eta: 0:00:25  loss: 0.0072 (0.0072)  IoU (F channel): 0.0256 (0.0256)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.7830
+[13:20:28.216512] Epoch: [17]  [8/9]  eta: 0:00:00  loss: 0.0110 (0.0319)  IoU (F channel): 0.4597 (0.3475)  IoU (T channel): 0.0000 (0.0043)  iter-time: 0.5753
+[13:20:28.216657] Epoch: [17] Total time: 0:00:05 (0.5753 s / it)
+[13:20:28.216679] [Val] averaged stats: loss: 0.0110 (0.0319)  IoU (F channel): 0.4597 (0.3475)  IoU (T channel): 0.0000 (0.0043)
+[13:20:28.216816] [Val] best loss: 0.0278 best  IoU (F channel): 0.3917 IoU (T channel): 0.0119 
+EarlyStopping counter: 1 out of 10
+[13:20:28.227019] [Time] 1.5m 26.0m/46.5m
+
+[13:20:28.227039] ~~~ Epoch 18/30 ~~~
+
+[13:20:32.631120] Epoch: [18]  [ 0/77]  eta: 0:05:38  loss: 0.0091 (0.0091)  IoU (F channel): 0.3379 (0.3379)  IoU (T channel): 0.0917 (0.0917)  lr: 0.004085  iter-time: 4.4017
+[13:20:43.019682] Epoch: [18]  [10/77]  eta: 0:01:30  loss: 0.0110 (0.0112)  IoU (F channel): 0.4319 (0.4264)  IoU (T channel): 0.0529 (0.0792)  lr: 0.004031  iter-time: 1.3445
+[13:20:53.368592] Epoch: [18]  [20/77]  eta: 0:01:08  loss: 0.0107 (0.0108)  IoU (F channel): 0.4319 (0.4278)  IoU (T channel): 0.0081 (0.0639)  lr: 0.003976  iter-time: 1.0368
+[13:21:03.714576] Epoch: [18]  [30/77]  eta: 0:00:53  loss: 0.0109 (0.0111)  IoU (F channel): 0.4210 (0.4259)  IoU (T channel): 0.0000 (0.0550)  lr: 0.003920  iter-time: 1.0346
+[13:21:14.045162] Epoch: [18]  [40/77]  eta: 0:00:41  loss: 0.0111 (0.0111)  IoU (F channel): 0.4401 (0.4258)  IoU (T channel): 0.0010 (0.0552)  lr: 0.003865  iter-time: 1.0337
+[13:21:24.397508] Epoch: [18]  [50/77]  eta: 0:00:29  loss: 0.0112 (0.0113)  IoU (F channel): 0.4424 (0.4305)  IoU (T channel): 0.0261 (0.0600)  lr: 0.003809  iter-time: 1.0340
+[13:21:34.740737] Epoch: [18]  [60/77]  eta: 0:00:18  loss: 0.0119 (0.0114)  IoU (F channel): 0.4369 (0.4299)  IoU (T channel): 0.0728 (0.0648)  lr: 0.003753  iter-time: 1.0347
+[13:21:45.091781] Epoch: [18]  [70/77]  eta: 0:00:07  loss: 0.0092 (0.0109)  IoU (F channel): 0.4093 (0.4284)  IoU (T channel): 0.0161 (0.0706)  lr: 0.003696  iter-time: 1.0346
+[13:21:50.523411] Epoch: [18]  [76/77]  eta: 0:00:01  loss: 0.0091 (0.0109)  IoU (F channel): 0.4093 (0.4287)  IoU (T channel): 0.0000 (0.0697)  lr: 0.003662  iter-time: 0.9958
+[13:21:50.523558] Epoch: [18] Total time: 0:01:22 (1.0688 s / it)
+[13:21:50.523586] [Train] averaged stats: loss: 0.0091 (0.0109)  IoU (F channel): 0.4093 (0.4287)  IoU (T channel): 0.0000 (0.0697)  lr: 0.003662
+[13:21:53.086155] Epoch: [18]  [0/9]  eta: 0:00:23  loss: 0.0075 (0.0075)  IoU (F channel): 0.0090 (0.0090)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.5618
+[13:21:55.552564] Epoch: [18]  [8/9]  eta: 0:00:00  loss: 0.0093 (0.0294)  IoU (F channel): 0.4575 (0.3451)  IoU (T channel): 0.0000 (0.0237)  iter-time: 0.5587
+[13:21:55.552676] Epoch: [18] Total time: 0:00:05 (0.5587 s / it)
+[13:21:55.552692] [Val] averaged stats: loss: 0.0093 (0.0294)  IoU (F channel): 0.4575 (0.3451)  IoU (T channel): 0.0000 (0.0237)
+[13:21:55.552815] [Val] best loss: 0.0278 best  IoU (F channel): 0.3917 IoU (T channel): 0.0119 
+EarlyStopping counter: 2 out of 10
+[13:21:55.562291] [Time] 1.5m 27.4m/46.4m
+
+[13:21:55.562308] ~~~ Epoch 19/30 ~~~
+
+[13:21:58.569748] Epoch: [19]  [ 0/77]  eta: 0:03:51  loss: 0.0100 (0.0100)  IoU (F channel): 0.3633 (0.3633)  IoU (T channel): 0.0000 (0.0000)  lr: 0.003656  iter-time: 3.0062
+[13:22:09.018654] Epoch: [19]  [10/77]  eta: 0:01:21  loss: 0.0100 (0.0098)  IoU (F channel): 0.4228 (0.4155)  IoU (T channel): 0.0042 (0.0536)  lr: 0.003599  iter-time: 1.2231
+[13:22:19.374772] Epoch: [19]  [20/77]  eta: 0:01:04  loss: 0.0098 (0.0098)  IoU (F channel): 0.4293 (0.4336)  IoU (T channel): 0.0042 (0.0580)  lr: 0.003542  iter-time: 1.0402
+[13:22:29.727487] Epoch: [19]  [30/77]  eta: 0:00:51  loss: 0.0099 (0.0104)  IoU (F channel): 0.4332 (0.4365)  IoU (T channel): 0.0183 (0.0716)  lr: 0.003485  iter-time: 1.0353
+[13:22:40.089812] Epoch: [19]  [40/77]  eta: 0:00:40  loss: 0.0101 (0.0104)  IoU (F channel): 0.4229 (0.4363)  IoU (T channel): 0.1241 (0.0857)  lr: 0.003427  iter-time: 1.0356
+[13:22:50.455964] Epoch: [19]  [50/77]  eta: 0:00:29  loss: 0.0088 (0.0101)  IoU (F channel): 0.4308 (0.4381)  IoU (T channel): 0.0786 (0.0840)  lr: 0.003369  iter-time: 1.0363
+[13:23:00.818544] Epoch: [19]  [60/77]  eta: 0:00:18  loss: 0.0092 (0.0101)  IoU (F channel): 0.4497 (0.4429)  IoU (T channel): 0.0477 (0.0917)  lr: 0.003311  iter-time: 1.0363
+[13:23:11.175431] Epoch: [19]  [70/77]  eta: 0:00:07  loss: 0.0100 (0.0100)  IoU (F channel): 0.4666 (0.4433)  IoU (T channel): 0.0477 (0.0847)  lr: 0.003253  iter-time: 1.0359
+[13:23:16.616743] Epoch: [19]  [76/77]  eta: 0:00:01  loss: 0.0100 (0.0101)  IoU (F channel): 0.4681 (0.4483)  IoU (T channel): 0.0242 (0.0828)  lr: 0.003218  iter-time: 0.9970
+[13:23:16.616841] Epoch: [19] Total time: 0:01:21 (1.0526 s / it)
+[13:23:16.616868] [Train] averaged stats: loss: 0.0100 (0.0101)  IoU (F channel): 0.4681 (0.4483)  IoU (T channel): 0.0242 (0.0828)  lr: 0.003218
+[13:23:19.358787] Epoch: [19]  [0/9]  eta: 0:00:24  loss: 0.0070 (0.0070)  IoU (F channel): 0.0233 (0.0233)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.7411
+[13:23:21.703415] Epoch: [19]  [8/9]  eta: 0:00:00  loss: 0.0084 (0.0293)  IoU (F channel): 0.5106 (0.3746)  IoU (T channel): 0.0000 (0.0146)  iter-time: 0.5651
+[13:23:21.703502] Epoch: [19] Total time: 0:00:05 (0.5651 s / it)
+[13:23:21.703516] [Val] averaged stats: loss: 0.0084 (0.0293)  IoU (F channel): 0.5106 (0.3746)  IoU (T channel): 0.0000 (0.0146)
+[13:23:21.703631] [Val] best loss: 0.0278 best  IoU (F channel): 0.3917 IoU (T channel): 0.0119 
+EarlyStopping counter: 3 out of 10
+[13:23:21.714572] [Time] 1.4m 28.9m/46.1m
+
+[13:23:21.714591] ~~~ Epoch 20/30 ~~~
+
+[13:23:24.925036] Epoch: [20]  [ 0/77]  eta: 0:04:07  loss: 0.0100 (0.0100)  IoU (F channel): 0.4263 (0.4263)  IoU (T channel): 0.2053 (0.2053)  lr: 0.003213  iter-time: 3.2094
+[13:23:35.403454] Epoch: [20]  [10/77]  eta: 0:01:23  loss: 0.0100 (0.0092)  IoU (F channel): 0.4038 (0.4157)  IoU (T channel): 0.0000 (0.0557)  lr: 0.003154  iter-time: 1.2442
+[13:23:45.755412] Epoch: [20]  [20/77]  eta: 0:01:05  loss: 0.0094 (0.0095)  IoU (F channel): 0.4038 (0.4217)  IoU (T channel): 0.0000 (0.0466)  lr: 0.003096  iter-time: 1.0414
+[13:23:56.105174] Epoch: [20]  [30/77]  eta: 0:00:52  loss: 0.0094 (0.0097)  IoU (F channel): 0.4383 (0.4339)  IoU (T channel): 0.0000 (0.0670)  lr: 0.003038  iter-time: 1.0350
+[13:24:06.449235] Epoch: [20]  [40/77]  eta: 0:00:40  loss: 0.0095 (0.0096)  IoU (F channel): 0.4597 (0.4406)  IoU (T channel): 0.0024 (0.0638)  lr: 0.002980  iter-time: 1.0346
+[13:24:16.809219] Epoch: [20]  [50/77]  eta: 0:00:29  loss: 0.0088 (0.0095)  IoU (F channel): 0.4406 (0.4412)  IoU (T channel): 0.0024 (0.0708)  lr: 0.002921  iter-time: 1.0351
+[13:24:27.153817] Epoch: [20]  [60/77]  eta: 0:00:18  loss: 0.0088 (0.0094)  IoU (F channel): 0.4550 (0.4448)  IoU (T channel): 0.0120 (0.0791)  lr: 0.002863  iter-time: 1.0351
+[13:24:37.486596] Epoch: [20]  [70/77]  eta: 0:00:07  loss: 0.0094 (0.0094)  IoU (F channel): 0.4550 (0.4499)  IoU (T channel): 0.0210 (0.0829)  lr: 0.002805  iter-time: 1.0338
+[13:24:42.910506] Epoch: [20]  [76/77]  eta: 0:00:01  loss: 0.0095 (0.0094)  IoU (F channel): 0.4519 (0.4475)  IoU (T channel): 0.0606 (0.0865)  lr: 0.002770  iter-time: 0.9944
+[13:24:42.910600] Epoch: [20] Total time: 0:01:21 (1.0545 s / it)
+[13:24:42.910627] [Train] averaged stats: loss: 0.0095 (0.0094)  IoU (F channel): 0.4519 (0.4475)  IoU (T channel): 0.0606 (0.0865)  lr: 0.002770
+[13:24:45.477837] Epoch: [20]  [0/9]  eta: 0:00:23  loss: 0.0079 (0.0079)  IoU (F channel): 0.0107 (0.0107)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.5664
+[13:24:48.329650] Epoch: [20]  [8/9]  eta: 0:00:00  loss: 0.0084 (0.0335)  IoU (F channel): 0.5562 (0.3949)  IoU (T channel): 0.0000 (0.0296)  iter-time: 0.6020
+[13:24:48.329746] Epoch: [20] Total time: 0:00:05 (0.6021 s / it)
+[13:24:48.329763] [Val] averaged stats: loss: 0.0084 (0.0335)  IoU (F channel): 0.5562 (0.3949)  IoU (T channel): 0.0000 (0.0296)
+[13:24:48.329879] [Val] best loss: 0.0278 best  IoU (F channel): 0.3917 IoU (T channel): 0.0119 
+[13:24:48.340966] Creating training plots . . .
+EarlyStopping counter: 4 out of 10
+[13:24:52.291478] [Time] 1.5m 30.4m/47.0m
+
+[13:24:52.291500] ~~~ Epoch 21/30 ~~~
+
+[13:24:55.328000] Epoch: [21]  [ 0/77]  eta: 0:03:53  loss: 0.0118 (0.0118)  IoU (F channel): 0.5142 (0.5142)  IoU (T channel): 0.1961 (0.1961)  lr: 0.002764  iter-time: 3.0355
+[13:25:06.170456] Epoch: [21]  [10/77]  eta: 0:01:24  loss: 0.0092 (0.0097)  IoU (F channel): 0.4525 (0.4529)  IoU (T channel): 0.0000 (0.0879)  lr: 0.002706  iter-time: 1.2616
+[13:25:16.507305] Epoch: [21]  [20/77]  eta: 0:01:05  loss: 0.0089 (0.0097)  IoU (F channel): 0.4468 (0.4613)  IoU (T channel): 0.0176 (0.1037)  lr: 0.002648  iter-time: 1.0589
+[13:25:26.837067] Epoch: [21]  [30/77]  eta: 0:00:52  loss: 0.0090 (0.0096)  IoU (F channel): 0.4607 (0.4610)  IoU (T channel): 0.0744 (0.1082)  lr: 0.002590  iter-time: 1.0332
+[13:25:37.166458] Epoch: [21]  [40/77]  eta: 0:00:40  loss: 0.0087 (0.0095)  IoU (F channel): 0.4607 (0.4637)  IoU (T channel): 0.0053 (0.0911)  lr: 0.002533  iter-time: 1.0329
+[13:25:47.501278] Epoch: [21]  [50/77]  eta: 0:00:29  loss: 0.0086 (0.0094)  IoU (F channel): 0.4736 (0.4653)  IoU (T channel): 0.0182 (0.0964)  lr: 0.002475  iter-time: 1.0331
+[13:25:57.842650] Epoch: [21]  [60/77]  eta: 0:00:18  loss: 0.0089 (0.0095)  IoU (F channel): 0.4305 (0.4615)  IoU (T channel): 0.1352 (0.1053)  lr: 0.002418  iter-time: 1.0337
+[13:26:08.167439] Epoch: [21]  [70/77]  eta: 0:00:07  loss: 0.0089 (0.0093)  IoU (F channel): 0.4413 (0.4635)  IoU (T channel): 0.0151 (0.0990)  lr: 0.002361  iter-time: 1.0332
+[13:26:13.593505] Epoch: [21]  [76/77]  eta: 0:00:01  loss: 0.0082 (0.0092)  IoU (F channel): 0.4496 (0.4612)  IoU (T channel): 0.0069 (0.0994)  lr: 0.002327  iter-time: 0.9942
+[13:26:13.593665] Epoch: [21] Total time: 0:01:21 (1.0559 s / it)
+[13:26:13.593697] [Train] averaged stats: loss: 0.0082 (0.0092)  IoU (F channel): 0.4496 (0.4612)  IoU (T channel): 0.0069 (0.0994)  lr: 0.002327
+[13:26:15.740867] Epoch: [21]  [0/9]  eta: 0:00:19  loss: 0.0083 (0.0083)  IoU (F channel): 0.0090 (0.0090)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.1464
+[13:26:18.985843] Epoch: [21]  [8/9]  eta: 0:00:00  loss: 0.0114 (0.0342)  IoU (F channel): 0.6152 (0.4101)  IoU (T channel): 0.0000 (0.0189)  iter-time: 0.5990
+[13:26:18.985960] Epoch: [21] Total time: 0:00:05 (0.5991 s / it)
+[13:26:18.985982] [Val] averaged stats: loss: 0.0114 (0.0342)  IoU (F channel): 0.6152 (0.4101)  IoU (T channel): 0.0000 (0.0189)
+[13:26:18.986115] [Val] best loss: 0.0278 best  IoU (F channel): 0.3917 IoU (T channel): 0.0119 
+EarlyStopping counter: 5 out of 10
+[13:26:18.996023] [Time] 1.4m 31.8m/46.3m
+
+[13:26:18.996042] ~~~ Epoch 22/30 ~~~
+
+[13:26:23.384019] Epoch: [22]  [ 0/77]  eta: 0:05:37  loss: 0.0072 (0.0072)  IoU (F channel): 0.4714 (0.4714)  IoU (T channel): 0.0000 (0.0000)  lr: 0.002321  iter-time: 4.3858
+[13:26:33.743510] Epoch: [22]  [10/77]  eta: 0:01:29  loss: 0.0084 (0.0084)  IoU (F channel): 0.4714 (0.4673)  IoU (T channel): 0.0361 (0.0880)  lr: 0.002264  iter-time: 1.3404
+[13:26:44.099928] Epoch: [22]  [20/77]  eta: 0:01:08  loss: 0.0084 (0.0086)  IoU (F channel): 0.4658 (0.4609)  IoU (T channel): 0.0000 (0.0709)  lr: 0.002208  iter-time: 1.0357
+[13:26:54.458097] Epoch: [22]  [30/77]  eta: 0:00:53  loss: 0.0082 (0.0084)  IoU (F channel): 0.4510 (0.4602)  IoU (T channel): 0.0129 (0.0996)  lr: 0.002152  iter-time: 1.0356
+[13:27:04.819514] Epoch: [22]  [40/77]  eta: 0:00:41  loss: 0.0086 (0.0084)  IoU (F channel): 0.4693 (0.4655)  IoU (T channel): 0.0540 (0.1037)  lr: 0.002096  iter-time: 1.0359
+[13:27:15.183958] Epoch: [22]  [50/77]  eta: 0:00:29  loss: 0.0088 (0.0085)  IoU (F channel): 0.4872 (0.4686)  IoU (T channel): 0.0650 (0.1042)  lr: 0.002041  iter-time: 1.0362
+[13:27:25.548365] Epoch: [22]  [60/77]  eta: 0:00:18  loss: 0.0082 (0.0085)  IoU (F channel): 0.4865 (0.4696)  IoU (T channel): 0.0650 (0.1074)  lr: 0.001986  iter-time: 1.0363
+[13:27:35.904627] Epoch: [22]  [70/77]  eta: 0:00:07  loss: 0.0088 (0.0086)  IoU (F channel): 0.4713 (0.4703)  IoU (T channel): 0.0327 (0.1015)  lr: 0.001931  iter-time: 1.0359
+[13:27:41.347445] Epoch: [22]  [76/77]  eta: 0:00:01  loss: 0.0088 (0.0086)  IoU (F channel): 0.4713 (0.4718)  IoU (T channel): 0.0361 (0.0983)  lr: 0.001899  iter-time: 0.9973
+[13:27:41.347564] Epoch: [22] Total time: 0:01:22 (1.0695 s / it)
+[13:27:41.347599] [Train] averaged stats: loss: 0.0088 (0.0086)  IoU (F channel): 0.4713 (0.4718)  IoU (T channel): 0.0361 (0.0983)  lr: 0.001899
+[13:27:43.726504] Epoch: [22]  [0/9]  eta: 0:00:21  loss: 0.0096 (0.0096)  IoU (F channel): 0.0011 (0.0011)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.3781
+[13:27:46.330452] Epoch: [22]  [8/9]  eta: 0:00:00  loss: 0.0118 (0.0359)  IoU (F channel): 0.6249 (0.4216)  IoU (T channel): 0.0000 (0.0236)  iter-time: 0.5535
+[13:27:46.330557] Epoch: [22] Total time: 0:00:04 (0.5536 s / it)
+[13:27:46.330580] [Val] averaged stats: loss: 0.0118 (0.0359)  IoU (F channel): 0.6249 (0.4216)  IoU (T channel): 0.0000 (0.0236)
+[13:27:46.330712] [Val] best loss: 0.0278 best  IoU (F channel): 0.3917 IoU (T channel): 0.0119 
+EarlyStopping counter: 6 out of 10
+[13:27:46.339408] [Time] 1.5m 33.3m/46.4m
+
+[13:27:46.339425] ~~~ Epoch 23/30 ~~~
+
+[13:27:49.446947] Epoch: [23]  [ 0/77]  eta: 0:03:59  loss: 0.0079 (0.0079)  IoU (F channel): 0.5653 (0.5653)  IoU (T channel): 0.2028 (0.2028)  lr: 0.001893  iter-time: 3.1059
+[13:28:00.293005] Epoch: [23]  [10/77]  eta: 0:01:24  loss: 0.0079 (0.0085)  IoU (F channel): 0.4810 (0.4732)  IoU (T channel): 0.0507 (0.0843)  lr: 0.001839  iter-time: 1.2683
+[13:28:10.635368] Epoch: [23]  [20/77]  eta: 0:01:05  loss: 0.0088 (0.0089)  IoU (F channel): 0.4785 (0.4828)  IoU (T channel): 0.0507 (0.0915)  lr: 0.001786  iter-time: 1.0593
+[13:28:20.988559] Epoch: [23]  [30/77]  eta: 0:00:52  loss: 0.0087 (0.0087)  IoU (F channel): 0.4811 (0.4868)  IoU (T channel): 0.0632 (0.0874)  lr: 0.001733  iter-time: 1.0347
+[13:28:31.338011] Epoch: [23]  [40/77]  eta: 0:00:40  loss: 0.0083 (0.0085)  IoU (F channel): 0.4897 (0.4866)  IoU (T channel): 0.0000 (0.0895)  lr: 0.001680  iter-time: 1.0350
+[13:28:41.689216] Epoch: [23]  [50/77]  eta: 0:00:29  loss: 0.0078 (0.0084)  IoU (F channel): 0.4732 (0.4835)  IoU (T channel): 0.0000 (0.0975)  lr: 0.001628  iter-time: 1.0349
+[13:28:52.033059] Epoch: [23]  [60/77]  eta: 0:00:18  loss: 0.0075 (0.0084)  IoU (F channel): 0.4537 (0.4804)  IoU (T channel): 0.0442 (0.0954)  lr: 0.001576  iter-time: 1.0346
+[13:29:02.383427] Epoch: [23]  [70/77]  eta: 0:00:07  loss: 0.0086 (0.0084)  IoU (F channel): 0.4410 (0.4774)  IoU (T channel): 0.0442 (0.0967)  lr: 0.001525  iter-time: 1.0346
+[13:29:07.822235] Epoch: [23]  [76/77]  eta: 0:00:01  loss: 0.0084 (0.0084)  IoU (F channel): 0.4524 (0.4800)  IoU (T channel): 0.0161 (0.0913)  lr: 0.001495  iter-time: 0.9962
+[13:29:07.822339] Epoch: [23] Total time: 0:01:21 (1.0582 s / it)
+[13:29:07.822366] [Train] averaged stats: loss: 0.0084 (0.0084)  IoU (F channel): 0.4524 (0.4800)  IoU (T channel): 0.0161 (0.0913)  lr: 0.001495
+[13:29:11.207883] Epoch: [23]  [0/9]  eta: 0:00:30  loss: 0.0090 (0.0090)  IoU (F channel): 0.0109 (0.0109)  IoU (T channel): 0.0000 (0.0000)  iter-time: 3.3848
+[13:29:13.546269] Epoch: [23]  [8/9]  eta: 0:00:00  loss: 0.0099 (0.0306)  IoU (F channel): 0.5838 (0.4054)  IoU (T channel): 0.0000 (0.0194)  iter-time: 0.6359
+[13:29:13.546381] Epoch: [23] Total time: 0:00:05 (0.6359 s / it)
+[13:29:13.546402] [Val] averaged stats: loss: 0.0099 (0.0306)  IoU (F channel): 0.5838 (0.4054)  IoU (T channel): 0.0000 (0.0194)
+[13:29:13.546542] [Val] best loss: 0.0278 best  IoU (F channel): 0.3917 IoU (T channel): 0.0119 
+EarlyStopping counter: 7 out of 10
+[13:29:13.555816] [Time] 1.5m 34.7m/46.4m
+
+[13:29:13.555833] ~~~ Epoch 24/30 ~~~
+
+[13:29:17.164002] Epoch: [24]  [ 0/77]  eta: 0:04:37  loss: 0.0060 (0.0060)  IoU (F channel): 0.4910 (0.4910)  IoU (T channel): 0.0000 (0.0000)  lr: 0.001490  iter-time: 3.6068
+[13:29:27.639629] Epoch: [24]  [10/77]  eta: 0:01:25  loss: 0.0082 (0.0087)  IoU (F channel): 0.4969 (0.5010)  IoU (T channel): 0.1357 (0.1636)  lr: 0.001440  iter-time: 1.2801
+[13:29:38.005642] Epoch: [24]  [20/77]  eta: 0:01:06  loss: 0.0084 (0.0086)  IoU (F channel): 0.4944 (0.4922)  IoU (T channel): 0.1255 (0.1281)  lr: 0.001390  iter-time: 1.0420
+[13:29:48.367816] Epoch: [24]  [30/77]  eta: 0:00:52  loss: 0.0076 (0.0081)  IoU (F channel): 0.4910 (0.4942)  IoU (T channel): 0.0150 (0.1044)  lr: 0.001341  iter-time: 1.0363
+[13:29:58.728645] Epoch: [24]  [40/77]  eta: 0:00:40  loss: 0.0074 (0.0082)  IoU (F channel): 0.4765 (0.4875)  IoU (T channel): 0.0000 (0.1067)  lr: 0.001293  iter-time: 1.0360
+[13:30:09.085889] Epoch: [24]  [50/77]  eta: 0:00:29  loss: 0.0081 (0.0082)  IoU (F channel): 0.4606 (0.4851)  IoU (T channel): 0.0000 (0.0991)  lr: 0.001246  iter-time: 1.0358
+[13:30:19.450389] Epoch: [24]  [60/77]  eta: 0:00:18  loss: 0.0081 (0.0082)  IoU (F channel): 0.4614 (0.4812)  IoU (T channel): 0.0000 (0.1064)  lr: 0.001199  iter-time: 1.0360
+[13:30:29.802744] Epoch: [24]  [70/77]  eta: 0:00:07  loss: 0.0077 (0.0082)  IoU (F channel): 0.4777 (0.4842)  IoU (T channel): 0.0505 (0.1040)  lr: 0.001152  iter-time: 1.0358
+[13:30:35.238719] Epoch: [24]  [76/77]  eta: 0:00:01  loss: 0.0079 (0.0081)  IoU (F channel): 0.4746 (0.4796)  IoU (T channel): 0.0198 (0.1001)  lr: 0.001125  iter-time: 0.9966
+[13:30:35.238830] Epoch: [24] Total time: 0:01:21 (1.0608 s / it)
+[13:30:35.238872] [Train] averaged stats: loss: 0.0079 (0.0081)  IoU (F channel): 0.4746 (0.4796)  IoU (T channel): 0.0198 (0.1001)  lr: 0.001125
+[13:30:38.829003] Epoch: [24]  [0/9]  eta: 0:00:32  loss: 0.0093 (0.0093)  IoU (F channel): 0.0045 (0.0045)  IoU (T channel): 0.0000 (0.0000)  iter-time: 3.5892
+[13:30:41.160387] Epoch: [24]  [8/9]  eta: 0:00:00  loss: 0.0093 (0.0318)  IoU (F channel): 0.5599 (0.3963)  IoU (T channel): 0.0000 (0.0269)  iter-time: 0.6578
+[13:30:41.160473] Epoch: [24] Total time: 0:00:05 (0.6579 s / it)
+[13:30:41.160495] [Val] averaged stats: loss: 0.0093 (0.0318)  IoU (F channel): 0.5599 (0.3963)  IoU (T channel): 0.0000 (0.0269)
+[13:30:41.160624] [Val] best loss: 0.0278 best  IoU (F channel): 0.3917 IoU (T channel): 0.0119 
+EarlyStopping counter: 8 out of 10
+[13:30:41.173829] [Time] 1.5m 36.2m/46.4m
+
+[13:30:41.173846] ~~~ Epoch 25/30 ~~~
+
+[13:30:44.382830] Epoch: [25]  [ 0/77]  eta: 0:04:07  loss: 0.0071 (0.0071)  IoU (F channel): 0.4246 (0.4246)  IoU (T channel): 0.0000 (0.0000)  lr: 0.001120  iter-time: 3.2082
+[13:30:54.873551] Epoch: [25]  [10/77]  eta: 0:01:23  loss: 0.0071 (0.0074)  IoU (F channel): 0.5061 (0.4991)  IoU (T channel): 0.2335 (0.1838)  lr: 0.001075  iter-time: 1.2452
+[13:31:05.240251] Epoch: [25]  [20/77]  eta: 0:01:05  loss: 0.0082 (0.0083)  IoU (F channel): 0.5073 (0.4958)  IoU (T channel): 0.1275 (0.1456)  lr: 0.001031  iter-time: 1.0427
+[13:31:15.603846] Epoch: [25]  [30/77]  eta: 0:00:52  loss: 0.0074 (0.0078)  IoU (F channel): 0.4963 (0.4898)  IoU (T channel): 0.0231 (0.1097)  lr: 0.000987  iter-time: 1.0364
+[13:31:25.940761] Epoch: [25]  [40/77]  eta: 0:00:40  loss: 0.0071 (0.0077)  IoU (F channel): 0.4941 (0.4919)  IoU (T channel): 0.0000 (0.0912)  lr: 0.000945  iter-time: 1.0349
+[13:31:36.297101] Epoch: [25]  [50/77]  eta: 0:00:29  loss: 0.0078 (0.0079)  IoU (F channel): 0.4673 (0.4886)  IoU (T channel): 0.0000 (0.0889)  lr: 0.000903  iter-time: 1.0346
+[13:31:46.646631] Epoch: [25]  [60/77]  eta: 0:00:18  loss: 0.0086 (0.0080)  IoU (F channel): 0.4673 (0.4880)  IoU (T channel): 0.0116 (0.0948)  lr: 0.000861  iter-time: 1.0352
+[13:31:56.990093] Epoch: [25]  [70/77]  eta: 0:00:07  loss: 0.0082 (0.0080)  IoU (F channel): 0.4733 (0.4867)  IoU (T channel): 0.0249 (0.0908)  lr: 0.000821  iter-time: 1.0346
+[13:32:02.428985] Epoch: [25]  [76/77]  eta: 0:00:01  loss: 0.0077 (0.0080)  IoU (F channel): 0.4658 (0.4861)  IoU (T channel): 0.0519 (0.0971)  lr: 0.000797  iter-time: 0.9958
+[13:32:02.429148] Epoch: [25] Total time: 0:01:21 (1.0553 s / it)
+[13:32:02.429178] [Train] averaged stats: loss: 0.0077 (0.0080)  IoU (F channel): 0.4658 (0.4861)  IoU (T channel): 0.0519 (0.0971)  lr: 0.000797
+[13:32:05.973884] Epoch: [25]  [0/9]  eta: 0:00:31  loss: 0.0091 (0.0091)  IoU (F channel): 0.0081 (0.0081)  IoU (T channel): 0.0000 (0.0000)  iter-time: 3.5439
+[13:32:08.307077] Epoch: [25]  [8/9]  eta: 0:00:00  loss: 0.0103 (0.0361)  IoU (F channel): 0.5995 (0.4096)  IoU (T channel): 0.0000 (0.0202)  iter-time: 0.6530
+[13:32:08.307188] Epoch: [25] Total time: 0:00:05 (0.6530 s / it)
+[13:32:08.307208] [Val] averaged stats: loss: 0.0103 (0.0361)  IoU (F channel): 0.5995 (0.4096)  IoU (T channel): 0.0000 (0.0202)
+[13:32:08.307331] [Val] best loss: 0.0278 best  IoU (F channel): 0.3917 IoU (T channel): 0.0119 
+[13:32:08.316333] Creating training plots . . .
+EarlyStopping counter: 9 out of 10
+[13:32:11.808550] [Time] 1.5m 37.7m/46.8m
+
+[13:32:11.808569] ~~~ Epoch 26/30 ~~~
+
+[13:32:15.213048] Epoch: [26]  [ 0/77]  eta: 0:04:22  loss: 0.0081 (0.0081)  IoU (F channel): 0.3720 (0.3720)  IoU (T channel): 0.0776 (0.0776)  lr: 0.000793  iter-time: 3.4035
+[13:32:25.596277] Epoch: [26]  [10/77]  eta: 0:01:23  loss: 0.0081 (0.0077)  IoU (F channel): 0.4901 (0.4826)  IoU (T channel): 0.0117 (0.1175)  lr: 0.000754  iter-time: 1.2533
+[13:32:35.937958] Epoch: [26]  [20/77]  eta: 0:01:05  loss: 0.0073 (0.0077)  IoU (F channel): 0.4962 (0.4987)  IoU (T channel): 0.0000 (0.0858)  lr: 0.000716  iter-time: 1.0361
+[13:32:46.280928] Epoch: [26]  [30/77]  eta: 0:00:52  loss: 0.0073 (0.0077)  IoU (F channel): 0.5058 (0.4968)  IoU (T channel): 0.0122 (0.0874)  lr: 0.000678  iter-time: 1.0341
+[13:32:56.631485] Epoch: [26]  [40/77]  eta: 0:00:40  loss: 0.0076 (0.0077)  IoU (F channel): 0.5070 (0.5078)  IoU (T channel): 0.1014 (0.1046)  lr: 0.000642  iter-time: 1.0346
+[13:33:06.968281] Epoch: [26]  [50/77]  eta: 0:00:29  loss: 0.0076 (0.0077)  IoU (F channel): 0.4744 (0.4969)  IoU (T channel): 0.1201 (0.1064)  lr: 0.000606  iter-time: 1.0343
+[13:33:17.325514] Epoch: [26]  [60/77]  eta: 0:00:18  loss: 0.0076 (0.0078)  IoU (F channel): 0.4598 (0.4979)  IoU (T channel): 0.0659 (0.1043)  lr: 0.000572  iter-time: 1.0346
+[13:33:27.657154] Epoch: [26]  [70/77]  eta: 0:00:07  loss: 0.0079 (0.0078)  IoU (F channel): 0.4722 (0.4919)  IoU (T channel): 0.0000 (0.1035)  lr: 0.000538  iter-time: 1.0344
+[13:33:33.099195] Epoch: [26]  [76/77]  eta: 0:00:01  loss: 0.0075 (0.0078)  IoU (F channel): 0.4722 (0.4911)  IoU (T channel): 0.0000 (0.1093)  lr: 0.000518  iter-time: 0.9958
+[13:33:33.099455] Epoch: [26] Total time: 0:01:21 (1.0557 s / it)
+[13:33:33.099489] [Train] averaged stats: loss: 0.0075 (0.0078)  IoU (F channel): 0.4722 (0.4911)  IoU (T channel): 0.0000 (0.1093)  lr: 0.000518
+[13:33:36.059208] Epoch: [26]  [0/9]  eta: 0:00:26  loss: 0.0079 (0.0079)  IoU (F channel): 0.0148 (0.0148)  IoU (T channel): 0.0000 (0.0000)  iter-time: 2.9590
+[13:33:38.394570] Epoch: [26]  [8/9]  eta: 0:00:00  loss: 0.0108 (0.0346)  IoU (F channel): 0.6105 (0.4243)  IoU (T channel): 0.0000 (0.0222)  iter-time: 0.5882
+[13:33:38.394673] Epoch: [26] Total time: 0:00:05 (0.5883 s / it)
+[13:33:38.394692] [Val] averaged stats: loss: 0.0108 (0.0346)  IoU (F channel): 0.6105 (0.4243)  IoU (T channel): 0.0000 (0.0222)
+[13:33:38.394830] [Val] best loss: 0.0278 best  IoU (F channel): 0.3917 IoU (T channel): 0.0119 
+EarlyStopping counter: 10 out of 10
+[13:33:38.405587] Early stopping
+[13:33:38.405621] Training time: 0:39:09
+[13:33:38.405663] Train loss: 0.00775305318416326
+[13:33:38.405670] Train IoU (F channel): 0.4910598819131975
+[13:33:38.405675] Train IoU (T channel): 0.10925890876028638
+[13:33:38.405680] Validation loss: 0.02776655735861924
+[13:33:38.405685] Validation IoU (F channel): 0.3916712999343872
+[13:33:38.405690] Validation IoU (T channel): 0.011864270083606243
+[13:33:38.405695] 
+[13:33:38.405700] Finished Training
+[13:33:38.407123] Loading checkpoint from file metrics/biapy/biapy-v3-no-aug/checkpoints/biapy-v3-no-aug_0-checkpoint-best.pth
+[13:33:38.516891] Model weights loaded!
+[13:33:38.572649] Normalization used in when creating BMZ data: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'float32', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 1.42852783203125, 'std': 0.5219665765762329}, '1': {'mean': 3.8770415782928467, 'std': 0.7838022112846375}, '2': {'mean': 1.0, 'std': 0.0}}}
+[13:33:38.577840] Releasing memory . . .

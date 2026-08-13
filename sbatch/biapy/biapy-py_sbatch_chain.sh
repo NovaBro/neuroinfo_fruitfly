@@ -161,11 +161,11 @@ if [[ "$do_train" -eq 1 ]]; then
     --parsable
     --job-name="BiaPy-py-${slurm_name_base}-train"
     --cpus-per-task=16
-    --time=12:00:00
-    --mem=256g
+    --time=30:00:00
+    --mem=240g
     --gres=gpu:1
-    --constraint='h200'
-    # --constraint='h100|h200'
+    --constraint='l40s'
+    # --constraint='h200'
   )
   if [[ -n "$prev_id" ]]; then
     sbatch_args+=(--dependency="afterok:${prev_id}")
