@@ -147,7 +147,7 @@ if [[ "$do_preprocessing" -eq 1 ]]; then
     --parsable
     --job-name="BiaPy-py-${slurm_name_base}-preprocessing"
     --cpus-per-task=8
-    --time=8:00:00
+    --time=14:00:00
     --mem=256g
   )
   job_id=$(sbatch "${sbatch_args[@]}" "$SBATCH_SCRIPT" "$config_file" "preprocessing" "$job_name" "$run_id")
@@ -161,11 +161,11 @@ if [[ "$do_train" -eq 1 ]]; then
     --parsable
     --job-name="BiaPy-py-${slurm_name_base}-train"
     --cpus-per-task=16
-    --time=30:00:00
+    --time=48:00:00
     --mem=240g
     --gres=gpu:1
-    --constraint='l40s'
-    # --constraint='h200'
+    # --constraint='l40s'
+    --constraint='h200'
   )
   if [[ -n "$prev_id" ]]; then
     sbatch_args+=(--dependency="afterok:${prev_id}")

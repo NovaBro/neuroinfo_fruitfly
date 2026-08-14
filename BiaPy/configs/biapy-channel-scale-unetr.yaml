@@ -8,13 +8,13 @@ PROBLEM:
     TYPE: INSTANCE_SEG
     NDIM: 3D
     INSTANCE_SEG:
-      DATA_CHANNELS: ['F', 'P', 'T', Dn]
+      DATA_CHANNELS: ['F', 'P', 'Dc', 'Dn']
       DATA_CHANNELS_EXTRA_OPTS:
         - P:
             type: 'skeleton'
             dilation: 2
-          T:
-            thickness: 2
+        - Dc:
+            type: 'skeleton'
       DATA_CHANNEL_WEIGHTS: (1.0, 4.0, 4.0, 4.0)
       WATERSHED:
         SEED_CHANNELS: ['P']             # keep seeds simple: trust P
@@ -26,7 +26,7 @@ PROBLEM:
 
 
 DATA: 
-    PATCH_SIZE: (96, 96, 96, 3)
+    PATCH_SIZE: (160, 160, 160, 3)
     TRAIN:
         PATH: fisbe/biapy-channel-scale/train/raw
         GT_PATH: fisbe/biapy-channel-scale/train/label
@@ -50,7 +50,7 @@ AUGMENTOR:
 
 
 PATHS:
-    CHECKPOINT_FILE: metrics/biapy/biapy-channel-scale-unetr/checkpoints/biapy-channel-scale-unetr_0-checkpoint-best.pth
+    CHECKPOINT_FILE: metrics/biapy/biapy-channel-scale-unetr/checkpoints/biapy-channel-scale-unetr_dc_c-scale-checkpoint-best.pth
 
 MODEL:
     ARCHITECTURE: unetr
@@ -60,7 +60,7 @@ MODEL:
 TRAIN:
     ENABLE: True
     OPTIMIZER: ADAMW
-    LR: 6.E-3
+    LR: 1.E-4
     BATCH_SIZE: 2
     EPOCHS: 60
     PATIENCE: 10
@@ -75,4 +75,4 @@ TEST:
         INSTANCE_REFINEMENT:
             ENABLE: True
             OPERATIONS: ['remove_small_objects']
-            VALUES: [50]   # voxel count threshold — tune based on your smallest real neuron
+            VALUES: [1000]   # voxel count threshold — tune based on your smallest real neuron

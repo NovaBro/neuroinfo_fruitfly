@@ -1,0 +1,1481 @@
+SBATCH Run: biapy-debug.yaml, mode: test, job-name: biapy-debug-partition, run-id: 0
+SLURM_CPUS_PER_TASK=6
+running BiaPy/run_biapy-py.py
+Mode overrides (test): TRAIN.ENABLE=False, TEST.ENABLE=True, MODEL.LOAD_CHECKPOINT=True
+CPU overrides: SYSTEM.NUM_CPUS=6, SYSTEM.NUM_WORKERS=6
+Date     : 2026-08-05 22:23:32
+Arguments: Namespace(config={'SYSTEM': {'NUM_CPUS': 6, 'NUM_WORKERS': -1}, 'PROBLEM': {'TYPE': 'INSTANCE_SEG', 'NDIM': '3D', 'INSTANCE_SEG': {'DATA_CHANNELS': ['F', 'C', 'Db', 'Dn'], 'WATERSHED': {'SEED_CHANNELS': ['F', 'Db'], 'SEED_CHANNELS_THRESH': ['auto', 'auto'], 'TOPOGRAPHIC_SURFACE_CHANNEL': 'Db', 'GROWTH_MASK_CHANNELS': ['F'], 'GROWTH_MASK_CHANNELS_THRESH': ['auto'], 'DATA_REMOVE_BEFORE_MW': True, 'DATA_REMOVE_SMALL_OBJ_BEFORE': 500, 'SEED_MORPH_SEQUENCE': ['erode', 'dilate'], 'SEED_MORPH_RADIUS': [1, 1], 'ERODE_AND_DILATE_GROWTH_MASK': True, 'FORE_EROSION_RADIUS': 1, 'FORE_DILATION_RADIUS': 1, 'DATA_CHECK_MW': True}}}, 'DATA': {'PATCH_SIZE': '(20, 128, 128, 3)', 'TRAIN': {'PATH': 'fisbe/biapy-debug/train/raw', 'GT_PATH': 'fisbe/biapy-debug/train/label', 'IN_MEMORY': True}, 'VAL': {'PATH': 'fisbe/biapy-debug/val/raw', 'GT_PATH': 'fisbe/biapy-debug/val/label'}, 'TEST': {'PATH': 'fisbe/biapy-debug/test/raw', 'GT_PATH': 'fisbe/biapy-debug/test/label', 'IN_MEMORY': True, 'LOAD_GT': True, 'PADDING': '(4,16,16)'}}, 'AUGMENTOR': {'ENABLE': True, 'RANDOM_ROT': True, 'VFLIP': True, 'HFLIP': True, 'ZFLIP': True}, 'MODEL': {'ARCHITECTURE': 'unet', 'FEATURE_MAPS': [16, 32, 64, 128, 256], 'Z_DOWN': [1, 1, 1, 1], 'LOAD_CHECKPOINT': True}, 'TRAIN': {'ENABLE': False, 'OPTIMIZER': 'ADAMW', 'LR': 0.003, 'BATCH_SIZE': 105, 'EPOCHS': 30, 'PATIENCE': 10, 'LR_SCHEDULER': {'NAME': 'onecycle'}}, 'TEST': {'ENABLE': True, 'AUGMENTATION': False, 'FULL_IMG': False, 'POST_PROCESSING': {'INSTANCE_REFINEMENT': {'ENABLE': True, 'OPERATIONS': ['remove_small_objects'], 'VALUES': [500]}}}}, result_dir='metrics/biapy', name='biapy-debug-partition', run_id='0', gpu='0', world_size=1, local_rank=-1, dist_on_itp=False, dist_url='env://', dist_backend='nccl')
+Job      : biapy-debug-partition_0
+BiaPy    : 3.7.0
+Python   : 3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:34:02) [GCC 14.3.0]
+PyTorch  : 2.12.1+cu130
+The following changes were made in order to adapt the input configuration:
+Not using distributed mode
+[22:23:32.342243] **** Using GPU: 'cuda' for training
+[22:23:32.466171] CPU budget(total)=6 | per_rank=6 | main_threads=4 | num_workers(per_rank)=1 | world_size=1
+[22:23:32.499994] Configuration details:
+[22:23:32.500027] AUGMENTOR:
+  AFFINE_MODE: reflect
+  AUG_NUM_SAMPLES: 10
+  AUG_SAMPLES: True
+  BRIGHTNESS: False
+  BRIGHTNESS_FACTOR: (-0.1, 0.1)
+  BRIGHTNESS_PROB: 0.5
+  CBLUR_DOWN_RANGE: (2, 8)
+  CBLUR_INSIDE: True
+  CBLUR_SIZE: (0.2, 0.4)
+  CHANNEL_SHUFFLE: False
+  CHANNEL_SHUFFLE_PROB: 0.5
+  CMIX_SIZE: (0.2, 0.4)
+  CNOISE_NB_ITERATIONS: (1, 3)
+  CNOISE_SCALE: (0.05, 0.1)
+  CNOISE_SIZE: (0.2, 0.4)
+  CONTRAST: False
+  CONTRAST_FACTOR: (-0.1, 0.1)
+  CONTRAST_PROB: 0.5
+  COUT_APPLY_TO_MASK: False
+  COUT_CVAL: 0.0
+  COUT_NB_ITERATIONS: (1, 3)
+  COUT_SIZE: (0.05, 0.3)
+  CUTBLUR: False
+  CUTBLUR_PROB: 0.5
+  CUTMIX: False
+  CUTMIX_PROB: 0.5
+  CUTNOISE: False
+  CUTNOISE_PROB: 0.5
+  CUTOUT: False
+  CUTOUT_PROB: 0.5
+  DRAW_GRID: True
+  DROPOUT: False
+  DROPOUT_PROB: 0.5
+  DROP_RANGE: (0, 0.2)
+  ELASTIC: False
+  ELASTIC_PROB: 0.5
+  ENABLE: True
+  E_ALPHA: (12, 16)
+  E_MODE: constant
+  E_SIGMA: 4
+  GAMMA_CONTRAST: False
+  GAMMA_CONTRAST_PROB: 0.5
+  GAUSSIAN_NOISE: False
+  GAUSSIAN_NOISE_MEAN: 0.0
+  GAUSSIAN_NOISE_PROB: 0.5
+  GAUSSIAN_NOISE_USE_INPUT_IMG_MEAN_AND_VAR: False
+  GAUSSIAN_NOISE_VAR: 0.05
+  GC_GAMMA: (1.25, 1.75)
+  GRAYSCALE: False
+  GRAYSCALE_PROB: 0.5
+  GRIDMASK: False
+  GRIDMASK_PROB: 0.5
+  GRID_D_RANGE: (0.4, 1)
+  GRID_INVERT: False
+  GRID_RATIO: 0.6
+  GRID_ROTATE: 1.0
+  G_BLUR: False
+  G_BLUR_PROB: 0.5
+  G_SIGMA: (1.0, 2.0)
+  HFLIP: True
+  HFLIP_PROB: 0.5
+  MB_KERNEL: (3, 7)
+  MEDIAN_BLUR: False
+  MEDIAN_BLUR_PROB: 0.5
+  MISALIGNMENT: False
+  MISALIGNMENT_PROB: 0.5
+  MISSING_SECTIONS: False
+  MISSING_SECTIONS_PROB: 0.5
+  MISSP_CHANNEL_PB: 0.5
+  MISSP_ITERATIONS: (10, 30)
+  MOTB_K_RANGE: (8, 12)
+  MOTION_BLUR: False
+  MOTION_BLUR_PROB: 0.5
+  MS_DISPLACEMENT: 16
+  MS_ROTATE_RATIO: 0.5
+  PEPPER: False
+  PEPPER_AMOUNT: 0.05
+  PEPPER_PROB: 0.5
+  POISSON_NOISE: False
+  POISSON_NOISE_PROB: 0.5
+  RANDOM_ROT: True
+  RANDOM_ROT_PROB: 0.5
+  RANDOM_ROT_RANGE: (-180, 180)
+  ROT90: False
+  ROT90_PROB: 0.5
+  SALT: False
+  SALT_AMOUNT: 0.05
+  SALT_AND_PEPPER: False
+  SALT_AND_PEPPER_AMOUNT: 0.05
+  SALT_AND_PEPPER_PROB: 0.5
+  SALT_AND_PEPPER_PROP: 0.5
+  SALT_PROB: 0.5
+  SHEAR: False
+  SHEAR_PROB: 0.5
+  SHEAR_RANGE: (-20, 20)
+  SHIFT: False
+  SHIFT_PROB: 0.5
+  SHIFT_RANGE: (0.1, 0.2)
+  SHUFFLE_TRAIN_DATA_EACH_EPOCH: True
+  SHUFFLE_VAL_DATA_EACH_EPOCH: False
+  VFLIP: True
+  VFLIP_PROB: 0.5
+  ZFLIP: True
+  ZFLIP_PROB: 0.5
+  ZOOM: False
+  ZOOM_IN_Z: False
+  ZOOM_PROB: 0.5
+  ZOOM_RANGE: (0.5, 1.5)
+DATA:
+  CHECK_GENERATORS: False
+  FILTER_BY_IMAGE: False
+  FORCE_RGB: False
+  NORMALIZATION:
+    PERC_CLIP:
+      ENABLE: False
+      LOWER_PERC: -1.0
+      LOWER_VALUE: [-1.0]
+      UPPER_PERC: -1.0
+      UPPER_VALUE: [-1.0]
+    TYPE: zero_mean_unit_variance
+    ZERO_MEAN_UNIT_VAR:
+      MEAN_VAL: [-1.0]
+      STD_VAL: [-1.0]
+  N_CLASSES: 2
+  PATCH_SIZE: (20, 128, 128, 3)
+  PREPROCESS:
+    CANNY:
+      ENABLE: False
+      HIGH_THRESHOLD: None
+      LOW_THRESHOLD: None
+    CLAHE:
+      CLIP_LIMIT: 0.01
+      ENABLE: False
+      KERNEL_SIZE: None
+    GAUSSIAN_BLUR:
+      CHANNEL_AXIS: None
+      ENABLE: False
+      MODE: nearest
+      SIGMA: 1
+    MATCH_HISTOGRAM:
+      ENABLE: False
+      REFERENCE_PATH: user_data/test/x
+    MEDIAN_BLUR:
+      ENABLE: False
+      KERNEL_SIZE: (3, 3, 1)
+    RESIZE:
+      ANTI_ALIASING: False
+      CLIP: True
+      CVAL: 0.0
+      ENABLE: False
+      MODE: reflect
+      ORDER: 1
+      OUTPUT_SHAPE: (512, 512)
+      PRESERVE_RANGE: True
+    TEST: False
+    TRAIN: False
+    VAL: False
+    ZOOM:
+      ENABLE: False
+      ZOOM_FACTOR: [1, 1, 1, 1, 1]
+  REFLECT_TO_COMPLETE_SHAPE: True
+  SAVE_FILTERED_IMAGES: False
+  SAVE_FILTERED_IMAGES_NUM: 3
+  TEST:
+    BINARY_MASKS: fisbe/biapy-debug/test/raw/../bin_mask
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy-debug/test/label_detection_masks_2
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy-debug/test/label
+    INPUT_IMG_AXES_ORDER: TZCYX
+    INPUT_MASK_AXES_ORDER: TZCYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-debug/test/label_F.erosion-0.dilation-0_C.mode-thick_Db.val_type-norm.act-sigmoid.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+    IN_MEMORY: True
+    LOAD_GT: True
+    MEDIAN_PADDING: False
+    OVERLAP: (0, 0, 0)
+    PADDING: (4, 16, 16)
+    PATH: fisbe/biapy-debug/test/raw
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy-debug/test/raw_ssl_source
+    USE_VAL_AS_TEST: False
+  TRAIN:
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy-debug/train/label_detection_masks_2
+    EXTRACT_RANDOM_PATCH: False
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy-debug/train/label
+    INPUT_IMG_AXES_ORDER: TZCYX
+    INPUT_MASK_AXES_ORDER: TZCYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-debug/train/label_F.erosion-0.dilation-0_C.mode-thick_Db.val_type-norm.act-sigmoid.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+    IN_MEMORY: True
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: fisbe/biapy-debug/train/raw
+    PROBABILITY_MAP: False
+    REPLICATE: 0
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy-debug/train/raw_ssl_source
+    W_BACKGROUND: 0.06
+    W_FOREGROUND: 0.94
+  VAL:
+    CROSS_VAL: False
+    CROSS_VAL_FOLD: 1
+    CROSS_VAL_NFOLD: 5
+    DETECTION_MASK_DIR: fisbe/biapy-debug/val/label_detection_masks_2
+    DIST_EVAL: True
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    FROM_TRAIN: True
+    GT_PATH: fisbe/biapy-debug/val/label
+    INPUT_IMG_AXES_ORDER: TZCYX
+    INPUT_MASK_AXES_ORDER: TZCYX
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-debug/val/label_F.erosion-0.dilation-0_C.mode-thick_Db.val_type-norm.act-sigmoid.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+    IN_MEMORY: True
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: fisbe/biapy-debug/val/raw
+    RANDOM: True
+    RESOLUTION: (1, 1, 1)
+    SPLIT_TRAIN: 0.1
+    SSL_SOURCE_DIR: fisbe/biapy-debug/val/raw_ssl_source
+LOG:
+  CHART_CREATION_FREQ: 5
+  LOG_DIR: metrics/biapy/biapy-debug-partition/logs
+  LOG_FILE_PREFIX: biapy-debug-partition_0
+  TENSORBOARD_LOG_DIR: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/tensorboard
+LOSS:
+  CLASS_REBALANCE: none
+  CLASS_WEIGHTS: []
+  CONTRAST:
+    ENABLE: False
+    MEMORY_SIZE: 5000
+    PIXEL_UPD_FREQ: 10
+    PROJ_DIM: 256
+  CYCLEGAN:
+    ALPHA_PERCEPTUAL: 0.0
+    DELTA_MSE: 0.0
+    GAMMA_SSIM: 1.0
+    LAMBDA_GAN: 1.0
+    LAMBDA_RECON: 10.0
+  IGNORE_INDEX: -1
+  TYPE: 
+  WEIGHTS: [1.0, 1.0]
+MODEL:
+  ACTIVATION: elu
+  ARCHITECTURE: unet
+  BMZ:
+    EXPORT:
+      AUTHORS: []
+      CITE: []
+      DATASET_INFO: [{}]
+      DESCRIPTION: 
+      DOCUMENTATION: 
+      ENABLE: False
+      LICENSE: CC-BY-4.0
+      MODEL_NAME: 
+      MODEL_VERSION: 0.1.0
+      REUSE_BMZ_CONFIG: False
+      TAGS: []
+    SOURCE_MODEL_ID: 
+  CONVNEXT_LAYER_SCALE: 1e-06
+  CONVNEXT_SD_PROB: 0.1
+  CONVNEXT_STEM_K_SIZE: 2
+  CONV_BLOCK_ORDER: conv_norm_act
+  CONV_LAYERS: [2, 2, 2, 2, 2]
+  DROPOUT_VALUES: [0.0, 0.0, 0.0, 0.0, 0.0]
+  FEATURE_MAPS: [16, 32, 64, 128, 256]
+  FREEZE_LAYERS_MATCHING: []
+  HRNET:
+    BLOCK_TYPE: BASIC
+    HEAD_TYPE: FCN
+    NUM_BLOCKS: [[4, 4], [4, 4, 4], [4, 4, 4, 4]]
+    NUM_BRANCHES: [2, 3, 4]
+    NUM_CHANNELS: [[18, 36], [18, 36, 72], [18, 36, 72, 144]]
+    NUM_MODULES: [1, 4, 3]
+    NUM_STAGES: 3
+    VARIANT: W48
+    YX_DOWN: [0, 0, 0]
+    Z_DOWN: [0, 0, 0]
+  ISOTROPY: [True, True, True, True, True]
+  ITEMS_TO_LOAD_FROM_CHECKPOINT: ['weights', 'norm', 'model_arch']
+  KERNEL_SIZE: 3
+  LARGER_IO: False
+  LOAD_CHECKPOINT: True
+  LOAD_CHECKPOINT_EPOCH: best_on_val
+  MAE_DEC_HIDDEN_SIZE: 512
+  MAE_DEC_MLP_DIMS: 2048
+  MAE_DEC_NUM_HEADS: 16
+  MAE_DEC_NUM_LAYERS: 8
+  MAE_MASK_RATIO: 0.5
+  MAE_MASK_TYPE: grid
+  NAFNET:
+    ARCHITECTURE_D: patchgan
+    DEC_BLK_NUMS: [2, 2, 2, 2]
+    DW_EXPAND: 2
+    ENC_BLK_NUMS: [2, 2, 4, 8]
+    FFN_EXPAND: 2
+    MIDDLE_BLK_NUM: 12
+    PATCHGAN:
+      BASE_FILTERS: 64
+    WIDTH: 16
+  NORMALIZATION: in
+  OUT_CHECKPOINT_FORMAT: pth
+  RCAN_CONV_FILTERS: 16
+  RCAN_RCAB_BLOCK_NUM: 20
+  RCAN_REDUCTION_RATIO: 16
+  RCAN_RG_BLOCK_NUM: 10
+  RCAN_UPSCALING_LAYER: True
+  SAVE_CKPT_FREQ: -1
+  SKIP_UNMATCHED_LAYERS: False
+  SOURCE: biapy
+  STUNET:
+    PRETRAINED: False
+    VARIANT: base
+  TORCHVISION_MODEL_NAME: 
+  UNETR_VIT_HIDD_MULT: -1
+  UNETR_VIT_MODEL: custom
+  UNETR_VIT_NUM_FILTERS: 16
+  UNET_SR_UPSAMPLE_POSITION: pre
+  UPSAMPLE_LAYER: convtranspose
+  VIT_EMBED_DIM: 768
+  VIT_MLP_RATIO: 4.0
+  VIT_MODEL: custom
+  VIT_NORM_EPS: 1e-06
+  VIT_NUM_HEADS: 12
+  VIT_NUM_LAYERS: 12
+  VIT_PRETRAINED_WEIGHTS: 
+  VIT_TOKEN_SIZE: 16
+  YX_DOWN: [2, 2, 2, 2]
+  Z_DOWN: [1, 1, 1, 1]
+PATHS:
+  BMZ_EXPORT_PATH: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/BMZ_files
+  CHARTS: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/charts
+  CHECKPOINT: metrics/biapy/biapy-debug-partition/checkpoints
+  CHECKPOINT_FILE: 
+  DA_SAMPLES: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/aug
+  FIL_SAMPLES_DIR: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/filtering_information
+  GEN_CHECKS: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/gen_check
+  GEN_MASK_CHECKS: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/gen_mask_check
+  MAE_OUT_DIR: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/MAE_checks
+  PROB_MAP_DIR: metrics/biapy/biapy-debug-partition/prob_map
+  PROB_MAP_FILENAME: prob_map.npy
+  PROFILER: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/profiler
+  RESULT_DIR:
+    AS_3D_STACK: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/as_3d_stack
+    AS_3D_STACK_BIN: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/as_3d_stack_binarized
+    AS_3D_STACK_POST_PROCESSING: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/as_3d_stack_post_processing
+    DET_ASSOC_POINTS: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/point_associations
+    DET_LOCAL_MAX_COORDS_CHECK: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_local_max_check
+    DET_LOCAL_MAX_COORDS_CHECK_POST_PROCESSING: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_local_max_check_post_processing
+    FULL_IMAGE: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/full_image
+    FULL_IMAGE_BIN: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/full_image_binarized
+    FULL_IMAGE_INSTANCES: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/full_image_instances
+    FULL_IMAGE_POST_PROCESSING: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/full_image_post_processing
+    INST_ASSOC_POINTS: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/instance_associations
+    PATH: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0
+    PER_IMAGE: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+    PER_IMAGE_BIN: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_binarized
+    PER_IMAGE_INSTANCES: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+    PER_IMAGE_POST_PROCESSING: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+  TEST_FULL_GT_H5: fisbe/biapy-debug/test/label/h5
+  TEST_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/test_FCDbDn_instance_channels
+  TRAIN_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/train_FCDbDn_instance_channels
+  VAL_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/val_FCDbDn_instance_channels
+  WATERSHED_DIR: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/watershed
+PROBLEM:
+  DENOISING:
+    LOAD_GT_DATA: False
+    N2V_MANIPULATOR: uniform_withCP
+    N2V_NEIGHBORHOOD_RADIUS: 5
+    N2V_PERC_PIX: 0.198
+    N2V_STRUCTMASK: False
+  DETECTION:
+    CENTRAL_POINT_DILATION: [2]
+    CHECK_POINTS_CREATED: True
+    CLASS_REBALANCE_WITHIN_CHANNELS: True
+    DATA_CHANNEL_WEIGHTS: (1, 1)
+    DATA_CHECK_MW: False
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+  IMAGE_TO_IMAGE:
+    CHANNELS_PER_HEAD_INFO: []
+    MULTIPLE_RAW_ONE_TARGET_LOADER: False
+    OUTPUT_CHANNELS: 1
+    OUTPUT_CHANNEL_ACT: []
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+  INSTANCE_SEG:
+    BORDER_EXTRA_WEIGHTS: 
+    CELLPOSE:
+      DIAMETER: 0.0
+      DIAM_MEAN: 30.0
+      FG_THRESH: 0.5
+      FLOW_THRESHOLD: 0.4
+      N_STEPS: 200
+      SCALE_RANGE: 0.5
+      TEST_DOUBLE_INFERENCE: True
+    CHANNELS_PER_HEAD_INFO: []
+    CLASS_REBALANCE_WITHIN_CHANNELS: True
+    DATA_CHANNELS: ['F', 'C', 'Db', 'Dn']
+    DATA_CHANNELS_EXTRA_OPTS: [{'F': {'erosion': 0, 'dilation': 0}, 'C': {'mode': 'thick'}, 'Db': {'val_type': 'norm', 'act': 'sigmoid', 'mask_values': True}, 'Dn': {'closing_size': 3, 'norm': True, 'mask_values': True, 'decline_power': 3}}]
+    DATA_CHANNELS_LOSSES: ['bce', 'bce', 'l1', 'l1']
+    DATA_CHANNEL_WEIGHTS: (1, 1, 1, 1)
+    EMBEDSEG:
+      FG_THRESH: 0.5
+      GRID_SIZE: -1
+      MIN_MASK_SUM: 0
+      MIN_UNCLUSTERED_SUM: 0
+      SEED_THRESH: 0.9
+    INSTANCE_CREATION_PROCESS: watershed
+    OMNIPOSE:
+      FLOW_THRESHOLD: 0.4
+      MASK_THRESHOLD: 0.0
+      NITER: 0
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+    STARDIST:
+      GRID: []
+      NMS_IOU_THRESH: 0.3
+      PROB_THRESH: 0.4
+    SYNAPSES:
+      BLOB_LOG_MAX_SIGMA: 10
+      BLOB_LOG_MIN_SIGMA: 5
+      BLOB_LOG_NUM_SIGMA: 2
+      EXCLUDE_BORDER: False
+      MIN_TH_TO_BE_PEAK: 0.2
+      PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+      POINT_CREATION_FUNCTION: peak_local_max
+      REMOVE_CLOSE_POINTS_RADIUS_BY_MASK: False
+      REMOVE_CLOSE_POST_POINTS_RADIUS: 0
+      REMOVE_CLOSE_PRE_POINTS_RADIUS: 0
+      TH_TYPE: auto
+    TYPE: regular
+    WATERSHED:
+      BY_2D_SLICES: False
+      DATA_CHECK_MW: True
+      DATA_REMOVE_BEFORE_MW: True
+      DATA_REMOVE_SMALL_OBJ_BEFORE: 500
+      ERODE_AND_DILATE_GROWTH_MASK: True
+      FORE_DILATION_RADIUS: 1
+      FORE_EROSION_RADIUS: 1
+      GROWTH_MASK_CHANNELS: ['F']
+      GROWTH_MASK_CHANNELS_THRESH: ['auto']
+      SEED_CHANNELS: ['F', 'Db']
+      SEED_CHANNELS_THRESH: ['auto', 'auto']
+      SEED_MORPH_RADIUS: [1, 1]
+      SEED_MORPH_SEQUENCE: ['erode', 'dilate']
+      TOPOGRAPHIC_SURFACE_CHANNEL: Db
+  NDIM: 3D
+  PRINT_OLD_KEY_CHANGES: True
+  SELF_SUPERVISED:
+    NOISE: 0.2
+    PRETEXT_TASK: crappify
+    RESIZING_FACTOR: 4
+  SEMANTIC_SEG:
+    IGNORE_CLASS_ID: 0
+  SUPER_RESOLUTION:
+    UPSCALING: (1, 1, 1)
+  TYPE: INSTANCE_SEG
+SYSTEM:
+  DEVICE: cpu
+  NUM_CPUS: 6
+  NUM_GPUS: 1
+  NUM_WORKERS: -1
+  PIN_MEM: True
+  SEED: 0
+TEST:
+  ANALIZE_2D_IMGS_AS_3D_STACK: False
+  AUGMENTATION: False
+  AUGMENTATION_GROUP: auto
+  AUGMENTATION_MODE: mean
+  BY_CHUNKS:
+    ENABLE: False
+    FLUSH_EACH: 100
+    PHASES: ['prediction', 'instance_creation', 'instance_merging']
+    SAVE_OUT_TIF: False
+    WORKFLOW_PROCESS:
+      ENABLE: True
+      INSTANCE_SEG_HALO: -1
+      INSTANCE_SEG_MERGE_IOU_TH: 0.3
+      TYPE: chunk_by_chunk
+    Z_END: -1
+    Z_START: -1
+  DET_BLOB_LOG_MAX_SIGMA: 10
+  DET_BLOB_LOG_MIN_SIGMA: 5
+  DET_BLOB_LOG_NUM_SIGMA: 2
+  DET_EXCLUDE_BORDER: False
+  DET_IGNORE_POINTS_OUTSIDE_BOX: []
+  DET_MIN_TH_TO_BE_PEAK: 0.2
+  DET_PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+  DET_POINT_CREATION_FUNCTION: peak_local_max
+  DET_TH_TYPE: manual
+  DET_TOLERANCE: 10
+  ENABLE: True
+  FULL_IMG: False
+  MATCHING_STATS: True
+  MATCHING_STATS_BY_IMAGE: True
+  MATCHING_STATS_THS: [0.3, 0.5, 0.75]
+  MATCHING_STATS_THS_COLORED_IMG: []
+  METRICS: ['iou']
+  METRICS_IN_CPU: False
+  POST_PROCESSING:
+    APPLY_MASK: False
+    DET_WATERSHED: False
+    DET_WATERSHED_DONUTS_CLASSES: [-1]
+    DET_WATERSHED_DONUTS_NUCLEUS_DIAMETER: 30
+    DET_WATERSHED_DONUTS_PATCH: [13, 120, 120]
+    DET_WATERSHED_FIRST_DILATION: [-1, -1]
+    INSTANCE_REFINEMENT:
+      ENABLE: True
+      OPERATIONS: ['remove_small_objects']
+      VALUES: [500]
+    MEASURE_PROPERTIES:
+      ENABLE: False
+      EXTRA_PROPS: []
+      REMOVE_BY_PROPERTIES:
+        ENABLE: False
+        PROPS: []
+        SIGNS: []
+        VALUES: []
+    MEDIAN_FILTER: False
+    MEDIAN_FILTER_AXIS: []
+    MEDIAN_FILTER_SIZE: []
+    REMOVE_CLOSE_POINTS: False
+    REMOVE_CLOSE_POINTS_RADIUS: 0
+    REPARE_LARGE_BLOBS_SIZE: -1
+    VORONOI_ON_MASK: False
+    VORONOI_TH: 0.0
+  REDUCE_MEMORY: False
+  REUSE_PREDICTIONS: False
+  SAVE_MODEL_RAW_OUTPUT: True
+  VERBOSE: True
+TRAIN:
+  BATCH_SIZE: 105
+  CHECKPOINT_MONITOR: val_loss
+  ENABLE: False
+  EPOCHS: 30
+  GRADIENT_CLIP_NORM: 0.0
+  LR: [0.003]
+  LR_SCHEDULER:
+    MIN_LR: [-1.0]
+    NAME: onecycle
+    REDUCEONPLATEAU_FACTOR: 0.5
+    REDUCEONPLATEAU_PATIENCE: -1
+    WARMUP_COSINE_DECAY_EPOCHS: -1
+  METRICS: ['iou']
+  OPTIMIZER: ['ADAMW']
+  OPT_BETAS: [[0.9, 0.999]]
+  PATIENCE: 10
+  VERBOSE: False
+  W_DECAY: 0.02
+[22:23:32.743793] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+[22:23:32.743835] Initializing Instance_Segmentation_Workflow
+[22:23:32.743842] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+
+[22:23:32.743968] Extracting model from checkpoint file metrics/biapy/biapy-debug-partition/checkpoints/biapy-debug-partition_0-checkpoint-best.pth
+[22:23:33.100238] Checkpoint file loaded. Extracting the following items (if available): weights, norm, model_arch . Checking consistency with current configuration . . .
+[22:23:33.101618] The following changes were made in order to adapt the loaded input configuration from checkpoint into the current configuration version:
+[22:23:33.101662] 'MODEL.BMZ.EXPORT.DATASET_INFO' changed from '[{}]' to '[{'name': 'name_not_specified', 'doi': 'doi_not_specified', 'image_modality': 'image_modality_not_specified', 'dataset_id': 'dataset_id_not_specified'}]'
+[22:23:33.101678] Normalization instructions will be loaded from checkpoint.
+[22:23:33.102117] Model architecture will be loaded from checkpoint.
+[22:23:33.173418] Creating normalization module . . .
+[22:23:33.173466] Normalization module created with the following configuration:
+[22:23:33.173474]   type: zero_mean_unit_variance
+[22:23:33.173480]   target_type: mask
+[22:23:33.173486]   out_dtype: float32
+[22:23:33.173492]   norm_target: False
+[22:23:33.173497]   percentile_clip: False
+[22:23:33.173505]   per_lower_bound: -1.0
+[22:23:33.173511]   per_upper_bound: -1.0
+[22:23:33.173524]   lower_bound_val: [-1.0]
+[22:23:33.173529]   upper_bound_val: [-1.0]
+[22:23:33.173534]   mean: [-1.0]
+[22:23:33.173540]   std: [-1.0]
+[22:23:33.173601] ###########################
+[22:23:33.173608] #  PREPARE INSTANCE DATA  #
+[22:23:33.173613] ###########################
+[22:23:33.179961] DATA.TEST.GT_PATH changed from fisbe/biapy-debug/test/label to fisbe/biapy-debug/test/label_F.erosion-0.dilation-0_C.mode-thick_Db.val_type-norm.act-sigmoid.mask_values-True_Dn.closing_size-3.norm-True.mask_values-True.decline_power-3
+[22:23:33.187136] ######################
+[22:23:33.187158] #   LOAD TEST DATA   #
+[22:23:33.187164] ######################
+[22:23:33.187179] ### LOAD ###
+[22:23:33.197743] ###############
+[22:23:33.197767] # Build model #
+[22:23:33.197774] ###############
+[22:23:33.215120] Selected output channels:
+[22:23:33.215147]   - 0 channel for F+C+Db+Dn output
+[22:23:37.200367] ============================================================================================================================================
+Layer (type:depth-idx)                                            Input Shape               Output Shape              Param #
+============================================================================================================================================
+U_Net                                                             [1, 3, 20, 128, 128]      [1, 4, 20, 128, 128]      --
+├─ModuleList: 1-7                                                 --                        --                        (recursive)
+│    └─ConvBlock: 2-1                                             [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    └─Sequential: 3-1                                       [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    │    └─ConvBlock: 4-1                                   [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    │    │    └─Sequential: 5-1                             [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─Conv3d: 6-1                            [1, 3, 20, 128, 128]      [1, 16, 20, 128, 128]     1,312
+│    │    │    │    │    └─InstanceNorm3d: 6-2                    [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    └─ELU: 6-3                               [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    └─ConvBlock: 4-2                                   [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    └─Sequential: 5-2                             [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─Conv3d: 6-4                            [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     6,928
+│    │    │    │    │    └─InstanceNorm3d: 6-5                    [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    └─ELU: 6-6                               [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+├─ModuleList: 1-8                                                 --                        --                        --
+│    └─MaxPool3d: 2-2                                             [1, 16, 20, 128, 128]     [1, 16, 20, 64, 64]       --
+├─ModuleList: 1-7                                                 --                        --                        (recursive)
+│    └─ConvBlock: 2-3                                             [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    └─Sequential: 3-2                                       [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    └─ConvBlock: 4-3                                   [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─Sequential: 5-3                             [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─Conv3d: 6-7                            [1, 16, 20, 64, 64]       [1, 32, 20, 64, 64]       13,856
+│    │    │    │    │    └─InstanceNorm3d: 6-8                    [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    └─ELU: 6-9                               [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    └─ConvBlock: 4-4                                   [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─Sequential: 5-4                             [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─Conv3d: 6-10                           [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       27,680
+│    │    │    │    │    └─InstanceNorm3d: 6-11                   [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    └─ELU: 6-12                              [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+├─ModuleList: 1-8                                                 --                        --                        --
+│    └─MaxPool3d: 2-4                                             [1, 32, 20, 64, 64]       [1, 32, 20, 32, 32]       --
+├─ModuleList: 1-7                                                 --                        --                        (recursive)
+│    └─ConvBlock: 2-5                                             [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    └─Sequential: 3-3                                       [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    └─ConvBlock: 4-5                                   [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    └─Sequential: 5-5                             [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─Conv3d: 6-13                           [1, 32, 20, 32, 32]       [1, 64, 20, 32, 32]       55,360
+│    │    │    │    │    └─InstanceNorm3d: 6-14                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    └─ELU: 6-15                              [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    └─ConvBlock: 4-6                                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    └─Sequential: 5-6                             [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─Conv3d: 6-16                           [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       110,656
+│    │    │    │    │    └─InstanceNorm3d: 6-17                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    └─ELU: 6-18                              [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+├─ModuleList: 1-8                                                 --                        --                        --
+│    └─MaxPool3d: 2-6                                             [1, 64, 20, 32, 32]       [1, 64, 20, 16, 16]       --
+├─ModuleList: 1-7                                                 --                        --                        (recursive)
+│    └─ConvBlock: 2-7                                             [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    └─Sequential: 3-4                                       [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    │    └─ConvBlock: 4-7                                   [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    │    │    └─Sequential: 5-7                             [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─Conv3d: 6-19                           [1, 64, 20, 16, 16]       [1, 128, 20, 16, 16]      221,312
+│    │    │    │    │    └─InstanceNorm3d: 6-20                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    └─ELU: 6-21                              [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    └─ConvBlock: 4-8                                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    └─Sequential: 5-8                             [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─Conv3d: 6-22                           [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      442,496
+│    │    │    │    │    └─InstanceNorm3d: 6-23                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    └─ELU: 6-24                              [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+├─ModuleList: 1-8                                                 --                        --                        --
+│    └─MaxPool3d: 2-8                                             [1, 128, 20, 16, 16]      [1, 128, 20, 8, 8]        --
+├─ConvBlock: 1-9                                                  [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    └─Sequential: 2-9                                            [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    └─ConvBlock: 3-5                                        [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    └─Sequential: 4-9                                  [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    │    └─Conv3d: 5-9                                 [1, 128, 20, 8, 8]        [1, 256, 20, 8, 8]        884,992
+│    │    │    │    └─InstanceNorm3d: 5-10                        [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        512
+│    │    │    │    └─ELU: 5-11                                   [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    └─ConvBlock: 3-6                                        [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    └─Sequential: 4-10                                 [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+│    │    │    │    └─Conv3d: 5-12                                [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        1,769,728
+│    │    │    │    └─InstanceNorm3d: 5-13                        [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        512
+│    │    │    │    └─ELU: 5-14                                   [1, 256, 20, 8, 8]        [1, 256, 20, 8, 8]        --
+├─ModuleList: 1-10                                                --                        --                        --
+│    └─ModuleList: 2-10                                           --                        --                        --
+│    │    └─UpBlock: 3-7                                          [1, 256, 20, 8, 8]        [1, 128, 20, 16, 16]      --
+│    │    │    └─Sequential: 4-11                                 [1, 256, 20, 8, 8]        [1, 128, 20, 16, 16]      --
+│    │    │    │    └─ConvTranspose3d: 5-15                       [1, 256, 20, 8, 8]        [1, 128, 20, 16, 16]      131,200
+│    │    │    │    └─InstanceNorm3d: 5-16                        [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    └─ELU: 5-17                                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    └─ConvBlock: 4-12                                  [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    └─Sequential: 5-18                            [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─ConvBlock: 6-25                        [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    │    └─Sequential: 7-1                   [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    │    │    └─Conv3d: 8-1                  [1, 256, 20, 16, 16]      [1, 128, 20, 16, 16]      884,864
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-2          [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    │    │    └─ELU: 8-3                     [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    └─ConvBlock: 6-26                        [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    │    └─Sequential: 7-2                   [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    │    │    │    │    │    └─Conv3d: 8-4                  [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      442,496
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-5          [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      256
+│    │    │    │    │    │    │    └─ELU: 8-6                     [1, 128, 20, 16, 16]      [1, 128, 20, 16, 16]      --
+│    │    └─UpBlock: 3-8                                          [1, 128, 20, 16, 16]      [1, 64, 20, 32, 32]       --
+│    │    │    └─Sequential: 4-13                                 [1, 128, 20, 16, 16]      [1, 64, 20, 32, 32]       --
+│    │    │    │    └─ConvTranspose3d: 5-19                       [1, 128, 20, 16, 16]      [1, 64, 20, 32, 32]       32,832
+│    │    │    │    └─InstanceNorm3d: 5-20                        [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    └─ELU: 5-21                                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    └─ConvBlock: 4-14                                  [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    └─Sequential: 5-22                            [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─ConvBlock: 6-27                        [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    │    │    └─Sequential: 7-3                   [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       --
+│    │    │    │    │    │    │    └─Conv3d: 8-7                  [1, 128, 20, 32, 32]      [1, 64, 20, 32, 32]       221,248
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-8          [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    │    │    └─ELU: 8-9                     [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    └─ConvBlock: 6-28                        [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    │    └─Sequential: 7-4                   [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    │    │    │    │    │    └─Conv3d: 8-10                 [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       110,656
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-11         [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       128
+│    │    │    │    │    │    │    └─ELU: 8-12                    [1, 64, 20, 32, 32]       [1, 64, 20, 32, 32]       --
+│    │    └─UpBlock: 3-9                                          [1, 64, 20, 32, 32]       [1, 32, 20, 64, 64]       --
+│    │    │    └─Sequential: 4-15                                 [1, 64, 20, 32, 32]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─ConvTranspose3d: 5-23                       [1, 64, 20, 32, 32]       [1, 32, 20, 64, 64]       8,224
+│    │    │    │    └─InstanceNorm3d: 5-24                        [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    └─ELU: 5-25                                   [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    └─ConvBlock: 4-16                                  [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    └─Sequential: 5-26                            [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─ConvBlock: 6-29                        [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    │    └─Sequential: 7-5                   [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    │    │    └─Conv3d: 8-13                 [1, 64, 20, 64, 64]       [1, 32, 20, 64, 64]       55,328
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-14         [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    │    │    └─ELU: 8-15                    [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    └─ConvBlock: 6-30                        [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    │    └─Sequential: 7-6                   [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    │    │    │    │    │    └─Conv3d: 8-16                 [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       27,680
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-17         [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       64
+│    │    │    │    │    │    │    └─ELU: 8-18                    [1, 32, 20, 64, 64]       [1, 32, 20, 64, 64]       --
+│    │    └─UpBlock: 3-10                                         [1, 32, 20, 64, 64]       [1, 16, 20, 128, 128]     --
+│    │    │    └─Sequential: 4-17                                 [1, 32, 20, 64, 64]       [1, 16, 20, 128, 128]     --
+│    │    │    │    └─ConvTranspose3d: 5-27                       [1, 32, 20, 64, 64]       [1, 16, 20, 128, 128]     2,064
+│    │    │    │    └─InstanceNorm3d: 5-28                        [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    └─ELU: 5-29                                   [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    └─ConvBlock: 4-18                                  [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    └─Sequential: 5-30                            [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─ConvBlock: 6-31                        [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    │    └─Sequential: 7-7                   [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    │    │    └─Conv3d: 8-19                 [1, 32, 20, 128, 128]     [1, 16, 20, 128, 128]     13,840
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-20         [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    │    │    └─ELU: 8-21                    [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    └─ConvBlock: 6-32                        [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    │    └─Sequential: 7-8                   [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+│    │    │    │    │    │    │    └─Conv3d: 8-22                 [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     6,928
+│    │    │    │    │    │    │    └─InstanceNorm3d: 8-23         [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     32
+│    │    │    │    │    │    │    └─ELU: 8-24                    [1, 16, 20, 128, 128]     [1, 16, 20, 128, 128]     --
+├─Sequential: 1-11                                                --                        --                        --
+│    └─Conv3d: 2-11                                               [1, 16, 20, 128, 128]     [1, 4, 20, 128, 128]      68
+============================================================================================================================================
+Total params: 5,475,172
+Trainable params: 5,475,172
+Non-trainable params: 0
+Total mult-adds (Units.GIGABYTES): 46.21
+============================================================================================================================================
+Input size (MB): 3.93
+Forward/backward pass size (MB): 807.40
+Params size (MB): 21.90
+Estimated Total Size (MB): 833.24
+============================================================================================================================================
+[22:23:37.261057] Loading checkpoint from file metrics/biapy/biapy-debug-partition/checkpoints/biapy-debug-partition_0-checkpoint-best.pth
+[22:23:37.316293] Model weights loaded!
+[22:23:37.316669] ############################
+[22:23:37.316680] #  PREPARE TEST GENERATOR  #
+[22:23:37.316687] ############################
+[22:23:50.024296] Normalization used in when creating BMZ data: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'float32', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 10.152853012084961, 'std': 9.553492546081543}, '1': {'mean': 24.240285873413086, 'std': 35.34103012084961}, '2': {'mean': 42.89874267578125, 'std': 23.929323196411133}}}
+[22:23:50.078385] ###############
+[22:23:50.078423] #  INFERENCE  #
+[22:23:50.078430] ###############
+[22:23:50.078437] Making predictions on test data . . .
+[22:24:06.027739] Processing image: JRC_SS04989-20160318_24_A2_c120_r0_k0.tif (GT: JRC_SS04989-20160318_24_A2_c120_r0_k0.tif)
+[22:24:06.028492] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 6.485485076904297, 'std': 12.219082832336426}, '1': {'mean': 13.4505615234375, 'std': 28.10138702392578}, '2': {'mean': 25.407682418823242, 'std': 35.57335662841797}}}
+[22:24:06.028602] ### 3D-OV-CROP ###
+[22:24:06.028616] Cropping (390, 680, 680, 3) images into (20, 128, 128, 3) with overlapping . . .
+[22:24:06.028623] Minimum overlap selected: (0, 0, 0)
+[22:24:06.028630] Padding: (4, 16, 16)
+[22:24:11.383017] Real overlapping (%): (0.0, 0.125, 0.125)
+[22:24:11.383076] Real overlapping (pixels): (0.0, 12.0, 12.0)
+[22:24:11.383084] (33, 8, 8) patches per (z,y,x) axis
+[22:24:27.978346] **** New data shape is: (2112, 20, 128, 128, 3)
+[22:24:27.978424] ### END 3D-OV-CROP ###
+[22:25:06.738718] ### MERGE-3D-OV-CROP ###
+[22:25:06.738765] Merging (2112, 20, 128, 128, 4) images into (390, 680, 680, 4) with smooth blending . . .
+[22:25:06.738774] Minimum overlap selected: (0, 0, 0)
+[22:25:06.738783] Padding: (4, 16, 16)
+[22:25:20.937938] **** New data shape is: (390, 680, 680, 4)
+[22:25:20.938004] ### END MERGE-3D-OV-CROP ###
+[22:25:26.965116] ### MERGE-3D-OV-CROP ###
+[22:25:26.965179] Merging (2112, 20, 128, 128, 3) images into (390, 680, 680, 3) with smooth blending . . .
+[22:25:26.965188] Minimum overlap selected: (0, 0, 0)
+[22:25:26.965197] Padding: (4, 16, 16)
+[22:25:34.847548] **** New data shape is: (390, 680, 680, 3)
+[22:25:34.847611] ### END MERGE-3D-OV-CROP ###
+[22:25:34.896403] Cropping prediction to original shape (390, 680, 680, 3)
+[22:25:34.896476] Saving (1, 390, 680, 680, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[22:26:07.179311] Applying ['erode', 'dilate'] to seeds . . .
+[22:26:07.179393] Growth mask erosion . . .
+[22:26:15.646499] Thresholds used: {'seed': [0.357421875, 0.38857895135879517], 'growth_mask': [0.1787109375]}
+[22:26:34.108192] Saving (1, 390, 680, 680, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[22:26:35.465925] Calculating matching stats . . .
+[22:26:35.470258] Its respective image seems to be: fisbe/biapy-debug/test/label/JRC_SS04989-20160318_24_A2_c120_r0_k0.tif
+[22:27:33.635113] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(688), 'tp': np.int64(1), 'fn': np.int64(2), 'precision': np.float64(0.001451378809869376), 'recall': np.float64(0.3333333333333333), 'accuracy': np.float64(0.001447178002894356), 'f1': np.float64(0.002890173410404624), 'n_true': 3, 'n_pred': 689, 'mean_true_score': np.float32(0.11127156), 'mean_matched_score': np.float64(0.33381468057632446), 'panoptic_quality': np.float64(0.0009647823138044059)}
+[22:27:33.658976] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 689, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 689, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:27:33.677223] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 689, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 689, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:27:33.677304] Removing small objects . . .
+[22:27:36.433101] Saving (1, 390, 680, 680, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[22:27:37.911665] Calculating matching stats after post-processing . . .
+[22:28:35.077275] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(688), 'tp': np.int64(1), 'fn': np.int64(2), 'precision': np.float64(0.001451378809869376), 'recall': np.float64(0.3333333333333333), 'accuracy': np.float64(0.001447178002894356), 'f1': np.float64(0.002890173410404624), 'n_true': 3, 'n_pred': 689, 'mean_true_score': np.float32(0.11127156), 'mean_matched_score': np.float64(0.33381468057632446), 'panoptic_quality': np.float64(0.0009647823138044059)}
+[22:28:35.102534] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 689, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 689, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:28:35.121004] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 689, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 689, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:28:51.665347] Processing image: JRC_SS04989-20160318_24_A2_c120_r0_k1.tif (GT: JRC_SS04989-20160318_24_A2_c120_r0_k1.tif)
+[22:28:51.665487] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 6.485485076904297, 'std': 12.219082832336426}, '1': {'mean': 13.4505615234375, 'std': 28.10138702392578}, '2': {'mean': 25.407682418823242, 'std': 35.57335662841797}}}
+[22:28:51.665628] ### 3D-OV-CROP ###
+[22:28:51.665643] Cropping (680, 390, 680, 3) images into (20, 128, 128, 3) with overlapping . . .
+[22:28:51.665653] Minimum overlap selected: (0, 0, 0)
+[22:28:51.665661] Padding: (4, 16, 16)
+[22:28:57.059357] Real overlapping (%): (0.0, 0.22916666666666666, 0.125)
+[22:28:57.059421] Real overlapping (pixels): (0.0, 22.0, 12.0)
+[22:28:57.059430] (57, 5, 8) patches per (z,y,x) axis
+[22:29:14.810067] **** New data shape is: (2280, 20, 128, 128, 3)
+[22:29:14.810174] ### END 3D-OV-CROP ###
+[22:29:50.358900] ### MERGE-3D-OV-CROP ###
+[22:29:50.358963] Merging (2280, 20, 128, 128, 4) images into (680, 390, 680, 4) with smooth blending . . .
+[22:29:50.358973] Minimum overlap selected: (0, 0, 0)
+[22:29:50.358982] Padding: (4, 16, 16)
+[22:30:05.488474] **** New data shape is: (680, 390, 680, 4)
+[22:30:05.488540] ### END MERGE-3D-OV-CROP ###
+[22:30:12.052472] ### MERGE-3D-OV-CROP ###
+[22:30:12.052607] Merging (2280, 20, 128, 128, 3) images into (680, 390, 680, 3) with smooth blending . . .
+[22:30:12.052618] Minimum overlap selected: (0, 0, 0)
+[22:30:12.052627] Padding: (4, 16, 16)
+[22:30:20.800669] **** New data shape is: (680, 390, 680, 3)
+[22:30:20.800726] ### END MERGE-3D-OV-CROP ###
+[22:30:20.845880] Cropping prediction to original shape (680, 390, 680, 3)
+[22:30:20.845966] Saving (1, 680, 390, 680, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[22:30:52.595293] Applying ['erode', 'dilate'] to seeds . . .
+[22:30:52.595393] Growth mask erosion . . .
+[22:31:00.720129] Thresholds used: {'seed': [0.35427409410476685, 0.3802012503147125], 'growth_mask': [0.17713704705238342]}
+[22:31:18.068775] Saving (1, 680, 390, 680, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[22:31:19.123443] Calculating matching stats . . .
+[22:31:19.127375] Its respective image seems to be: fisbe/biapy-debug/test/label/JRC_SS04989-20160318_24_A2_c120_r0_k1.tif
+[22:32:16.602801] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(611), 'tp': np.int64(1), 'fn': np.int64(2), 'precision': np.float64(0.0016339869281045752), 'recall': np.float64(0.3333333333333333), 'accuracy': np.float64(0.0016286644951140066), 'f1': np.float64(0.0032520325203252032), 'n_true': 3, 'n_pred': 612, 'mean_true_score': np.float32(0.10538707), 'mean_matched_score': np.float64(0.31616121530532837), 'panoptic_quality': np.float64(0.0010281665538384663)}
+[22:32:16.619571] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 612, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 612, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:32:16.634962] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 612, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 612, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:32:16.635052] Removing small objects . . .
+[22:32:19.040344] Saving (1, 680, 390, 680, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[22:32:20.242503] Calculating matching stats after post-processing . . .
+[22:33:16.796627] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(611), 'tp': np.int64(1), 'fn': np.int64(2), 'precision': np.float64(0.0016339869281045752), 'recall': np.float64(0.3333333333333333), 'accuracy': np.float64(0.0016286644951140066), 'f1': np.float64(0.0032520325203252032), 'n_true': 3, 'n_pred': 612, 'mean_true_score': np.float32(0.10538707), 'mean_matched_score': np.float64(0.31616121530532837), 'panoptic_quality': np.float64(0.0010281665538384663)}
+[22:33:16.815988] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 612, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 612, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:33:16.833967] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 612, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 612, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:33:33.889267] Processing image: JRC_SS04989-20160318_24_A2_c120_r1_k0.tif (GT: JRC_SS04989-20160318_24_A2_c120_r1_k0.tif)
+[22:33:33.889399] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 6.485485076904297, 'std': 12.219082832336426}, '1': {'mean': 13.4505615234375, 'std': 28.10138702392578}, '2': {'mean': 25.407682418823242, 'std': 35.57335662841797}}}
+[22:33:33.889529] ### 3D-OV-CROP ###
+[22:33:33.889544] Cropping (390, 680, 680, 3) images into (20, 128, 128, 3) with overlapping . . .
+[22:33:33.889552] Minimum overlap selected: (0, 0, 0)
+[22:33:33.889561] Padding: (4, 16, 16)
+[22:33:38.297383] Real overlapping (%): (0.0, 0.125, 0.125)
+[22:33:38.297478] Real overlapping (pixels): (0.0, 12.0, 12.0)
+[22:33:38.297488] (33, 8, 8) patches per (z,y,x) axis
+[22:33:55.113151] **** New data shape is: (2112, 20, 128, 128, 3)
+[22:33:55.113207] ### END 3D-OV-CROP ###
+[22:34:24.828096] ### MERGE-3D-OV-CROP ###
+[22:34:24.828153] Merging (2112, 20, 128, 128, 4) images into (390, 680, 680, 4) with smooth blending . . .
+[22:34:24.828163] Minimum overlap selected: (0, 0, 0)
+[22:34:24.828171] Padding: (4, 16, 16)
+[22:34:38.921631] **** New data shape is: (390, 680, 680, 4)
+[22:34:38.921691] ### END MERGE-3D-OV-CROP ###
+[22:34:45.502852] ### MERGE-3D-OV-CROP ###
+[22:34:45.502911] Merging (2112, 20, 128, 128, 3) images into (390, 680, 680, 3) with smooth blending . . .
+[22:34:45.502919] Minimum overlap selected: (0, 0, 0)
+[22:34:45.502925] Padding: (4, 16, 16)
+[22:34:53.907859] **** New data shape is: (390, 680, 680, 3)
+[22:34:53.907923] ### END MERGE-3D-OV-CROP ###
+[22:34:53.957551] Cropping prediction to original shape (390, 680, 680, 3)
+[22:34:53.957622] Saving (1, 390, 680, 680, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[22:35:25.333752] Applying ['erode', 'dilate'] to seeds . . .
+[22:35:25.333854] Growth mask erosion . . .
+[22:35:33.563050] Thresholds used: {'seed': [0.357421875, 0.38857895135879517], 'growth_mask': [0.1787109375]}
+[22:35:49.975610] Saving (1, 390, 680, 680, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[22:35:50.781977] Calculating matching stats . . .
+[22:35:50.784837] Its respective image seems to be: fisbe/biapy-debug/test/label/JRC_SS04989-20160318_24_A2_c120_r1_k0.tif
+[22:36:48.001058] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(688), 'tp': np.int64(1), 'fn': np.int64(2), 'precision': np.float64(0.001451378809869376), 'recall': np.float64(0.3333333333333333), 'accuracy': np.float64(0.001447178002894356), 'f1': np.float64(0.002890173410404624), 'n_true': 3, 'n_pred': 689, 'mean_true_score': np.float32(0.11127156), 'mean_matched_score': np.float64(0.33381468057632446), 'panoptic_quality': np.float64(0.0009647823138044059)}
+[22:36:48.019181] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 689, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 689, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:36:48.034888] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 689, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 689, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:36:48.034983] Removing small objects . . .
+[22:36:50.060736] Saving (1, 390, 680, 680, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[22:36:51.293359] Calculating matching stats after post-processing . . .
+[22:37:52.158591] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(688), 'tp': np.int64(1), 'fn': np.int64(2), 'precision': np.float64(0.001451378809869376), 'recall': np.float64(0.3333333333333333), 'accuracy': np.float64(0.001447178002894356), 'f1': np.float64(0.002890173410404624), 'n_true': 3, 'n_pred': 689, 'mean_true_score': np.float32(0.11127156), 'mean_matched_score': np.float64(0.33381468057632446), 'panoptic_quality': np.float64(0.0009647823138044059)}
+[22:37:52.174069] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 689, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 689, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:37:52.188004] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 689, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 689, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:38:08.663505] Processing image: JRC_SS04989-20160318_24_A2_c120_r1_k1.tif (GT: JRC_SS04989-20160318_24_A2_c120_r1_k1.tif)
+[22:38:08.663652] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 6.485485076904297, 'std': 12.219082832336426}, '1': {'mean': 13.450560569763184, 'std': 28.10138702392578}, '2': {'mean': 25.407682418823242, 'std': 35.57335662841797}}}
+[22:38:08.663788] ### 3D-OV-CROP ###
+[22:38:08.663803] Cropping (680, 680, 390, 3) images into (20, 128, 128, 3) with overlapping . . .
+[22:38:08.663811] Minimum overlap selected: (0, 0, 0)
+[22:38:08.663818] Padding: (4, 16, 16)
+[22:38:14.396224] Real overlapping (%): (0.0, 0.125, 0.22916666666666666)
+[22:38:14.396286] Real overlapping (pixels): (0.0, 12.0, 22.0)
+[22:38:14.396296] (57, 8, 5) patches per (z,y,x) axis
+[22:38:32.039871] **** New data shape is: (2280, 20, 128, 128, 3)
+[22:38:32.039999] ### END 3D-OV-CROP ###
+[22:39:02.644030] ### MERGE-3D-OV-CROP ###
+[22:39:02.644099] Merging (2280, 20, 128, 128, 4) images into (680, 680, 390, 4) with smooth blending . . .
+[22:39:02.644110] Minimum overlap selected: (0, 0, 0)
+[22:39:02.644120] Padding: (4, 16, 16)
+[22:39:12.770096] **** New data shape is: (680, 680, 390, 4)
+[22:39:12.770156] ### END MERGE-3D-OV-CROP ###
+[22:39:19.082144] ### MERGE-3D-OV-CROP ###
+[22:39:19.082207] Merging (2280, 20, 128, 128, 3) images into (680, 680, 390, 3) with smooth blending . . .
+[22:39:19.082216] Minimum overlap selected: (0, 0, 0)
+[22:39:19.082226] Padding: (4, 16, 16)
+[22:39:25.049866] **** New data shape is: (680, 680, 390, 3)
+[22:39:25.049924] ### END MERGE-3D-OV-CROP ###
+[22:39:25.103615] Cropping prediction to original shape (680, 680, 390, 3)
+[22:39:25.103688] Saving (1, 680, 680, 390, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[22:39:58.014170] Applying ['erode', 'dilate'] to seeds . . .
+[22:39:58.014239] Growth mask erosion . . .
+[22:40:06.483936] Thresholds used: {'seed': [0.3581963777542114, 0.3813139796257019], 'growth_mask': [0.1790981888771057]}
+[22:40:25.680918] Saving (1, 680, 680, 390, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[22:40:27.139922] Calculating matching stats . . .
+[22:40:27.145335] Its respective image seems to be: fisbe/biapy-debug/test/label/JRC_SS04989-20160318_24_A2_c120_r1_k1.tif
+[22:41:25.141026] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(706), 'tp': np.int64(1), 'fn': np.int64(2), 'precision': np.float64(0.0014144271570014145), 'recall': np.float64(0.3333333333333333), 'accuracy': np.float64(0.0014104372355430183), 'f1': np.float64(0.0028169014084507044), 'n_true': 3, 'n_pred': 707, 'mean_true_score': np.float32(0.107841074), 'mean_matched_score': np.float64(0.32352322340011597), 'panoptic_quality': np.float64(0.0009113330236622985)}
+[22:41:25.168458] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 707, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 707, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:41:25.189199] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 707, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 707, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:41:25.189279] Removing small objects . . .
+[22:41:28.149938] Saving (1, 680, 680, 390, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[22:41:29.515179] Calculating matching stats after post-processing . . .
+[22:42:26.734528] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(706), 'tp': np.int64(1), 'fn': np.int64(2), 'precision': np.float64(0.0014144271570014145), 'recall': np.float64(0.3333333333333333), 'accuracy': np.float64(0.0014104372355430183), 'f1': np.float64(0.0028169014084507044), 'n_true': 3, 'n_pred': 707, 'mean_true_score': np.float32(0.107841074), 'mean_matched_score': np.float64(0.32352322340011597), 'panoptic_quality': np.float64(0.0009113330236622985)}
+[22:42:26.755600] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 707, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 707, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:42:26.770017] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 707, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 707, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:42:44.100606] Processing image: JRC_SS04989-20160318_24_A2_c201_r0_k1.tif (GT: JRC_SS04989-20160318_24_A2_c201_r0_k1.tif)
+[22:42:44.100732] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 13.4505615234375, 'std': 28.10138702392578}, '1': {'mean': 25.407682418823242, 'std': 35.57335662841797}, '2': {'mean': 6.485485076904297, 'std': 12.219082832336426}}}
+[22:42:44.100862] ### 3D-OV-CROP ###
+[22:42:44.100877] Cropping (680, 390, 680, 3) images into (20, 128, 128, 3) with overlapping . . .
+[22:42:44.100886] Minimum overlap selected: (0, 0, 0)
+[22:42:44.100902] Padding: (4, 16, 16)
+[22:42:49.030709] Real overlapping (%): (0.0, 0.22916666666666666, 0.125)
+[22:42:49.030803] Real overlapping (pixels): (0.0, 22.0, 12.0)
+[22:42:49.030814] (57, 5, 8) patches per (z,y,x) axis
+[22:43:08.066128] **** New data shape is: (2280, 20, 128, 128, 3)
+[22:43:08.066195] ### END 3D-OV-CROP ###
+[22:43:38.863343] ### MERGE-3D-OV-CROP ###
+[22:43:38.863408] Merging (2280, 20, 128, 128, 4) images into (680, 390, 680, 4) with smooth blending . . .
+[22:43:38.863418] Minimum overlap selected: (0, 0, 0)
+[22:43:38.863428] Padding: (4, 16, 16)
+[22:43:50.240534] **** New data shape is: (680, 390, 680, 4)
+[22:43:50.240622] ### END MERGE-3D-OV-CROP ###
+[22:43:56.674508] ### MERGE-3D-OV-CROP ###
+[22:43:56.674559] Merging (2280, 20, 128, 128, 3) images into (680, 390, 680, 3) with smooth blending . . .
+[22:43:56.674567] Minimum overlap selected: (0, 0, 0)
+[22:43:56.674575] Padding: (4, 16, 16)
+[22:44:03.391757] **** New data shape is: (680, 390, 680, 3)
+[22:44:03.391815] ### END MERGE-3D-OV-CROP ###
+[22:44:03.436599] Cropping prediction to original shape (680, 390, 680, 3)
+[22:44:03.436671] Saving (1, 680, 390, 680, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[22:44:39.543260] Applying ['erode', 'dilate'] to seeds . . .
+[22:44:39.543356] Growth mask erosion . . .
+[22:44:47.835768] Thresholds used: {'seed': [0.330078125, 0.3745785355567932], 'growth_mask': [0.1650390625]}
+[22:45:05.365140] Saving (1, 680, 390, 680, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[22:45:06.839763] Calculating matching stats . . .
+[22:45:06.844920] Its respective image seems to be: fisbe/biapy-debug/test/label/JRC_SS04989-20160318_24_A2_c201_r0_k1.tif
+[22:46:06.864864] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 137, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 137, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:46:06.883424] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 137, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 137, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:46:06.897974] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 137, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 137, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:46:06.898063] Removing small objects . . .
+[22:46:10.076036] Saving (1, 680, 390, 680, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[22:46:11.449627] Calculating matching stats after post-processing . . .
+[22:47:07.365732] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 137, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 137, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:47:07.381965] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 137, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 137, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:47:07.398431] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 137, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 137, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:47:25.383459] Processing image: JRC_SS04989-20160318_24_A2_c201_r0_k2.tif (GT: JRC_SS04989-20160318_24_A2_c201_r0_k2.tif)
+[22:47:25.383585] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 13.4505615234375, 'std': 28.10138702392578}, '1': {'mean': 25.407682418823242, 'std': 35.57335662841797}, '2': {'mean': 6.485485076904297, 'std': 12.219083786010742}}}
+[22:47:25.383708] ### 3D-OV-CROP ###
+[22:47:25.383722] Cropping (390, 680, 680, 3) images into (20, 128, 128, 3) with overlapping . . .
+[22:47:25.383732] Minimum overlap selected: (0, 0, 0)
+[22:47:25.383740] Padding: (4, 16, 16)
+[22:47:30.157869] Real overlapping (%): (0.0, 0.125, 0.125)
+[22:47:30.157996] Real overlapping (pixels): (0.0, 12.0, 12.0)
+[22:47:30.158008] (33, 8, 8) patches per (z,y,x) axis
+[22:47:47.227141] **** New data shape is: (2112, 20, 128, 128, 3)
+[22:47:47.227203] ### END 3D-OV-CROP ###
+[22:48:15.202425] ### MERGE-3D-OV-CROP ###
+[22:48:15.202480] Merging (2112, 20, 128, 128, 4) images into (390, 680, 680, 4) with smooth blending . . .
+[22:48:15.202490] Minimum overlap selected: (0, 0, 0)
+[22:48:15.202499] Padding: (4, 16, 16)
+[22:48:27.871568] **** New data shape is: (390, 680, 680, 4)
+[22:48:27.871631] ### END MERGE-3D-OV-CROP ###
+[22:48:34.354557] ### MERGE-3D-OV-CROP ###
+[22:48:34.354603] Merging (2112, 20, 128, 128, 3) images into (390, 680, 680, 3) with smooth blending . . .
+[22:48:34.354610] Minimum overlap selected: (0, 0, 0)
+[22:48:34.354618] Padding: (4, 16, 16)
+[22:48:42.663577] **** New data shape is: (390, 680, 680, 3)
+[22:48:42.663655] ### END MERGE-3D-OV-CROP ###
+[22:48:42.706134] Cropping prediction to original shape (390, 680, 680, 3)
+[22:48:42.706203] Saving (1, 390, 680, 680, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[22:49:12.827930] Applying ['erode', 'dilate'] to seeds . . .
+[22:49:12.828038] Growth mask erosion . . .
+[22:49:20.589887] Thresholds used: {'seed': [0.330078125, 0.3680688738822937], 'growth_mask': [0.1650390625]}
+[22:49:34.988590] Saving (1, 390, 680, 680, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[22:49:35.947556] Calculating matching stats . . .
+[22:49:35.950527] Its respective image seems to be: fisbe/biapy-debug/test/label/JRC_SS04989-20160318_24_A2_c201_r0_k2.tif
+[22:50:33.462461] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 140, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 140, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:50:33.479236] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 140, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 140, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:50:33.496945] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 140, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 140, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:50:33.497028] Removing small objects . . .
+[22:50:35.500263] Saving (1, 390, 680, 680, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[22:50:36.455727] Calculating matching stats after post-processing . . .
+[22:51:30.853564] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 140, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 140, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:51:30.871293] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 140, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 140, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:51:30.886946] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 140, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 140, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:51:48.528257] Processing image: JRC_SS04989-20160318_24_A2_c201_r1_k1.tif (GT: JRC_SS04989-20160318_24_A2_c201_r1_k1.tif)
+[22:51:48.528391] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 13.450560569763184, 'std': 28.10138702392578}, '1': {'mean': 25.407682418823242, 'std': 35.57335662841797}, '2': {'mean': 6.485485076904297, 'std': 12.219082832336426}}}
+[22:51:48.528525] ### 3D-OV-CROP ###
+[22:51:48.528540] Cropping (680, 680, 390, 3) images into (20, 128, 128, 3) with overlapping . . .
+[22:51:48.528549] Minimum overlap selected: (0, 0, 0)
+[22:51:48.528558] Padding: (4, 16, 16)
+[22:51:54.449917] Real overlapping (%): (0.0, 0.125, 0.22916666666666666)
+[22:51:54.449979] Real overlapping (pixels): (0.0, 12.0, 22.0)
+[22:51:54.449989] (57, 8, 5) patches per (z,y,x) axis
+[22:52:12.086662] **** New data shape is: (2280, 20, 128, 128, 3)
+[22:52:12.086782] ### END 3D-OV-CROP ###
+[22:52:42.162386] ### MERGE-3D-OV-CROP ###
+[22:52:42.162457] Merging (2280, 20, 128, 128, 4) images into (680, 680, 390, 4) with smooth blending . . .
+[22:52:42.162468] Minimum overlap selected: (0, 0, 0)
+[22:52:42.162478] Padding: (4, 16, 16)
+[22:52:55.299420] **** New data shape is: (680, 680, 390, 4)
+[22:52:55.299486] ### END MERGE-3D-OV-CROP ###
+[22:53:01.742667] ### MERGE-3D-OV-CROP ###
+[22:53:01.742727] Merging (2280, 20, 128, 128, 3) images into (680, 680, 390, 3) with smooth blending . . .
+[22:53:01.742735] Minimum overlap selected: (0, 0, 0)
+[22:53:01.742743] Padding: (4, 16, 16)
+[22:53:08.042410] **** New data shape is: (680, 680, 390, 3)
+[22:53:08.042479] ### END MERGE-3D-OV-CROP ###
+[22:53:08.101863] Cropping prediction to original shape (680, 680, 390, 3)
+[22:53:08.101942] Saving (1, 680, 680, 390, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[22:53:44.101864] Applying ['erode', 'dilate'] to seeds . . .
+[22:53:44.101934] Growth mask erosion . . .
+[22:53:53.318583] Thresholds used: {'seed': [0.333984375, 0.3705037832260132], 'growth_mask': [0.1669921875]}
+[22:54:12.205635] Saving (1, 680, 680, 390, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[22:54:14.194066] Calculating matching stats . . .
+[22:54:14.197587] Its respective image seems to be: fisbe/biapy-debug/test/label/JRC_SS04989-20160318_24_A2_c201_r1_k1.tif
+[22:55:12.992347] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 143, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 143, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:55:13.010502] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 143, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 143, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:55:13.035080] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 143, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 143, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:55:13.035172] Removing small objects . . .
+[22:55:16.351007] Saving (1, 680, 680, 390, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[22:55:18.089389] Calculating matching stats after post-processing . . .
+[22:56:14.426021] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 143, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 143, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:56:14.441990] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 143, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 143, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:56:14.457279] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 143, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 143, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:56:33.496013] Processing image: JRC_SS04989-20160318_24_A2_c201_r1_k2.tif (GT: JRC_SS04989-20160318_24_A2_c201_r1_k2.tif)
+[22:56:33.496148] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 13.4505615234375, 'std': 28.10138702392578}, '1': {'mean': 25.407682418823242, 'std': 35.57335662841797}, '2': {'mean': 6.485485076904297, 'std': 12.219082832336426}}}
+[22:56:33.496280] ### 3D-OV-CROP ###
+[22:56:33.496294] Cropping (390, 680, 680, 3) images into (20, 128, 128, 3) with overlapping . . .
+[22:56:33.496303] Minimum overlap selected: (0, 0, 0)
+[22:56:33.496310] Padding: (4, 16, 16)
+[22:56:38.407762] Real overlapping (%): (0.0, 0.125, 0.125)
+[22:56:38.407820] Real overlapping (pixels): (0.0, 12.0, 12.0)
+[22:56:38.407829] (33, 8, 8) patches per (z,y,x) axis
+[22:56:56.060334] **** New data shape is: (2112, 20, 128, 128, 3)
+[22:56:56.060466] ### END 3D-OV-CROP ###
+[22:57:24.665593] ### MERGE-3D-OV-CROP ###
+[22:57:24.665654] Merging (2112, 20, 128, 128, 4) images into (390, 680, 680, 4) with smooth blending . . .
+[22:57:24.665663] Minimum overlap selected: (0, 0, 0)
+[22:57:24.665676] Padding: (4, 16, 16)
+[22:57:35.325960] **** New data shape is: (390, 680, 680, 4)
+[22:57:35.326020] ### END MERGE-3D-OV-CROP ###
+[22:57:41.846461] ### MERGE-3D-OV-CROP ###
+[22:57:41.846517] Merging (2112, 20, 128, 128, 3) images into (390, 680, 680, 3) with smooth blending . . .
+[22:57:41.846527] Minimum overlap selected: (0, 0, 0)
+[22:57:41.846536] Padding: (4, 16, 16)
+[22:57:50.590763] **** New data shape is: (390, 680, 680, 3)
+[22:57:50.590831] ### END MERGE-3D-OV-CROP ###
+[22:57:50.643387] Cropping prediction to original shape (390, 680, 680, 3)
+[22:57:50.643453] Saving (1, 390, 680, 680, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[22:58:23.131691] Applying ['erode', 'dilate'] to seeds . . .
+[22:58:23.131806] Growth mask erosion . . .
+[22:58:32.181920] Thresholds used: {'seed': [0.330078125, 0.36866456270217896], 'growth_mask': [0.1650390625]}
+[22:58:47.973007] Saving (1, 390, 680, 680, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[22:58:48.910980] Calculating matching stats . . .
+[22:58:48.915677] Its respective image seems to be: fisbe/biapy-debug/test/label/JRC_SS04989-20160318_24_A2_c201_r1_k2.tif
+[22:59:45.998246] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 142, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 142, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:59:46.013639] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 142, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 142, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:59:46.030018] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 142, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 142, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[22:59:46.030102] Removing small objects . . .
+[22:59:48.607837] Saving (1, 390, 680, 680, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[22:59:49.848547] Calculating matching stats after post-processing . . .
+[23:00:51.009194] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 142, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 142, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:00:51.028890] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 142, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 142, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:00:51.051631] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 142, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 142, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:01:08.239476] Processing image: R14A02-20180905_65_A6_c120_r0_k0.tif (GT: R14A02-20180905_65_A6_c120_r0_k0.tif)
+[23:01:08.239613] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 19.37313461303711, 'std': 25.560436248779297}, '1': {'mean': 17.70608901977539, 'std': 26.635831832885742}, '2': {'mean': 12.409764289855957, 'std': 16.151641845703125}}}
+[23:01:08.239731] ### 3D-OV-CROP ###
+[23:01:08.239745] Cropping (385, 685, 686, 3) images into (20, 128, 128, 3) with overlapping . . .
+[23:01:08.239753] Minimum overlap selected: (0, 0, 0)
+[23:01:08.239760] Padding: (4, 16, 16)
+[23:01:13.345083] Real overlapping (%): (0.0, 0.11458333333333333, 0.11458333333333333)
+[23:01:13.345135] Real overlapping (pixels): (0.0, 11.0, 11.0)
+[23:01:13.345144] (33, 8, 8) patches per (z,y,x) axis
+[23:01:29.743851] **** New data shape is: (2112, 20, 128, 128, 3)
+[23:01:29.743980] ### END 3D-OV-CROP ###
+[23:01:57.960192] ### MERGE-3D-OV-CROP ###
+[23:01:57.960260] Merging (2112, 20, 128, 128, 4) images into (385, 685, 686, 4) with smooth blending . . .
+[23:01:57.960270] Minimum overlap selected: (0, 0, 0)
+[23:01:57.960278] Padding: (4, 16, 16)
+[23:02:11.011129] **** New data shape is: (385, 685, 686, 4)
+[23:02:11.011197] ### END MERGE-3D-OV-CROP ###
+[23:02:17.045318] ### MERGE-3D-OV-CROP ###
+[23:02:17.045373] Merging (2112, 20, 128, 128, 3) images into (385, 685, 686, 3) with smooth blending . . .
+[23:02:17.045382] Minimum overlap selected: (0, 0, 0)
+[23:02:17.045390] Padding: (4, 16, 16)
+[23:02:25.477273] **** New data shape is: (385, 685, 686, 3)
+[23:02:25.477331] ### END MERGE-3D-OV-CROP ###
+[23:02:25.527207] Cropping prediction to original shape (385, 685, 686, 3)
+[23:02:25.527269] Saving (1, 385, 685, 686, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[23:02:58.690803] Applying ['erode', 'dilate'] to seeds . . .
+[23:02:58.690922] Growth mask erosion . . .
+[23:03:08.225661] Thresholds used: {'seed': [0.333984375, 0.3815057873725891], 'growth_mask': [0.1669921875]}
+[23:03:25.462511] Saving (1, 385, 685, 686, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[23:03:26.787466] Calculating matching stats . . .
+[23:03:26.790222] Its respective image seems to be: fisbe/biapy-debug/test/label/R14A02-20180905_65_A6_c120_r0_k0.tif
+[23:04:24.398261] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(190), 'tp': np.int64(2), 'fn': np.int64(5), 'precision': np.float64(0.010416666666666666), 'recall': np.float64(0.2857142857142857), 'accuracy': np.float64(0.01015228426395939), 'f1': np.float64(0.020100502512562814), 'n_true': 7, 'n_pred': 192, 'mean_true_score': np.float32(0.09395529), 'mean_matched_score': np.float64(0.32884353399276733), 'panoptic_quality': np.float64(0.006609920281261655)}
+[23:04:24.415261] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 192, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 192, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:04:24.431428] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 192, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 192, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:04:24.431507] Removing small objects . . .
+[23:04:26.958528] Saving (1, 385, 685, 686, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[23:04:28.297198] Calculating matching stats after post-processing . . .
+[23:05:26.526891] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(190), 'tp': np.int64(2), 'fn': np.int64(5), 'precision': np.float64(0.010416666666666666), 'recall': np.float64(0.2857142857142857), 'accuracy': np.float64(0.01015228426395939), 'f1': np.float64(0.020100502512562814), 'n_true': 7, 'n_pred': 192, 'mean_true_score': np.float32(0.09395529), 'mean_matched_score': np.float64(0.32884353399276733), 'panoptic_quality': np.float64(0.006609920281261655)}
+[23:05:26.544495] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 192, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 192, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:05:26.563392] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 192, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 192, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:05:45.420421] Processing image: R14A02-20180905_65_A6_c120_r0_k1.tif (GT: R14A02-20180905_65_A6_c120_r0_k1.tif)
+[23:05:45.421508] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 19.37313461303711, 'std': 25.56043815612793}, '1': {'mean': 17.70608901977539, 'std': 26.635833740234375}, '2': {'mean': 12.40976619720459, 'std': 16.151641845703125}}}
+[23:05:45.421663] ### 3D-OV-CROP ###
+[23:05:45.421679] Cropping (685, 385, 686, 3) images into (20, 128, 128, 3) with overlapping . . .
+[23:05:45.421688] Minimum overlap selected: (0, 0, 0)
+[23:05:45.421696] Padding: (4, 16, 16)
+[23:05:51.190556] Real overlapping (%): (0.0, 0.23958333333333334, 0.11458333333333333)
+[23:05:51.190614] Real overlapping (pixels): (0.0, 23.0, 11.0)
+[23:05:51.190624] (58, 5, 8) patches per (z,y,x) axis
+[23:06:08.689819] **** New data shape is: (2320, 20, 128, 128, 3)
+[23:06:08.689937] ### END 3D-OV-CROP ###
+[23:06:41.653182] ### MERGE-3D-OV-CROP ###
+[23:06:41.653232] Merging (2320, 20, 128, 128, 4) images into (685, 385, 686, 4) with smooth blending . . .
+[23:06:41.653242] Minimum overlap selected: (0, 0, 0)
+[23:06:41.653251] Padding: (4, 16, 16)
+[23:06:55.105514] **** New data shape is: (685, 385, 686, 4)
+[23:06:55.105579] ### END MERGE-3D-OV-CROP ###
+[23:07:01.435451] ### MERGE-3D-OV-CROP ###
+[23:07:01.435519] Merging (2320, 20, 128, 128, 3) images into (685, 385, 686, 3) with smooth blending . . .
+[23:07:01.435529] Minimum overlap selected: (0, 0, 0)
+[23:07:01.435538] Padding: (4, 16, 16)
+[23:07:08.351913] **** New data shape is: (685, 385, 686, 3)
+[23:07:08.351965] ### END MERGE-3D-OV-CROP ###
+[23:07:08.408802] Cropping prediction to original shape (685, 385, 686, 3)
+[23:07:08.408872] Saving (1, 685, 385, 686, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[23:07:46.995632] Applying ['erode', 'dilate'] to seeds . . .
+[23:07:46.995722] Growth mask erosion . . .
+[23:07:56.415504] Thresholds used: {'seed': [0.333984375, 0.38070017099380493], 'growth_mask': [0.1669921875]}
+[23:08:13.336698] Saving (1, 685, 385, 686, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[23:08:14.955361] Calculating matching stats . . .
+[23:08:14.957455] Its respective image seems to be: fisbe/biapy-debug/test/label/R14A02-20180905_65_A6_c120_r0_k1.tif
+[23:09:15.928157] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(136), 'tp': np.int64(3), 'fn': np.int64(4), 'precision': np.float64(0.02158273381294964), 'recall': np.float64(0.42857142857142855), 'accuracy': np.float64(0.02097902097902098), 'f1': np.float64(0.0410958904109589), 'n_true': 7, 'n_pred': 139, 'mean_true_score': np.float32(0.14080779), 'mean_matched_score': np.float64(0.3285515308380127), 'panoptic_quality': np.float64(0.013502117705671755)}
+[23:09:15.946086] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 139, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 139, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:09:15.961276] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 139, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 139, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:09:15.961367] Removing small objects . . .
+[23:09:19.002943] Saving (1, 685, 385, 686, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[23:09:20.507910] Calculating matching stats after post-processing . . .
+[23:10:17.680363] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(136), 'tp': np.int64(3), 'fn': np.int64(4), 'precision': np.float64(0.02158273381294964), 'recall': np.float64(0.42857142857142855), 'accuracy': np.float64(0.02097902097902098), 'f1': np.float64(0.0410958904109589), 'n_true': 7, 'n_pred': 139, 'mean_true_score': np.float32(0.14080779), 'mean_matched_score': np.float64(0.3285515308380127), 'panoptic_quality': np.float64(0.013502117705671755)}
+[23:10:17.698415] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 139, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 139, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:10:17.717242] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 139, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 139, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:10:34.926915] Processing image: R14A02-20180905_65_A6_c120_r1_k0.tif (GT: R14A02-20180905_65_A6_c120_r1_k0.tif)
+[23:10:34.927052] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 19.37313461303711, 'std': 25.560436248779297}, '1': {'mean': 17.70608901977539, 'std': 26.635831832885742}, '2': {'mean': 12.409764289855957, 'std': 16.151641845703125}}}
+[23:10:34.927174] ### 3D-OV-CROP ###
+[23:10:34.927190] Cropping (385, 685, 686, 3) images into (20, 128, 128, 3) with overlapping . . .
+[23:10:34.927199] Minimum overlap selected: (0, 0, 0)
+[23:10:34.927207] Padding: (4, 16, 16)
+[23:10:39.454473] Real overlapping (%): (0.0, 0.11458333333333333, 0.11458333333333333)
+[23:10:39.454580] Real overlapping (pixels): (0.0, 11.0, 11.0)
+[23:10:39.454591] (33, 8, 8) patches per (z,y,x) axis
+[23:10:55.536549] **** New data shape is: (2112, 20, 128, 128, 3)
+[23:10:55.536603] ### END 3D-OV-CROP ###
+[23:11:24.257672] ### MERGE-3D-OV-CROP ###
+[23:11:24.257740] Merging (2112, 20, 128, 128, 4) images into (385, 685, 686, 4) with smooth blending . . .
+[23:11:24.257750] Minimum overlap selected: (0, 0, 0)
+[23:11:24.257760] Padding: (4, 16, 16)
+[23:11:38.209456] **** New data shape is: (385, 685, 686, 4)
+[23:11:38.209524] ### END MERGE-3D-OV-CROP ###
+[23:11:44.539362] ### MERGE-3D-OV-CROP ###
+[23:11:44.539420] Merging (2112, 20, 128, 128, 3) images into (385, 685, 686, 3) with smooth blending . . .
+[23:11:44.539435] Minimum overlap selected: (0, 0, 0)
+[23:11:44.539444] Padding: (4, 16, 16)
+[23:11:51.007111] **** New data shape is: (385, 685, 686, 3)
+[23:11:51.007172] ### END MERGE-3D-OV-CROP ###
+[23:11:51.061043] Cropping prediction to original shape (385, 685, 686, 3)
+[23:11:51.061128] Saving (1, 385, 685, 686, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[23:12:23.989384] Applying ['erode', 'dilate'] to seeds . . .
+[23:12:23.989485] Growth mask erosion . . .
+[23:12:33.316061] Thresholds used: {'seed': [0.333984375, 0.3815057873725891], 'growth_mask': [0.1669921875]}
+[23:12:53.218507] Saving (1, 385, 685, 686, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[23:12:54.813827] Calculating matching stats . . .
+[23:12:54.820445] Its respective image seems to be: fisbe/biapy-debug/test/label/R14A02-20180905_65_A6_c120_r1_k0.tif
+[23:13:53.736013] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(190), 'tp': np.int64(2), 'fn': np.int64(5), 'precision': np.float64(0.010416666666666666), 'recall': np.float64(0.2857142857142857), 'accuracy': np.float64(0.01015228426395939), 'f1': np.float64(0.020100502512562814), 'n_true': 7, 'n_pred': 192, 'mean_true_score': np.float32(0.09395529), 'mean_matched_score': np.float64(0.32884353399276733), 'panoptic_quality': np.float64(0.006609920281261655)}
+[23:13:53.751690] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 192, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 192, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:13:53.769267] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 192, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 192, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:13:53.769327] Removing small objects . . .
+[23:13:56.550828] Saving (1, 385, 685, 686, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[23:13:57.767513] Calculating matching stats after post-processing . . .
+[23:14:53.330046] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(190), 'tp': np.int64(2), 'fn': np.int64(5), 'precision': np.float64(0.010416666666666666), 'recall': np.float64(0.2857142857142857), 'accuracy': np.float64(0.01015228426395939), 'f1': np.float64(0.020100502512562814), 'n_true': 7, 'n_pred': 192, 'mean_true_score': np.float32(0.09395529), 'mean_matched_score': np.float64(0.32884353399276733), 'panoptic_quality': np.float64(0.006609920281261655)}
+[23:14:53.344817] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 192, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 192, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:14:53.360236] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 192, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 192, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:15:11.535698] Processing image: R14A02-20180905_65_A6_c120_r1_k1.tif (GT: R14A02-20180905_65_A6_c120_r1_k1.tif)
+[23:15:11.535824] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 19.37313461303711, 'std': 25.560436248779297}, '1': {'mean': 17.70608901977539, 'std': 26.635833740234375}, '2': {'mean': 12.40976619720459, 'std': 16.151641845703125}}}
+[23:15:11.535957] ### 3D-OV-CROP ###
+[23:15:11.535972] Cropping (686, 685, 385, 3) images into (20, 128, 128, 3) with overlapping . . .
+[23:15:11.535981] Minimum overlap selected: (0, 0, 0)
+[23:15:11.535989] Padding: (4, 16, 16)
+[23:15:17.215198] Real overlapping (%): (0.0, 0.11458333333333333, 0.23958333333333334)
+[23:15:17.215281] Real overlapping (pixels): (0.0, 11.0, 23.0)
+[23:15:17.215291] (58, 8, 5) patches per (z,y,x) axis
+[23:15:35.574681] **** New data shape is: (2320, 20, 128, 128, 3)
+[23:15:35.574742] ### END 3D-OV-CROP ###
+[23:16:06.538914] ### MERGE-3D-OV-CROP ###
+[23:16:06.538971] Merging (2320, 20, 128, 128, 4) images into (686, 685, 385, 4) with smooth blending . . .
+[23:16:06.538981] Minimum overlap selected: (0, 0, 0)
+[23:16:06.538989] Padding: (4, 16, 16)
+[23:16:18.026774] **** New data shape is: (686, 685, 385, 4)
+[23:16:18.026830] ### END MERGE-3D-OV-CROP ###
+[23:16:24.116008] ### MERGE-3D-OV-CROP ###
+[23:16:24.116061] Merging (2320, 20, 128, 128, 3) images into (686, 685, 385, 3) with smooth blending . . .
+[23:16:24.116071] Minimum overlap selected: (0, 0, 0)
+[23:16:24.116080] Padding: (4, 16, 16)
+[23:16:32.682069] **** New data shape is: (686, 685, 385, 3)
+[23:16:32.682131] ### END MERGE-3D-OV-CROP ###
+[23:16:32.734480] Cropping prediction to original shape (686, 685, 385, 3)
+[23:16:32.734538] Saving (1, 686, 685, 385, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[23:17:06.849240] Applying ['erode', 'dilate'] to seeds . . .
+[23:17:06.849309] Growth mask erosion . . .
+[23:17:17.210139] Thresholds used: {'seed': [0.337890625, 0.37820005416870117], 'growth_mask': [0.1689453125]}
+[23:17:36.248674] Saving (1, 686, 685, 385, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[23:17:37.821129] Calculating matching stats . . .
+[23:17:37.825158] Its respective image seems to be: fisbe/biapy-debug/test/label/R14A02-20180905_65_A6_c120_r1_k1.tif
+[23:18:34.745634] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(150), 'tp': np.int64(1), 'fn': np.int64(6), 'precision': np.float64(0.006622516556291391), 'recall': np.float64(0.14285714285714285), 'accuracy': np.float64(0.006369426751592357), 'f1': np.float64(0.012658227848101266), 'n_true': 7, 'n_pred': 151, 'mean_true_score': np.float32(0.04944012), 'mean_matched_score': np.float64(0.34608083963394165), 'panoptic_quality': np.float64(0.004380770121948628)}
+[23:18:34.763211] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 151, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 151, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:18:34.786723] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 151, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 151, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:18:34.786792] Removing small objects . . .
+[23:18:37.845856] Saving (1, 686, 685, 385, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[23:18:39.143559] Calculating matching stats after post-processing . . .
+[23:19:36.930547] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(150), 'tp': np.int64(1), 'fn': np.int64(6), 'precision': np.float64(0.006622516556291391), 'recall': np.float64(0.14285714285714285), 'accuracy': np.float64(0.006369426751592357), 'f1': np.float64(0.012658227848101266), 'n_true': 7, 'n_pred': 151, 'mean_true_score': np.float32(0.04944012), 'mean_matched_score': np.float64(0.34608083963394165), 'panoptic_quality': np.float64(0.004380770121948628)}
+[23:19:36.947660] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 151, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 151, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:19:36.963646] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 151, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 151, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:19:53.880461] Processing image: R14A02-20180905_65_A6_c201_r0_k1.tif (GT: R14A02-20180905_65_A6_c201_r0_k1.tif)
+[23:19:53.880584] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 17.70608901977539, 'std': 26.635833740234375}, '1': {'mean': 12.40976619720459, 'std': 16.151641845703125}, '2': {'mean': 19.37313461303711, 'std': 25.56043815612793}}}
+[23:19:53.880715] ### 3D-OV-CROP ###
+[23:19:53.880731] Cropping (685, 385, 686, 3) images into (20, 128, 128, 3) with overlapping . . .
+[23:19:53.880740] Minimum overlap selected: (0, 0, 0)
+[23:19:53.880748] Padding: (4, 16, 16)
+[23:19:59.511036] Real overlapping (%): (0.0, 0.23958333333333334, 0.11458333333333333)
+[23:19:59.511138] Real overlapping (pixels): (0.0, 23.0, 11.0)
+[23:19:59.511148] (58, 5, 8) patches per (z,y,x) axis
+[23:20:17.771703] **** New data shape is: (2320, 20, 128, 128, 3)
+[23:20:17.771752] ### END 3D-OV-CROP ###
+[23:20:48.726504] ### MERGE-3D-OV-CROP ###
+[23:20:48.726558] Merging (2320, 20, 128, 128, 4) images into (685, 385, 686, 4) with smooth blending . . .
+[23:20:48.726567] Minimum overlap selected: (0, 0, 0)
+[23:20:48.726575] Padding: (4, 16, 16)
+[23:21:01.776748] **** New data shape is: (685, 385, 686, 4)
+[23:21:01.776813] ### END MERGE-3D-OV-CROP ###
+[23:21:07.963866] ### MERGE-3D-OV-CROP ###
+[23:21:07.963932] Merging (2320, 20, 128, 128, 3) images into (685, 385, 686, 3) with smooth blending . . .
+[23:21:07.963940] Minimum overlap selected: (0, 0, 0)
+[23:21:07.963947] Padding: (4, 16, 16)
+[23:21:16.380572] **** New data shape is: (685, 385, 686, 3)
+[23:21:16.380635] ### END MERGE-3D-OV-CROP ###
+[23:21:16.435387] Cropping prediction to original shape (685, 385, 686, 3)
+[23:21:16.435450] Saving (1, 685, 385, 686, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[23:21:54.422325] Applying ['erode', 'dilate'] to seeds . . .
+[23:21:54.422433] Growth mask erosion . . .
+[23:22:04.415815] Thresholds used: {'seed': [0.3886718153953552, 0.36771684885025024], 'growth_mask': [0.1943359076976776]}
+[23:22:23.150080] Saving (1, 685, 385, 686, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[23:22:25.041069] Calculating matching stats . . .
+[23:22:25.045330] Its respective image seems to be: fisbe/biapy-debug/test/label/R14A02-20180905_65_A6_c201_r0_k1.tif
+[23:23:24.274881] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(56), 'tp': np.int64(2), 'fn': np.int64(5), 'precision': np.float64(0.034482758620689655), 'recall': np.float64(0.2857142857142857), 'accuracy': np.float64(0.031746031746031744), 'f1': np.float64(0.06153846153846154), 'n_true': 7, 'n_pred': 58, 'mean_true_score': np.float32(0.10732437), 'mean_matched_score': np.float64(0.3756352961063385), 'panoptic_quality': np.float64(0.023116018221928523)}
+[23:23:24.291380] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 58, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 58, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:23:24.306851] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 58, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 58, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:23:24.306942] Removing small objects . . .
+[23:23:27.308244] Saving (1, 685, 385, 686, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[23:23:28.828811] Calculating matching stats after post-processing . . .
+[23:24:26.383584] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(56), 'tp': np.int64(2), 'fn': np.int64(5), 'precision': np.float64(0.034482758620689655), 'recall': np.float64(0.2857142857142857), 'accuracy': np.float64(0.031746031746031744), 'f1': np.float64(0.06153846153846154), 'n_true': 7, 'n_pred': 58, 'mean_true_score': np.float32(0.10732437), 'mean_matched_score': np.float64(0.3756352961063385), 'panoptic_quality': np.float64(0.023116018221928523)}
+[23:24:26.402536] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 58, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 58, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:24:26.420675] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 58, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 58, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:24:43.865382] Processing image: R14A02-20180905_65_A6_c201_r0_k2.tif (GT: R14A02-20180905_65_A6_c201_r0_k2.tif)
+[23:24:43.865916] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 17.70608901977539, 'std': 26.635833740234375}, '1': {'mean': 12.409764289855957, 'std': 16.151641845703125}, '2': {'mean': 19.37313461303711, 'std': 25.560436248779297}}}
+[23:24:43.866045] ### 3D-OV-CROP ###
+[23:24:43.866060] Cropping (385, 685, 686, 3) images into (20, 128, 128, 3) with overlapping . . .
+[23:24:43.866068] Minimum overlap selected: (0, 0, 0)
+[23:24:43.866076] Padding: (4, 16, 16)
+[23:24:48.372131] Real overlapping (%): (0.0, 0.11458333333333333, 0.11458333333333333)
+[23:24:48.372187] Real overlapping (pixels): (0.0, 11.0, 11.0)
+[23:24:48.372194] (33, 8, 8) patches per (z,y,x) axis
+[23:25:03.523741] **** New data shape is: (2112, 20, 128, 128, 3)
+[23:25:03.523854] ### END 3D-OV-CROP ###
+[23:25:31.938328] ### MERGE-3D-OV-CROP ###
+[23:25:31.938400] Merging (2112, 20, 128, 128, 4) images into (385, 685, 686, 4) with smooth blending . . .
+[23:25:31.938411] Minimum overlap selected: (0, 0, 0)
+[23:25:31.938421] Padding: (4, 16, 16)
+[23:25:45.145846] **** New data shape is: (385, 685, 686, 4)
+[23:25:45.145919] ### END MERGE-3D-OV-CROP ###
+[23:25:51.294667] ### MERGE-3D-OV-CROP ###
+[23:25:51.294741] Merging (2112, 20, 128, 128, 3) images into (385, 685, 686, 3) with smooth blending . . .
+[23:25:51.294750] Minimum overlap selected: (0, 0, 0)
+[23:25:51.294759] Padding: (4, 16, 16)
+[23:25:57.776087] **** New data shape is: (385, 685, 686, 3)
+[23:25:57.776155] ### END MERGE-3D-OV-CROP ###
+[23:25:57.832747] Cropping prediction to original shape (385, 685, 686, 3)
+[23:25:57.832807] Saving (1, 385, 685, 686, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[23:26:34.263902] Applying ['erode', 'dilate'] to seeds . . .
+[23:26:34.263992] Growth mask erosion . . .
+[23:26:44.012234] Thresholds used: {'seed': [0.4003905653953552, 0.3640688955783844], 'growth_mask': [0.2001952826976776]}
+[23:27:01.400734] Saving (1, 385, 685, 686, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[23:27:02.745663] Calculating matching stats . . .
+[23:27:02.748463] Its respective image seems to be: fisbe/biapy-debug/test/label/R14A02-20180905_65_A6_c201_r0_k2.tif
+[23:28:00.389823] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(73), 'tp': np.int64(2), 'fn': np.int64(5), 'precision': np.float64(0.02666666666666667), 'recall': np.float64(0.2857142857142857), 'accuracy': np.float64(0.025), 'f1': np.float64(0.04878048780487805), 'n_true': 7, 'n_pred': 75, 'mean_true_score': np.float32(0.11066337), 'mean_matched_score': np.float64(0.387321799993515), 'panoptic_quality': np.float64(0.018893746341147075)}
+[23:28:00.422239] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 75, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 75, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:28:00.440596] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 75, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 75, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:28:00.440678] Removing small objects . . .
+[23:28:03.204465] Saving (1, 385, 685, 686, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[23:28:04.427521] Calculating matching stats after post-processing . . .
+[23:29:03.327418] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(73), 'tp': np.int64(2), 'fn': np.int64(5), 'precision': np.float64(0.02666666666666667), 'recall': np.float64(0.2857142857142857), 'accuracy': np.float64(0.025), 'f1': np.float64(0.04878048780487805), 'n_true': 7, 'n_pred': 75, 'mean_true_score': np.float32(0.11066337), 'mean_matched_score': np.float64(0.387321799993515), 'panoptic_quality': np.float64(0.018893746341147075)}
+[23:29:03.345600] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 75, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 75, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:29:03.363869] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 75, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 75, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:29:20.798601] Processing image: R14A02-20180905_65_A6_c201_r1_k1.tif (GT: R14A02-20180905_65_A6_c201_r1_k1.tif)
+[23:29:20.799846] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 17.70608901977539, 'std': 26.635833740234375}, '1': {'mean': 12.40976619720459, 'std': 16.151641845703125}, '2': {'mean': 19.37313461303711, 'std': 25.560436248779297}}}
+[23:29:20.799995] ### 3D-OV-CROP ###
+[23:29:20.800011] Cropping (686, 685, 385, 3) images into (20, 128, 128, 3) with overlapping . . .
+[23:29:20.800020] Minimum overlap selected: (0, 0, 0)
+[23:29:20.800028] Padding: (4, 16, 16)
+[23:29:25.588293] Real overlapping (%): (0.0, 0.11458333333333333, 0.23958333333333334)
+[23:29:25.588351] Real overlapping (pixels): (0.0, 11.0, 23.0)
+[23:29:25.588362] (58, 8, 5) patches per (z,y,x) axis
+[23:29:41.950553] **** New data shape is: (2320, 20, 128, 128, 3)
+[23:29:41.950607] ### END 3D-OV-CROP ###
+[23:30:12.381144] ### MERGE-3D-OV-CROP ###
+[23:30:12.381197] Merging (2320, 20, 128, 128, 4) images into (686, 685, 385, 4) with smooth blending . . .
+[23:30:12.381210] Minimum overlap selected: (0, 0, 0)
+[23:30:12.381218] Padding: (4, 16, 16)
+[23:30:23.839798] **** New data shape is: (686, 685, 385, 4)
+[23:30:23.839861] ### END MERGE-3D-OV-CROP ###
+[23:30:29.740838] ### MERGE-3D-OV-CROP ###
+[23:30:29.740898] Merging (2320, 20, 128, 128, 3) images into (686, 685, 385, 3) with smooth blending . . .
+[23:30:29.740906] Minimum overlap selected: (0, 0, 0)
+[23:30:29.740915] Padding: (4, 16, 16)
+[23:30:35.755876] **** New data shape is: (686, 685, 385, 3)
+[23:30:35.756003] ### END MERGE-3D-OV-CROP ###
+[23:30:35.813186] Cropping prediction to original shape (686, 685, 385, 3)
+[23:30:35.813259] Saving (1, 686, 685, 385, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[23:31:08.727286] Applying ['erode', 'dilate'] to seeds . . .
+[23:31:08.727359] Growth mask erosion . . .
+[23:31:19.045946] Thresholds used: {'seed': [0.396484375, 0.36563754081726074], 'growth_mask': [0.1982421875]}
+[23:31:38.060655] Saving (1, 686, 685, 385, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[23:31:39.623827] Calculating matching stats . . .
+[23:31:39.627199] Its respective image seems to be: fisbe/biapy-debug/test/label/R14A02-20180905_65_A6_c201_r1_k1.tif
+[23:32:40.161791] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(50), 'tp': np.int64(2), 'fn': np.int64(5), 'precision': np.float64(0.038461538461538464), 'recall': np.float64(0.2857142857142857), 'accuracy': np.float64(0.03508771929824561), 'f1': np.float64(0.06779661016949153), 'n_true': 7, 'n_pred': 52, 'mean_true_score': np.float32(0.114248835), 'mean_matched_score': np.float64(0.39987093210220337), 'panoptic_quality': np.float64(0.027109893701844297)}
+[23:32:40.178741] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 52, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 52, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:32:40.194815] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 52, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 52, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:32:40.194899] Removing small objects . . .
+[23:32:42.987375] Saving (1, 686, 685, 385, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[23:32:44.313477] Calculating matching stats after post-processing . . .
+[23:33:43.429334] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(50), 'tp': np.int64(2), 'fn': np.int64(5), 'precision': np.float64(0.038461538461538464), 'recall': np.float64(0.2857142857142857), 'accuracy': np.float64(0.03508771929824561), 'f1': np.float64(0.06779661016949153), 'n_true': 7, 'n_pred': 52, 'mean_true_score': np.float32(0.114248835), 'mean_matched_score': np.float64(0.39987093210220337), 'panoptic_quality': np.float64(0.027109893701844297)}
+[23:33:43.449047] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 52, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 52, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:33:43.463540] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 52, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 52, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:34:01.496806] Processing image: R14A02-20180905_65_A6_c201_r1_k2.tif (GT: R14A02-20180905_65_A6_c201_r1_k2.tif)
+[23:34:01.496950] Normalization used: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'uint16', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 17.706087112426758, 'std': 26.635833740234375}, '1': {'mean': 12.40976619720459, 'std': 16.151641845703125}, '2': {'mean': 19.37313461303711, 'std': 25.560436248779297}}}
+[23:34:01.497087] ### 3D-OV-CROP ###
+[23:34:01.497103] Cropping (385, 685, 686, 3) images into (20, 128, 128, 3) with overlapping . . .
+[23:34:01.497113] Minimum overlap selected: (0, 0, 0)
+[23:34:01.497123] Padding: (4, 16, 16)
+[23:34:06.041405] Real overlapping (%): (0.0, 0.11458333333333333, 0.11458333333333333)
+[23:34:06.041469] Real overlapping (pixels): (0.0, 11.0, 11.0)
+[23:34:06.041479] (33, 8, 8) patches per (z,y,x) axis
+[23:34:20.516763] **** New data shape is: (2112, 20, 128, 128, 3)
+[23:34:20.516840] ### END 3D-OV-CROP ###
+[23:34:47.105314] ### MERGE-3D-OV-CROP ###
+[23:34:47.105372] Merging (2112, 20, 128, 128, 4) images into (385, 685, 686, 4) with smooth blending . . .
+[23:34:47.105381] Minimum overlap selected: (0, 0, 0)
+[23:34:47.105389] Padding: (4, 16, 16)
+[23:34:58.869728] **** New data shape is: (385, 685, 686, 4)
+[23:34:58.869854] ### END MERGE-3D-OV-CROP ###
+[23:35:04.539772] ### MERGE-3D-OV-CROP ###
+[23:35:04.539829] Merging (2112, 20, 128, 128, 3) images into (385, 685, 686, 3) with smooth blending . . .
+[23:35:04.539839] Minimum overlap selected: (0, 0, 0)
+[23:35:04.539848] Padding: (4, 16, 16)
+[23:35:13.131793] **** New data shape is: (385, 685, 686, 3)
+[23:35:13.131856] ### END MERGE-3D-OV-CROP ###
+[23:35:13.187793] Cropping prediction to original shape (385, 685, 686, 3)
+[23:35:13.187864] Saving (1, 385, 685, 686, 4) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image
+[23:35:46.233906] Applying ['erode', 'dilate'] to seeds . . .
+[23:35:46.234014] Growth mask erosion . . .
+[23:35:55.482000] Thresholds used: {'seed': [0.404296875, 0.36519354581832886], 'growth_mask': [0.2021484375]}
+[23:36:10.206444] Saving (1, 385, 685, 686, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_instances
+[23:36:11.649732] Calculating matching stats . . .
+[23:36:11.652500] Its respective image seems to be: fisbe/biapy-debug/test/label/R14A02-20180905_65_A6_c201_r1_k2.tif
+[23:37:10.700672] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(71), 'tp': np.int64(2), 'fn': np.int64(5), 'precision': np.float64(0.0273972602739726), 'recall': np.float64(0.2857142857142857), 'accuracy': np.float64(0.02564102564102564), 'f1': np.float64(0.05), 'n_true': 7, 'n_pred': 73, 'mean_true_score': np.float32(0.10962369), 'mean_matched_score': np.float64(0.3836829364299774), 'panoptic_quality': np.float64(0.01918414682149887)}
+[23:37:10.718793] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 73, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 73, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:37:10.737802] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 73, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 73, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:37:10.737881] Removing small objects . . .
+[23:37:13.268161] Saving (1, 385, 685, 686, 1) data as .tif in folder: metrics/biapy/biapy-debug-partition/results/biapy-debug-partition_0/per_image_post_processing
+[23:37:14.437772] Calculating matching stats after post-processing . . .
+[23:38:13.859530] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(71), 'tp': np.int64(2), 'fn': np.int64(5), 'precision': np.float64(0.0273972602739726), 'recall': np.float64(0.2857142857142857), 'accuracy': np.float64(0.02564102564102564), 'f1': np.float64(0.05), 'n_true': 7, 'n_pred': 73, 'mean_true_score': np.float32(0.10962369), 'mean_matched_score': np.float64(0.3836829364299774), 'panoptic_quality': np.float64(0.01918414682149887)}
+[23:38:13.878723] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 73, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 73, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:38:13.898656] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 73, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 73, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[23:38:13.910455] Releasing memory . . .
+[23:38:13.910516] #############
+[23:38:13.910523] #  RESULTS  #
+[23:38:13.910528] #############
+[23:38:13.910534] The values below represent the averages across all test samples
+[23:38:13.911587] Test IoU (F channel) (per patch): 0.06386686703499227
+[23:38:13.911598] Test IoU (C channel) (per patch): 0.06063204848533655
+[23:38:13.911603] Test L1 (Db channel) (per patch): 0.5059792699142435
+[23:38:13.911608] Test L1 (Dn channel) (per patch): 0.26471196213501624
+[23:38:13.911613] Test IoU (F channel) (merge patches): 0.07694592018378899
+[23:38:13.911618] Test IoU (C channel) (merge patches): 0.07406361459288746
+[23:38:13.911623] Test L1 (Db channel) (merge patches): 0.5085302069783211
+[23:38:13.911628] Test L1 (Dn channel) (merge patches): 0.2704349644482136
+[23:38:13.911633] 
+[23:38:13.922264] Instance segmentation specific metrics:
+[23:38:13.922306] IoU TH=0.3
+[23:38:13.922314]       Merge patches:
+[23:38:13.922346]       DatasetMatching(criterion='iou', thresh=0.3, fp=np.int64(4171), tp=np.int64(20), fn=np.int64(60), precision=np.float64(0.011374873714392907), recall=np.float64(0.22619047619047614), accuracy=np.float64(0.010691328167517554), f1=np.float64(0.020869997721662627), n_true=80, n_pred=4191, mean_true_score=np.float32(0.07848688), mean_matched_score=np.float64(0.26163401268422604), panoptic_quality=np.float64(0.007704724855104502), by_image=True)
+[23:38:13.922356] IoU (post-processing) TH=0.3
+[23:38:13.922362]       Merge patches (post-processing):
+[23:38:13.922379]       DatasetMatching(criterion='iou', thresh=0.3, fp=np.int64(4171), tp=np.int64(20), fn=np.int64(60), precision=np.float64(0.011374873714392907), recall=np.float64(0.22619047619047614), accuracy=np.float64(0.010691328167517554), f1=np.float64(0.020869997721662627), n_true=80, n_pred=4191, mean_true_score=np.float32(0.07848688), mean_matched_score=np.float64(0.26163401268422604), panoptic_quality=np.float64(0.007704724855104502), by_image=True)
+[23:38:13.922389] IoU TH=0.5
+[23:38:13.922394]       Merge patches:
+[23:38:13.922406]       DatasetMatching(criterion='iou', thresh=0.5, fp=4191, tp=0, fn=80, precision=0.0, recall=0.0, accuracy=0.0, f1=0.0, n_true=80, n_pred=4191, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=True)
+[23:38:13.922413] IoU (post-processing) TH=0.5
+[23:38:13.922418]       Merge patches (post-processing):
+[23:38:13.922427]       DatasetMatching(criterion='iou', thresh=0.5, fp=4191, tp=0, fn=80, precision=0.0, recall=0.0, accuracy=0.0, f1=0.0, n_true=80, n_pred=4191, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=True)
+[23:38:13.922435] IoU TH=0.75
+[23:38:13.922440]       Merge patches:
+[23:38:13.922450]       DatasetMatching(criterion='iou', thresh=0.75, fp=4191, tp=0, fn=80, precision=0.0, recall=0.0, accuracy=0.0, f1=0.0, n_true=80, n_pred=4191, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=True)
+[23:38:13.922457] IoU (post-processing) TH=0.75
+[23:38:13.922461]       Merge patches (post-processing):
+[23:38:13.922473]       DatasetMatching(criterion='iou', thresh=0.75, fp=4191, tp=0, fn=80, precision=0.0, recall=0.0, accuracy=0.0, f1=0.0, n_true=80, n_pred=4191, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=True)

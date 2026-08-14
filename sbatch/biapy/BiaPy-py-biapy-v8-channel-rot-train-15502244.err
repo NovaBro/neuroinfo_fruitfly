@@ -1,62 +1,0 @@
-/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/check_configuration.py:395: UserWarning: Seems that the channels requested are custom so BiaPy did not fill some variables by default. You will need to fill the following variables: PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH, PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH.
-  warnings.warn(
-stage_partition:   0%|          | 0/18 [00:00<?, ?pair/s]stage_partition:   6%|5         | 1/18 [00:02<00:44,  2.61s/pair]stage_partition:  11%|#1        | 2/18 [00:04<00:31,  1.94s/pair]stage_partition:  39%|###8      | 7/18 [00:05<00:06,  1.69pair/s]stage_partition:  44%|####4     | 8/18 [00:05<00:05,  1.94pair/s]stage_partition:  83%|########3 | 15/18 [00:07<00:01,  2.93pair/s]stage_partition: 100%|##########| 18/18 [00:07<00:00,  2.45pair/s]
-  0%|          | 0/1959 [00:00<?, ?it/s]  0%|          | 1/1959 [00:01<55:01,  1.69s/it]  7%|7         | 141/1959 [00:02<00:28, 63.59it/s] 14%|#4        | 281/1959 [00:03<00:17, 94.28it/s] 19%|#8        | 365/1959 [00:04<00:17, 91.16it/s] 26%|##5       | 505/1959 [00:05<00:13, 107.59it/s] 30%|###       | 589/1959 [00:06<00:13, 99.61it/s]  34%|###4      | 673/1959 [00:07<00:13, 98.86it/s] 38%|###8      | 749/1959 [00:08<00:12, 95.46it/s] 42%|####2     | 825/1959 [00:09<00:12, 89.71it/s] 46%|####6     | 909/1959 [00:10<00:11, 88.37it/s] 51%|#####     | 993/1959 [00:11<00:11, 87.36it/s] 55%|#####4    | 1077/1959 [00:12<00:09, 88.54it/s] 55%|#####5    | 1086/1959 [00:12<00:10, 86.86it/s] 56%|#####5    | 1095/1959 [00:12<00:10, 84.86it/s] 56%|#####6    | 1103/1959 [00:12<00:10, 82.78it/s] 57%|#####6    | 1111/1959 [00:12<00:10, 80.22it/s] 57%|#####7    | 1118/1959 [00:12<00:10, 77.91it/s] 57%|#####7    | 1125/1959 [00:13<00:11, 75.43it/s] 58%|#####7    | 1132/1959 [00:13<00:11, 72.97it/s] 58%|#####8    | 1139/1959 [00:13<00:11, 70.88it/s] 58%|#####8    | 1146/1959 [00:13<00:11, 68.67it/s] 59%|#####8    | 1153/1959 [00:15<00:50, 15.82it/s] 68%|######7   | 1327/1959 [00:16<00:09, 65.97it/s] 81%|########1 | 1591/1959 [00:18<00:03, 98.03it/s] 90%|######### | 1771/1959 [00:20<00:01, 95.47it/s]100%|##########| 1959/1959 [00:20<00:00, 95.11it/s]
-  0%|          | 0/1959 [00:00<?, ?it/s]  0%|          | 1/1959 [00:00<29:48,  1.09it/s]  7%|7         | 141/1959 [00:01<00:17, 104.03it/s] 14%|#4        | 281/1959 [00:02<00:10, 155.20it/s] 19%|#8        | 365/1959 [00:03<00:12, 129.03it/s] 26%|##5       | 505/1959 [00:03<00:08, 163.84it/s] 30%|###       | 589/1959 [00:04<00:08, 160.95it/s] 34%|###4      | 673/1959 [00:04<00:08, 158.81it/s] 38%|###8      | 749/1959 [00:05<00:07, 156.72it/s] 42%|####2     | 825/1959 [00:05<00:07, 147.94it/s] 46%|####6     | 909/1959 [00:06<00:07, 147.25it/s] 51%|#####     | 993/1959 [00:07<00:06, 140.83it/s] 55%|#####4    | 1077/1959 [00:07<00:05, 154.33it/s] 56%|#####5    | 1093/1959 [00:07<00:05, 144.94it/s] 57%|#####6    | 1107/1959 [00:07<00:06, 136.38it/s] 57%|#####7    | 1120/1959 [00:08<00:06, 128.40it/s] 58%|#####7    | 1131/1959 [00:08<00:06, 121.35it/s] 58%|#####8    | 1142/1959 [00:08<00:07, 114.48it/s] 59%|#####8    | 1152/1959 [00:09<00:16, 47.52it/s]  68%|######7   | 1327/1959 [00:10<00:07, 86.04it/s] 81%|########1 | 1591/1959 [00:11<00:02, 144.66it/s] 90%|######### | 1771/1959 [00:12<00:01, 151.40it/s]100%|##########| 1959/1959 [00:12<00:00, 151.17it/s]
-  0%|          | 0/228 [00:00<?, ?it/s]  0%|          | 1/228 [00:01<06:26,  1.70s/it] 39%|###9      | 89/228 [00:02<00:03, 40.25it/s]100%|##########| 228/228 [00:02<00:00, 83.98it/s]
-  0%|          | 0/228 [00:00<?, ?it/s]  0%|          | 1/228 [00:00<02:25,  1.56it/s] 39%|###9      | 89/228 [00:01<00:02, 66.85it/s]100%|##########| 228/228 [00:01<00:00, 149.95it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|##########| 1/1 [00:00<00:00, 17.81it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|##########| 1/1 [00:00<00:00, 18.56it/s]
-Traceback (most recent call last):
-  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 338, in <module>
-    main()
-  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 314, in main
-    biapy.train()
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 892, in train
-    self.workflow.train()
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/base_workflow.py", line 997, in train
-    train_stats, iterations_done = train_one_epoch(
-                                   ^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/train_engine.py", line 125, in train_one_epoch
-    outputs = model_call_func(batch, is_train=True)
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/base_workflow.py", line 786, in model_call_func
-    pred = self.model(in_img)
-           ^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/models/unet.py", line 389, in forward
-    x = up(x, blocks[-i - 1])
-        ^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/models/blocks.py", line 661, in forward
-    up = self.up(x)
-         ^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/container.py", line 253, in forward
-    input = module(input)
-            ^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/conv.py", line 1382, in forward
-    return F.conv_transpose3d(
-           ^^^^^^^^^^^^^^^^^^^
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.76 GiB. GPU 0 has a total capacity of 44.39 GiB of which 125.31 MiB is free. Including non-PyTorch memory, this process has 44.22 GiB memory in use. Of the allocated memory 43.53 GiB is allocated by PyTorch, and 209.73 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

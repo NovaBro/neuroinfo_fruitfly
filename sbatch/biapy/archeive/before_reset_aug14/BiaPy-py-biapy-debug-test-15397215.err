@@ -1,0 +1,21 @@
+/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/check_configuration.py:395: UserWarning: Seems that the channels requested are custom so BiaPy did not fill some variables by default. You will need to fill the following variables: PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH, PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH.
+  warnings.warn(
+  0%|          | 0/16 [00:00<?, ?it/s]  0%|          | 0/16 [00:05<?, ?it/s]
+Traceback (most recent call last):
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 240, in <module>
+    main()
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 229, in main
+    biapy.update_config(
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 744, in update_config
+    self._build_workflow()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 396, in _build_workflow
+    self.workflow = getattr(mdl, name)(
+                    ^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/instance_seg.py", line 124, in __init__
+    self.original_test_path, self.original_test_mask_path = self.prepare_instance_data()
+                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/instance_seg.py", line 2951, in prepare_instance_data
+    create_instance_channels(self.cfg, data_type="test")
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/data/pre_processing.py", line 673, in create_instance_channels
+    raise ValueError(
+ValueError: Expected instance segmentation GT images to have a single channel containing the instance labels, but got image with shape (390, 680, 680, 4) (4 channels). Check the image file: (390, 680, 680, 4)

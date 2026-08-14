@@ -1,0 +1,99 @@
+INFO:    FUSE2FS (3): Warning: Mounting unchecked fs, running e2fsck is recommended.
+/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/check_configuration.py:395: UserWarning: Seems that the channels requested are custom so BiaPy did not fill some variables by default. You will need to fill the following variables: PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH, PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH.
+  warnings.warn(
+  0%|          | 0/7 [00:00<?, ?it/s]/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/data/pre_processing.py:1272: FutureWarning: `binary_dilation` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.dilation` instead. Note the lack of mirroring for non-symmetric footprints (see docstring notes).
+  p_out = binary_dilation(p_out, footprint=generate_ellipse_footprint(p_dil)).astype(np.uint8)
+
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  3.59it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  4.47it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  4.35it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  1.77it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  1.29it/s][A
+                                             [A 14%|#4        | 1/7 [00:53<05:20, 53.35s/it]
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  4.17it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  4.55it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  4.07it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  2.94it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  1.30it/s][A
+                                             [A 29%|##8       | 2/7 [01:51<04:42, 56.43s/it]
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  1.20it/s][A
+                                             [A 43%|####2     | 3/7 [01:53<02:05, 31.34s/it]
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  3.87it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  4.14it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  3.96it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  2.63it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:01<00:00,  1.08s/it][A
+                                             [A 57%|#####7    | 4/7 [02:53<02:07, 42.54s/it]
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  3.84it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  4.00it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  3.93it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  2.66it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  1.18it/s][A
+                                             [A 71%|#######1  | 5/7 [03:53<01:37, 48.86s/it]
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  3.93it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  4.20it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  4.11it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  2.76it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  1.21it/s][A
+                                             [A 86%|########5 | 6/7 [04:51<00:52, 52.24s/it]
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  4.35it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  4.56it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  4.49it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  2.99it/s][A
+                                             [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+100%|##########| 1/1 [00:00<00:00,  1.03it/s][A
+                                             [A100%|##########| 7/7 [05:44<00:00, 52.41s/it]100%|##########| 7/7 [05:44<00:00, 49.25s/it]

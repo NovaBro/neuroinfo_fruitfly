@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -9,6 +10,21 @@ import numpy as np
 import tifffile
 
 from .base_data import enhance_display
+
+# FISBe volume id: {line}-{YYYYMMDD}_{nn}_{well}; trailing BiaPy aug_id is ignored.
+_FISBE_SAMPLE_RE = re.compile(r"^(.+-\d{8}_\d+_[A-Z]\d+)")
+
+
+def _fisbe_sample_id(stem: str) -> str:
+    """Strip trailing BiaPy aug_id; keep the FISBe volume id.
+
+    Stems are ``{sample}{aug_id}``, e.g. ``R38F04-20181005_63_G3_c021_r0_k0``:
+    sample ``R38F04-20181005_63_G3``, aug ``_c021_r0_k0``. No-aug stems and
+    unmatched names are returned unchanged.
+    """
+    # Match {line}-{YYYYMMDD}_{nn}_{well}; leftover suffix is the augmentation.
+    match = _FISBE_SAMPLE_RE.match(stem)
+    return match.group(1) if match else stem
 
 
 def get_metric_paths(sub_folder: str, cf_stem: str, run: str = '0'):
@@ -224,25 +240,50 @@ def plot_per_image_predictions(
     return fig, axes
 
 
-def resolve_gt_channel_paths(gt_path, n_samples=None):
-    """List TIFFs under a BiaPy instance-channel GT folder (label_F.…_Dn.…)."""
+def resolve_gt_channel_paths(gt_path, n_samples=None, seed=42):
+    """List TIFFs under a BiaPy instance-channel GT folder (label_F.…_Dn.…).
+
+    When ``n_samples`` is set, pick that many unique FISBe volumes (any one
+    augmentation each) instead of the first N sorted TIFFs, which would all
+    be augs of the same volume.
+    """
     # 1. Point at the GT label folder (e.g. fisbe/.../train/label_F.…_Dn.…)
     result_path = Path(gt_path)
-    # 2. Sorted TIFF list; optionally truncate for a quick preview
+    # 2. All TIFFs, sorted so n_samples=None is a stable listing
     paths = sorted(result_path.glob("*.tif"))
     if not paths:
         raise FileNotFoundError(f"No .tif files in {result_path}")
-    if n_samples is not None:
-        paths = paths[: max(0, int(n_samples))]
-        if not paths:
-            raise ValueError("n_samples resolved to an empty path list")
-    return paths
+    if n_samples is None:
+        return paths
+
+    n_samples = max(0, int(n_samples))
+    if n_samples == 0:
+        raise ValueError("n_samples resolved to an empty path list")
+
+    # 3. Bucket paths by base sample so augs of one volume share a key
+    #    R38F04-20181005_63_G3_c021_r0_k0 → sample "R38F04-20181005_63_G3"
+    by_sample: dict[str, list[Path]] = {}
+    for path in paths:
+        by_sample.setdefault(_fisbe_sample_id(path.stem), []).append(path)
+
+    # 4. Draw up to n_samples distinct volumes (not distinct TIFF files)
+    sample_ids = list(by_sample)
+    rng = np.random.default_rng(seed)
+    n_pick = min(n_samples, len(sample_ids))
+    chosen_ids = [sample_ids[i] for i in rng.permutation(len(sample_ids))[:n_pick]]
+
+    # 5. For each chosen volume, keep any one of its augmentations
+    return [
+        by_sample[sample_id][int(rng.integers(0, len(by_sample[sample_id])))]
+        for sample_id in chosen_ids
+    ]
 
 
 def plot_gt_instance_channels(
     gt_path,
     *,
     n_samples=None,
+    seed=42,
     p=None,
     threshold=None,
     figsize_cell=(3, 3),
@@ -262,12 +303,15 @@ def plot_gt_instance_channels(
     gt_path : str or Path
         Directory of multi-channel GT TIFFs.
     n_samples, p, threshold, channel_names, cmap
-        Same meaning as ``plot_per_image_predictions``.
+        Same meaning as ``plot_per_image_predictions``, except ``n_samples``
+        selects unique FISBe volumes (any one augmentation each).
         If ``channel_names`` is None and ``P==4``, defaults to ``['F','C','Db','Dn']``.
+    seed : int
+        RNG seed for unique-volume / augmentation selection when ``n_samples`` is set.
     """
     # 1. List GT TIFFs — same (Z, P, Y, X) layout as predictions
     #    (F/C often binary; Db/Dn continuous distance-like targets)
-    paths = resolve_gt_channel_paths(gt_path, n_samples)
+    paths = resolve_gt_channel_paths(gt_path, n_samples, seed=seed)
 
     # 2. Infer channel count P from the first volume
     first = tifffile.imread(paths[0], mode="r")

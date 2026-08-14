@@ -1,0 +1,30 @@
+/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/check_configuration.py:395: UserWarning: Seems that the channels requested are custom so BiaPy did not fill some variables by default. You will need to fill the following variables: PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH, PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH.
+  warnings.warn(
+stage_partition:   0%|          | 0/18 [00:00<?, ?pair/s]stage_partition:   6%|5         | 1/18 [00:04<01:17,  4.55s/pair]stage_partition:  17%|#6        | 3/18 [00:04<00:19,  1.33s/pair]stage_partition:  28%|##7       | 5/18 [00:05<00:08,  1.47pair/s]stage_partition:  56%|#####5    | 10/18 [00:05<00:02,  2.98pair/s]stage_partition:  72%|#######2  | 13/18 [00:13<00:05,  1.17s/pair]stage_partition: 100%|##########| 18/18 [00:13<00:00,  1.30pair/s]
+  0%|          | 0/13528 [00:00<?, ?it/s]  0%|          | 1/13528 [00:01<4:14:09,  1.13s/it]  6%|5         | 793/13528 [00:01<00:24, 530.09it/s] 12%|#1        | 1585/13528 [00:02<00:15, 763.88it/s] 18%|#7        | 2425/13528 [00:04<00:17, 624.85it/s] 24%|##4       | 3265/13528 [00:07<00:24, 424.06it/s] 30%|##9       | 4021/13528 [00:09<00:27, 350.82it/s] 36%|###5      | 4861/13528 [00:12<00:26, 326.72it/s] 42%|####1     | 5617/13528 [00:15<00:26, 302.34it/s] 47%|####7     | 6373/13528 [00:18<00:24, 290.86it/s] 53%|#####2    | 7129/13528 [00:21<00:22, 278.32it/s] 58%|#####8    | 7885/13528 [00:24<00:20, 270.36it/s] 64%|######3   | 8641/13528 [00:27<00:17, 275.18it/s] 69%|######8   | 9325/13528 [00:29<00:15, 273.25it/s] 74%|#######3  | 9973/13528 [00:34<00:16, 218.15it/s] 83%|########3 | 11233/13528 [00:39<00:10, 228.32it/s] 94%|#########4| 12737/13528 [00:42<00:02, 298.05it/s]100%|##########| 13528/13528 [00:42<00:00, 318.77it/s]
+  0%|          | 0/13528 [00:00<?, ?it/s]  0%|          | 1/13528 [00:01<6:08:28,  1.63s/it]  6%|5         | 793/13528 [00:03<00:43, 292.31it/s] 12%|#1        | 1585/13528 [00:05<00:39, 299.48it/s] 18%|#7        | 2425/13528 [00:08<00:33, 329.67it/s] 24%|##4       | 3265/13528 [00:09<00:26, 389.44it/s] 30%|##9       | 4021/13528 [00:11<00:25, 367.58it/s] 36%|###5      | 4861/13528 [00:13<00:20, 428.02it/s] 42%|####1     | 5617/13528 [00:14<00:17, 448.79it/s] 47%|####7     | 6373/13528 [00:16<00:15, 472.67it/s] 53%|#####2    | 7129/13528 [00:25<00:32, 195.36it/s] 58%|#####8    | 7885/13528 [00:38<00:49, 114.71it/s] 58%|#####8    | 7885/13528 [00:48<00:49, 114.71it/s] 64%|######3   | 8641/13528 [00:49<00:51, 95.41it/s]  69%|######8   | 9325/13528 [01:00<00:52, 80.43it/s] 69%|######8   | 9325/13528 [01:18<00:52, 80.43it/s] 74%|#######3  | 9973/13528 [01:22<01:04, 54.96it/s] 74%|#######3  | 9973/13528 [01:38<01:04, 54.96it/s] 83%|########3 | 11233/13528 [01:46<00:42, 53.69it/s] 83%|########3 | 11233/13528 [01:58<00:42, 53.69it/s] 94%|#########4| 12737/13528 [02:01<00:11, 66.86it/s]100%|##########| 13528/13528 [02:01<00:00, 111.08it/s]
+  0%|          | 0/1548 [00:00<?, ?it/s]  0%|          | 1/1548 [00:13<5:37:19, 13.08s/it] 51%|#####1    | 793/1548 [00:25<00:20, 36.80it/s]100%|##########| 1548/1548 [00:25<00:00, 60.78it/s]
+  0%|          | 0/1548 [00:00<?, ?it/s]  0%|          | 1/1548 [00:13<5:36:18, 13.04s/it] 51%|#####1    | 793/1548 [00:20<00:16, 46.89it/s]100%|##########| 1548/1548 [00:20<00:00, 74.35it/s]
+  0%|          | 0/1 [00:00<?, ?it/s]100%|##########| 1/1 [00:00<00:00, 193.89it/s]
+  0%|          | 0/1 [00:00<?, ?it/s]100%|##########| 1/1 [00:00<00:00, 198.12it/s]
+stage_partition:   0%|          | 0/18 [00:00<?, ?pair/s]stage_partition:   6%|5         | 1/18 [00:06<01:47,  6.30s/pair]stage_partition:  11%|#1        | 2/18 [00:09<01:07,  4.20s/pair]stage_partition:  78%|#######7  | 14/18 [00:12<00:02,  1.59pair/s]stage_partition:  89%|########8 | 16/18 [00:14<00:01,  1.37pair/s]stage_partition: 100%|##########| 18/18 [00:14<00:00,  1.22pair/s]
+  0%|          | 0/18 [00:00<?, ?it/s]  0%|          | 0/18 [00:33<?, ?it/s]
+Traceback (most recent call last):
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 240, in <module>
+    load_ckpt = i > 0
+
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 214, in main
+    
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 744, in update_config
+    self._build_workflow()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 396, in _build_workflow
+    self.workflow = getattr(mdl, name)(
+                    ^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/instance_seg.py", line 124, in __init__
+    self.original_test_path, self.original_test_mask_path = self.prepare_instance_data()
+                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/instance_seg.py", line 2896, in prepare_instance_data
+    create_instance_channels(self.cfg)
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/data/pre_processing.py", line 673, in create_instance_channels
+    raise ValueError(
+ValueError: Expected instance segmentation GT images to have a single channel containing the instance labels, but got image with shape (431, 684, 687, 4) (4 channels). Check the image file: (431, 684, 687, 4)

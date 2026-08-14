@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=biapy-instance-scale
+#SBATCH --job-name=biapy-channel-scale
 #SBATCH --cpus-per-task=12
-#SBATCH --time=4:00:00
+#SBATCH --time=2:00:00
 #SBATCH --mem=256g
 #SBATCH --account=torch_pr_61_general
 #SBATCH --output=sbatch/data/%x-%j.out
@@ -26,8 +26,8 @@ singularity exec --nv \
     python3 -u BiaPy/biapy_prep_main.py \
         -o ${output_dir} \
         -s train val test \
-        --instance-scale \
-        --num-instance-scales 4 \
+        --channel-scale \
+        --num-channel-scales 8 \
         -v info \
         -c \
         -w ${SLURM_CPUS_PER_TASK} \

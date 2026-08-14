@@ -1,59 +1,0 @@
-/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/check_configuration.py:395: UserWarning: Seems that the channels requested are custom so BiaPy did not fill some variables by default. You will need to fill the following variables: PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH, PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH.
-  warnings.warn(
-stage_partition:   0%|          | 0/18 [00:00<?, ?pair/s]stage_partition:   6%|5         | 1/18 [00:04<01:20,  4.73s/pair]stage_partition:  11%|#1        | 2/18 [00:07<01:00,  3.80s/pair]stage_partition: 100%|##########| 18/18 [00:12<00:00,  1.91pair/s]stage_partition: 100%|##########| 18/18 [00:12<00:00,  1.46pair/s]
-  0%|          | 0/2069 [00:00<?, ?it/s]  0%|          | 1/2069 [00:00<32:10,  1.07it/s]  5%|5         | 113/2069 [00:01<00:21, 92.24it/s] 11%|#         | 225/2069 [00:02<00:14, 131.49it/s] 16%|#6        | 337/2069 [00:02<00:11, 152.65it/s] 22%|##1       | 449/2069 [00:03<00:09, 165.18it/s] 27%|##7       | 561/2069 [00:03<00:08, 181.58it/s] 32%|###1      | 657/2069 [00:04<00:07, 185.85it/s] 36%|###6      | 753/2069 [00:04<00:07, 183.84it/s] 41%|####1     | 849/2069 [00:05<00:06, 183.55it/s] 46%|####5     | 945/2069 [00:05<00:06, 183.23it/s] 50%|#####     | 1041/2069 [00:07<00:07, 134.12it/s] 60%|######    | 1251/2069 [00:08<00:05, 157.18it/s] 71%|#######   | 1461/2069 [00:09<00:03, 170.51it/s] 81%|########  | 1671/2069 [00:10<00:02, 179.50it/s] 89%|########9 | 1846/2069 [00:10<00:01, 203.11it/s] 95%|#########4| 1958/2069 [00:11<00:00, 198.91it/s]100%|##########| 2069/2069 [00:11<00:00, 180.33it/s]
-  0%|          | 0/2069 [00:00<?, ?it/s]  0%|          | 1/2069 [00:02<1:40:34,  2.92s/it]  5%|5         | 113/2069 [00:05<01:20, 24.41it/s] 11%|#         | 225/2069 [00:08<00:56, 32.39it/s] 16%|#6        | 337/2069 [00:10<00:47, 36.18it/s] 22%|##1       | 449/2069 [00:13<00:42, 38.35it/s] 27%|##7       | 561/2069 [00:15<00:36, 41.19it/s] 32%|###1      | 657/2069 [00:18<00:33, 41.82it/s] 36%|###6      | 753/2069 [00:20<00:31, 41.32it/s] 41%|####1     | 849/2069 [00:22<00:29, 41.51it/s] 46%|####5     | 945/2069 [00:25<00:27, 41.34it/s] 50%|#####     | 1041/2069 [00:29<00:31, 32.53it/s] 60%|######    | 1251/2069 [00:33<00:21, 38.33it/s] 71%|#######   | 1461/2069 [00:38<00:14, 42.18it/s] 81%|########  | 1671/2069 [00:42<00:08, 44.44it/s] 89%|########9 | 1846/2069 [00:45<00:04, 49.03it/s] 95%|#########4| 1958/2069 [00:47<00:02, 47.19it/s]100%|##########| 2069/2069 [00:47<00:00, 43.20it/s]
-  0%|          | 0/208 [00:00<?, ?it/s]  0%|          | 1/208 [00:01<05:47,  1.68s/it] 54%|#####4    | 113/208 [00:02<00:01, 49.85it/s]100%|##########| 208/208 [00:02<00:00, 75.24it/s]
-  0%|          | 0/208 [00:00<?, ?it/s]  0%|          | 1/208 [00:02<09:08,  2.65s/it] 54%|#####4    | 113/208 [00:04<00:03, 26.87it/s]100%|##########| 208/208 [00:04<00:00, 41.69it/s]
-Traceback (most recent call last):
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torchinfo/torchinfo.py", line 295, in forward_pass
-    _ = model(*x, **kwargs)
-        ^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1884, in _call_impl
-    return inner()
-           ^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1832, in inner
-    result = forward_call(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/models/unetr.py", line 514, in forward
-    x = self.patch_embed(input)
-        ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1884, in _call_impl
-    return inner()
-           ^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1832, in inner
-    result = forward_call(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/models/tr_layers.py", line 140, in forward
-    assert H == self.img_size, f"Input height ({H}) doesn't match model ({self.img_size})."
-           ^^^^^^^^^^^^^^^^^^
-AssertionError: Input height (192) doesn't match model (64).
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 338, in <module>
-    main()
-  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 314, in main
-    biapy.train()
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 892, in train
-    self.workflow.train()
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/base_workflow.py", line 948, in train
-    self.prepare_model()
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/base_workflow.py", line 850, in prepare_model
-    ) = build_model(
-        ^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/models/__init__.py", line 463, in build_model
-    summary(
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torchinfo/torchinfo.py", line 223, in summary
-    summary_list = forward_pass(
-                   ^^^^^^^^^^^^^
-  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torchinfo/torchinfo.py", line 304, in forward_pass
-    raise RuntimeError(
-RuntimeError: Failed to run torchinfo. See above stack traces for more details. Executed layers up to: []

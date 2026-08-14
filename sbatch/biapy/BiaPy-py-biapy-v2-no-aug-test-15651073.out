@@ -1,2 +1,0 @@
-SBATCH Run: biapy-v2-no-aug.yaml, mode: test, job-name: biapy-v2-no-aug, run-id: 1
-SLURM_CPUS_PER_TASK=6

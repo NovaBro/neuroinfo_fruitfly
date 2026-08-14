@@ -1,0 +1,556 @@
+Output Data to fisbe/biapy-channel-scale
+running BiaPy/biapy_prep_main.py
+2026-08-13 13:22:05,721 - INFO     - main                     : source: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely
+2026-08-13 13:22:05,721 - INFO     - main                     : output: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale
+2026-08-13 13:22:05,724 - INFO     - main                     : Removing directory: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train
+2026-08-13 13:22:06,171 - INFO     - main                     : Converting train, Found (18 volumes), Processing None
+2026-08-13 13:22:06,182 - INFO     - convert_split            : Save workers: 12
+2026-08-13 13:22:06,182 - INFO     - convert_split            : Augmentations enabled: True
+2026-08-13 13:22:06,183 - INFO     - process_samples          : /// Processing Sample [1 / 18]: R38F04-20181005_63_G3.zarr ///
+2026-08-13 13:22:08,670 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:22:11,022 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3_cs1.46_0.28_1.45 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:11,023 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3_cs1.46_0.28_1.45, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:22:14,045 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3_cs0.29_0.30_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:14,045 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3_cs0.29_0.30_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:22:17,086 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3_cs0.37_1.38_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:17,087 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3_cs0.37_1.38_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:22:20,117 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3_cs1.45_1.41_0.34 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:20,117 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3_cs1.45_1.41_0.34, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:22:23,129 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3_cs0.26_0.30_1.46 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:23,130 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3_cs0.26_0.30_1.46, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:22:26,154 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3_cs0.27_1.44_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:26,154 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3_cs0.27_1.44_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:22:29,238 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3_cs1.38_1.47_1.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:29,239 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3_cs1.38_1.47_1.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:22:32,316 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3_cs1.40_0.30_0.32 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:32,316 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3_cs1.40_0.30_0.32, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:22:32,317 - INFO     - process_samples          : /// Processing Sample [2 / 18]: R38F04-20181005_63_G5.zarr ///
+2026-08-13 13:22:36,030 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:22:39,052 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5_cs1.42_0.32_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:39,052 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5_cs1.42_0.32_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:22:42,883 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5_cs1.47_1.41_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:42,883 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5_cs1.47_1.41_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:22:46,828 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5_cs0.34_1.40_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:46,828 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5_cs0.34_1.40_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:22:49,941 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5_cs0.28_1.46_0.32 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:49,941 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5_cs0.28_1.46_0.32, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:22:53,511 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5_cs0.34_0.26_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:53,511 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5_cs0.34_0.26_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:22:56,782 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5_cs1.47_1.38_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:22:56,782 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5_cs1.47_1.38_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:23:00,560 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5_cs0.31_0.31_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:23:00,560 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5_cs0.31_0.31_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:23:04,065 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5_cs1.39_0.33_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:23:04,065 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5_cs1.39_0.33_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:23:04,066 - INFO     - process_samples          : /// Processing Sample [3 / 18]: R38F04-20181005_63_H1.zarr ///
+2026-08-13 13:23:07,628 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:23:12,622 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1_cs1.43_1.42_0.32 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:23:12,622 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1_cs1.43_1.42_0.32, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:23:17,506 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1_cs0.34_0.26_1.38 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:23:17,506 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1_cs0.34_0.26_1.38, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:23:23,096 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1_cs1.48_0.30_1.47 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:23:23,096 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1_cs1.48_0.30_1.47, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:23:29,408 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1_cs0.29_0.31_0.27 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:23:29,408 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1_cs0.29_0.31_0.27, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:23:33,873 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1_cs0.37_1.46_1.40 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:23:33,873 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1_cs0.37_1.46_1.40, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:23:38,777 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1_cs1.49_1.38_1.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:23:38,777 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1_cs1.49_1.38_1.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:23:43,567 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1_cs0.29_1.43_0.25 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:23:43,567 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1_cs0.29_1.43_0.25, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:23:48,855 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1_cs1.45_0.33_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:23:48,855 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1_cs1.45_0.33_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:23:48,856 - INFO     - process_samples          : /// Processing Sample [4 / 18]: R53A10-20181019_64_A4.zarr ///
+2026-08-13 13:23:51,803 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:23:56,299 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4_cs0.27_0.30_1.45 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:23:56,299 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4_cs0.27_0.30_1.45, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:24:00,817 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4_cs1.41_1.43_1.50 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:24:00,817 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4_cs1.41_1.43_1.50, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:24:05,407 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4_cs0.27_1.43_0.33 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:24:05,408 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4_cs0.27_1.43_0.33, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:24:10,356 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4_cs1.44_0.27_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:24:10,356 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4_cs1.44_0.27_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:24:15,432 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4_cs0.29_1.47_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:24:15,432 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4_cs0.29_1.47_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:24:20,445 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4_cs0.37_0.32_0.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:24:20,445 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4_cs0.37_0.32_0.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:24:25,807 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4_cs1.39_0.32_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:24:25,807 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4_cs1.39_0.32_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:24:30,914 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4_cs1.45_1.40_0.32 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:24:30,914 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4_cs1.45_1.40_0.32, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:24:30,915 - INFO     - process_samples          : /// Processing Sample [5 / 18]: R75E01-20181030_64_D1.zarr ///
+2026-08-13 13:24:34,201 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:24:38,564 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1_cs1.47_0.36_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:24:38,564 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1_cs1.47_0.36_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:24:44,608 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1_cs1.48_1.39_0.33 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:24:44,608 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1_cs1.48_1.39_0.33, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:24:50,371 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1_cs1.49_0.37_0.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:24:50,371 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1_cs1.49_0.37_0.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:24:55,391 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1_cs0.34_1.38_0.27 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:24:55,391 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1_cs0.34_1.38_0.27, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:25:01,203 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1_cs1.50_1.41_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:25:01,203 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1_cs1.50_1.41_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:25:06,367 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1_cs0.37_0.25_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:25:06,368 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1_cs0.37_0.25_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:25:12,387 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1_cs0.28_1.46_1.45 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:25:12,387 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1_cs0.28_1.46_1.45, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:25:17,673 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1_cs0.27_0.36_0.27 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:25:17,673 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1_cs0.27_0.36_0.27, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:25:17,673 - INFO     - process_samples          : /// Processing Sample [6 / 18]: VT008647-20171222_63_D1.zarr ///
+2026-08-13 13:25:24,414 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:25:30,020 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1_cs1.47_0.37_1.46 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:25:30,020 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1_cs1.47_0.37_1.46, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:25:35,837 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1_cs0.26_1.48_1.50 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:25:35,838 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1_cs0.26_1.48_1.50, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:25:41,991 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1_cs1.40_0.26_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:25:41,992 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1_cs1.40_0.26_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:25:48,219 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1_cs0.36_0.31_1.45 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:25:48,219 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1_cs0.36_0.31_1.45, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:25:54,304 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1_cs0.34_1.47_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:25:54,305 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1_cs0.34_1.47_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:25:59,952 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1_cs1.47_1.39_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:25:59,952 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1_cs1.47_1.39_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:26:05,253 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1_cs0.26_0.34_0.30 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:26:05,253 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1_cs0.26_0.34_0.30, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:26:10,389 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1_cs1.49_1.49_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:26:10,389 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1_cs1.49_1.49_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:26:10,391 - INFO     - process_samples          : /// Processing Sample [7 / 18]: VT008647-20171222_63_D2.zarr ///
+2026-08-13 13:26:15,765 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:26:21,708 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2_cs0.31_0.31_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:26:21,708 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2_cs0.31_0.31_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:26:27,552 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2_cs0.31_1.38_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:26:27,552 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2_cs0.31_1.38_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:26:33,645 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2_cs0.35_1.42_0.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:26:33,645 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2_cs0.35_1.42_0.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:26:37,724 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2_cs1.41_0.37_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:26:37,724 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2_cs1.41_0.37_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:26:42,741 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2_cs1.39_0.29_0.36 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:26:42,741 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2_cs1.39_0.29_0.36, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:26:46,474 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2_cs0.34_0.31_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:26:46,474 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2_cs0.34_0.31_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:26:49,976 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2_cs1.49_1.41_1.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:26:49,976 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2_cs1.49_1.41_1.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:26:54,758 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2_cs1.39_1.47_0.25 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:26:54,758 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2_cs1.39_1.47_0.25, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:26:54,758 - INFO     - process_samples          : /// Processing Sample [8 / 18]: VT008647-20171222_63_E1.zarr ///
+2026-08-13 13:27:01,504 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:27:06,024 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1_cs0.27_1.43_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:27:06,024 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1_cs0.27_1.43_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:27:11,274 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1_cs1.48_0.32_0.31 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:27:11,274 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1_cs1.48_0.32_0.31, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:27:15,762 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1_cs0.34_0.27_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:27:15,762 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1_cs0.34_0.27_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:27:20,406 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1_cs1.48_1.43_0.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:27:20,406 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1_cs1.48_1.43_0.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:27:25,706 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1_cs0.35_1.48_1.45 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:27:25,706 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1_cs0.35_1.48_1.45, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:27:31,045 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1_cs0.28_0.36_1.47 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:27:31,045 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1_cs0.28_0.36_1.47, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:27:36,233 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1_cs1.42_1.42_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:27:36,233 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1_cs1.42_1.42_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:27:41,489 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1_cs1.45_0.28_1.46 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:27:41,489 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1_cs1.45_0.28_1.46, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:27:41,490 - INFO     - process_samples          : /// Processing Sample [9 / 18]: VT019303-20171013_65_B6.zarr ///
+2026-08-13 13:27:44,762 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:27:50,478 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6_cs1.44_0.28_0.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:27:50,478 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6_cs1.44_0.28_0.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:27:55,853 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6_cs0.29_1.41_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:27:55,853 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6_cs0.29_1.41_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:28:00,966 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6_cs0.36_0.28_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:28:00,966 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6_cs0.36_0.28_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:28:05,811 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6_cs0.27_0.27_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:28:05,811 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6_cs0.27_0.27_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:28:10,764 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6_cs1.41_1.44_0.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:28:10,764 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6_cs1.41_1.44_0.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:28:16,163 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6_cs1.43_0.34_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:28:16,163 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6_cs1.43_0.34_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:28:21,265 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6_cs0.30_1.49_1.43 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:28:21,265 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6_cs0.30_1.49_1.43, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:28:26,078 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6_cs1.49_1.48_1.45 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:28:26,078 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6_cs1.49_1.48_1.45, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:28:26,079 - INFO     - process_samples          : /// Processing Sample [10 / 18]: VT019307-20171013_65_F1.zarr ///
+2026-08-13 13:28:31,439 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:28:36,122 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1_cs0.37_0.33_0.32 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:28:36,122 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1_cs0.37_0.33_0.32, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:28:41,997 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1_cs1.44_1.40_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:28:41,998 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1_cs1.44_1.40_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:28:47,706 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1_cs1.44_0.34_0.27 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:28:47,706 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1_cs1.44_0.34_0.27, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:28:53,977 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1_cs1.41_0.27_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:28:53,977 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1_cs1.41_0.27_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:28:58,981 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1_cs1.41_1.38_0.32 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:28:58,981 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1_cs1.41_1.38_0.32, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:29:04,961 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1_cs0.25_1.39_0.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:29:04,961 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1_cs0.25_1.39_0.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:29:10,883 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1_cs0.30_0.26_1.38 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:29:10,884 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1_cs0.30_0.26_1.38, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:29:15,419 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1_cs0.29_1.49_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:29:15,419 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1_cs0.29_1.49_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:29:15,420 - INFO     - process_samples          : /// Processing Sample [11 / 18]: VT033051-20171128_61_E2.zarr ///
+2026-08-13 13:29:19,540 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:29:26,277 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2_cs0.26_0.29_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:29:26,277 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2_cs0.26_0.29_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:29:31,424 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2_cs0.37_1.43_1.46 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:29:31,425 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2_cs0.37_1.43_1.46, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:29:35,109 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2_cs1.44_0.32_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:29:35,109 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2_cs1.44_0.32_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:29:37,561 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2_cs0.37_0.32_1.40 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:29:37,561 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2_cs0.37_0.32_1.40, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:29:40,344 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2_cs1.39_1.43_0.30 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:29:40,345 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2_cs1.39_1.43_0.30, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:29:42,897 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2_cs1.46_1.45_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:29:42,898 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2_cs1.46_1.45_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:29:45,418 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2_cs0.33_1.43_0.33 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:29:45,418 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2_cs0.33_1.43_0.33, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:29:48,040 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2_cs1.39_0.26_0.32 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:29:48,040 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2_cs1.39_0.26_0.32, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:29:48,040 - INFO     - process_samples          : /// Processing Sample [12 / 18]: VT033051-20171128_61_E4.zarr ///
+2026-08-13 13:29:51,679 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:29:54,350 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4_cs1.48_0.26_0.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:29:54,350 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4_cs1.48_0.26_0.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:29:57,328 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4_cs0.32_1.43_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:29:57,328 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4_cs0.32_1.43_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:00,089 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4_cs0.37_0.36_1.43 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:00,089 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4_cs0.37_0.36_1.43, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:02,883 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4_cs1.49_1.47_0.25 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:02,884 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4_cs1.49_1.47_0.25, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:05,819 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4_cs0.33_0.27_0.33 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:05,819 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4_cs0.33_0.27_0.33, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:08,571 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4_cs1.50_0.31_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:08,571 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4_cs1.50_0.31_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:11,276 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4_cs0.31_1.40_1.46 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:11,276 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4_cs0.31_1.40_1.46, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:13,933 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4_cs1.46_1.47_1.43 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:13,933 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4_cs1.46_1.47_1.43, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:13,934 - INFO     - process_samples          : /// Processing Sample [13 / 18]: VT040433-20170919_63_D6.zarr ///
+2026-08-13 13:30:21,176 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:30:23,771 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6_cs1.46_1.45_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:23,771 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6_cs1.46_1.45_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:26,403 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6_cs0.30_1.46_1.45 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:26,403 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6_cs0.30_1.46_1.45, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:29,248 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6_cs0.31_1.42_0.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:29,248 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6_cs0.31_1.42_0.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:32,080 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6_cs0.35_0.31_1.40 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:32,080 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6_cs0.35_0.31_1.40, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:34,847 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6_cs1.49_0.28_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:34,847 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6_cs1.49_0.28_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:37,574 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6_cs1.40_1.42_0.25 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:37,574 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6_cs1.40_1.42_0.25, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:40,644 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6_cs0.28_0.37_0.30 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:40,644 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6_cs0.28_0.37_0.30, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:43,619 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6_cs1.44_0.29_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:43,619 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6_cs1.44_0.29_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:30:43,620 - INFO     - process_samples          : /// Processing Sample [14 / 18]: VT047848-20171020_66_I2.zarr ///
+2026-08-13 13:30:51,886 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:30:56,296 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2_cs0.36_1.45_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:30:56,296 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2_cs0.36_1.45_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:31:00,907 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2_cs1.41_0.34_0.30 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:31:00,908 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2_cs1.41_0.34_0.30, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:31:10,320 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2_cs0.36_0.25_1.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:31:10,320 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2_cs0.36_0.25_1.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:31:23,303 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2_cs1.47_1.40_1.49 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:31:23,304 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2_cs1.47_1.40_1.49, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:31:35,575 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2_cs0.31_1.49_1.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:31:35,575 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2_cs0.31_1.49_1.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:31:50,120 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2_cs1.48_1.43_0.33 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:31:50,120 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2_cs1.48_1.43_0.33, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:32:00,530 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2_cs0.25_0.34_0.30 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:32:00,530 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2_cs0.25_0.34_0.30, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:32:12,782 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2_cs1.46_0.33_1.47 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:32:12,782 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2_cs1.46_0.33_1.47, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:32:12,783 - INFO     - process_samples          : /// Processing Sample [15 / 18]: VT047848-20171020_66_I3.zarr ///
+2026-08-13 13:32:21,702 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:32:48,273 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3_cs0.37_0.26_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:32:48,273 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3_cs0.37_0.26_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:33:06,600 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3_cs0.29_1.38_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:33:06,601 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3_cs0.29_1.38_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:33:26,791 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3_cs0.33_1.44_0.33 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:33:26,791 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3_cs0.33_1.44_0.33, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:33:46,129 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3_cs1.46_1.49_1.43 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:33:46,130 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3_cs1.46_1.49_1.43, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:34:02,021 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3_cs1.40_0.25_1.49 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:34:02,021 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3_cs1.40_0.25_1.49, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:34:16,579 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3_cs1.47_1.49_0.34 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:34:16,579 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3_cs1.47_1.49_0.34, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:34:31,585 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3_cs1.42_0.32_0.36 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:34:31,586 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3_cs1.42_0.32_0.36, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:34:44,517 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3_cs0.34_0.26_0.34 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:34:44,518 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3_cs0.34_0.26_0.34, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:34:44,518 - INFO     - process_samples          : /// Processing Sample [16 / 18]: VT047848-20171020_66_I5.zarr ///
+2026-08-13 13:35:05,868 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:35:28,773 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5_cs0.26_0.37_0.34 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:35:28,773 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5_cs0.26_0.37_0.34, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:35:44,650 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5_cs1.43_0.26_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:35:44,650 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5_cs1.43_0.26_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:35:59,963 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5_cs0.33_0.36_1.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:35:59,963 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5_cs0.33_0.36_1.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:36:11,033 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5_cs1.46_0.27_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:36:11,033 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5_cs1.46_0.27_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:36:22,512 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5_cs0.32_1.47_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:36:22,513 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5_cs0.32_1.47_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:36:34,828 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5_cs1.43_1.46_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:36:34,829 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5_cs1.43_1.46_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:36:46,080 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5_cs1.41_1.38_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:36:46,080 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5_cs1.41_1.38_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:36:57,053 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5_cs0.25_1.39_1.49 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:36:57,053 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5_cs0.25_1.39_1.49, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:36:57,054 - INFO     - process_samples          : /// Processing Sample [17 / 18]: VT047848-20171020_66_J2.zarr ///
+2026-08-13 13:37:06,586 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:37:18,923 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2_cs0.28_0.33_0.31 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:37:18,923 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2_cs0.28_0.33_0.31, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:37:28,902 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2_cs1.38_0.35_0.31 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:37:28,902 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2_cs1.38_0.35_0.31, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:37:40,948 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2_cs0.31_1.38_1.47 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:37:40,948 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2_cs0.31_1.38_1.47, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:37:52,233 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2_cs1.49_0.27_1.45 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:37:52,233 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2_cs1.49_0.27_1.45, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:38:04,166 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2_cs1.48_1.47_0.36 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:38:04,166 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2_cs1.48_1.47_0.36, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:38:15,290 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2_cs0.31_0.28_1.46 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:38:15,290 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2_cs0.31_0.28_1.46, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:38:26,023 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2_cs1.48_1.47_1.46 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:38:26,023 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2_cs1.48_1.47_1.46, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:38:37,024 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2_cs0.35_1.48_0.36 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:38:37,024 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2_cs0.35_1.48_0.36, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:38:37,025 - INFO     - process_samples          : /// Processing Sample [18 / 18]: VT061467-20180911_62_E5.zarr ///
+2026-08-13 13:38:41,155 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:38:45,468 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5_cs0.33_0.34_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:38:45,468 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5_cs0.33_0.34_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:38:49,072 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5_cs0.33_1.44_0.34 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:38:49,072 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5_cs0.33_1.44_0.34, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:38:53,031 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5_cs1.49_0.30_1.40 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:38:53,031 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5_cs1.49_0.30_1.40, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:38:57,939 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5_cs0.25_0.27_1.47 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:38:57,939 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5_cs0.25_0.27_1.47, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:39:03,517 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5_cs1.45_1.45_1.43 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:39:03,517 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5_cs1.45_1.45_1.43, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:39:08,323 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5_cs1.39_1.46_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:39:08,323 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5_cs1.39_1.46_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:39:13,300 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5_cs1.47_0.28_0.32 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:39:13,300 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5_cs1.47_0.28_0.32, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:39:18,175 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5_cs0.31_1.46_1.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/raw
+2026-08-13 13:39:18,175 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5_cs0.31_1.46_1.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/train/label
+2026-08-13 13:39:19,667 - INFO     - main                     : Removing directory: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val
+2026-08-13 13:39:19,796 - INFO     - main                     : Converting val, Found (5 volumes), Processing None
+2026-08-13 13:39:19,805 - INFO     - convert_split            : Save workers: 12
+2026-08-13 13:39:19,805 - INFO     - convert_split            : Augmentations enabled: True
+2026-08-13 13:39:19,806 - INFO     - process_samples          : /// Processing Sample [1 / 5]: R22C03-20180918_66_J2.zarr ///
+2026-08-13 13:39:21,301 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:39:27,073 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2_cs0.28_0.30_1.47 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:39:27,074 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2_cs0.28_0.30_1.47, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:39:35,128 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2_cs1.43_1.41_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:39:35,128 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2_cs1.43_1.41_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:39:41,639 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2_cs1.40_1.45_0.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:39:41,639 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2_cs1.40_1.45_0.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:39:49,408 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2_cs1.46_0.26_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:39:49,408 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2_cs1.46_0.26_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:39:55,948 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2_cs1.38_0.29_0.25 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:39:55,948 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2_cs1.38_0.29_0.25, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:40:02,874 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2_cs0.28_0.32_0.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:40:02,874 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2_cs0.28_0.32_0.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:40:09,432 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2_cs0.35_1.46_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:40:09,432 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2_cs0.35_1.46_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:40:15,844 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2_cs0.29_1.42_0.32 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:40:15,844 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2_cs0.29_1.42_0.32, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:40:15,845 - INFO     - process_samples          : /// Processing Sample [2 / 5]: VT012403-20171128_61_B2.zarr ///
+2026-08-13 13:40:20,092 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:40:25,453 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2_cs0.28_1.39_1.49 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:40:25,453 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2_cs0.28_1.39_1.49, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:40:29,407 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2_cs1.46_0.30_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:40:29,407 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2_cs1.46_0.30_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:40:34,531 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2_cs1.42_0.28_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:40:34,531 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2_cs1.42_0.28_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:40:39,744 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2_cs1.38_1.40_0.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:40:39,744 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2_cs1.38_1.40_0.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:40:44,981 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2_cs0.28_0.29_1.40 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:40:44,981 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2_cs0.28_0.29_1.40, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:40:49,568 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2_cs1.42_1.48_1.50 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:40:49,568 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2_cs1.42_1.48_1.50, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:40:54,503 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2_cs0.35_1.41_0.31 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:40:54,503 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2_cs0.35_1.41_0.31, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:40:59,868 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2_cs0.28_0.34_0.30 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:40:59,868 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2_cs0.28_0.34_0.30, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:40:59,869 - INFO     - process_samples          : /// Processing Sample [3 / 5]: VT033614-20171124_64_H1.zarr ///
+2026-08-13 13:41:03,811 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:41:09,078 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1_cs0.29_0.35_0.27 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:41:09,078 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1_cs0.29_0.35_0.27, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:41:14,819 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1_cs0.37_1.43_1.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:41:14,820 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1_cs0.37_1.43_1.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:41:20,491 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1_cs1.40_0.33_1.38 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:41:20,491 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1_cs1.40_0.33_1.38, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:41:26,226 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1_cs0.30_1.40_0.30 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:41:26,226 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1_cs0.30_1.40_0.30, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:41:31,883 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1_cs0.26_0.29_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:41:31,883 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1_cs0.26_0.29_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:41:37,255 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1_cs1.43_1.47_0.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:41:37,255 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1_cs1.43_1.47_0.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:41:42,649 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1_cs1.41_0.34_0.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:41:42,649 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1_cs1.41_0.34_0.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:41:46,880 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1_cs1.39_1.41_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:41:46,880 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1_cs1.39_1.41_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:41:46,880 - INFO     - process_samples          : /// Processing Sample [4 / 5]: VT033614-20171124_64_H5.zarr ///
+2026-08-13 13:41:51,394 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:41:57,870 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5_cs0.31_0.29_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:41:57,870 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5_cs0.31_0.29_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:42:03,636 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5_cs1.49_1.49_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:42:03,637 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5_cs1.49_1.49_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:42:09,590 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5_cs0.36_1.38_1.47 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:42:09,590 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5_cs0.36_1.38_1.47, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:42:14,959 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5_cs0.28_0.27_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:42:14,959 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5_cs0.28_0.27_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:42:20,809 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5_cs0.35_1.48_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:42:20,810 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5_cs0.35_1.48_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:42:26,757 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5_cs1.40_0.33_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:42:26,757 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5_cs1.40_0.33_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:42:32,495 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5_cs1.40_1.45_0.33 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:42:32,495 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5_cs1.40_1.45_0.33, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:42:38,042 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5_cs1.50_0.33_1.45 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:42:38,042 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5_cs1.50_0.33_1.45, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:42:38,043 - INFO     - process_samples          : /// Processing Sample [5 / 5]: VT041298-20171114_63_C3.zarr ///
+2026-08-13 13:42:43,431 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:42:49,297 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3_cs0.25_1.48_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:42:49,298 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3_cs0.25_1.48_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:42:54,220 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3_cs1.45_0.31_0.34 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:42:54,221 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3_cs1.45_0.31_0.34, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:42:59,434 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3_cs1.40_0.28_1.45 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:42:59,434 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3_cs1.40_0.28_1.45, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:43:04,753 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3_cs0.31_0.26_0.33 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:43:04,754 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3_cs0.31_0.26_0.33, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:43:10,077 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3_cs1.45_1.50_0.25 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:43:10,078 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3_cs1.45_1.50_0.25, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:43:15,558 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3_cs0.26_0.34_1.40 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:43:15,558 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3_cs0.26_0.34_1.40, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:43:19,812 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3_cs1.39_1.39_1.49 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:43:19,813 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3_cs1.39_1.39_1.49, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:43:25,423 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3_cs0.27_1.40_1.49 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/raw
+2026-08-13 13:43:25,423 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3_cs0.27_1.40_1.49, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/val/label
+2026-08-13 13:43:26,779 - INFO     - main                     : Removing directory: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test
+2026-08-13 13:43:26,944 - INFO     - main                     : Converting test, Found (7 volumes), Processing None
+2026-08-13 13:43:26,952 - INFO     - convert_split            : Save workers: 12
+2026-08-13 13:43:26,953 - INFO     - convert_split            : Augmentations enabled: True
+2026-08-13 13:43:26,953 - INFO     - process_samples          : /// Processing Sample [1 / 7]: JRC_SS04989-20160318_24_A2.zarr ///
+2026-08-13 13:43:29,722 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:43:36,445 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2_cs0.33_1.44_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:43:36,445 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2_cs0.33_1.44_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:43:43,858 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2_cs0.34_0.30_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:43:43,858 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2_cs0.34_0.30_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:43:50,627 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2_cs1.48_1.42_1.47 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:43:50,627 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2_cs1.48_1.42_1.47, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:43:57,870 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2_cs0.29_0.27_1.48 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:43:57,870 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2_cs0.29_0.27_1.48, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:44:04,575 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2_cs1.48_1.43_0.32 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:44:04,575 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2_cs1.48_1.43_0.32, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:44:11,593 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2_cs1.47_0.25_1.49 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:44:11,594 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2_cs1.47_0.25_1.49, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:44:17,922 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2_cs1.42_0.28_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:44:17,922 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2_cs1.42_0.28_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:44:24,389 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2_cs0.31_1.50_0.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:44:24,389 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2_cs0.31_1.50_0.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:44:24,389 - INFO     - process_samples          : /// Processing Sample [2 / 7]: R14A02-20180905_65_A6.zarr ///
+2026-08-13 13:44:31,356 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:44:38,825 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6_cs1.44_0.32_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:44:38,825 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6_cs1.44_0.32_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:44:44,164 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6_cs1.48_1.38_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:44:44,164 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6_cs1.48_1.38_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:44:49,238 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6_cs0.36_0.36_1.43 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:44:49,238 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6_cs0.36_0.36_1.43, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:44:54,531 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6_cs0.30_0.31_0.25 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:44:54,532 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6_cs0.30_0.31_0.25, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:45:00,495 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6_cs0.34_1.41_1.46 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:45:00,495 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6_cs0.34_1.41_1.46, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:45:05,220 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6_cs0.37_1.38_0.32 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:45:05,220 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6_cs0.37_1.38_0.32, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:45:10,210 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6_cs1.47_0.29_1.40 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:45:10,210 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6_cs1.47_0.29_1.40, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:45:15,413 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6_cs1.44_1.42_1.43 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:45:15,413 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6_cs1.44_1.42_1.43, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:45:15,414 - INFO     - process_samples          : /// Processing Sample [3 / 7]: R54A09-20181019_64_H1.zarr ///
+2026-08-13 13:45:18,000 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:45:24,217 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1_cs1.47_1.39_0.36 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:45:24,218 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1_cs1.47_1.39_0.36, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:45:30,551 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1_cs0.35_0.29_0.33 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:45:30,551 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1_cs0.35_0.29_0.33, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:45:36,856 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1_cs0.36_0.29_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:45:36,856 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1_cs0.36_0.29_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:45:42,951 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1_cs0.33_1.46_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:45:42,951 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1_cs0.33_1.46_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:45:49,385 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1_cs0.26_1.43_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:45:49,386 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1_cs0.26_1.43_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:45:56,085 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1_cs1.47_0.28_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:45:56,085 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1_cs1.47_0.28_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:46:02,365 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1_cs1.48_0.34_0.27 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:46:02,365 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1_cs1.48_0.34_0.27, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:46:08,568 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1_cs1.38_1.42_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:46:08,568 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1_cs1.38_1.42_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:46:08,568 - INFO     - process_samples          : /// Processing Sample [4 / 7]: VT011145-20171222_63_I1.zarr ///
+2026-08-13 13:46:16,321 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:46:23,531 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1_cs1.39_1.43_1.40 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:46:23,532 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1_cs1.39_1.43_1.40, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:46:29,530 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1_cs0.29_1.41_1.40 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:46:29,530 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1_cs0.29_1.41_1.40, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:46:34,718 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1_cs1.45_1.45_0.29 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:46:34,718 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1_cs1.45_1.45_0.29, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:46:39,733 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1_cs1.44_0.37_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:46:39,734 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1_cs1.44_0.37_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:46:44,969 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1_cs0.37_1.45_0.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:46:44,970 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1_cs0.37_1.45_0.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:46:49,781 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1_cs0.34_0.34_1.38 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:46:49,781 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1_cs0.34_0.34_1.38, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:46:54,647 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1_cs0.34_0.33_0.35 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:46:54,647 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1_cs0.34_0.33_0.35, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:46:59,406 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1_cs1.38_0.35_0.27 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:46:59,406 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1_cs1.38_0.35_0.27, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:46:59,408 - INFO     - process_samples          : /// Processing Sample [5 / 7]: VT027175-20171031_62_H3.zarr ///
+2026-08-13 13:47:02,274 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:47:09,266 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3_cs1.43_0.35_0.25 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:47:09,266 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3_cs1.43_0.35_0.25, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:47:15,453 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3_cs0.30_0.36_0.26 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:47:15,453 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3_cs0.30_0.36_0.26, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:47:22,086 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3_cs1.49_0.28_1.47 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:47:22,086 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3_cs1.49_0.28_1.47, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:47:28,385 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3_cs0.35_1.38_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:47:28,385 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3_cs0.35_1.38_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:47:34,489 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3_cs0.26_1.47_0.30 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:47:34,489 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3_cs0.26_1.47_0.30, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:47:40,039 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3_cs1.46_1.49_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:47:40,039 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3_cs1.46_1.49_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:47:45,745 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3_cs0.34_0.26_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:47:45,745 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3_cs0.34_0.26_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:47:51,476 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3_cs1.47_1.41_0.37 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:47:51,476 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3_cs1.47_1.41_0.37, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:47:51,477 - INFO     - process_samples          : /// Processing Sample [6 / 7]: VT027175-20171031_62_H4.zarr ///
+2026-08-13 13:47:56,933 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:48:02,331 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4_cs0.34_0.26_1.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:48:02,331 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4_cs0.34_0.26_1.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:48:08,013 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4_cs0.36_1.42_1.38 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:48:08,013 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4_cs0.36_1.42_1.38, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:48:13,617 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4_cs1.43_1.49_0.36 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:48:13,617 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4_cs1.43_1.49_0.36, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:48:19,213 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4_cs0.25_1.45_0.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:48:19,213 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4_cs0.25_1.45_0.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:48:24,735 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4_cs0.32_0.29_0.30 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:48:24,735 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4_cs0.32_0.29_0.30, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:48:30,195 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4_cs1.40_1.46_1.39 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:48:30,195 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4_cs1.40_1.46_1.39, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:48:35,849 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4_cs1.44_0.31_1.44 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:48:35,850 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4_cs1.44_0.31_1.44, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:48:41,245 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4_cs1.48_0.29_0.25 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:48:41,245 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4_cs1.48_0.29_0.25, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:48:41,245 - INFO     - process_samples          : /// Processing Sample [7 / 7]: VT050157-20171110_61_C1.zarr ///
+2026-08-13 13:48:45,372 - INFO     - process_samples          : Number of augmentation jobs: 8
+2026-08-13 13:48:49,763 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1_cs0.27_1.40_1.42 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:48:49,763 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1_cs0.27_1.40_1.42, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:48:54,280 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1_cs1.49_1.47_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:48:54,280 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1_cs1.49_1.47_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:48:58,673 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1_cs1.48_0.26_1.38 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:48:58,674 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1_cs1.48_0.26_1.38, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:49:03,089 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1_cs0.31_0.36_0.27 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:49:03,089 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1_cs0.31_0.36_0.27, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:49:07,476 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1_cs0.29_1.41_0.27 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:49:07,477 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1_cs0.29_1.41_0.27, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:49:11,757 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1_cs1.49_0.35_0.27 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:49:11,757 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1_cs1.49_0.35_0.27, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:49:16,291 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1_cs1.43_1.49_0.28 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:49:16,292 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1_cs1.43_1.49_0.28, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
+2026-08-13 13:49:20,447 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1_cs0.28_0.25_1.41 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/raw
+2026-08-13 13:49:20,447 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1_cs0.28_0.25_1.41, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-channel-scale/test/label
