@@ -8,11 +8,13 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import tifffile
+import zarr
 
 from .base_data import enhance_display
 
 # FISBe volume id: {line}-{YYYYMMDD}_{nn}_{well}; trailing BiaPy aug_id is ignored.
 _FISBE_SAMPLE_RE = re.compile(r"^(.+-\d{8}_\d+_[A-Z]\d+)")
+_GT_TIFF_SUFFIXES = (".tif", ".tiff")
 
 
 def _fisbe_sample_id(stem: str) -> str:
@@ -25,6 +27,30 @@ def _fisbe_sample_id(stem: str) -> str:
     # Match {line}-{YYYYMMDD}_{nn}_{well}; leftover suffix is the augmentation.
     match = _FISBE_SAMPLE_RE.match(stem)
     return match.group(1) if match else stem
+
+
+def _load_volume(path):
+    """Load a TIFF file or Zarr array directory as ndarray."""
+    path = Path(path)
+    suffix = path.suffix.lower()
+    if suffix in _GT_TIFF_SUFFIXES:
+        return tifffile.imread(path, mode="r")
+    if suffix == ".zarr" and path.is_dir():
+        return np.asarray(zarr.open(path.as_posix(), mode="r"))
+    raise ValueError(f"Unsupported volume input: {path}")
+
+
+def _as_zpyx(vol):
+    """Normalize a 4D volume to (Z, P, Y, X)."""
+    arr = np.asarray(vol)
+    if arr.ndim != 4:
+        return arr
+    # TIFF GTs are typically (Z, P, Y, X); Zarr GTs here are often (Z, Y, X, P).
+    if arr.shape[1] <= 16:
+        return arr
+    if arr.shape[-1] <= 16:
+        return np.transpose(arr, (0, 3, 1, 2))
+    return arr
 
 
 def get_metric_paths(sub_folder: str, cf_stem: str, run: str = '0'):
@@ -241,18 +267,22 @@ def plot_per_image_predictions(
 
 
 def resolve_gt_channel_paths(gt_path, n_samples=None, seed=42):
-    """List TIFFs under a BiaPy instance-channel GT folder (label_F.…_Dn.…).
+    """List GT volumes under a BiaPy instance-channel GT folder (label_F.…_Dn.…).
 
     When ``n_samples`` is set, pick that many unique FISBe volumes (any one
-    augmentation each) instead of the first N sorted TIFFs, which would all
+    augmentation each) instead of the first N sorted files/dirs, which would all
     be augs of the same volume.
     """
     # 1. Point at the GT label folder (e.g. fisbe/.../train/label_F.…_Dn.…)
     result_path = Path(gt_path)
-    # 2. All TIFFs, sorted so n_samples=None is a stable listing
-    paths = sorted(result_path.glob("*.tif"))
+    # 2. All supported GT volumes, sorted so n_samples=None is a stable listing
+    tiff_paths = [
+        p for p in result_path.iterdir() if p.is_file() and p.suffix.lower() in _GT_TIFF_SUFFIXES
+    ]
+    zarr_paths = [p for p in result_path.iterdir() if p.is_dir() and p.suffix.lower() == ".zarr"]
+    paths = sorted([*tiff_paths, *zarr_paths])
     if not paths:
-        raise FileNotFoundError(f"No .tif files in {result_path}")
+        raise FileNotFoundError(f"No TIFF files or .zarr directories in {result_path}")
     if n_samples is None:
         return paths
 
@@ -294,14 +324,15 @@ def plot_gt_instance_channels(
 ):
     """Plot BiaPy instance-channel GT MIPs (F/C/Db/Dn targets the network learns).
 
-    Reads TIFFs from ``gt_path`` (e.g. ``fisbe/.../train/label_F.…_Dn.…``).
-    Each image is ``(Z, P, Y, X)`` — same layout as ``per_image`` predictions.
+    Reads TIFF files or Zarr arrays from ``gt_path``
+    (e.g. ``fisbe/.../train/label_F.…_Dn.…``). Each image is ``(Z, P, Y, X)``
+    — same layout as ``per_image`` predictions.
     Reuses the prediction MIP / cmap / draw helpers.
 
     Parameters
     ----------
     gt_path : str or Path
-        Directory of multi-channel GT TIFFs.
+        Directory of multi-channel GT volumes (TIFF files or .zarr directories).
     n_samples, p, threshold, channel_names, cmap
         Same meaning as ``plot_per_image_predictions``, except ``n_samples``
         selects unique FISBe volumes (any one augmentation each).
@@ -309,15 +340,20 @@ def plot_gt_instance_channels(
     seed : int
         RNG seed for unique-volume / augmentation selection when ``n_samples`` is set.
     """
-    # 1. List GT TIFFs — same (Z, P, Y, X) layout as predictions
+    # 1. List GT volumes — same (Z, P, Y, X) layout as predictions
     #    (F/C often binary; Db/Dn continuous distance-like targets)
     paths = resolve_gt_channel_paths(gt_path, n_samples, seed=seed)
 
     # 2. Infer channel count P from the first volume
-    first = tifffile.imread(paths[0], mode="r")
+    first = _as_zpyx(_load_volume(paths[0]))
     if first.ndim != 4:
         raise ValueError(f"Expected (Z, P, Y, X), got shape {first.shape} for {paths[0].name}")
     n_p_all = int(first.shape[1])
+    print(f"Shape: {first.shape}")
+    print(f"dtype: {first.dtype}")
+    print(f"min: {first.min()}, max: {first.max()}, mean: {first.mean()}")
+    # print(f"unique: {np.unique(first)[:10]}")
+
     del first
 
     # 3. Default F/C/Db/Dn names when P==4 and caller did not supply labels
@@ -337,7 +373,7 @@ def plot_gt_instance_channels(
 
     # 5. Per sample × channel: MIP → enhance → draw (reuse prediction helpers)
     for i, path in enumerate(paths):
-        data = tifffile.imread(path, mode="r")  # (Z, P, Y, X)
+        data = _as_zpyx(_load_volume(path))  # (Z, P, Y, X)
         for col, j in enumerate(p_idx):
             mip = prediction_channel_mip(data, j, threshold=threshold)
             draw_prediction_subplot(
