@@ -10,9 +10,15 @@ fisbe/
 *.h5j
 *.tif
 metrics/
+papers/
+
+*.h5j
+*.tif
+*.swc
 
 /data
 /skeletons
+/volumes
 /__pycache__
 __pycache__
 *.DS_Store
@@ -28,3 +34,7 @@ web/client/node_modules/
 web/client/dist/
 web/server/.venv/
 web/server/__pycache__/
+/.vscode
+/papers
+
+.ipynb_checkpoints
