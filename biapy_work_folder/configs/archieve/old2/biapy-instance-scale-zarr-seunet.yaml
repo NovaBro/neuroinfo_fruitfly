@@ -1,0 +1,100 @@
+# BiaPy version: 3.7.0
+
+SYSTEM:
+    NUM_CPUS: 12
+    NUM_WORKERS: 12
+
+PROBLEM:
+    TYPE: INSTANCE_SEG
+    NDIM: 3D
+    INSTANCE_SEG:
+      DATA_CHANNELS: ['F', 'Dc', 'Dn', 'P']
+      DATA_CHANNELS_EXTRA_OPTS:
+        - P:
+            type: 'skeleton'
+            dilation: 2
+          Dc:
+            type: 'skeleton'
+            mask_values: False
+          Dn:
+            mask_values: False
+            decline_power: 2
+      DATA_CHANNEL_WEIGHTS: (1.0, 3.0, 3.0, 2.0)
+      WATERSHED:
+        SEED_CHANNELS: ['P']             # keep seeds simple: trust P
+        SEED_CHANNELS_THRESH: ['auto']
+        TOPOGRAPHIC_SURFACE_CHANNEL: 'F'
+        GROWTH_MASK_CHANNELS: ['F']
+        GROWTH_MASK_CHANNELS_THRESH: ['auto']
+        DATA_CHECK_MW: True
+
+
+DATA: 
+    PATCH_SIZE: (80, 128, 128, 3)
+    TRAIN:
+        PATH: fisbe/biapy-instance-scale-zarr/train/raw
+        GT_PATH: fisbe/biapy-instance-scale-zarr/train/label
+        INPUT_IMG_AXES_ORDER: ZYXC
+        INPUT_MASK_AXES_ORDER: ZYXC
+        IN_MEMORY: False
+    VAL:
+        PATH: fisbe/biapy-no-aug-zarr/val/raw
+        GT_PATH: fisbe/biapy-no-aug-zarr/val/label
+        FROM_TRAIN: False
+        INPUT_IMG_AXES_ORDER: ZYXC
+        INPUT_MASK_AXES_ORDER: ZYXC
+        IN_MEMORY: False
+    TEST:
+        PATH: fisbe/biapy-no-aug-zarr/test/raw
+        GT_PATH: fisbe/biapy-no-aug-zarr/test/label
+        INPUT_IMG_AXES_ORDER: ZYXC
+        INPUT_MASK_AXES_ORDER: ZYXC
+        IN_MEMORY: False
+        LOAD_GT: True
+        PADDING: (4,16,16)
+
+AUGMENTOR:
+    ENABLE: False
+    RANDOM_ROT: False
+    VFLIP: False
+    HFLIP: False
+    ZFLIP: False
+
+
+MODEL:
+    ARCHITECTURE: seunet
+    # unet, seunet, unetr
+    FEATURE_MAPS: [16, 32, 64, 128, 256]
+    Z_DOWN: [1,1,1,1]
+    LOAD_CHECKPOINT: False
+
+TRAIN:
+    ENABLE: True
+    OPTIMIZER: ADAMW
+    LR: 1.E-3
+    BATCH_SIZE: 34
+    EPOCHS: 60
+    PATIENCE: 10
+    LR_SCHEDULER:
+        NAME: 'onecycle'    # use one-cycle learning rate scheduler
+        # NAME: 'warmupcosine'         # Learning rate scheduler with warmup and cosine decay
+        # MIN_LR: 1.E-5                # Minimum learning rate at the end of cosine decay
+        # WARMUP_COSINE_DECAY_EPOCHS: 5 # Number of epochs for the warmup + cosine decay schedule
+
+TEST:
+    ENABLE: True
+    AUGMENTATION: False
+    FULL_IMG: False
+    BY_CHUNKS:
+        ENABLE: True
+        FORMAT: zarr
+        SAVE_OUT_TIF: true
+        INPUT_IMG_AXES_ORDER: ZYXC
+        WORKFLOW_PROCESS:
+            ENABLE: true
+            TYPE: entire_pred
+    POST_PROCESSING:
+        INSTANCE_REFINEMENT:
+            ENABLE: True
+            OPERATIONS: ['remove_small_objects']
+            VALUES: [1000]   # voxel count threshold — tune based on your smallest real neuron

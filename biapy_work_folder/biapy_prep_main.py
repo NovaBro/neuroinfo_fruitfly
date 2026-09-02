@@ -1,8 +1,8 @@
 """
-Convert FISBe zarr volumes to BiaPy-compatible TIFF files.
-For BiaPy, the input image dimensions are specified in the config file:
-    INPUT_IMG_AXES_ORDER: CZYX   # raw (C, Z, Y, X)
-    INPUT_MASK_AXES_ORDER: CZYX  # zarr GT also loaded with IMG axes → (1, Z, Y, X)
+Convert FISBe zarr volumes to BiaPy-compatible Zarr files.
+FISBe source axes are CZYX. Written BiaPy volumes are:
+    INPUT_IMG_AXES_ORDER: ZYXC   # raw after CZYX -> ZYXC transpose
+    INPUT_MASK_AXES_ORDER: ZYXC  # merged instance-ID volume with singleton C
 
 For the FISBe dataset, the image dimensions are specified in the doc:
     https://kainmueller-lab.github.io/fisbe/
@@ -54,7 +54,7 @@ def convert_split(input_dir: Path, output_dir: Path, args: argparse.Namespace) -
         futures: set = set()
 
         for index, in_path in enumerate(input_paths):
-            if (raw_dir / in_path.name.replace(".zarr", ".tif")).exists() and not args.clean:
+            if (raw_dir / f"{in_path.stem}.zarr").exists() and not args.clean:
                 logger.info(f"This path already exists, skipping: '{raw_dir / in_path.name}'")
                 continue
 

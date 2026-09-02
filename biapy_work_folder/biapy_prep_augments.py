@@ -10,6 +10,10 @@ from imaging_helpers_hpc.processing import axis_rotation, channel_flip
 
 NUM_CHANNELS = 3
 _IDENTITY_CHANNEL_ORDER = (0, 1, 2)
+_SCALE_BAND_FRACTION = 0.1
+_MIN_SCALE_LOG_L2 = 0.75
+# Materialize / shuffle all 2**size masks only up to this size; above, sample ints.
+_MASK_ENUM_MAX_SIZE = 12
 
 
 def _dtype_max(dtype) -> float:
@@ -62,13 +66,73 @@ def per_instance_intensity_scale(
     return _scale_clip_cast(out, raw.dtype)
 
 
+def _band_margin(lo: float, hi: float) -> float:
+    return (hi - lo) * _SCALE_BAND_FRACTION
+
+
+def _scales_from_mask(lo: float, hi: float, mask: np.ndarray) -> np.ndarray:
+    """Draw extreme-band scales; False = low band, True = high band."""
+    mask = np.asarray(mask, dtype=bool)
+    margin = _band_margin(lo, hi)
+    out = np.empty(mask.shape[0], dtype=np.float32)
+    n_low = int(np.sum(~mask))
+    n_high = int(np.sum(mask))
+    if n_low:
+        out[~mask] = np.random.uniform(lo, lo + margin, size=n_low)
+    if n_high:
+        out[mask] = np.random.uniform(hi - margin, hi, size=n_high)
+    return out
+
+
+def _mask_from_bits(bits: int, size: int) -> np.ndarray:
+    return np.array([bool((bits >> i) & 1) for i in range(size)], dtype=bool)
+
+
 def _sample_scalings(lo: float, hi: float, size: int) -> np.ndarray:
-    distance = hi - lo
-    margin = distance * 0.25
-    low_range = np.random.uniform(lo, lo + margin, size=int(np.floor(size / 2))).astype(np.float32)
-    high_range = np.random.uniform(hi - margin, hi, size=int(np.ceil(size / 2))).astype(np.float32)
-    # return np.random.uniform(lo, hi, size=size).astype(np.float32)
-    return np.random.permutation(np.concat([low_range, high_range]))
+    """One scale vector: each slot independently low-band or high-band."""
+    mask = np.random.randint(0, 2, size=size).astype(bool)
+    return _scales_from_mask(lo, hi, mask)
+
+
+def _scale_log_l2(a: np.ndarray, b: np.ndarray) -> float:
+    return float(np.linalg.norm(np.log(np.asarray(a)) - np.log(np.asarray(b))))
+
+
+def _scale_set_capacity(size: int) -> int:
+    """Number of distinct low/high patterns (2**size)."""
+    return 1 << size
+
+
+def _unique_mask_bits(size: int, n: int) -> list[int]:
+    """Return up to ``n`` distinct bitmask ints in ``0 .. 2**size - 1``."""
+    capacity = _scale_set_capacity(size)
+    n_eff = min(n, capacity)
+    if size <= _MASK_ENUM_MAX_SIZE:
+        return [int(b) for b in np.random.permutation(capacity)[:n_eff]]
+    chosen: set[int] = set()
+    while len(chosen) < n_eff:
+        chosen.add(int(np.random.randint(0, capacity)))
+    return list(chosen)
+
+
+def _plan_scale_set(
+    lo: float, hi: float, size: int, n: int
+) -> list[np.ndarray]:
+    """Plan up to ``n`` diverse scale vectors (capped at 2**size distinct masks)."""
+    if size <= 0 or n <= 0:
+        return []
+    out: list[np.ndarray] = []
+    for bits in _unique_mask_bits(size, n):
+        mask = _mask_from_bits(bits, size)
+        scales = _scales_from_mask(lo, hi, mask)
+        for _ in range(3):
+            if all(
+                _scale_log_l2(scales, prev) >= _MIN_SCALE_LOG_L2 for prev in out
+            ):
+                break
+            scales = _scales_from_mask(lo, hi, mask)
+        out.append(scales)
+    return out
 
 
 def generate_augmentation_jobs(
@@ -91,6 +155,10 @@ def generate_augmentation_jobs(
 
     Disabled geometry uses identity (channel order 012, a=0, k=0).
     ``aug_id`` only encodes active transforms.
+
+    Channel/instance scale draws are pre-planned with distinct low/high masks so
+    jobs look different. Effective draw counts may be lower than requested when
+    ``n > 2**size`` (e.g. 2 instances support at most 4 instance-scale patterns).
     """
     if not (
         enable_channel_flip
@@ -114,15 +182,32 @@ def generate_augmentation_jobs(
         axis_choices = [0]
         k_choices = [0]
 
-    n_cs = num_channel_scales if enable_channel_scale else 1
-    n_is = num_instance_scales if enable_instance_scale else 1
+    if enable_channel_scale and channel_scale_range is not None:
+        lo_cs, hi_cs = channel_scale_range
+        channel_scale_sets: list[np.ndarray | None] = _plan_scale_set(
+            lo_cs, hi_cs, NUM_CHANNELS, num_channel_scales
+        )
+    else:
+        channel_scale_sets = [None]
+
+    if (
+        enable_instance_scale
+        and instance_scale_range is not None
+        and num_instances > 0
+    ):
+        lo_is, hi_is = instance_scale_range
+        instance_scale_sets: list[np.ndarray | None] = _plan_scale_set(
+            lo_is, hi_is, num_instances, num_instance_scales
+        )
+    else:
+        instance_scale_sets = [None]
 
     jobs = []
     for ro in channel_orders:
         for a in axis_choices:
             for k in k_choices:
-                for _cs_i in range(n_cs):
-                    for is_i in range(n_is):
+                for cs_i, channel_scales in enumerate(channel_scale_sets):
+                    for is_i, instance_scales in enumerate(instance_scale_sets):
                         aug_id = ""
                         job: dict = {
                             "c": ro,
@@ -135,21 +220,17 @@ def generate_augmentation_jobs(
                         if enable_rotate:
                             aug_id += f"_r{a}" + f"_k{k}"
 
-                        if enable_channel_scale and channel_scale_range is not None:
-                            lo, hi = channel_scale_range
-                            channel_scales = _sample_scalings(lo, hi, NUM_CHANNELS)
+                        if channel_scales is not None:
                             job["channel_scales"] = channel_scales
-                            aug_id += "_cs" + "_".join(f"{s:.2f}" for s in channel_scales)
+                            aug_id += "_cs" + "_".join(
+                                f"{s:.2f}" for s in channel_scales
+                            )
 
-                        if (
-                            enable_instance_scale
-                            and instance_scale_range is not None
-                            and num_instances > 0
-                        ):
-                            lo, hi = instance_scale_range
-                            instance_scales = _sample_scalings(lo, hi, num_instances)
+                        if instance_scales is not None:
                             job["instance_scales"] = instance_scales
-                            aug_id += f"_is{is_i}" + "_".join(f"{s:.2f}" for s in instance_scales)
+                            aug_id += f"_is{is_i}" + "_".join(
+                                f"{s:.2f}" for s in instance_scales
+                            )
 
                         if not aug_id:
                             # Intensity-only path where instance scale was skipped (0 instances)

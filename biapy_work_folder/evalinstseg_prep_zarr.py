@@ -63,7 +63,7 @@ if __name__ == "__main__":
     # job_name = "train_Dn_0707"
     # input_folder = "per_image_instances"
     input_folder = "per_image_post_processing"
-    tiff_path = f"BiaPy/results/{job_name}/results/{job_name}_1/{input_folder}"
-    zarr_path = f"BiaPy/results/{job_name}/results/{job_name}_1/per_image_instances_zarr"
+    tiff_path = f"biapy_work_folder/results/{job_name}/results/{job_name}_1/{input_folder}"
+    zarr_path = f"biapy_work_folder/results/{job_name}/results/{job_name}_1/per_image_instances_zarr"
     zarr_key = "volumes/pred_instance"
     convert_folder(tiff_path, zarr_path, zarr_key)

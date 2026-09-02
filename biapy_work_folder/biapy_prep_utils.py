@@ -1,4 +1,4 @@
-"""CLI args and I/O helpers for BiaPy FISBe TIFF prep."""
+"""CLI args and I/O helpers for BiaPy FISBe Zarr prep."""
 import argparse
 import logging
 import sys
@@ -7,6 +7,7 @@ from pathlib import Path
 
 import numpy as np
 import tifffile
+import zarr
 
 logger = logging.getLogger(__name__)
 
@@ -21,14 +22,14 @@ _DEFAULT_SCALE_RANGE = (0.25, 1.5)
 def get_args():
     parser = argparse.ArgumentParser(
         description=(
-            "Convert FISBe zarr volumes to BiaPy-compatible TIFF files."
+            "Convert FISBe zarr volumes to BiaPy-compatible Zarr files."
         )
     )
     parser.add_argument(
         "-o",
         "--output-dir",
         required=True,
-        help="Output directory for BiaPy TIFF splits. Relative path",
+        help="Output directory for BiaPy Zarr splits. Relative path",
     )
     parser.add_argument(
         "-i",
@@ -144,7 +145,7 @@ def get_args():
         "--workers",
         type=int,
         default=4,
-        help="Number of threads for parallel TIFF saves (default: 4). Use 1 for serial.",
+        help="Number of threads for parallel Zarr saves (default: 4). Use 1 for serial.",
     )
 
     return parser.parse_args()
@@ -275,10 +276,11 @@ def save_and_log_data(
     in_path: Path,
     aug_id: str,
 ):
-    # ImageJ TIFF format:
-    #   raw: (C, Z, Y, X) --> (Z, C, Y, X)
-    #   labels: already merged (Z, Y, X)
-    raw = np.transpose(raw, (1, 0, 2, 3))
+    # Zarr format:
+    #   raw: (C, Z, Y, X) --> (Z, Y, X, C)
+    #   labels: merged (Z, Y, X) --> (Z, Y, X, 1) so BiaPy can load them as ZYXC
+    raw = np.transpose(raw, (1, 2, 3, 0))
+    labels = labels[..., np.newaxis]
 
     logger.debug(
         f"\tSaving - raw.shape: {raw.shape}"
@@ -297,18 +299,22 @@ def save_and_log_data(
     logger.info(f"Saving raw to file: {raw_file_name} , Dir: {raw_dir}")
     logger.info(f"Saving label to file: {label_file_name}, Dir: {label_dir}")
 
-    tifffile.imwrite(
-        (raw_dir / f"{raw_file_name}.tif").as_posix(),
-        raw,
-        imagej=True,
-        metadata={"axes": "ZCYX"},
-    )
-    tifffile.imwrite(
-        (label_dir / f"{label_file_name}.tif").as_posix(),
-        labels,
-        imagej=True,
-        metadata={"axes": "ZYX"},
-    )
+    # ImageJ TIFF (kept for reference):
+    # tifffile.imwrite(
+    #     (raw_dir / f"{raw_file_name}.tif").as_posix(),
+    #     raw,
+    #     imagej=True,
+    #     metadata={"axes": "ZCYX"},
+    # )
+    # tifffile.imwrite(
+    #     (label_dir / f"{label_file_name}.tif").as_posix(),
+    #     labels,
+    #     imagej=True,
+    #     metadata={"axes": "ZYX"},
+    # )
+
+    zarr.save_array((raw_dir / f"{raw_file_name}.zarr").as_posix(), raw)
+    zarr.save_array((label_dir / f"{label_file_name}.zarr").as_posix(), labels)
 
 
 def _drain_completed(futures: set, *, wait_for_all: bool = False) -> set:
