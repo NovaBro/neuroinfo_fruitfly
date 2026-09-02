@@ -172,7 +172,7 @@ Three encodings are produced depending on `volume` / `channel`:
 ### 3.5 Predicted instances (`biapy_loader.py`)
 
 Predicted overlays don't come from Zarr; they come from **BiaPy run directories**
-(`BiaPy/results/**/per_image_instances/*.tif`). `biapy_loader` bridges to the
+(`biapy_work_folder/results/**/per_image_instances/*.tif`). `biapy_loader` bridges to the
 shared helpers in `ipynb/scripts/biapy.py`:
 
 ```

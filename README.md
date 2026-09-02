@@ -86,10 +86,10 @@ Issue for running multiple parallele process that may need to read / write from 
 srun --cpus-per-task=8 --time 2:00:00 --mem=32g --account=torch_pr_61_general --pty /bin/bash
 # Whatever env you use (BiaPy_env), make sure it hase toml installed
 
-python3 BiaPy/biapy_prep_tiff.py --splits test train val
+python3 biapy_work_folder/biapy_prep_main.py --splits test train val
 ```
 
-Adjust experiment test and training parameters in `BiaPy/3d_instance_segmentation.yaml`
+Adjust experiment test and training parameters in `biapy_work_folder/3d_instance_segmentation.yaml`
 
 in `./fisbe/biapy/biapy.sh`
 ```bash
@@ -115,10 +115,10 @@ biapy \
     --gpu "$gpu_number"
 ```
 
-Then you can directly run the sbatch scripts in `BiaPy/biapy.sh` by `sbatch BiaPy/biapy.sh`
+Then submit jobs via `sbatch sbatch/biapy/biapy-py_sbatch_chain.sh <stem> train` (see `sbatch/biapy/`).
 
 ## Evaluation
-NOTE: For `BiaPy` model, must run the `BiaPy/evalinstseg_prep_zarr.py` script to get zarr file format instead of tif.
+NOTE: For `BiaPy` model, must run the `biapy_work_folder/evalinstseg_prep_zarr.py` script to get zarr file format instead of tif.
 For this project, run the evaluation through sbatch, `sbatch sbatch/evalinstseg/evalinstseg_sbatch.sh`.
 
 ```bash
@@ -135,7 +135,7 @@ evalinstseg \
 
 # Folders
 evalinstseg \
-  --res_file BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr \
+  --res_file biapy_work_folder/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr \
   --res_key volumes/pred_instance \
   --gt_file fisbe/completely/train \
   --gt_key volumes/gt_instances \
@@ -143,7 +143,7 @@ evalinstseg \
   --app flylight
 
 evalinstseg \
-  --res_file BiaPy/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/JRC_SS04989-20160318_24_A2.zarr \
+  --res_file biapy_work_folder/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/JRC_SS04989-20160318_24_A2.zarr \
   --res_key volumes/pred_instance \
   --gt_file fisbe/completely/test/JRC_SS04989-20160318_24_A2.zarr \
   --gt_key volumes/gt_instances \

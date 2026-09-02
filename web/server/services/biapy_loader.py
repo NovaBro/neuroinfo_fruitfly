@@ -1,7 +1,7 @@
 """Load BiaPy prediction volumes via ipynb/scripts/biapy.py.
 
 A "prediction set" is one BiaPy run directory (containing ``per_image_instances``)
-under ``BiaPy/results``. Callers select one by its ``id`` (path relative to the
+under ``biapy_work_folder/results``. Callers select one by its ``id`` (path relative to the
 results base); ``None`` falls back to the default set.
 """
 
@@ -45,7 +45,7 @@ def stems_with_predictions_any() -> set[str]:
 
     Computed with a single directory scan per prediction set (rather than a
     recursive glob per sample), so the sample-list endpoint stays fast as the
-    ``BiaPy/results`` tree grows.
+    ``biapy_work_folder/results`` tree grows.
     """
     stems: set[str] = set()
     for s in biapy.discover_prediction_sets():

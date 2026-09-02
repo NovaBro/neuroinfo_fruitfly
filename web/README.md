@@ -102,9 +102,9 @@ npm run dev
 |----------|---------|-------------|
 | `FISBE_ROOT` | `../../fisbe/completely` | Root directory containing `train/`, `val/`, `test/` Zarr folders |
 | `SAMPLE_LIST_PATH` | `../../evaluate-instance-segmentation/assets/sample_list_per_split.txt` | Train/val/test sample list |
-| `BIAPY_RESULTS_BASE` | `../../BiaPy/results` | Primary BiaPy results base (also used for legacy bare prediction-set ids) |
-| `BIAPY_RESULTS_BASES` | `BiaPy/results:metrics/biapy` | Colon-separated list of bases scanned for BiaPy prediction sets (any run dir containing a `per_image_instances` folder). Default includes train-eval runs under `metrics/biapy` alongside `BiaPy/results`. |
-| `BIAPY_RESULT_ROOT` | `../../BiaPy/results/train_3d_instance_segmentation/results/train_3d_instance_segmentation_1` | Default prediction set (used when the client doesn't pick one) |
+| `BIAPY_RESULTS_BASE` | `../../biapy_work_folder/results` | Primary BiaPy results base (also used for legacy bare prediction-set ids) |
+| `BIAPY_RESULTS_BASES` | `biapy_work_folder/results:metrics/biapy` | Colon-separated list of bases scanned for BiaPy prediction sets (any run dir containing a `per_image_instances` folder). Default includes train-eval runs under `metrics/biapy` alongside `biapy_work_folder/results`. |
+| `BIAPY_RESULT_ROOT` | `../../biapy_work_folder/results/train_3d_instance_segmentation/results/train_3d_instance_segmentation_1` | Default prediction set (used when the client doesn't pick one) |
 | `PPP_EXPERIMENTS_BASE` | `../../PatchPerPix/experiments/ppp_experiments` | Base dir scanned for PatchPerPix prediction sets (per experiment: `numinst` count maps under `test/processed/`, `instances` vote-labels under `test/instanced/`) |
 
 ## API endpoints
@@ -155,7 +155,7 @@ unfilled numbers below a rule.
 
 `/api/prediction-sets` merges sets from every model source, so you can compare predictions across setups. The **Predictions** dropdown above the viewer tabs (grouped by **BiaPy** / **PatchPerPix**) switches which set is overlaid; the predicted overlay and reported shapes update accordingly. The set marked `default` (a BiaPy set matching `BIAPY_RESULT_ROOT`) is selected on load.
 
-- **BiaPy** — every run directory under each path in `BIAPY_RESULTS_BASES` (default: `BiaPy/results` and `metrics/biapy`) with a `per_image_instances` folder. Set ids are repo-relative so the two trees do not collide. Rendered as per-neuron coloured instance labels.
+- **BiaPy** — every run directory under each path in `BIAPY_RESULTS_BASES` (default: `biapy_work_folder/results` and `metrics/biapy`) with a `per_image_instances` folder. Set ids are repo-relative so the two trees do not collide. Rendered as per-neuron coloured instance labels.
 - **PatchPerPix** — every experiment under `PPP_EXPERIMENTS_BASE`, each exposing up to two overlays:
   - **numinst** — the per-voxel overlap-count map (`test/processed/<ckpt>/<stem>.zarr` → `volumes/pred_numinst`, `(3, Z, Y, X)` = P(0/1/2+ instances)). This is a foreground/count probability map, **not** per-neuron labels, so it renders as a two-colour foreground (argmax of the count channels: 1-instance vs 2+-overlap regions). Streamed in Z-blocks so the ~0.5 GB float16 array is never fully loaded.
   - **instances** — the final vote-instances labels (`test/instanced/.../<stem>.hdf` → dataset `vote_instances`), coloured per neuron like the BiaPy/GT overlays. **Requires `h5py`** in the server env to read the HDF5 output.

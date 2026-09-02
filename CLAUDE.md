@@ -13,7 +13,7 @@ independently-runnable subprojects that share the FISBe data and the HPC environ
 The three things actually being worked on:
 1. **PatchPerPix** (`PatchPerPix/`) — proposal-free instance segmentation. Has its own detailed
    architecture guide: **read `PatchPerPix/CODEBASE.md` before touching anything under `PatchPerPix/`.**
-2. **BiaPy** (`BiaPy/`) — off-the-shelf 3D instance-segmentation workflow driven by a YAML config.
+2. **BiaPy** (`biapy_work_folder/`) — off-the-shelf 3D instance-segmentation workflow driven by a YAML config.
 3. **Web viewer** (`web/`) — FastAPI + React app for browsing FISBe Zarr volumes and overlaying
    model predictions. Has its own `web/README.md`.
 
@@ -78,17 +78,16 @@ TOML config sections, per-script function tables). Do not duplicate it here. Key
 
 ## BiaPy
 
-YAML-config-driven workflow. The runner wrapper is `BiaPy/biapy.sh` → `BiaPy/run_biapy.py` with
-`--config BiaPy/3d_instance_segmentation.yaml --result_dir BiaPy/results`. Data must first be
-converted to TIFF:
+YAML-config-driven workflow. The runner is [`biapy_work_folder/run_biapy-py.py`](biapy_work_folder/run_biapy-py.py),
+launched via [`sbatch/biapy/biapy-py_sbatch_chain.sh`](sbatch/biapy/biapy-py_sbatch_chain.sh) with configs under
+`biapy_work_folder/configs/`. Active run outputs go to `metrics/biapy/`; legacy outputs may live under
+`biapy_work_folder/results/`. Data prep:
 
 ```bash
-python fisbe/biapy/prepare_tiff_data.py --splits test train val
-# after a run, clean intermediates:
-python fisbe/biapy/prepare_tiff_data.py --splits test --clean
+python biapy_work_folder/biapy_prep_main.py -o fisbe/biapy-channel-scale-zarr ...
 ```
 
-Outputs land in `BiaPy/results/3d_instance_segmentation/...` and are consumed by the web viewer.
+Outputs under `metrics/biapy/...` and `biapy_work_folder/results/...` are consumed by the web viewer.
 
 ## Web viewer
 

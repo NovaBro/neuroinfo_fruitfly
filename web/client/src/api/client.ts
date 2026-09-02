@@ -76,7 +76,7 @@ export interface AggregateMetrics {
 }
 
 export interface PredictionSet {
-  /** Opaque selection handle (BiaPy: run dir relative to BiaPy/results;
+  /** Opaque selection handle (BiaPy: run dir relative to biapy_work_folder/results;
    *  PatchPerPix: source-prefixed, e.g. "ppp-numinst:.../8000"). */
   id: string;
   /** Human-readable set name, e.g. "train_3d_instance_segmentation_1". */
