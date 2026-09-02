@@ -28,7 +28,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     parser.add_argument(
         "-s",
         "--sample",
-        default="JRC_SS04989-20160318_24_A2.zarr.tiff",
+        default="JRC_SS04989-20160318_24_A2.zarr",
         help="What sample to view. Give empty string for dir mode",
     )
     parser.add_argument(

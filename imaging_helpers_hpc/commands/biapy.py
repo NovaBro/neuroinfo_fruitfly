@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 import numpy as np
 import tifffile
@@ -13,6 +14,18 @@ from imaging_helpers_hpc.loading import get_sample_stem, load_biapy_test_sample
 from imaging_helpers_hpc.paths import AnalysisOutputPaths, BiapyDataPaths, MetricPaths
 
 logger = logging.getLogger(__name__)
+
+
+def _resolve_watershed_sample_dir(watershed_root: Path, sample_name: str) -> Path:
+    direct = watershed_root / sample_name
+    if direct.is_dir():
+        return direct
+    stem = get_sample_stem(Path(sample_name))
+    for name in (f"{stem}.zarr", f"{stem}.zarr.tiff", stem):
+        candidate = watershed_root / name
+        if candidate.is_dir():
+            return candidate
+    return direct  # preserve original path for error messages
 
 
 def run_4pane_mip(
@@ -65,10 +78,12 @@ def run_watershed(
         )
 
     jobs = [(s, product) for s in samples for product in products]
-    config_out_root = output_paths.output_root / config_name
+    config_out_root = output_paths.output_root / config_name / run
 
     for sample_name, product in jobs:
-        in_path = watershed_root / sample_name / f"{product}.tif"
+        sample_dir = _resolve_watershed_sample_dir(watershed_root, sample_name)
+        resolved_name = sample_dir.name
+        in_path = sample_dir / f"{product}.tif"
         if not in_path.is_file():
             if dir_mode:
                 logger.warning(f"Missing watershed TIF, skipping: {in_path}")
@@ -82,11 +97,11 @@ def run_watershed(
         watershed_image = tifffile.imread(in_path)[np.newaxis, ...]
         logger.info(
             f"watershed_image shape: {watershed_image.shape} "
-            f"({sample_name}/{product})"
+            f"({resolved_name}/{product})"
         )
 
-        out_path = config_out_root / sample_name / f"{product}.png"
-        output_file_name = f"{product}_{sample_name}"
+        out_path = config_out_root / resolved_name / f"{product}.png"
+        output_file_name = f"{product}_{resolved_name}"
         if product == "topografic_surface":
             gen_topographic_projection(
                 watershed_image,

@@ -17,7 +17,7 @@ class BiapyDataPaths:
         self.BIAPY_TEST_RAW_DIR = Path("fisbe/biapy/test/raw")
 
         # Getting the images data of the model results
-        self.result_root = Path(f"BiaPy/results/{config_name}/results/{config_name}_1")
+        self.result_root = Path(f"biapy_work_folder/results/{config_name}/results/{config_name}_1")
         self.per_image = self.result_root / "per_image"
         self.per_image_instances = self.result_root / "per_image_instances"
         self.watershed = self.result_root / "watershed"
