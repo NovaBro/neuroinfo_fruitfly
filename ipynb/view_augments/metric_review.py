@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Mapping, Sequence
 from pathlib import Path
+from typing import Literal
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,6 +13,11 @@ import tifffile
 import zarr
 
 from .base_data import enhance_display
+
+# BiaPy watershed seed polarity (see instance_segmentation workflow docs).
+_THRESH_ABOVE = frozenset({"F", "P", "Db", "D"})
+_THRESH_BELOW = frozenset({"C", "B", "T", "Dn", "Dc"})
+_KNOWN_CHANNELS = _THRESH_ABOVE | _THRESH_BELOW
 
 # FISBe volume id: {line}-{YYYYMMDD}_{nn}_{well}; trailing BiaPy aug_id is ignored.
 _FISBE_SAMPLE_RE = re.compile(r"^(.+-\d{8}_\d+_[A-Z]\d+)")
@@ -53,6 +60,24 @@ def _as_zpyx(vol):
     return arr
 
 
+def _as_instance_label_volume(vol):
+    """Normalize an instance label volume to (Z, Y, X)."""
+    arr = np.asarray(vol)
+    if arr.ndim == 4 and arr.shape[-1] == 1:
+        arr = arr[..., 0]
+    if arr.ndim != 3:
+        raise ValueError(f"Expected 3D instance labels, got shape {arr.shape}")
+    return arr
+
+
+def load_gt_instance_labels(gt_dir, stem):
+    """Load instance-label GT for a prediction sample stem."""
+    gt_path = Path(gt_dir) / f"{_fisbe_sample_id(stem)}.zarr"
+    if not gt_path.is_dir():
+        raise FileNotFoundError(f"Missing GT volume for {stem!r}: {gt_path}")
+    return _as_instance_label_volume(_load_volume(gt_path))
+
+
 def get_metric_paths(sub_folder: str, cf_stem: str, run: str = '0'):
     """Help navigate to biapy results stored in metric folder"""
     # 1. Build the BiaPy results directory: metrics/biapy/{stem}/results/{stem}_{run}/{sub_folder}
@@ -62,7 +87,14 @@ def get_metric_paths(sub_folder: str, cf_stem: str, run: str = '0'):
     return image_paths
 
 
-def mip_biapy_gt_instance(ax, labels, sample_name, z_axis=0, font_siz=6):
+def mip_biapy_gt_instance(
+    ax,
+    labels,
+    sample_name,
+    z_axis=0,
+    font_siz=6,
+    title=None,
+):
     """Plot BiaPy instance MIP onto `ax`. Callable as plot_fn for plot_image_grid."""
     # 1. Max-project instance IDs along Z → 2D label map (Y, X)
     arr = np.asarray(labels)
@@ -80,9 +112,69 @@ def mip_biapy_gt_instance(ax, labels, sample_name, z_axis=0, font_siz=6):
 
     # 4. Draw onto the provided axes
     ax.imshow(rgb)
-    ax.set_title(f"GT instance MIP {sample_name}", wrap=True)
+    panel_title = title if title is not None else f"GT instance MIP {sample_name}"
+    ax.set_title(panel_title, wrap=True)
     ax.title.set_fontsize(font_siz)
     ax.axis("off")
+
+
+def plot_pred_gt_instance_mips(
+    config_stem: str,
+    run: str = "0",
+    *,
+    gt_dir,
+    sub_folder: str = "per_image_post_processing",
+    n_samples=None,
+    figsize=(8, 4),
+    dpi=100,
+    font_siz=6,
+):
+    """Plot one GT-vs-prediction instance MIP figure per sample.
+
+    Reads prediction TIFFs from
+    ``metrics/biapy/{config_stem}/results/{config_stem}_{run}/{sub_folder}``
+    and matching instance-label GT Zarr volumes from ``gt_dir``.
+
+    Returns
+    -------
+    list[tuple[Figure, ndarray, str]]
+        One entry per plotted sample: ``(fig, axes, stem)``.
+    """
+    gt_dir = Path(gt_dir)
+    pred_paths = sorted(get_metric_paths(sub_folder, config_stem, run))
+    if not pred_paths:
+        raise FileNotFoundError(
+            f"No prediction TIFFs under metrics/biapy/{config_stem}/results/"
+            f"{config_stem}_{run}/{sub_folder}"
+        )
+    if n_samples is not None:
+        pred_paths = pred_paths[: max(0, int(n_samples))]
+        if not pred_paths:
+            raise ValueError("n_samples resolved to an empty path list")
+
+    results = []
+    for pred_path in pred_paths:
+        stem = pred_path.stem
+        pred = _as_instance_label_volume(tifffile.imread(pred_path, mode="r"))
+        gt = load_gt_instance_labels(gt_dir, stem)
+
+        n_gt = int(np.unique(gt).size) - (1 if np.any(gt == 0) else 0)
+        n_pred = int(np.unique(pred).size) - (1 if np.any(pred == 0) else 0)
+
+        fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi)
+        mip_biapy_gt_instance(axes[0], gt, stem, title=f"GT ({n_gt} inst)", font_siz=font_siz)
+        mip_biapy_gt_instance(
+            axes[1],
+            pred,
+            stem,
+            title=f"Pred ({n_pred} inst)",
+            font_siz=font_siz,
+        )
+        fig.suptitle(stem, fontsize=font_siz + 2)
+        fig.tight_layout()
+        plt.show()
+        results.append((fig, axes, stem))
+    return results
 
 
 def plot_image_grid(paths, plot_fn, ncols=4, figsize_cell=(2, 2), dpi=100, **plot_kwargs):
@@ -132,9 +224,43 @@ def resolve_per_image_paths(config_stem, run="0", sub_folder="per_image", n_samp
     return paths
 
 
-def resolve_prediction_channels(n_p_all, p=None, channel_names=None):
+def channel_threshold_mode(name: str) -> Literal["above", "below"]:
+    """Return BiaPy watershed threshold polarity for a channel code."""
+    if name in _THRESH_ABOVE:
+        return "above"
+    if name in _THRESH_BELOW:
+        return "below"
+    raise ValueError(
+        f"Unknown BiaPy channel {name!r}; expected one of {sorted(_KNOWN_CHANNELS)}"
+    )
+
+
+def _require_channel_names(
+    channel_names: Sequence[str] | None,
+    *,
+    n_p_all: int,
+    p_idx: list[int],
+    threshold,
+) -> None:
+    n_cols = len(p_idx)
+    if channel_names is not None:
+        return
+    if threshold is not None or n_cols > 1 or n_p_all > 1:
+        raise ValueError(
+            "channel_names is required when threshold is set or when plotting "
+            f"more than one channel (P={n_p_all}, plotting {n_cols}); pass BiaPy "
+            "DATA_CHANNELS codes, e.g. ['F', 'Dc', 'Dn', 'P']"
+        )
+
+
+def resolve_prediction_channels(
+    n_p_all,
+    p=None,
+    channel_names=None,
+    *,
+    threshold=None,
+):
     """Normalize `p` to indices and build column labels. Returns (p_idx, labels)."""
-    # 1. Resolve which prediction-channel indices to show (None → all)
     if p is None:
         p_idx = list(range(n_p_all))
     else:
@@ -143,9 +269,10 @@ def resolve_prediction_channels(n_p_all, p=None, channel_names=None):
         if bad:
             raise ValueError(f"p out of range for P={n_p_all}: {bad}")
 
-    # 2. Build column labels: defaults p0.., or subset/full channel_names list
+    _require_channel_names(channel_names, n_p_all=n_p_all, p_idx=p_idx, threshold=threshold)
+
     if channel_names is None:
-        labels = [f"p{j}" for j in p_idx]
+        labels = ["F"] if n_p_all == 1 else []
     elif len(channel_names) == n_p_all:
         labels = [channel_names[j] for j in p_idx]
     elif len(channel_names) == len(p_idx):
@@ -154,22 +281,91 @@ def resolve_prediction_channels(n_p_all, p=None, channel_names=None):
         raise ValueError(
             f"channel_names length {len(channel_names)} must be P={n_p_all} or len(p)={len(p_idx)}"
         )
+
+    for name in labels:
+        channel_threshold_mode(name)
     return p_idx, labels
 
 
-def prediction_channel_mip(vol_zpyx, channel, threshold=None):
-    """Max-project one prediction channel of (Z, P, Y, X) → (Y, X); optional Fiji-style cutoff."""
-    # 1. Take channel slice over Z and max-project → (Y, X)
-    mip = np.asarray(vol_zpyx[:, channel]).max(axis=0)
-    # 2. Optional cutoff: zero voxels below threshold (keep supra-threshold intensities)
+def resolve_channel_thresholds(
+    threshold: float | Mapping[str, float] | Sequence[float] | None,
+    labels: Sequence[str],
+) -> list[float | None]:
+    """Resolve per-column thresholds from scalar, dict, or sequence input."""
+    n_cols = len(labels)
+    if threshold is None:
+        return [None] * n_cols
+    if isinstance(threshold, (int, float, np.floating)):
+        return [float(threshold)] * n_cols
+    if isinstance(threshold, Mapping):
+        resolved: list[float | None] = []
+        missing = [name for name in labels if name not in threshold]
+        if missing:
+            raise ValueError(
+                f"threshold dict missing keys for plotted channels: {missing}; "
+                f"expected keys {list(labels)}"
+            )
+        for name in labels:
+            resolved.append(float(threshold[name]))
+        return resolved
+    values = [float(x) for x in threshold]
+    if len(values) != n_cols:
+        raise ValueError(
+            f"threshold sequence length {len(values)} must match plotted channels ({n_cols})"
+        )
+    return values
+
+
+def format_channel_title(name: str, thr: float | None, mode: Literal["above", "below"]) -> str:
+    """Build a column title with optional BiaPy-style threshold annotation."""
+    if thr is None:
+        return name
+    op = "≥" if mode == "above" else "≤"
+    return f"{name}\nthr{op}{thr:g}"
+
+
+def build_threshold_suptitle(
+    labels: Sequence[str],
+    thresholds: Sequence[float | None],
+) -> str:
+    """Compact suptitle suffix summarizing per-channel threshold directions."""
+    parts: list[str] = []
+    for name, thr in zip(labels, thresholds):
+        if thr is None:
+            continue
+        mode = channel_threshold_mode(name)
+        op = "≥" if mode == "above" else "≤"
+        parts.append(f"thr{op}{thr:g} on {name}")
+    return "; ".join(parts)
+
+
+def prediction_channel_mip(
+    vol_zpyx,
+    channel: int,
+    *,
+    channel_name: str,
+    threshold: float | None = None,
+) -> np.ndarray:
+    """Max-project one channel of (Z, P, Y, X) to (Y, X) with BiaPy-aware polarity.
+
+    Uses max-intensity projection over Z for all channels. Threshold direction
+    still follows BiaPy watershed semantics (``thr≥`` for F/P/Db/D,
+    ``thr≤`` for Dc/Dn/C/T/B). When ``threshold`` is set, the result previews
+    seed/growth masks rather than raw continuous scores.
+    """
+    stack = np.asarray(vol_zpyx[:, channel])
+    mip = stack.max(axis=0)
+
     if threshold is not None:
-        mip = np.where(mip >= threshold, mip, 0)
+        if channel_threshold_mode(channel_name) == "below":
+            mip = np.where(mip <= threshold, mip, 0)
+        else:
+            mip = np.where(mip >= threshold, mip, 0)
     return mip
 
 
 def auto_prediction_cmap(mip, cmap=None):
     """Binary (≤2 unique values) → gray; continuous → viridis. `cmap` overrides."""
-    # Explicit override wins; else gray for binary masks, viridis for continuous scores
     if cmap is not None:
         return cmap
     return "gray" if np.unique(mip).size <= 2 else "viridis"
@@ -195,7 +391,7 @@ def plot_per_image_predictions(
     sub_folder: str = "per_image",
     n_samples=None,
     p=None,
-    threshold=None,
+    threshold: float | Mapping[str, float] | Sequence[float] | None = None,
     figsize_cell=(3, 3),
     dpi=100,
     channel_names=None,
@@ -206,10 +402,10 @@ def plot_per_image_predictions(
 
     Reads ``metrics/biapy/{config_stem}/results/{config_stem}_{run}/{sub_folder}``.
     Each image is ``(Z, P, Y, X)``; the figure has one row per sample and one column
-    per selected prediction channel (max-intensity projection over Z).
+    per selected prediction channel.
 
-    Colormap is chosen per subplot: ``gray`` when the MIP has ≤2 unique values,
-    else ``viridis``. Pass ``cmap`` to override for all subplots.
+    All channels use max-intensity projection over Z. Threshold polarity follows
+    BiaPy watershed semantics: F/P/Db/D use ``thr≥``; Dc/Dn/C/T/B use ``thr≤``.
 
     Parameters
     ----------
@@ -217,22 +413,28 @@ def plot_per_image_predictions(
         If set, only load/plot the first ``n_samples`` TIFFs (faster).
     p : int, sequence of int, or None
         Prediction channel index/indices to show. ``None`` = all channels.
-    threshold : float or None
-        If set, values below ``threshold`` on the MIP are zeroed (Fiji-style cutoff).
+    threshold : float, mapping, sequence, or None
+        Optional per-channel cutoff after max-Z MIP. ``None`` (default) shows the
+        raw continuous MIP with no masking. A float applies the same cutoff to
+        every column; a dict keys by ``channel_names``; a sequence aligns with
+        plotted columns. Polarity follows BiaPy: F/P/Db/D keep ``value ≥ thr``;
+        Dc/Dn/C/T/B keep ``value ≤ thr``.
+    channel_names : sequence of str or None
+        BiaPy ``DATA_CHANNELS`` codes. Required when ``threshold`` is set or
+        when plotting more than one channel.
     """
-    # 1. Resolve TIFF paths under the BiaPy per_image (or similar) folder
-    #    Layout is (Z, P, Y, X): Z depth, P prediction channels, then Y/X.
     paths = resolve_per_image_paths(config_stem, run, sub_folder, n_samples)
 
-    # 2. Peek P from the first volume only (memmap) so we can validate `p` before the loop
     first = tifffile.imread(paths[0], mode="r")
     if first.ndim != 4:
         raise ValueError(f"Expected (Z, P, Y, X), got shape {first.shape} for {paths[0].name}")
     n_p_all = int(first.shape[1])
     del first
 
-    # 3. Normalize channel selection → column indices + labels; allocate figure
-    p_idx, labels = resolve_prediction_channels(n_p_all, p, channel_names)
+    p_idx, labels = resolve_prediction_channels(
+        n_p_all, p, channel_names, threshold=threshold
+    )
+    col_thresholds = resolve_channel_thresholds(threshold, labels)
     n, n_cols = len(paths), len(p_idx)
     fig, axes = plt.subplots(
         n,
@@ -242,26 +444,37 @@ def plot_per_image_predictions(
         squeeze=False,
     )
 
-    # 4. Per sample × channel: MIP → enhance → draw (row=sample, col=channel)
     for i, path in enumerate(paths):
-        # Memmap + project only selected channels so we do not materialize full volumes.
-        data = tifffile.imread(path, mode="r")  # (Z, P, Y, X)
+        data = tifffile.imread(path, mode="r")
         for col, j in enumerate(p_idx):
-            mip = prediction_channel_mip(data, j, threshold=threshold)
+            ch_name = labels[col]
+            thr = col_thresholds[col]
+            mode = channel_threshold_mode(ch_name)
+            mip = prediction_channel_mip(
+                data,
+                j,
+                channel_name=ch_name,
+                threshold=thr,
+            )
             draw_prediction_subplot(
                 axes[i, col],
                 mip,
-                title=labels[col] if i == 0 else None,
+                title=format_channel_title(ch_name, thr, mode) if i == 0 else None,
                 ylabel=path.stem if col == 0 else None,
                 font_siz=font_siz,
                 cmap=auto_prediction_cmap(mip, cmap),
             )
         del data
 
-    # 5. Title + layout
-    thresh_txt = f", thr≥{threshold}" if threshold is not None else ""
-    fig.suptitle(f"{config_stem}_{run} / {sub_folder}{thresh_txt}", fontsize=font_siz + 2)
-    plt.tight_layout()
+    base_title = f"{config_stem}_{run} / {sub_folder}"
+    thresh_txt = build_threshold_suptitle(labels, col_thresholds)
+    fig.suptitle(
+        f"{base_title}, {thresh_txt}" if thresh_txt else base_title,
+        fontsize=font_siz + 2,
+    )
+    # Leave headroom so multi-line column titles (e.g. "F\nthr≥0.5") do not
+    # collide with the figure suptitle.
+    fig.tight_layout(rect=[0, 0, 1, 0.96])
     plt.show()
     return fig, axes
 
@@ -315,36 +528,46 @@ def plot_gt_instance_channels(
     n_samples=None,
     seed=42,
     p=None,
-    threshold=None,
+    threshold: float | Mapping[str, float] | Sequence[float] | None = None,
     figsize_cell=(3, 3),
     dpi=100,
     channel_names=None,
     font_siz=6,
     cmap=None,
 ):
-    """Plot BiaPy instance-channel GT MIPs (F/C/Db/Dn targets the network learns).
+    """Plot BiaPy instance-channel GT MIPs (F/Dc/Dn/P targets the network learns).
 
     Reads TIFF files or Zarr arrays from ``gt_path``
     (e.g. ``fisbe/.../train/label_F.…_Dn.…``). Each image is ``(Z, P, Y, X)``
     — same layout as ``per_image`` predictions.
-    Reuses the prediction MIP / cmap / draw helpers.
 
     Parameters
     ----------
     gt_path : str or Path
         Directory of multi-channel GT volumes (TIFF files or .zarr directories).
-    n_samples, p, threshold, channel_names, cmap
-        Same meaning as ``plot_per_image_predictions``, except ``n_samples``
-        selects unique FISBe volumes (any one augmentation each).
-        If ``channel_names`` is None and ``P==4``, defaults to ``['F','C','Db','Dn']``.
+    n_samples : int or None
+        If set, select that many unique FISBe volumes (any one augmentation each).
+        ``None`` lists all volumes in sorted order.
     seed : int
         RNG seed for unique-volume / augmentation selection when ``n_samples`` is set.
+    p : int, sequence of int, or None
+        Channel index/indices to show. ``None`` = all channels.
+    threshold : float, mapping, sequence, or None
+        Optional per-channel cutoff after max-Z MIP. ``None`` (default) shows the
+        raw continuous MIP with no masking. A float applies the same cutoff to
+        every column; a dict keys by ``channel_names``; a sequence aligns with
+        plotted columns. Polarity follows BiaPy: F/P/Db/D keep ``value ≥ thr``;
+        Dc/Dn/C/T/B keep ``value ≤ thr``.
+    channel_names : sequence of str or None
+        BiaPy ``DATA_CHANNELS`` codes. Required when ``threshold`` is set or when
+        plotting more than one channel. If ``None`` and ``P==4``, defaults to
+        ``['F', 'Dc', 'Dn', 'P']``.
+    cmap : str or None
+        Override colormap for all subplots. ``None`` auto-picks gray for binary
+        MIPs (≤2 unique values) else viridis.
     """
-    # 1. List GT volumes — same (Z, P, Y, X) layout as predictions
-    #    (F/C often binary; Db/Dn continuous distance-like targets)
     paths = resolve_gt_channel_paths(gt_path, n_samples, seed=seed)
 
-    # 2. Infer channel count P from the first volume
     first = _as_zpyx(_load_volume(paths[0]))
     if first.ndim != 4:
         raise ValueError(f"Expected (Z, P, Y, X), got shape {first.shape} for {paths[0].name}")
@@ -352,16 +575,16 @@ def plot_gt_instance_channels(
     print(f"Shape: {first.shape}")
     print(f"dtype: {first.dtype}")
     print(f"min: {first.min()}, max: {first.max()}, mean: {first.mean()}")
-    # print(f"unique: {np.unique(first)[:10]}")
 
     del first
 
-    # 3. Default F/C/Db/Dn names when P==4 and caller did not supply labels
     if channel_names is None and n_p_all == 4:
-        channel_names = ["F", "C", "Db", "Dn"]
+        channel_names = ["F", "Dc", "Dn", "P"]
 
-    # 4. Resolve channels + allocate figure (rows=samples, cols=channels)
-    p_idx, labels = resolve_prediction_channels(n_p_all, p, channel_names)
+    p_idx, labels = resolve_prediction_channels(
+        n_p_all, p, channel_names, threshold=threshold
+    )
+    col_thresholds = resolve_channel_thresholds(threshold, labels)
     n, n_cols = len(paths), len(p_idx)
     fig, axes = plt.subplots(
         n,
@@ -371,25 +594,37 @@ def plot_gt_instance_channels(
         squeeze=False,
     )
 
-    # 5. Per sample × channel: MIP → enhance → draw (reuse prediction helpers)
     for i, path in enumerate(paths):
-        data = _as_zpyx(_load_volume(path))  # (Z, P, Y, X)
+        data = _as_zpyx(_load_volume(path))
         for col, j in enumerate(p_idx):
-            mip = prediction_channel_mip(data, j, threshold=threshold)
+            ch_name = labels[col]
+            thr = col_thresholds[col]
+            mode = channel_threshold_mode(ch_name)
+            mip = prediction_channel_mip(
+                data,
+                j,
+                channel_name=ch_name,
+                threshold=thr,
+            )
             draw_prediction_subplot(
                 axes[i, col],
                 mip,
-                title=labels[col] if i == 0 else None,
+                title=format_channel_title(ch_name, thr, mode) if i == 0 else None,
                 ylabel=path.stem if col == 0 else None,
                 font_siz=font_siz,
                 cmap=auto_prediction_cmap(mip, cmap),
             )
         del data
 
-    # 6. Title + layout
-    thresh_txt = f", thr≥{threshold}" if threshold is not None else ""
-    fig.suptitle(f"GT channels: {Path(gt_path).name}{thresh_txt}", fontsize=font_siz + 2)
-    plt.tight_layout()
+    base_title = f"GT channels: {Path(gt_path).name}"
+    thresh_txt = build_threshold_suptitle(labels, col_thresholds)
+    fig.suptitle(
+        f"{base_title}, {thresh_txt}" if thresh_txt else base_title,
+        fontsize=font_siz + 2,
+    )
+    # Leave headroom so multi-line column titles do not collide with the
+    # figure suptitle.
+    fig.tight_layout(rect=[0, 0, 1, 0.96])
     plt.show()
     return fig, axes
 

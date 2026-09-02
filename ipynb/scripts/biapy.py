@@ -29,7 +29,7 @@ REPO_ROOT = _repo_root()
 # that contains a ``per_image_instances`` folder (e.g.
 # ``<base>/train_3d_instance_segmentation/results/train_3d_instance_segmentation_1``).
 BIAPY_RESULTS_BASE = Path(
-    os.environ.get("BIAPY_RESULTS_BASE", REPO_ROOT / "BiaPy/results")
+    os.environ.get("BIAPY_RESULTS_BASE", REPO_ROOT / "biapy_work_folder/results")
 )
 
 
@@ -108,7 +108,7 @@ def discover_prediction_sets() -> list[dict]:
   Scans every directory in :data:`BIAPY_RESULTS_BASES`. Each entry is
   ``{"id", "name", "path", "default"}`` where ``id`` is the run directory's
   path relative to :data:`REPO_ROOT` (unique across bases so
-  ``BiaPy/results/...`` and ``metrics/biapy/...`` do not collide).
+  ``biapy_work_folder/results/...`` and ``metrics/biapy/...`` do not collide).
   """
     default_root = BIAPY_RESULT_ROOT.resolve()
     repo = REPO_ROOT.resolve()

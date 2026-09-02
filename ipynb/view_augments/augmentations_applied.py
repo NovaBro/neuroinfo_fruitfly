@@ -1,4 +1,4 @@
-"""Helpers for viewing applied BiaPy augmentations (TIFF grids)."""
+"""Helpers for viewing applied BiaPy augmentations (TIFF/Zarr grids)."""
 
 from __future__ import annotations
 
@@ -9,9 +9,11 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import tifffile
+import zarr
 from tqdm import tqdm
 
 FISBE_DIR = Path("fisbe")
+_TIFF_SUFFIXES = (".tif", ".tiff")
 
 
 def fisbe_gt_instance_mip(labels, z_axis=1):
@@ -29,6 +31,43 @@ def fisbe_gt_instance_mip(labels, z_axis=1):
     return rgb
 
 
+def _load_volume(path: Path):
+    """Load a TIFF file or Zarr volume into an ndarray."""
+    suffix = path.suffix.lower()
+    if suffix in _TIFF_SUFFIXES and path.is_file():
+        return tifffile.imread(path)
+    if suffix == ".zarr" and path.is_dir():
+        obj = zarr.open(path.as_posix(), mode="r")
+        # Zarr can be either an Array or a Group; use first array for Group.
+        if hasattr(obj, "shape"):
+            return np.asarray(obj)
+        if hasattr(obj, "arrays"):
+            arrays = list(obj.arrays())
+            if not arrays:
+                raise ValueError(f"No arrays found in zarr group: {path}")
+            return np.asarray(arrays[0][1])
+    raise ValueError(f"Unsupported augmentation volume: {path}")
+
+
+def _to_czyx(img: np.ndarray, path: Path, *, raw: bool) -> np.ndarray:
+    """Normalize loaded volume to CZYX for plotting helpers."""
+    arr = np.asarray(img)
+    if arr.ndim != 4:
+        return arr
+
+    suffix = path.suffix.lower()
+    if suffix in _TIFF_SUFFIXES:
+        # TIFF convention in this workflow is ZCYX.
+        return np.moveaxis(arr, 0, 1)
+    if suffix == ".zarr":
+        if raw:
+            # Raw Zarr convention here is ZYXC.
+            return np.moveaxis(arr, -1, 0)
+        # Label/instance Zarr is channel-less ZYX in common cases.
+        return arr
+    return arr
+
+
 def plot_augmentation_samples(
         sample: str, split: str,
         augmentation_name: str,
@@ -38,7 +77,8 @@ def plot_augmentation_samples(
         subplots=[2, 2],
         fig_size=(8, 8)
 ):
-    SAMPLE = sample + "*"
+    sample_stem = sample
+    sample_pattern = f"{sample_stem}*"
     SPLIT = split
     AUG_NAME = augmentation_name
     if raw:
@@ -46,10 +86,20 @@ def plot_augmentation_samples(
     else:
         AUG_DATA_DIR = FISBE_DIR / AUG_NAME / SPLIT / 'label'
     print(AUG_DATA_DIR)
-    print(SAMPLE)
+    print(sample_pattern)
 
-    sample_augmentations = sorted(AUG_DATA_DIR.glob(f"{SAMPLE}.tif"))
+    candidates = sorted(AUG_DATA_DIR.glob(sample_pattern))
+    sample_augmentations = [
+        p for p in candidates
+        if (p.is_file() and p.suffix.lower() in _TIFF_SUFFIXES)
+        or (p.is_dir() and p.suffix.lower() == ".zarr")
+    ]
     total_augmentaions = len(sample_augmentations)
+    if total_augmentaions == 0:
+        raise FileNotFoundError(
+            f"No augmentation volumes found in {AUG_DATA_DIR} for pattern '{sample_pattern}' "
+            "(expected .tif/.tiff files or .zarr directories)."
+        )
     print(f"Total augmentations for sample found: {total_augmentaions}")
     rng = np.random.default_rng(seed)
     print(f"Selecting ({sample_selection}) samples")
@@ -58,9 +108,9 @@ def plot_augmentation_samples(
 
     # Define thread job
     def load_mip(path: Path):
-        img = tifffile.imread(path)
-        print(f"Image Shape: {img.shape}")
-        img = np.moveaxis(img, 0, 1)  # BiaPy ZCYX -> CZYX
+        img = _load_volume(path)
+        print(f"Shape: {img.shape}", f"dtype: {img.dtype}", f"max: {img.max()}, min: {img.min()}", f"Image Shape: {img.shape}")
+        img = _to_czyx(img, path, raw=raw)
         return path, plotting_func(img, 1)
 
     # Loading Samples
