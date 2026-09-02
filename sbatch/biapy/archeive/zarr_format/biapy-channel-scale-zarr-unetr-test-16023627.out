@@ -1,0 +1,1567 @@
+SBATCH Run: biapy-channel-scale-zarr-unetr.yaml, mode: test, job-name: biapy-channel-scale-zarr-unetr, run-id: 0
+SLURM_CPUS_PER_TASK=6
+running BiaPy/run_biapy-py.py
+Patched BiaPy create_instance_channels: fid_mask=None (Zarr volume-switch UnboundLocalError)
+Mode overrides (test): TRAIN.ENABLE=False, TEST.ENABLE=True, MODEL.LOAD_CHECKPOINT=True
+CPU overrides: SYSTEM.NUM_CPUS=6, SYSTEM.NUM_WORKERS=6
+Date     : 2026-08-19 11:23:02
+Arguments: Namespace(config={'SYSTEM': {'NUM_CPUS': 6, 'NUM_WORKERS': -1}, 'PROBLEM': {'TYPE': 'INSTANCE_SEG', 'NDIM': '3D', 'INSTANCE_SEG': {'DATA_CHANNELS': ['F', 'Dc', 'Dn', 'P'], 'DATA_CHANNELS_EXTRA_OPTS': [{'P': {'type': 'skeleton', 'dilation': 2}, 'Dc': {'type': 'skeleton', 'mask_values': False}, 'Dn': {'mask_values': False, 'decline_power': 2}}], 'DATA_CHANNEL_WEIGHTS': '(1.0, 3.0, 3.0, 2.0)', 'WATERSHED': {'SEED_CHANNELS': ['P'], 'SEED_CHANNELS_THRESH': ['auto'], 'TOPOGRAPHIC_SURFACE_CHANNEL': 'F', 'GROWTH_MASK_CHANNELS': ['F'], 'GROWTH_MASK_CHANNELS_THRESH': ['auto'], 'DATA_CHECK_MW': True}}}, 'DATA': {'PATCH_SIZE': '(160, 160, 160, 3)', 'TRAIN': {'PATH': 'fisbe/biapy-channel-scale-zarr/train/raw', 'GT_PATH': 'fisbe/biapy-channel-scale-zarr/train/label', 'INPUT_IMG_AXES_ORDER': 'ZYXC', 'INPUT_MASK_AXES_ORDER': 'ZYXC', 'IN_MEMORY': False}, 'VAL': {'PATH': 'fisbe/biapy-no-aug-zarr/val/raw', 'GT_PATH': 'fisbe/biapy-no-aug-zarr/val/label', 'FROM_TRAIN': False, 'INPUT_IMG_AXES_ORDER': 'ZYXC', 'INPUT_MASK_AXES_ORDER': 'ZYXC', 'IN_MEMORY': False}, 'TEST': {'PATH': 'fisbe/biapy-no-aug-zarr/test/raw', 'GT_PATH': 'fisbe/biapy-no-aug-zarr/test/label', 'INPUT_IMG_AXES_ORDER': 'ZYXC', 'INPUT_MASK_AXES_ORDER': 'ZYXC', 'IN_MEMORY': False, 'LOAD_GT': True, 'PADDING': '(4,16,16)'}}, 'AUGMENTOR': {'ENABLE': False, 'RANDOM_ROT': False, 'VFLIP': False, 'HFLIP': False, 'ZFLIP': False}, 'MODEL': {'ARCHITECTURE': 'unetr', 'LOAD_CHECKPOINT': True}, 'TRAIN': {'ENABLE': False, 'OPTIMIZER': 'ADAMW', 'LR': 0.001, 'BATCH_SIZE': 2, 'EPOCHS': 60, 'PATIENCE': 10, 'LR_SCHEDULER': {'NAME': 'onecycle'}}, 'TEST': {'ENABLE': True, 'AUGMENTATION': False, 'FULL_IMG': False, 'BY_CHUNKS': {'ENABLE': True, 'FORMAT': 'zarr', 'SAVE_OUT_TIF': True, 'INPUT_IMG_AXES_ORDER': 'ZYXC', 'WORKFLOW_PROCESS': {'ENABLE': True, 'TYPE': 'entire_pred'}}, 'POST_PROCESSING': {'INSTANCE_REFINEMENT': {'ENABLE': True, 'OPERATIONS': ['remove_small_objects'], 'VALUES': [1000]}}}}, result_dir='metrics/biapy', name='biapy-channel-scale-zarr-unetr', run_id='0', gpu='0', world_size=1, local_rank=-1, dist_on_itp=False, dist_url='env://', dist_backend='nccl')
+Job      : biapy-channel-scale-zarr-unetr_0
+BiaPy    : 3.7.0
+Python   : 3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:34:02) [GCC 14.3.0]
+PyTorch  : 2.12.1+cu130
+The following changes were made in order to adapt the input configuration:
+Not using distributed mode
+[11:23:02.131113] **** Using GPU: 'cuda' for training
+[11:23:02.272057] CPU budget(total)=6 | per_rank=6 | main_threads=4 | num_workers(per_rank)=1 | world_size=1
+[11:23:02.303069] Configuration details:
+[11:23:02.303104] AUGMENTOR:
+  AFFINE_MODE: reflect
+  AUG_NUM_SAMPLES: 10
+  AUG_SAMPLES: True
+  BRIGHTNESS: False
+  BRIGHTNESS_FACTOR: (-0.1, 0.1)
+  BRIGHTNESS_PROB: 0.5
+  CBLUR_DOWN_RANGE: (2, 8)
+  CBLUR_INSIDE: True
+  CBLUR_SIZE: (0.2, 0.4)
+  CHANNEL_SHUFFLE: False
+  CHANNEL_SHUFFLE_PROB: 0.5
+  CMIX_SIZE: (0.2, 0.4)
+  CNOISE_NB_ITERATIONS: (1, 3)
+  CNOISE_SCALE: (0.05, 0.1)
+  CNOISE_SIZE: (0.2, 0.4)
+  CONTRAST: False
+  CONTRAST_FACTOR: (-0.1, 0.1)
+  CONTRAST_PROB: 0.5
+  COUT_APPLY_TO_MASK: False
+  COUT_CVAL: 0.0
+  COUT_NB_ITERATIONS: (1, 3)
+  COUT_SIZE: (0.05, 0.3)
+  CUTBLUR: False
+  CUTBLUR_PROB: 0.5
+  CUTMIX: False
+  CUTMIX_PROB: 0.5
+  CUTNOISE: False
+  CUTNOISE_PROB: 0.5
+  CUTOUT: False
+  CUTOUT_PROB: 0.5
+  DRAW_GRID: True
+  DROPOUT: False
+  DROPOUT_PROB: 0.5
+  DROP_RANGE: (0, 0.2)
+  ELASTIC: False
+  ELASTIC_PROB: 0.5
+  ENABLE: False
+  E_ALPHA: (12, 16)
+  E_MODE: constant
+  E_SIGMA: 4
+  GAMMA_CONTRAST: False
+  GAMMA_CONTRAST_PROB: 0.5
+  GAUSSIAN_NOISE: False
+  GAUSSIAN_NOISE_MEAN: 0.0
+  GAUSSIAN_NOISE_PROB: 0.5
+  GAUSSIAN_NOISE_USE_INPUT_IMG_MEAN_AND_VAR: False
+  GAUSSIAN_NOISE_VAR: 0.05
+  GC_GAMMA: (1.25, 1.75)
+  GRAYSCALE: False
+  GRAYSCALE_PROB: 0.5
+  GRIDMASK: False
+  GRIDMASK_PROB: 0.5
+  GRID_D_RANGE: (0.4, 1)
+  GRID_INVERT: False
+  GRID_RATIO: 0.6
+  GRID_ROTATE: 1.0
+  G_BLUR: False
+  G_BLUR_PROB: 0.5
+  G_SIGMA: (1.0, 2.0)
+  HFLIP: False
+  HFLIP_PROB: 0.5
+  MB_KERNEL: (3, 7)
+  MEDIAN_BLUR: False
+  MEDIAN_BLUR_PROB: 0.5
+  MISALIGNMENT: False
+  MISALIGNMENT_PROB: 0.5
+  MISSING_SECTIONS: False
+  MISSING_SECTIONS_PROB: 0.5
+  MISSP_CHANNEL_PB: 0.5
+  MISSP_ITERATIONS: (10, 30)
+  MOTB_K_RANGE: (8, 12)
+  MOTION_BLUR: False
+  MOTION_BLUR_PROB: 0.5
+  MS_DISPLACEMENT: 16
+  MS_ROTATE_RATIO: 0.5
+  PEPPER: False
+  PEPPER_AMOUNT: 0.05
+  PEPPER_PROB: 0.5
+  POISSON_NOISE: False
+  POISSON_NOISE_PROB: 0.5
+  RANDOM_ROT: False
+  RANDOM_ROT_PROB: 0.5
+  RANDOM_ROT_RANGE: (-180, 180)
+  ROT90: False
+  ROT90_PROB: 0.5
+  SALT: False
+  SALT_AMOUNT: 0.05
+  SALT_AND_PEPPER: False
+  SALT_AND_PEPPER_AMOUNT: 0.05
+  SALT_AND_PEPPER_PROB: 0.5
+  SALT_AND_PEPPER_PROP: 0.5
+  SALT_PROB: 0.5
+  SHEAR: False
+  SHEAR_PROB: 0.5
+  SHEAR_RANGE: (-20, 20)
+  SHIFT: False
+  SHIFT_PROB: 0.5
+  SHIFT_RANGE: (0.1, 0.2)
+  SHUFFLE_TRAIN_DATA_EACH_EPOCH: True
+  SHUFFLE_VAL_DATA_EACH_EPOCH: False
+  VFLIP: False
+  VFLIP_PROB: 0.5
+  ZFLIP: False
+  ZFLIP_PROB: 0.5
+  ZOOM: False
+  ZOOM_IN_Z: False
+  ZOOM_PROB: 0.5
+  ZOOM_RANGE: (0.5, 1.5)
+DATA:
+  CHECK_GENERATORS: False
+  FILTER_BY_IMAGE: False
+  FORCE_RGB: False
+  NORMALIZATION:
+    PERC_CLIP:
+      ENABLE: False
+      LOWER_PERC: -1.0
+      LOWER_VALUE: [-1.0]
+      UPPER_PERC: -1.0
+      UPPER_VALUE: [-1.0]
+    TYPE: zero_mean_unit_variance
+    ZERO_MEAN_UNIT_VAR:
+      MEAN_VAL: [-1.0]
+      STD_VAL: [-1.0]
+  N_CLASSES: 2
+  PATCH_SIZE: (160, 160, 160, 3)
+  PREPROCESS:
+    CANNY:
+      ENABLE: False
+      HIGH_THRESHOLD: None
+      LOW_THRESHOLD: None
+    CLAHE:
+      CLIP_LIMIT: 0.01
+      ENABLE: False
+      KERNEL_SIZE: None
+    GAUSSIAN_BLUR:
+      CHANNEL_AXIS: None
+      ENABLE: False
+      MODE: nearest
+      SIGMA: 1
+    MATCH_HISTOGRAM:
+      ENABLE: False
+      REFERENCE_PATH: user_data/test/x
+    MEDIAN_BLUR:
+      ENABLE: False
+      KERNEL_SIZE: (3, 3, 1)
+    RESIZE:
+      ANTI_ALIASING: False
+      CLIP: True
+      CVAL: 0.0
+      ENABLE: False
+      MODE: reflect
+      ORDER: 1
+      OUTPUT_SHAPE: (512, 512)
+      PRESERVE_RANGE: True
+    TEST: False
+    TRAIN: False
+    VAL: False
+    ZOOM:
+      ENABLE: False
+      ZOOM_FACTOR: [1, 1, 1, 1, 1]
+  REFLECT_TO_COMPLETE_SHAPE: True
+  SAVE_FILTERED_IMAGES: False
+  SAVE_FILTERED_IMAGES_NUM: 3
+  TEST:
+    BINARY_MASKS: fisbe/biapy-no-aug-zarr/test/raw/../bin_mask
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy-no-aug-zarr/test/label_detection_masks_2
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy-no-aug-zarr/test/label
+    INPUT_IMG_AXES_ORDER: ZYXC
+    INPUT_MASK_AXES_ORDER: ZYXC
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-no-aug-zarr/test/label_F.erosion-0.dilation-0_Dc.type-skeleton.norm-True.mask_values-False_Dn.closing_size-3.norm-True.mask_values-False.decline_power-2_P.type-skeleton.dilation-2.erosion-0
+    IN_MEMORY: False
+    LOAD_GT: True
+    MEDIAN_PADDING: False
+    OVERLAP: (0, 0, 0)
+    PADDING: (4, 16, 16)
+    PATH: fisbe/biapy-no-aug-zarr/test/raw
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy-no-aug-zarr/test/raw_ssl_source
+    USE_VAL_AS_TEST: False
+  TRAIN:
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy-channel-scale-zarr/train/label_detection_masks_2
+    EXTRACT_RANDOM_PATCH: False
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy-channel-scale-zarr/train/label
+    INPUT_IMG_AXES_ORDER: ZYXC
+    INPUT_MASK_AXES_ORDER: ZYXC
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-channel-scale-zarr/train/label_F.erosion-0.dilation-0_Dc.type-skeleton.norm-True.mask_values-False_Dn.closing_size-3.norm-True.mask_values-False.decline_power-2_P.type-skeleton.dilation-2.erosion-0
+    IN_MEMORY: False
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: fisbe/biapy-channel-scale-zarr/train/raw
+    PROBABILITY_MAP: False
+    REPLICATE: 0
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy-channel-scale-zarr/train/raw_ssl_source
+    W_BACKGROUND: 0.06
+    W_FOREGROUND: 0.94
+  VAL:
+    CROSS_VAL: False
+    CROSS_VAL_FOLD: 1
+    CROSS_VAL_NFOLD: 5
+    DETECTION_MASK_DIR: fisbe/biapy-no-aug-zarr/val/label_detection_masks_2
+    DIST_EVAL: True
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    FROM_TRAIN: False
+    GT_PATH: fisbe/biapy-no-aug-zarr/val/label
+    INPUT_IMG_AXES_ORDER: ZYXC
+    INPUT_MASK_AXES_ORDER: ZYXC
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-no-aug-zarr/val/label_F.erosion-0.dilation-0_Dc.type-skeleton.norm-True.mask_values-False_Dn.closing_size-3.norm-True.mask_values-False.decline_power-2_P.type-skeleton.dilation-2.erosion-0
+    IN_MEMORY: False
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: fisbe/biapy-no-aug-zarr/val/raw
+    RANDOM: True
+    RESOLUTION: (1, 1, 1)
+    SPLIT_TRAIN: 0.1
+    SSL_SOURCE_DIR: fisbe/biapy-no-aug-zarr/val/raw_ssl_source
+LOG:
+  CHART_CREATION_FREQ: 5
+  LOG_DIR: metrics/biapy/biapy-channel-scale-zarr-unetr/logs
+  LOG_FILE_PREFIX: biapy-channel-scale-zarr-unetr_0
+  TENSORBOARD_LOG_DIR: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/tensorboard
+LOSS:
+  CLASS_REBALANCE: none
+  CLASS_WEIGHTS: []
+  CONTRAST:
+    ENABLE: False
+    MEMORY_SIZE: 5000
+    PIXEL_UPD_FREQ: 10
+    PROJ_DIM: 256
+  CYCLEGAN:
+    ALPHA_PERCEPTUAL: 0.0
+    DELTA_MSE: 0.0
+    GAMMA_SSIM: 1.0
+    LAMBDA_GAN: 1.0
+    LAMBDA_RECON: 10.0
+  IGNORE_INDEX: -1
+  TYPE: 
+  WEIGHTS: [1.0, 1.0]
+MODEL:
+  ACTIVATION: elu
+  ARCHITECTURE: unetr
+  BMZ:
+    EXPORT:
+      AUTHORS: []
+      CITE: []
+      DATASET_INFO: [{}]
+      DESCRIPTION: 
+      DOCUMENTATION: 
+      ENABLE: False
+      LICENSE: CC-BY-4.0
+      MODEL_NAME: 
+      MODEL_VERSION: 0.1.0
+      REUSE_BMZ_CONFIG: False
+      TAGS: []
+    SOURCE_MODEL_ID: 
+  CONVNEXT_LAYER_SCALE: 1e-06
+  CONVNEXT_SD_PROB: 0.1
+  CONVNEXT_STEM_K_SIZE: 2
+  CONV_BLOCK_ORDER: conv_norm_act
+  CONV_LAYERS: [2, 2, 2, 2, 2]
+  DROPOUT_VALUES: [0.0]
+  FEATURE_MAPS: [16, 32, 64, 128, 256]
+  FREEZE_LAYERS_MATCHING: []
+  HRNET:
+    BLOCK_TYPE: BASIC
+    HEAD_TYPE: FCN
+    NUM_BLOCKS: [[4, 4], [4, 4, 4], [4, 4, 4, 4]]
+    NUM_BRANCHES: [2, 3, 4]
+    NUM_CHANNELS: [[18, 36], [18, 36, 72], [18, 36, 72, 144]]
+    NUM_MODULES: [1, 4, 3]
+    NUM_STAGES: 3
+    VARIANT: W48
+    YX_DOWN: [0, 0, 0]
+    Z_DOWN: [0, 0, 0]
+  ISOTROPY: [True, True, True, True, True]
+  ITEMS_TO_LOAD_FROM_CHECKPOINT: ['weights', 'norm', 'model_arch']
+  KERNEL_SIZE: 3
+  LARGER_IO: False
+  LOAD_CHECKPOINT: True
+  LOAD_CHECKPOINT_EPOCH: best_on_val
+  MAE_DEC_HIDDEN_SIZE: 512
+  MAE_DEC_MLP_DIMS: 2048
+  MAE_DEC_NUM_HEADS: 16
+  MAE_DEC_NUM_LAYERS: 8
+  MAE_MASK_RATIO: 0.5
+  MAE_MASK_TYPE: grid
+  NAFNET:
+    ARCHITECTURE_D: patchgan
+    DEC_BLK_NUMS: [2, 2, 2, 2]
+    DW_EXPAND: 2
+    ENC_BLK_NUMS: [2, 2, 4, 8]
+    FFN_EXPAND: 2
+    MIDDLE_BLK_NUM: 12
+    PATCHGAN:
+      BASE_FILTERS: 64
+    WIDTH: 16
+  NORMALIZATION: in
+  OUT_CHECKPOINT_FORMAT: pth
+  RCAN_CONV_FILTERS: 16
+  RCAN_RCAB_BLOCK_NUM: 20
+  RCAN_REDUCTION_RATIO: 16
+  RCAN_RG_BLOCK_NUM: 10
+  RCAN_UPSCALING_LAYER: True
+  SAVE_CKPT_FREQ: -1
+  SKIP_UNMATCHED_LAYERS: False
+  SOURCE: biapy
+  STUNET:
+    PRETRAINED: False
+    VARIANT: base
+  TORCHVISION_MODEL_NAME: 
+  UNETR_VIT_HIDD_MULT: -1
+  UNETR_VIT_MODEL: custom
+  UNETR_VIT_NUM_FILTERS: 16
+  UNET_SR_UPSAMPLE_POSITION: pre
+  UPSAMPLE_LAYER: convtranspose
+  VIT_EMBED_DIM: 768
+  VIT_MLP_RATIO: 4.0
+  VIT_MODEL: custom
+  VIT_NORM_EPS: 1e-06
+  VIT_NUM_HEADS: 12
+  VIT_NUM_LAYERS: 12
+  VIT_PRETRAINED_WEIGHTS: 
+  VIT_TOKEN_SIZE: 16
+  YX_DOWN: [2, 2, 2, 2]
+  Z_DOWN: [2, 2, 2, 2]
+PATHS:
+  BMZ_EXPORT_PATH: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/BMZ_files
+  CHARTS: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/charts
+  CHECKPOINT: metrics/biapy/biapy-channel-scale-zarr-unetr/checkpoints
+  CHECKPOINT_FILE: 
+  DA_SAMPLES: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/aug
+  FIL_SAMPLES_DIR: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/filtering_information
+  GEN_CHECKS: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/gen_check
+  GEN_MASK_CHECKS: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/gen_mask_check
+  MAE_OUT_DIR: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/MAE_checks
+  PROB_MAP_DIR: metrics/biapy/biapy-channel-scale-zarr-unetr/prob_map
+  PROB_MAP_FILENAME: prob_map.npy
+  PROFILER: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/profiler
+  RESULT_DIR:
+    AS_3D_STACK: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/as_3d_stack
+    AS_3D_STACK_BIN: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/as_3d_stack_binarized
+    AS_3D_STACK_POST_PROCESSING: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/as_3d_stack_post_processing
+    DET_ASSOC_POINTS: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/point_associations
+    DET_LOCAL_MAX_COORDS_CHECK: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_local_max_check
+    DET_LOCAL_MAX_COORDS_CHECK_POST_PROCESSING: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_local_max_check_post_processing
+    FULL_IMAGE: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/full_image
+    FULL_IMAGE_BIN: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/full_image_binarized
+    FULL_IMAGE_INSTANCES: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/full_image_instances
+    FULL_IMAGE_POST_PROCESSING: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/full_image_post_processing
+    INST_ASSOC_POINTS: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/instance_associations
+    PATH: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0
+    PER_IMAGE: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image
+    PER_IMAGE_BIN: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_binarized
+    PER_IMAGE_INSTANCES: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_instances
+    PER_IMAGE_POST_PROCESSING: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_post_processing
+  TEST_FULL_GT_H5: fisbe/biapy-no-aug-zarr/test/label/h5
+  TEST_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/test_FDcDnP_instance_channels
+  TRAIN_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/train_FDcDnP_instance_channels
+  VAL_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/val_FDcDnP_instance_channels
+  WATERSHED_DIR: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/watershed
+PROBLEM:
+  DENOISING:
+    LOAD_GT_DATA: False
+    N2V_MANIPULATOR: uniform_withCP
+    N2V_NEIGHBORHOOD_RADIUS: 5
+    N2V_PERC_PIX: 0.198
+    N2V_STRUCTMASK: False
+  DETECTION:
+    CENTRAL_POINT_DILATION: [2]
+    CHECK_POINTS_CREATED: True
+    CLASS_REBALANCE_WITHIN_CHANNELS: True
+    DATA_CHANNEL_WEIGHTS: (1, 1)
+    DATA_CHECK_MW: False
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+  IMAGE_TO_IMAGE:
+    CHANNELS_PER_HEAD_INFO: []
+    MULTIPLE_RAW_ONE_TARGET_LOADER: False
+    OUTPUT_CHANNELS: 1
+    OUTPUT_CHANNEL_ACT: []
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+  INSTANCE_SEG:
+    BORDER_EXTRA_WEIGHTS: 
+    CELLPOSE:
+      DIAMETER: 0.0
+      DIAM_MEAN: 30.0
+      FG_THRESH: 0.5
+      FLOW_THRESHOLD: 0.4
+      N_STEPS: 200
+      SCALE_RANGE: 0.5
+      TEST_DOUBLE_INFERENCE: True
+    CHANNELS_PER_HEAD_INFO: []
+    CLASS_REBALANCE_WITHIN_CHANNELS: True
+    DATA_CHANNELS: ['F', 'Dc', 'Dn', 'P']
+    DATA_CHANNELS_EXTRA_OPTS: [{'P': {'type': 'skeleton', 'dilation': 2, 'erosion': 0}, 'Dc': {'type': 'skeleton', 'norm': True, 'mask_values': False}, 'Dn': {'closing_size': 3, 'norm': True, 'mask_values': False, 'decline_power': 2}, 'F': {'erosion': 0, 'dilation': 0}}]
+    DATA_CHANNELS_LOSSES: ['bce', 'l1', 'l1', 'bce']
+    DATA_CHANNEL_WEIGHTS: (1.0, 3.0, 3.0, 2.0)
+    EMBEDSEG:
+      FG_THRESH: 0.5
+      GRID_SIZE: -1
+      MIN_MASK_SUM: 0
+      MIN_UNCLUSTERED_SUM: 0
+      SEED_THRESH: 0.9
+    INSTANCE_CREATION_PROCESS: watershed
+    OMNIPOSE:
+      FLOW_THRESHOLD: 0.4
+      MASK_THRESHOLD: 0.0
+      NITER: 0
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+    STARDIST:
+      GRID: []
+      NMS_IOU_THRESH: 0.3
+      PROB_THRESH: 0.4
+    SYNAPSES:
+      BLOB_LOG_MAX_SIGMA: 10
+      BLOB_LOG_MIN_SIGMA: 5
+      BLOB_LOG_NUM_SIGMA: 2
+      EXCLUDE_BORDER: False
+      MIN_TH_TO_BE_PEAK: 0.2
+      PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+      POINT_CREATION_FUNCTION: peak_local_max
+      REMOVE_CLOSE_POINTS_RADIUS_BY_MASK: False
+      REMOVE_CLOSE_POST_POINTS_RADIUS: 0
+      REMOVE_CLOSE_PRE_POINTS_RADIUS: 0
+      TH_TYPE: auto
+    TYPE: regular
+    WATERSHED:
+      BY_2D_SLICES: False
+      DATA_CHECK_MW: True
+      DATA_REMOVE_BEFORE_MW: False
+      DATA_REMOVE_SMALL_OBJ_BEFORE: 10
+      ERODE_AND_DILATE_GROWTH_MASK: False
+      FORE_DILATION_RADIUS: 5
+      FORE_EROSION_RADIUS: 5
+      GROWTH_MASK_CHANNELS: ['F']
+      GROWTH_MASK_CHANNELS_THRESH: ['auto']
+      SEED_CHANNELS: ['P']
+      SEED_CHANNELS_THRESH: ['auto']
+      SEED_MORPH_RADIUS: []
+      SEED_MORPH_SEQUENCE: []
+      TOPOGRAPHIC_SURFACE_CHANNEL: F
+  NDIM: 3D
+  PRINT_OLD_KEY_CHANGES: True
+  SELF_SUPERVISED:
+    NOISE: 0.2
+    PRETEXT_TASK: crappify
+    RESIZING_FACTOR: 4
+  SEMANTIC_SEG:
+    IGNORE_CLASS_ID: 0
+  SUPER_RESOLUTION:
+    UPSCALING: (1, 1, 1)
+  TYPE: INSTANCE_SEG
+SYSTEM:
+  DEVICE: cpu
+  NUM_CPUS: 6
+  NUM_GPUS: 1
+  NUM_WORKERS: -1
+  PIN_MEM: True
+  SEED: 0
+TEST:
+  ANALIZE_2D_IMGS_AS_3D_STACK: False
+  AUGMENTATION: False
+  AUGMENTATION_GROUP: auto
+  AUGMENTATION_MODE: mean
+  BY_CHUNKS:
+    ENABLE: True
+    FLUSH_EACH: 100
+    PHASES: ['prediction', 'instance_creation', 'instance_merging']
+    SAVE_OUT_TIF: True
+    WORKFLOW_PROCESS:
+      ENABLE: True
+      INSTANCE_SEG_HALO: -1
+      INSTANCE_SEG_MERGE_IOU_TH: 0.3
+      TYPE: entire_pred
+    Z_END: -1
+    Z_START: -1
+  DET_BLOB_LOG_MAX_SIGMA: 10
+  DET_BLOB_LOG_MIN_SIGMA: 5
+  DET_BLOB_LOG_NUM_SIGMA: 2
+  DET_EXCLUDE_BORDER: False
+  DET_IGNORE_POINTS_OUTSIDE_BOX: []
+  DET_MIN_TH_TO_BE_PEAK: 0.2
+  DET_PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+  DET_POINT_CREATION_FUNCTION: peak_local_max
+  DET_TH_TYPE: manual
+  DET_TOLERANCE: 10
+  ENABLE: True
+  FULL_IMG: False
+  MATCHING_STATS: True
+  MATCHING_STATS_BY_IMAGE: True
+  MATCHING_STATS_THS: [0.3, 0.5, 0.75]
+  MATCHING_STATS_THS_COLORED_IMG: []
+  METRICS: ['iou']
+  METRICS_IN_CPU: False
+  POST_PROCESSING:
+    APPLY_MASK: False
+    DET_WATERSHED: False
+    DET_WATERSHED_DONUTS_CLASSES: [-1]
+    DET_WATERSHED_DONUTS_NUCLEUS_DIAMETER: 30
+    DET_WATERSHED_DONUTS_PATCH: [13, 120, 120]
+    DET_WATERSHED_FIRST_DILATION: [-1, -1]
+    INSTANCE_REFINEMENT:
+      ENABLE: True
+      OPERATIONS: ['remove_small_objects']
+      VALUES: [1000]
+    MEASURE_PROPERTIES:
+      ENABLE: False
+      EXTRA_PROPS: []
+      REMOVE_BY_PROPERTIES:
+        ENABLE: False
+        PROPS: []
+        SIGNS: []
+        VALUES: []
+    MEDIAN_FILTER: False
+    MEDIAN_FILTER_AXIS: []
+    MEDIAN_FILTER_SIZE: []
+    REMOVE_CLOSE_POINTS: False
+    REMOVE_CLOSE_POINTS_RADIUS: 0
+    REPARE_LARGE_BLOBS_SIZE: -1
+    VORONOI_ON_MASK: False
+    VORONOI_TH: 0.0
+  REDUCE_MEMORY: False
+  REUSE_PREDICTIONS: False
+  SAVE_MODEL_RAW_OUTPUT: True
+  VERBOSE: True
+TRAIN:
+  BATCH_SIZE: 2
+  CHECKPOINT_MONITOR: val_loss
+  ENABLE: False
+  EPOCHS: 60
+  GRADIENT_CLIP_NORM: 0.0
+  LR: [0.001]
+  LR_SCHEDULER:
+    MIN_LR: [-1.0]
+    NAME: onecycle
+    REDUCEONPLATEAU_FACTOR: 0.5
+    REDUCEONPLATEAU_PATIENCE: -1
+    WARMUP_COSINE_DECAY_EPOCHS: -1
+  METRICS: ['iou']
+  OPTIMIZER: ['ADAMW']
+  OPT_BETAS: [[0.9, 0.999]]
+  PATIENCE: 10
+  VERBOSE: False
+  W_DECAY: 0.02
+[11:23:02.511100] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+[11:23:02.511134] Initializing Instance_Segmentation_Workflow
+[11:23:02.511144] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+
+[11:23:02.511252] Extracting model from checkpoint file metrics/biapy/biapy-channel-scale-zarr-unetr/checkpoints/biapy-channel-scale-zarr-unetr_0-checkpoint-best.pth
+[11:23:04.149388] Checkpoint file loaded. Extracting the following items (if available): weights, norm, model_arch . Checking consistency with current configuration . . .
+[11:23:04.154207] The following changes were made in order to adapt the loaded input configuration from checkpoint into the current configuration version:
+[11:23:04.154295] 'MODEL.BMZ.EXPORT.DATASET_INFO' changed from '[{}]' to '[{'name': 'name_not_specified', 'doi': 'doi_not_specified', 'image_modality': 'image_modality_not_specified', 'dataset_id': 'dataset_id_not_specified'}]'
+[11:23:04.154320] Normalization instructions will be loaded from checkpoint.
+[11:23:04.154900] Model architecture will be loaded from checkpoint.
+[11:23:04.232887] Creating normalization module . . .
+[11:23:04.232940] Normalization module created with the following configuration:
+[11:23:04.232952]   type: zero_mean_unit_variance
+[11:23:04.232961]   target_type: mask
+[11:23:04.232968]   out_dtype: float32
+[11:23:04.232977]   norm_target: False
+[11:23:04.232985]   percentile_clip: False
+[11:23:04.232995]   per_lower_bound: -1.0
+[11:23:04.233003]   per_upper_bound: -1.0
+[11:23:04.233022]   lower_bound_val: [-1.0]
+[11:23:04.233030]   upper_bound_val: [-1.0]
+[11:23:04.233038]   mean: [-1.0]
+[11:23:04.233047]   std: [-1.0]
+[11:23:04.233116] ###########################
+[11:23:04.233126] #  PREPARE INSTANCE DATA  #
+[11:23:04.233134] ###########################
+[11:23:04.237831] DATA.VAL.GT_PATH changed from fisbe/biapy-no-aug-zarr/val/label to fisbe/biapy-no-aug-zarr/val/label_F.erosion-0.dilation-0_Dc.type-skeleton.norm-True.mask_values-False_Dn.closing_size-3.norm-True.mask_values-False.decline_power-2_P.type-skeleton.dilation-2.erosion-0
+[11:23:04.237877] DATA.TEST.GT_PATH changed from fisbe/biapy-no-aug-zarr/test/label to fisbe/biapy-no-aug-zarr/test/label_F.erosion-0.dilation-0_Dc.type-skeleton.norm-True.mask_values-False_Dn.closing_size-3.norm-True.mask_values-False.decline_power-2_P.type-skeleton.dilation-2.erosion-0
+[11:23:04.241487] ######################
+[11:23:04.241517] #   LOAD TEST DATA   #
+[11:23:04.241526] ######################
+[11:23:04.241546] ### LOAD ###
+[11:23:04.246295] ###############
+[11:23:04.246310] # Build model #
+[11:23:04.246318] ###############
+[11:23:04.280654] Selected output channels:
+[11:23:04.280690]   - 0 channel for F+Dc+Dn+P output
+[11:23:04.280710] Extracting UNETR's skip connections every 3 transformer blocks, i.e. from the blocks [3, 6, 9] of the 12 of the encoder
+[11:23:10.324467] ==================================================================================================================================
+Layer (type:depth-idx)                                  Input Shape               Output Shape              Param #
+==================================================================================================================================
+UNETR                                                   [1, 3, 160, 160, 160]     [1, 4, 160, 160, 160]     769,536
+├─PatchEmbed: 1-1                                       [1, 3, 160, 160, 160]     [1, 1000, 768]            --
+│    └─Conv3d: 2-1                                      [1, 3, 160, 160, 160]     [1, 768, 10, 10, 10]      9,437,952
+│    └─Identity: 2-2                                    [1, 1000, 768]            [1, 1000, 768]            --
+├─Identity: 1-2                                         [1, 1001, 768]            [1, 1001, 768]            --
+├─ModuleList: 1-3                                       --                        --                        --
+│    └─Block: 2-3                                       [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-1                              [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Attention: 3-2                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-1                            [1, 1001, 768]            [1, 1001, 2304]           1,771,776
+│    │    │    └─Identity: 4-2                          [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Identity: 4-3                          [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Linear: 4-4                            [1, 1001, 768]            [1, 1001, 768]            590,592
+│    │    │    └─Dropout: 4-5                           [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-3                               [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-4                               [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-5                              [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Mlp: 3-6                                    [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-6                            [1, 1001, 768]            [1, 1001, 3072]           2,362,368
+│    │    │    └─GELU: 4-7                              [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Dropout: 4-8                           [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Identity: 4-9                          [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Linear: 4-10                           [1, 1001, 3072]           [1, 1001, 768]            2,360,064
+│    │    │    └─Dropout: 4-11                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-7                               [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-8                               [1, 1001, 768]            [1, 1001, 768]            --
+│    └─Block: 2-4                                       [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-9                              [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Attention: 3-10                             [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-12                           [1, 1001, 768]            [1, 1001, 2304]           1,771,776
+│    │    │    └─Identity: 4-13                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Identity: 4-14                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Linear: 4-15                           [1, 1001, 768]            [1, 1001, 768]            590,592
+│    │    │    └─Dropout: 4-16                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-11                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-12                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-13                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Mlp: 3-14                                   [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-17                           [1, 1001, 768]            [1, 1001, 3072]           2,362,368
+│    │    │    └─GELU: 4-18                             [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Dropout: 4-19                          [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Identity: 4-20                         [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Linear: 4-21                           [1, 1001, 3072]           [1, 1001, 768]            2,360,064
+│    │    │    └─Dropout: 4-22                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-15                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-16                              [1, 1001, 768]            [1, 1001, 768]            --
+│    └─Block: 2-5                                       [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-17                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Attention: 3-18                             [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-23                           [1, 1001, 768]            [1, 1001, 2304]           1,771,776
+│    │    │    └─Identity: 4-24                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Identity: 4-25                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Linear: 4-26                           [1, 1001, 768]            [1, 1001, 768]            590,592
+│    │    │    └─Dropout: 4-27                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-19                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-20                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-21                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Mlp: 3-22                                   [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-28                           [1, 1001, 768]            [1, 1001, 3072]           2,362,368
+│    │    │    └─GELU: 4-29                             [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Dropout: 4-30                          [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Identity: 4-31                         [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Linear: 4-32                           [1, 1001, 3072]           [1, 1001, 768]            2,360,064
+│    │    │    └─Dropout: 4-33                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-23                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-24                              [1, 1001, 768]            [1, 1001, 768]            --
+│    └─Block: 2-6                                       [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-25                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Attention: 3-26                             [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-34                           [1, 1001, 768]            [1, 1001, 2304]           1,771,776
+│    │    │    └─Identity: 4-35                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Identity: 4-36                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Linear: 4-37                           [1, 1001, 768]            [1, 1001, 768]            590,592
+│    │    │    └─Dropout: 4-38                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-27                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-28                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-29                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Mlp: 3-30                                   [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-39                           [1, 1001, 768]            [1, 1001, 3072]           2,362,368
+│    │    │    └─GELU: 4-40                             [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Dropout: 4-41                          [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Identity: 4-42                         [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Linear: 4-43                           [1, 1001, 3072]           [1, 1001, 768]            2,360,064
+│    │    │    └─Dropout: 4-44                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-31                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-32                              [1, 1001, 768]            [1, 1001, 768]            --
+│    └─Block: 2-7                                       [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-33                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Attention: 3-34                             [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-45                           [1, 1001, 768]            [1, 1001, 2304]           1,771,776
+│    │    │    └─Identity: 4-46                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Identity: 4-47                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Linear: 4-48                           [1, 1001, 768]            [1, 1001, 768]            590,592
+│    │    │    └─Dropout: 4-49                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-35                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-36                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-37                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Mlp: 3-38                                   [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-50                           [1, 1001, 768]            [1, 1001, 3072]           2,362,368
+│    │    │    └─GELU: 4-51                             [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Dropout: 4-52                          [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Identity: 4-53                         [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Linear: 4-54                           [1, 1001, 3072]           [1, 1001, 768]            2,360,064
+│    │    │    └─Dropout: 4-55                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-39                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-40                              [1, 1001, 768]            [1, 1001, 768]            --
+│    └─Block: 2-8                                       [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-41                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Attention: 3-42                             [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-56                           [1, 1001, 768]            [1, 1001, 2304]           1,771,776
+│    │    │    └─Identity: 4-57                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Identity: 4-58                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Linear: 4-59                           [1, 1001, 768]            [1, 1001, 768]            590,592
+│    │    │    └─Dropout: 4-60                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-43                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-44                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-45                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Mlp: 3-46                                   [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-61                           [1, 1001, 768]            [1, 1001, 3072]           2,362,368
+│    │    │    └─GELU: 4-62                             [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Dropout: 4-63                          [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Identity: 4-64                         [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Linear: 4-65                           [1, 1001, 3072]           [1, 1001, 768]            2,360,064
+│    │    │    └─Dropout: 4-66                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-47                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-48                              [1, 1001, 768]            [1, 1001, 768]            --
+│    └─Block: 2-9                                       [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-49                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Attention: 3-50                             [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-67                           [1, 1001, 768]            [1, 1001, 2304]           1,771,776
+│    │    │    └─Identity: 4-68                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Identity: 4-69                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Linear: 4-70                           [1, 1001, 768]            [1, 1001, 768]            590,592
+│    │    │    └─Dropout: 4-71                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-51                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-52                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-53                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Mlp: 3-54                                   [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-72                           [1, 1001, 768]            [1, 1001, 3072]           2,362,368
+│    │    │    └─GELU: 4-73                             [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Dropout: 4-74                          [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Identity: 4-75                         [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Linear: 4-76                           [1, 1001, 3072]           [1, 1001, 768]            2,360,064
+│    │    │    └─Dropout: 4-77                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-55                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-56                              [1, 1001, 768]            [1, 1001, 768]            --
+│    └─Block: 2-10                                      [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-57                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Attention: 3-58                             [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-78                           [1, 1001, 768]            [1, 1001, 2304]           1,771,776
+│    │    │    └─Identity: 4-79                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Identity: 4-80                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Linear: 4-81                           [1, 1001, 768]            [1, 1001, 768]            590,592
+│    │    │    └─Dropout: 4-82                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-59                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-60                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-61                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Mlp: 3-62                                   [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-83                           [1, 1001, 768]            [1, 1001, 3072]           2,362,368
+│    │    │    └─GELU: 4-84                             [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Dropout: 4-85                          [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Identity: 4-86                         [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Linear: 4-87                           [1, 1001, 3072]           [1, 1001, 768]            2,360,064
+│    │    │    └─Dropout: 4-88                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-63                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-64                              [1, 1001, 768]            [1, 1001, 768]            --
+│    └─Block: 2-11                                      [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-65                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Attention: 3-66                             [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-89                           [1, 1001, 768]            [1, 1001, 2304]           1,771,776
+│    │    │    └─Identity: 4-90                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Identity: 4-91                         [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Linear: 4-92                           [1, 1001, 768]            [1, 1001, 768]            590,592
+│    │    │    └─Dropout: 4-93                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-67                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-68                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-69                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Mlp: 3-70                                   [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-94                           [1, 1001, 768]            [1, 1001, 3072]           2,362,368
+│    │    │    └─GELU: 4-95                             [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Dropout: 4-96                          [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Identity: 4-97                         [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Linear: 4-98                           [1, 1001, 3072]           [1, 1001, 768]            2,360,064
+│    │    │    └─Dropout: 4-99                          [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-71                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-72                              [1, 1001, 768]            [1, 1001, 768]            --
+│    └─Block: 2-12                                      [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-73                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Attention: 3-74                             [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-100                          [1, 1001, 768]            [1, 1001, 2304]           1,771,776
+│    │    │    └─Identity: 4-101                        [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Identity: 4-102                        [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Linear: 4-103                          [1, 1001, 768]            [1, 1001, 768]            590,592
+│    │    │    └─Dropout: 4-104                         [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-75                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-76                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-77                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Mlp: 3-78                                   [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-105                          [1, 1001, 768]            [1, 1001, 3072]           2,362,368
+│    │    │    └─GELU: 4-106                            [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Dropout: 4-107                         [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Identity: 4-108                        [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Linear: 4-109                          [1, 1001, 3072]           [1, 1001, 768]            2,360,064
+│    │    │    └─Dropout: 4-110                         [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-79                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-80                              [1, 1001, 768]            [1, 1001, 768]            --
+│    └─Block: 2-13                                      [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-81                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Attention: 3-82                             [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-111                          [1, 1001, 768]            [1, 1001, 2304]           1,771,776
+│    │    │    └─Identity: 4-112                        [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Identity: 4-113                        [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Linear: 4-114                          [1, 1001, 768]            [1, 1001, 768]            590,592
+│    │    │    └─Dropout: 4-115                         [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-83                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-84                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-85                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Mlp: 3-86                                   [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-116                          [1, 1001, 768]            [1, 1001, 3072]           2,362,368
+│    │    │    └─GELU: 4-117                            [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Dropout: 4-118                         [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Identity: 4-119                        [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Linear: 4-120                          [1, 1001, 3072]           [1, 1001, 768]            2,360,064
+│    │    │    └─Dropout: 4-121                         [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-87                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-88                              [1, 1001, 768]            [1, 1001, 768]            --
+│    └─Block: 2-14                                      [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-89                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Attention: 3-90                             [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-122                          [1, 1001, 768]            [1, 1001, 2304]           1,771,776
+│    │    │    └─Identity: 4-123                        [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Identity: 4-124                        [1, 12, 1001, 64]         [1, 12, 1001, 64]         --
+│    │    │    └─Linear: 4-125                          [1, 1001, 768]            [1, 1001, 768]            590,592
+│    │    │    └─Dropout: 4-126                         [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-91                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-92                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─LayerNorm: 3-93                             [1, 1001, 768]            [1, 1001, 768]            1,536
+│    │    └─Mlp: 3-94                                   [1, 1001, 768]            [1, 1001, 768]            --
+│    │    │    └─Linear: 4-127                          [1, 1001, 768]            [1, 1001, 3072]           2,362,368
+│    │    │    └─GELU: 4-128                            [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Dropout: 4-129                         [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Identity: 4-130                        [1, 1001, 3072]           [1, 1001, 3072]           --
+│    │    │    └─Linear: 4-131                          [1, 1001, 3072]           [1, 1001, 768]            2,360,064
+│    │    │    └─Dropout: 4-132                         [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-95                              [1, 1001, 768]            [1, 1001, 768]            --
+│    │    └─Identity: 3-96                              [1, 1001, 768]            [1, 1001, 768]            --
+├─ConvTranspose3d: 1-4                                  [1, 768, 10, 10, 10]      [1, 128, 20, 20, 20]      786,432
+├─ModuleList: 1-11                                      --                        --                        (recursive)
+│    └─Sequential: 2-15                                 [1, 768, 10, 10, 10]      [1, 128, 20, 20, 20]      --
+│    │    └─ConvTranspose3d: 3-97                       [1, 768, 10, 10, 10]      [1, 128, 20, 20, 20]      786,432
+│    │    └─ConvBlock: 3-98                             [1, 128, 20, 20, 20]      [1, 128, 20, 20, 20]      --
+│    │    │    └─Sequential: 4-133                      [1, 128, 20, 20, 20]      [1, 128, 20, 20, 20]      --
+│    │    │    │    └─Conv3d: 5-1                       [1, 128, 20, 20, 20]      [1, 128, 20, 20, 20]      442,496
+│    │    │    │    └─InstanceNorm3d: 5-2               [1, 128, 20, 20, 20]      [1, 128, 20, 20, 20]      256
+│    │    │    │    └─ELU: 5-3                          [1, 128, 20, 20, 20]      [1, 128, 20, 20, 20]      --
+├─ModuleList: 1-14                                      --                        --                        (recursive)
+│    └─DoubleConvBlock: 2-16                            [1, 256, 20, 20, 20]      [1, 128, 20, 20, 20]      --
+│    │    └─Sequential: 3-99                            [1, 256, 20, 20, 20]      [1, 128, 20, 20, 20]      --
+│    │    │    └─ConvBlock: 4-134                       [1, 256, 20, 20, 20]      [1, 128, 20, 20, 20]      --
+│    │    │    │    └─Sequential: 5-4                   [1, 256, 20, 20, 20]      [1, 128, 20, 20, 20]      --
+│    │    │    │    │    └─Conv3d: 6-1                  [1, 256, 20, 20, 20]      [1, 128, 20, 20, 20]      884,864
+│    │    │    │    │    └─InstanceNorm3d: 6-2          [1, 128, 20, 20, 20]      [1, 128, 20, 20, 20]      256
+│    │    │    │    │    └─ELU: 6-3                     [1, 128, 20, 20, 20]      [1, 128, 20, 20, 20]      --
+│    │    │    └─ConvBlock: 4-135                       [1, 128, 20, 20, 20]      [1, 128, 20, 20, 20]      --
+│    │    │    │    └─Sequential: 5-5                   [1, 128, 20, 20, 20]      [1, 128, 20, 20, 20]      --
+│    │    │    │    │    └─Conv3d: 6-4                  [1, 128, 20, 20, 20]      [1, 128, 20, 20, 20]      442,496
+│    │    │    │    │    └─InstanceNorm3d: 6-5          [1, 128, 20, 20, 20]      [1, 128, 20, 20, 20]      256
+│    │    │    │    │    └─ELU: 6-6                     [1, 128, 20, 20, 20]      [1, 128, 20, 20, 20]      --
+├─ModuleList: 1-13                                      --                        --                        (recursive)
+│    └─ConvTranspose3d: 2-17                            [1, 128, 20, 20, 20]      [1, 64, 40, 40, 40]       65,536
+├─ModuleList: 1-11                                      --                        --                        (recursive)
+│    └─Sequential: 2-18                                 [1, 768, 10, 10, 10]      [1, 64, 40, 40, 40]       --
+│    │    └─ConvTranspose3d: 3-100                      [1, 768, 10, 10, 10]      [1, 64, 20, 20, 20]       393,216
+│    │    └─ConvBlock: 3-101                            [1, 64, 20, 20, 20]       [1, 64, 20, 20, 20]       --
+│    │    │    └─Sequential: 4-136                      [1, 64, 20, 20, 20]       [1, 64, 20, 20, 20]       --
+│    │    │    │    └─Conv3d: 5-6                       [1, 64, 20, 20, 20]       [1, 64, 20, 20, 20]       110,656
+│    │    │    │    └─InstanceNorm3d: 5-7               [1, 64, 20, 20, 20]       [1, 64, 20, 20, 20]       128
+│    │    │    │    └─ELU: 5-8                          [1, 64, 20, 20, 20]       [1, 64, 20, 20, 20]       --
+│    │    └─ConvTranspose3d: 3-102                      [1, 64, 20, 20, 20]       [1, 64, 40, 40, 40]       32,768
+│    │    └─ConvBlock: 3-103                            [1, 64, 40, 40, 40]       [1, 64, 40, 40, 40]       --
+│    │    │    └─Sequential: 4-137                      [1, 64, 40, 40, 40]       [1, 64, 40, 40, 40]       --
+│    │    │    │    └─Conv3d: 5-9                       [1, 64, 40, 40, 40]       [1, 64, 40, 40, 40]       110,656
+│    │    │    │    └─InstanceNorm3d: 5-10              [1, 64, 40, 40, 40]       [1, 64, 40, 40, 40]       128
+│    │    │    │    └─ELU: 5-11                         [1, 64, 40, 40, 40]       [1, 64, 40, 40, 40]       --
+├─ModuleList: 1-14                                      --                        --                        (recursive)
+│    └─DoubleConvBlock: 2-19                            [1, 128, 40, 40, 40]      [1, 64, 40, 40, 40]       --
+│    │    └─Sequential: 3-104                           [1, 128, 40, 40, 40]      [1, 64, 40, 40, 40]       --
+│    │    │    └─ConvBlock: 4-138                       [1, 128, 40, 40, 40]      [1, 64, 40, 40, 40]       --
+│    │    │    │    └─Sequential: 5-12                  [1, 128, 40, 40, 40]      [1, 64, 40, 40, 40]       --
+│    │    │    │    │    └─Conv3d: 6-7                  [1, 128, 40, 40, 40]      [1, 64, 40, 40, 40]       221,248
+│    │    │    │    │    └─InstanceNorm3d: 6-8          [1, 64, 40, 40, 40]       [1, 64, 40, 40, 40]       128
+│    │    │    │    │    └─ELU: 6-9                     [1, 64, 40, 40, 40]       [1, 64, 40, 40, 40]       --
+│    │    │    └─ConvBlock: 4-139                       [1, 64, 40, 40, 40]       [1, 64, 40, 40, 40]       --
+│    │    │    │    └─Sequential: 5-13                  [1, 64, 40, 40, 40]       [1, 64, 40, 40, 40]       --
+│    │    │    │    │    └─Conv3d: 6-10                 [1, 64, 40, 40, 40]       [1, 64, 40, 40, 40]       110,656
+│    │    │    │    │    └─InstanceNorm3d: 6-11         [1, 64, 40, 40, 40]       [1, 64, 40, 40, 40]       128
+│    │    │    │    │    └─ELU: 6-12                    [1, 64, 40, 40, 40]       [1, 64, 40, 40, 40]       --
+├─ModuleList: 1-13                                      --                        --                        (recursive)
+│    └─ConvTranspose3d: 2-20                            [1, 64, 40, 40, 40]       [1, 32, 80, 80, 80]       16,384
+├─ModuleList: 1-11                                      --                        --                        (recursive)
+│    └─Sequential: 2-21                                 [1, 768, 10, 10, 10]      [1, 32, 80, 80, 80]       --
+│    │    └─ConvTranspose3d: 3-105                      [1, 768, 10, 10, 10]      [1, 32, 20, 20, 20]       196,608
+│    │    └─ConvBlock: 3-106                            [1, 32, 20, 20, 20]       [1, 32, 20, 20, 20]       --
+│    │    │    └─Sequential: 4-140                      [1, 32, 20, 20, 20]       [1, 32, 20, 20, 20]       --
+│    │    │    │    └─Conv3d: 5-14                      [1, 32, 20, 20, 20]       [1, 32, 20, 20, 20]       27,680
+│    │    │    │    └─InstanceNorm3d: 5-15              [1, 32, 20, 20, 20]       [1, 32, 20, 20, 20]       64
+│    │    │    │    └─ELU: 5-16                         [1, 32, 20, 20, 20]       [1, 32, 20, 20, 20]       --
+│    │    └─ConvTranspose3d: 3-107                      [1, 32, 20, 20, 20]       [1, 32, 40, 40, 40]       8,192
+│    │    └─ConvBlock: 3-108                            [1, 32, 40, 40, 40]       [1, 32, 40, 40, 40]       --
+│    │    │    └─Sequential: 4-141                      [1, 32, 40, 40, 40]       [1, 32, 40, 40, 40]       --
+│    │    │    │    └─Conv3d: 5-17                      [1, 32, 40, 40, 40]       [1, 32, 40, 40, 40]       27,680
+│    │    │    │    └─InstanceNorm3d: 5-18              [1, 32, 40, 40, 40]       [1, 32, 40, 40, 40]       64
+│    │    │    │    └─ELU: 5-19                         [1, 32, 40, 40, 40]       [1, 32, 40, 40, 40]       --
+│    │    └─ConvTranspose3d: 3-109                      [1, 32, 40, 40, 40]       [1, 32, 80, 80, 80]       8,192
+│    │    └─ConvBlock: 3-110                            [1, 32, 80, 80, 80]       [1, 32, 80, 80, 80]       --
+│    │    │    └─Sequential: 4-142                      [1, 32, 80, 80, 80]       [1, 32, 80, 80, 80]       --
+│    │    │    │    └─Conv3d: 5-20                      [1, 32, 80, 80, 80]       [1, 32, 80, 80, 80]       27,680
+│    │    │    │    └─InstanceNorm3d: 5-21              [1, 32, 80, 80, 80]       [1, 32, 80, 80, 80]       64
+│    │    │    │    └─ELU: 5-22                         [1, 32, 80, 80, 80]       [1, 32, 80, 80, 80]       --
+├─ModuleList: 1-14                                      --                        --                        (recursive)
+│    └─DoubleConvBlock: 2-22                            [1, 64, 80, 80, 80]       [1, 32, 80, 80, 80]       --
+│    │    └─Sequential: 3-111                           [1, 64, 80, 80, 80]       [1, 32, 80, 80, 80]       --
+│    │    │    └─ConvBlock: 4-143                       [1, 64, 80, 80, 80]       [1, 32, 80, 80, 80]       --
+│    │    │    │    └─Sequential: 5-23                  [1, 64, 80, 80, 80]       [1, 32, 80, 80, 80]       --
+│    │    │    │    │    └─Conv3d: 6-13                 [1, 64, 80, 80, 80]       [1, 32, 80, 80, 80]       55,328
+│    │    │    │    │    └─InstanceNorm3d: 6-14         [1, 32, 80, 80, 80]       [1, 32, 80, 80, 80]       64
+│    │    │    │    │    └─ELU: 6-15                    [1, 32, 80, 80, 80]       [1, 32, 80, 80, 80]       --
+│    │    │    └─ConvBlock: 4-144                       [1, 32, 80, 80, 80]       [1, 32, 80, 80, 80]       --
+│    │    │    │    └─Sequential: 5-24                  [1, 32, 80, 80, 80]       [1, 32, 80, 80, 80]       --
+│    │    │    │    │    └─Conv3d: 6-16                 [1, 32, 80, 80, 80]       [1, 32, 80, 80, 80]       27,680
+│    │    │    │    │    └─InstanceNorm3d: 6-17         [1, 32, 80, 80, 80]       [1, 32, 80, 80, 80]       64
+│    │    │    │    │    └─ELU: 6-18                    [1, 32, 80, 80, 80]       [1, 32, 80, 80, 80]       --
+├─ModuleList: 1-13                                      --                        --                        (recursive)
+│    └─ConvTranspose3d: 2-23                            [1, 32, 80, 80, 80]       [1, 16, 160, 160, 160]    4,096
+├─ModuleList: 1-14                                      --                        --                        (recursive)
+│    └─DoubleConvBlock: 2-24                            [1, 3, 160, 160, 160]     [1, 16, 160, 160, 160]    --
+│    │    └─Sequential: 3-112                           [1, 3, 160, 160, 160]     [1, 16, 160, 160, 160]    --
+│    │    │    └─ConvBlock: 4-145                       [1, 3, 160, 160, 160]     [1, 16, 160, 160, 160]    --
+│    │    │    │    └─Sequential: 5-25                  [1, 3, 160, 160, 160]     [1, 16, 160, 160, 160]    --
+│    │    │    │    │    └─Conv3d: 6-19                 [1, 3, 160, 160, 160]     [1, 16, 160, 160, 160]    1,312
+│    │    │    │    │    └─InstanceNorm3d: 6-20         [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    32
+│    │    │    │    │    └─ELU: 6-21                    [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    --
+│    │    │    └─ConvBlock: 4-146                       [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    --
+│    │    │    │    └─Sequential: 5-26                  [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    --
+│    │    │    │    │    └─Conv3d: 6-22                 [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    6,928
+│    │    │    │    │    └─InstanceNorm3d: 6-23         [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    32
+│    │    │    │    │    └─ELU: 6-24                    [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    --
+│    └─DoubleConvBlock: 2-25                            [1, 32, 160, 160, 160]    [1, 16, 160, 160, 160]    --
+│    │    └─Sequential: 3-113                           [1, 32, 160, 160, 160]    [1, 16, 160, 160, 160]    --
+│    │    │    └─ConvBlock: 4-147                       [1, 32, 160, 160, 160]    [1, 16, 160, 160, 160]    --
+│    │    │    │    └─Sequential: 5-27                  [1, 32, 160, 160, 160]    [1, 16, 160, 160, 160]    --
+│    │    │    │    │    └─Conv3d: 6-25                 [1, 32, 160, 160, 160]    [1, 16, 160, 160, 160]    13,840
+│    │    │    │    │    └─InstanceNorm3d: 6-26         [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    32
+│    │    │    │    │    └─ELU: 6-27                    [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    --
+│    │    │    └─ConvBlock: 4-148                       [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    --
+│    │    │    │    └─Sequential: 5-28                  [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    --
+│    │    │    │    │    └─Conv3d: 6-28                 [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    6,928
+│    │    │    │    │    └─InstanceNorm3d: 6-29         [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    32
+│    │    │    │    │    └─ELU: 6-30                    [1, 16, 160, 160, 160]    [1, 16, 160, 160, 160]    --
+├─Sequential: 1-15                                      --                        --                        --
+│    └─Conv3d: 2-26                                     [1, 16, 160, 160, 160]    [1, 4, 160, 160, 160]     68
+==================================================================================================================================
+Total params: 100,079,732
+Trainable params: 99,310,964
+Non-trainable params: 768,768
+Total mult-adds (Units.GIGABYTES): 284.13
+==================================================================================================================================
+Input size (MB): 49.15
+Forward/backward pass size (MB): 7111.47
+Params size (MB): 397.24
+Estimated Total Size (MB): 7557.86
+==================================================================================================================================
+[11:23:10.635912] Loading checkpoint from file metrics/biapy/biapy-channel-scale-zarr-unetr/checkpoints/biapy-channel-scale-zarr-unetr_0-checkpoint-best.pth
+[11:23:11.021852] Model weights loaded!
+[11:23:11.022694] ############################
+[11:23:11.022715] #  PREPARE TEST GENERATOR  #
+[11:23:11.022724] ############################
+[11:23:11.202370] Normalization used in when creating BMZ data: {'type': 'zero_mean_unit_variance', 'percentile_clip': False, 'orig_dtype': 'float32', 'out_dtype': 'float32', 'per_channel_info': {'0': {'mean': 0.4868117570877075, 'std': 0.8095170259475708}, '1': {'mean': 1.0, 'std': 0.0}, '2': {'mean': 0.0, 'std': 0.0}}}
+[11:23:11.351996] ###############
+[11:23:11.352042] #  INFERENCE  #
+[11:23:11.352054] ###############
+[11:23:11.352064] Making predictions on test data . . .
+[11:23:11.362780] [Rank 0 (990245)] Processing image (by chunks): JRC_SS04989-20160318_24_A2.zarr (GT: JRC_SS04989-20160318_24_A2.zarr)
+[11:23:11.362908] Initialized chunked_test_pair_data_generator with sample JRC_SS04989-20160318_24_A2.zarr and shape (390, 680, 680, 3).
+Crop shape: (160, 160, 160, 3), padding: (4, 16, 16). Input axes: ZYXC. Mask input axes: ZYXC.
+Output data axes order: ZYXC. 
+[11:23:11.362932] Chunked test generator with 1 workers
+[11:23:12.415889] [Rank 0 (990245)] Patch number [0, 1] processing patches [[0:152,0:128,0:128], [0:152,0:128,128:256]] from [390, 680, 680]
+[11:23:17.142891] [Rank 0 (990245)] Patch number [2, 3] processing patches [[0:152,0:128,256:384], [0:152,0:128,384:512]] from [390, 680, 680]
+[11:23:17.838827] [Rank 0 (990245)] Patch number [4, 5] processing patches [[0:152,0:128,512:640], [0:152,0:128,640:680]] from [390, 680, 680]
+[11:23:18.533036] [Rank 0 (990245)] Patch number [6, 7] processing patches [[0:152,128:256,0:128], [0:152,128:256,128:256]] from [390, 680, 680]
+[11:23:19.239299] [Rank 0 (990245)] Patch number [8, 9] processing patches [[0:152,128:256,256:384], [0:152,128:256,384:512]] from [390, 680, 680]
+[11:23:20.072002] [Rank 0 (990245)] Patch number [10, 11] processing patches [[0:152,128:256,512:640], [0:152,128:256,640:680]] from [390, 680, 680]
+[11:23:20.873030] [Rank 0 (990245)] Patch number [12, 13] processing patches [[0:152,256:384,0:128], [0:152,256:384,128:256]] from [390, 680, 680]
+[11:23:21.681985] [Rank 0 (990245)] Patch number [14, 15] processing patches [[0:152,256:384,256:384], [0:152,256:384,384:512]] from [390, 680, 680]
+[11:23:22.499633] [Rank 0 (990245)] Patch number [16, 17] processing patches [[0:152,256:384,512:640], [0:152,256:384,640:680]] from [390, 680, 680]
+[11:23:23.246358] [Rank 0 (990245)] Patch number [18, 19] processing patches [[0:152,384:512,0:128], [0:152,384:512,128:256]] from [390, 680, 680]
+[11:23:23.949037] [Rank 0 (990245)] Patch number [20, 21] processing patches [[0:152,384:512,256:384], [0:152,384:512,384:512]] from [390, 680, 680]
+[11:23:24.780750] [Rank 0 (990245)] Patch number [22, 23] processing patches [[0:152,384:512,512:640], [0:152,384:512,640:680]] from [390, 680, 680]
+[11:23:25.539506] [Rank 0 (990245)] Patch number [24, 25] processing patches [[0:152,512:640,0:128], [0:152,512:640,128:256]] from [390, 680, 680]
+[11:23:26.316731] [Rank 0 (990245)] Patch number [26, 27] processing patches [[0:152,512:640,256:384], [0:152,512:640,384:512]] from [390, 680, 680]
+[11:23:27.096135] [Rank 0 (990245)] Patch number [28, 29] processing patches [[0:152,512:640,512:640], [0:152,512:640,640:680]] from [390, 680, 680]
+[11:23:27.838753] [Rank 0 (990245)] Patch number [30, 31] processing patches [[0:152,640:680,0:128], [0:152,640:680,128:256]] from [390, 680, 680]
+[11:23:28.433540] [Rank 0 (990245)] Patch number [32, 33] processing patches [[0:152,640:680,256:384], [0:152,640:680,384:512]] from [390, 680, 680]
+[11:23:29.028161] [Rank 0 (990245)] Patch number [34, 35] processing patches [[0:152,640:680,512:640], [0:152,640:680,640:680]] from [390, 680, 680]
+[11:23:29.626118] [Rank 0 (990245)] Patch number [36, 37] processing patches [[152:304,0:128,0:128], [152:304,0:128,128:256]] from [390, 680, 680]
+[11:23:30.319905] [Rank 0 (990245)] Patch number [38, 39] processing patches [[152:304,0:128,256:384], [152:304,0:128,384:512]] from [390, 680, 680]
+[11:23:31.133285] [Rank 0 (990245)] Patch number [40, 41] processing patches [[152:304,0:128,512:640], [152:304,0:128,640:680]] from [390, 680, 680]
+[11:23:31.814132] [Rank 0 (990245)] Patch number [42, 43] processing patches [[152:304,128:256,0:128], [152:304,128:256,128:256]] from [390, 680, 680]
+[11:23:32.593166] [Rank 0 (990245)] Patch number [44, 45] processing patches [[152:304,128:256,256:384], [152:304,128:256,384:512]] from [390, 680, 680]
+[11:23:33.274200] [Rank 0 (990245)] Patch number [46, 47] processing patches [[152:304,128:256,512:640], [152:304,128:256,640:680]] from [390, 680, 680]
+[11:23:33.980783] [Rank 0 (990245)] Patch number [48, 49] processing patches [[152:304,256:384,0:128], [152:304,256:384,128:256]] from [390, 680, 680]
+[11:23:34.717146] [Rank 0 (990245)] Patch number [50, 51] processing patches [[152:304,256:384,256:384], [152:304,256:384,384:512]] from [390, 680, 680]
+[11:23:35.380651] [Rank 0 (990245)] Patch number [52, 53] processing patches [[152:304,256:384,512:640], [152:304,256:384,640:680]] from [390, 680, 680]
+[11:23:36.054073] [Rank 0 (990245)] Patch number [54, 55] processing patches [[152:304,384:512,0:128], [152:304,384:512,128:256]] from [390, 680, 680]
+[11:23:36.866991] [Rank 0 (990245)] Patch number [56, 57] processing patches [[152:304,384:512,256:384], [152:304,384:512,384:512]] from [390, 680, 680]
+[11:23:37.626722] [Rank 0 (990245)] Patch number [58, 59] processing patches [[152:304,384:512,512:640], [152:304,384:512,640:680]] from [390, 680, 680]
+[11:23:38.328504] [Rank 0 (990245)] Patch number [60, 61] processing patches [[152:304,512:640,0:128], [152:304,512:640,128:256]] from [390, 680, 680]
+[11:23:39.171850] [Rank 0 (990245)] Patch number [62, 63] processing patches [[152:304,512:640,256:384], [152:304,512:640,384:512]] from [390, 680, 680]
+[11:23:39.929861] [Rank 0 (990245)] Patch number [64, 65] processing patches [[152:304,512:640,512:640], [152:304,512:640,640:680]] from [390, 680, 680]
+[11:23:40.609313] [Rank 0 (990245)] Patch number [66, 67] processing patches [[152:304,640:680,0:128], [152:304,640:680,128:256]] from [390, 680, 680]
+[11:23:41.208800] [Rank 0 (990245)] Patch number [68, 69] processing patches [[152:304,640:680,256:384], [152:304,640:680,384:512]] from [390, 680, 680]
+[11:23:41.847180] [Rank 0 (990245)] Patch number [70, 71] processing patches [[152:304,640:680,512:640], [152:304,640:680,640:680]] from [390, 680, 680]
+[11:23:42.472364] [Rank 0 (990245)] Patch number [72, 73] processing patches [[304:390,0:128,0:128], [304:390,0:128,128:256]] from [390, 680, 680]
+[11:23:43.141451] [Rank 0 (990245)] Patch number [74, 75] processing patches [[304:390,0:128,256:384], [304:390,0:128,384:512]] from [390, 680, 680]
+[11:23:43.777840] [Rank 0 (990245)] Patch number [76, 77] processing patches [[304:390,0:128,512:640], [304:390,0:128,640:680]] from [390, 680, 680]
+[11:23:44.426841] [Rank 0 (990245)] Patch number [78, 79] processing patches [[304:390,128:256,0:128], [304:390,128:256,128:256]] from [390, 680, 680]
+[11:23:45.075497] [Rank 0 (990245)] Patch number [80, 81] processing patches [[304:390,128:256,256:384], [304:390,128:256,384:512]] from [390, 680, 680]
+[11:23:45.676751] [Rank 0 (990245)] Patch number [82, 83] processing patches [[304:390,128:256,512:640], [304:390,128:256,640:680]] from [390, 680, 680]
+[11:23:46.301738] [Rank 0 (990245)] Patch number [84, 85] processing patches [[304:390,256:384,0:128], [304:390,256:384,128:256]] from [390, 680, 680]
+[11:23:46.911337] [Rank 0 (990245)] Patch number [86, 87] processing patches [[304:390,256:384,256:384], [304:390,256:384,384:512]] from [390, 680, 680]
+[11:23:47.522525] [Rank 0 (990245)] Patch number [88, 89] processing patches [[304:390,256:384,512:640], [304:390,256:384,640:680]] from [390, 680, 680]
+[11:23:48.129021] [Rank 0 (990245)] Patch number [90, 91] processing patches [[304:390,384:512,0:128], [304:390,384:512,128:256]] from [390, 680, 680]
+[11:23:48.786903] [Rank 0 (990245)] Patch number [92, 93] processing patches [[304:390,384:512,256:384], [304:390,384:512,384:512]] from [390, 680, 680]
+[11:23:49.377203] [Rank 0 (990245)] Patch number [94, 95] processing patches [[304:390,384:512,512:640], [304:390,384:512,640:680]] from [390, 680, 680]
+[11:23:50.046028] [Rank 0 (990245)] Patch number [96, 97] processing patches [[304:390,512:640,0:128], [304:390,512:640,128:256]] from [390, 680, 680]
+[11:23:50.774586] [Rank 0 (990245)] Patch number [98, 99] processing patches [[304:390,512:640,256:384], [304:390,512:640,384:512]] from [390, 680, 680]
+[11:23:51.399915] [Rank 0 (990245)] Patch number [100, 101] processing patches [[304:390,512:640,512:640], [304:390,512:640,640:680]] from [390, 680, 680]
+[11:23:52.038900] [Rank 0 (990245)] Patch number [102, 103] processing patches [[304:390,640:680,0:128], [304:390,640:680,128:256]] from [390, 680, 680]
+[11:23:52.598206] [Rank 0 (990245)] Patch number [104, 105] processing patches [[304:390,640:680,256:384], [304:390,640:680,384:512]] from [390, 680, 680]
+[11:23:53.184472] [Rank 0 (990245)] Patch number [106, 107] processing patches [[304:390,640:680,512:640], [304:390,640:680,640:680]] from [390, 680, 680]
+[11:23:58.698887] Saving (1, 390, 680, 680, 4) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image
+[11:24:40.030536] Thresholds used: {'seed': [0.29844367504119873], 'growth_mask': [0.15326577425003052]}
+[11:24:49.283181] Saving (1, 390, 680, 680, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_instances
+[11:24:50.339968] Calculating matching stats . . .
+[11:24:50.341274] Its respective image seems to be: fisbe/biapy-no-aug-zarr/test/label/JRC_SS04989-20160318_24_A2.zarr
+[11:26:10.800718] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(14360), 'tp': np.int64(1), 'fn': np.int64(2), 'precision': np.float64(6.963303391128752e-05), 'recall': np.float64(0.3333333333333333), 'accuracy': np.float64(6.962333774281139e-05), 'f1': np.float64(0.0001392369813422445), 'n_true': 3, 'n_pred': 14361, 'mean_true_score': np.float32(0.15537699), 'mean_matched_score': np.float64(0.46613097190856934), 'panoptic_quality': np.float64(6.490266943867577e-05)}
+[11:26:10.825148] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 14361, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 14361, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:26:10.845154] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 14361, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 14361, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:26:10.845244] Removing small objects . . .
+[11:26:12.681923] Saving (1, 390, 680, 680, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_post_processing
+[11:26:13.652175] Calculating matching stats after post-processing . . .
+[11:27:34.172701] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(117), 'tp': np.int64(1), 'fn': np.int64(2), 'precision': np.float64(0.00847457627118644), 'recall': np.float64(0.3333333333333333), 'accuracy': np.float64(0.008333333333333333), 'f1': np.float64(0.01652892561983471), 'n_true': 3, 'n_pred': 118, 'mean_true_score': np.float32(0.15537699), 'mean_matched_score': np.float64(0.46613097190856934), 'panoptic_quality': np.float64(0.007704644163778005)}
+[11:27:34.198076] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 118, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 118, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:27:34.214213] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 118, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 118, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:27:34.254489] [Rank 0 (990245)] Processing image (by chunks): R14A02-20180905_65_A6.zarr (GT: R14A02-20180905_65_A6.zarr)
+[11:27:34.254694] Initialized chunked_test_pair_data_generator with sample R14A02-20180905_65_A6.zarr and shape (385, 685, 686, 3).
+Crop shape: (160, 160, 160, 3), padding: (4, 16, 16). Input axes: ZYXC. Mask input axes: ZYXC.
+Output data axes order: ZYXC. 
+[11:27:34.254725] Chunked test generator with 1 workers
+[11:27:35.448745] [Rank 0 (990245)] Patch number [0, 1] processing patches [[0:152,0:128,0:128], [0:152,0:128,128:256]] from [385, 685, 686]
+[11:27:36.221788] [Rank 0 (990245)] Patch number [2, 3] processing patches [[0:152,0:128,256:384], [0:152,0:128,384:512]] from [385, 685, 686]
+[11:27:37.075686] [Rank 0 (990245)] Patch number [4, 5] processing patches [[0:152,0:128,512:640], [0:152,0:128,640:686]] from [385, 685, 686]
+[11:27:37.845894] [Rank 0 (990245)] Patch number [6, 7] processing patches [[0:152,128:256,0:128], [0:152,128:256,128:256]] from [385, 685, 686]
+[11:27:38.555272] [Rank 0 (990245)] Patch number [8, 9] processing patches [[0:152,128:256,256:384], [0:152,128:256,384:512]] from [385, 685, 686]
+[11:27:39.364185] [Rank 0 (990245)] Patch number [10, 11] processing patches [[0:152,128:256,512:640], [0:152,128:256,640:686]] from [385, 685, 686]
+[11:27:40.150827] [Rank 0 (990245)] Patch number [12, 13] processing patches [[0:152,256:384,0:128], [0:152,256:384,128:256]] from [385, 685, 686]
+[11:27:41.019919] [Rank 0 (990245)] Patch number [14, 15] processing patches [[0:152,256:384,256:384], [0:152,256:384,384:512]] from [385, 685, 686]
+[11:27:41.821080] [Rank 0 (990245)] Patch number [16, 17] processing patches [[0:152,256:384,512:640], [0:152,256:384,640:686]] from [385, 685, 686]
+[11:27:42.515096] [Rank 0 (990245)] Patch number [18, 19] processing patches [[0:152,384:512,0:128], [0:152,384:512,128:256]] from [385, 685, 686]
+[11:27:43.270006] [Rank 0 (990245)] Patch number [20, 21] processing patches [[0:152,384:512,256:384], [0:152,384:512,384:512]] from [385, 685, 686]
+[11:27:44.028782] [Rank 0 (990245)] Patch number [22, 23] processing patches [[0:152,384:512,512:640], [0:152,384:512,640:686]] from [385, 685, 686]
+[11:27:44.725186] [Rank 0 (990245)] Patch number [24, 25] processing patches [[0:152,512:640,0:128], [0:152,512:640,128:256]] from [385, 685, 686]
+[11:27:45.470782] [Rank 0 (990245)] Patch number [26, 27] processing patches [[0:152,512:640,256:384], [0:152,512:640,384:512]] from [385, 685, 686]
+[11:27:46.291592] [Rank 0 (990245)] Patch number [28, 29] processing patches [[0:152,512:640,512:640], [0:152,512:640,640:686]] from [385, 685, 686]
+[11:27:47.053878] [Rank 0 (990245)] Patch number [30, 31] processing patches [[0:152,640:685,0:128], [0:152,640:685,128:256]] from [385, 685, 686]
+[11:27:47.690353] [Rank 0 (990245)] Patch number [32, 33] processing patches [[0:152,640:685,256:384], [0:152,640:685,384:512]] from [385, 685, 686]
+[11:27:48.295786] [Rank 0 (990245)] Patch number [34, 35] processing patches [[0:152,640:685,512:640], [0:152,640:685,640:686]] from [385, 685, 686]
+[11:27:48.927716] [Rank 0 (990245)] Patch number [36, 37] processing patches [[152:304,0:128,0:128], [152:304,0:128,128:256]] from [385, 685, 686]
+[11:27:49.673102] [Rank 0 (990245)] Patch number [38, 39] processing patches [[152:304,0:128,256:384], [152:304,0:128,384:512]] from [385, 685, 686]
+[11:27:50.416074] [Rank 0 (990245)] Patch number [40, 41] processing patches [[152:304,0:128,512:640], [152:304,0:128,640:686]] from [385, 685, 686]
+[11:27:51.127389] [Rank 0 (990245)] Patch number [42, 43] processing patches [[152:304,128:256,0:128], [152:304,128:256,128:256]] from [385, 685, 686]
+[11:27:51.838962] [Rank 0 (990245)] Patch number [44, 45] processing patches [[152:304,128:256,256:384], [152:304,128:256,384:512]] from [385, 685, 686]
+[11:27:52.512256] [Rank 0 (990245)] Patch number [46, 47] processing patches [[152:304,128:256,512:640], [152:304,128:256,640:686]] from [385, 685, 686]
+[11:27:53.241132] [Rank 0 (990245)] Patch number [48, 49] processing patches [[152:304,256:384,0:128], [152:304,256:384,128:256]] from [385, 685, 686]
+[11:27:54.063984] [Rank 0 (990245)] Patch number [50, 51] processing patches [[152:304,256:384,256:384], [152:304,256:384,384:512]] from [385, 685, 686]
+[11:27:54.848137] [Rank 0 (990245)] Patch number [52, 53] processing patches [[152:304,256:384,512:640], [152:304,256:384,640:686]] from [385, 685, 686]
+[11:27:55.591200] [Rank 0 (990245)] Patch number [54, 55] processing patches [[152:304,384:512,0:128], [152:304,384:512,128:256]] from [385, 685, 686]
+[11:27:56.419126] [Rank 0 (990245)] Patch number [56, 57] processing patches [[152:304,384:512,256:384], [152:304,384:512,384:512]] from [385, 685, 686]
+[11:27:57.200624] [Rank 0 (990245)] Patch number [58, 59] processing patches [[152:304,384:512,512:640], [152:304,384:512,640:686]] from [385, 685, 686]
+[11:27:57.974615] [Rank 0 (990245)] Patch number [60, 61] processing patches [[152:304,512:640,0:128], [152:304,512:640,128:256]] from [385, 685, 686]
+[11:27:58.778634] [Rank 0 (990245)] Patch number [62, 63] processing patches [[152:304,512:640,256:384], [152:304,512:640,384:512]] from [385, 685, 686]
+[11:27:59.557082] [Rank 0 (990245)] Patch number [64, 65] processing patches [[152:304,512:640,512:640], [152:304,512:640,640:686]] from [385, 685, 686]
+[11:28:00.204583] [Rank 0 (990245)] Patch number [66, 67] processing patches [[152:304,640:685,0:128], [152:304,640:685,128:256]] from [385, 685, 686]
+[11:28:00.887795] [Rank 0 (990245)] Patch number [68, 69] processing patches [[152:304,640:685,256:384], [152:304,640:685,384:512]] from [385, 685, 686]
+[11:28:01.796454] [Rank 0 (990245)] Patch number [70, 71] processing patches [[152:304,640:685,512:640], [152:304,640:685,640:686]] from [385, 685, 686]
+[11:28:02.415248] [Rank 0 (990245)] Patch number [72, 73] processing patches [[304:385,0:128,0:128], [304:385,0:128,128:256]] from [385, 685, 686]
+[11:28:03.026226] [Rank 0 (990245)] Patch number [74, 75] processing patches [[304:385,0:128,256:384], [304:385,0:128,384:512]] from [385, 685, 686]
+[11:28:03.707150] [Rank 0 (990245)] Patch number [76, 77] processing patches [[304:385,0:128,512:640], [304:385,0:128,640:686]] from [385, 685, 686]
+[11:28:04.342672] [Rank 0 (990245)] Patch number [78, 79] processing patches [[304:385,128:256,0:128], [304:385,128:256,128:256]] from [385, 685, 686]
+[11:28:04.960176] [Rank 0 (990245)] Patch number [80, 81] processing patches [[304:385,128:256,256:384], [304:385,128:256,384:512]] from [385, 685, 686]
+[11:28:05.593775] [Rank 0 (990245)] Patch number [82, 83] processing patches [[304:385,128:256,512:640], [304:385,128:256,640:686]] from [385, 685, 686]
+[11:28:06.206274] [Rank 0 (990245)] Patch number [84, 85] processing patches [[304:385,256:384,0:128], [304:385,256:384,128:256]] from [385, 685, 686]
+[11:28:06.833390] [Rank 0 (990245)] Patch number [86, 87] processing patches [[304:385,256:384,256:384], [304:385,256:384,384:512]] from [385, 685, 686]
+[11:28:07.517569] [Rank 0 (990245)] Patch number [88, 89] processing patches [[304:385,256:384,512:640], [304:385,256:384,640:686]] from [385, 685, 686]
+[11:28:08.146862] [Rank 0 (990245)] Patch number [90, 91] processing patches [[304:385,384:512,0:128], [304:385,384:512,128:256]] from [385, 685, 686]
+[11:28:08.779491] [Rank 0 (990245)] Patch number [92, 93] processing patches [[304:385,384:512,256:384], [304:385,384:512,384:512]] from [385, 685, 686]
+[11:28:09.434865] [Rank 0 (990245)] Patch number [94, 95] processing patches [[304:385,384:512,512:640], [304:385,384:512,640:686]] from [385, 685, 686]
+[11:28:10.105626] [Rank 0 (990245)] Patch number [96, 97] processing patches [[304:385,512:640,0:128], [304:385,512:640,128:256]] from [385, 685, 686]
+[11:28:10.731820] [Rank 0 (990245)] Patch number [98, 99] processing patches [[304:385,512:640,256:384], [304:385,512:640,384:512]] from [385, 685, 686]
+[11:28:11.345251] [Rank 0 (990245)] Patch number [100, 101] processing patches [[304:385,512:640,512:640], [304:385,512:640,640:686]] from [385, 685, 686]
+[11:28:11.954402] [Rank 0 (990245)] Patch number [102, 103] processing patches [[304:385,640:685,0:128], [304:385,640:685,128:256]] from [385, 685, 686]
+[11:28:12.568851] [Rank 0 (990245)] Patch number [104, 105] processing patches [[304:385,640:685,256:384], [304:385,640:685,384:512]] from [385, 685, 686]
+[11:28:13.147277] [Rank 0 (990245)] Patch number [106, 107] processing patches [[304:385,640:685,512:640], [304:385,640:685,640:686]] from [385, 685, 686]
+[11:28:16.071612] Saving (1, 385, 685, 686, 4) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image
+[11:28:51.365103] Thresholds used: {'seed': [0.3376443386077881], 'growth_mask': [0.18242689967155457]}
+[11:28:59.767152] Saving (1, 385, 685, 686, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_instances
+[11:29:00.732963] Calculating matching stats . . .
+[11:29:00.734524] Its respective image seems to be: fisbe/biapy-no-aug-zarr/test/label/R14A02-20180905_65_A6.zarr
+[11:30:20.065916] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(5183), 'tp': np.int64(1), 'fn': np.int64(6), 'precision': np.float64(0.00019290123456790122), 'recall': np.float64(0.14285714285714285), 'accuracy': np.float64(0.0001926782273603083), 'f1': np.float64(0.00038528221922558276), 'n_true': 7, 'n_pred': 5184, 'mean_true_score': np.float32(0.0591696), 'mean_matched_score': np.float64(0.4141872227191925), 'panoptic_quality': np.float64(0.0001595789723441312)}
+[11:30:20.090301] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 5184, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 5184, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:30:20.108759] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 5184, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 5184, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:30:20.108846] Removing small objects . . .
+[11:30:21.941300] Saving (1, 385, 685, 686, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_post_processing
+[11:30:23.051335] Calculating matching stats after post-processing . . .
+[11:31:40.882579] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(48), 'tp': np.int64(1), 'fn': np.int64(6), 'precision': np.float64(0.02040816326530612), 'recall': np.float64(0.14285714285714285), 'accuracy': np.float64(0.01818181818181818), 'f1': np.float64(0.03571428571428571), 'n_true': 7, 'n_pred': 49, 'mean_true_score': np.float32(0.0591696), 'mean_matched_score': np.float64(0.4141872227191925), 'panoptic_quality': np.float64(0.014792400811399733)}
+[11:31:40.902187] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 49, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 49, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:31:40.917205] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 49, 'tp': 0, 'fn': 7, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 7, 'n_pred': 49, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:31:40.961811] [Rank 0 (990245)] Processing image (by chunks): R54A09-20181019_64_H1.zarr (GT: R54A09-20181019_64_H1.zarr)
+[11:31:40.961987] Initialized chunked_test_pair_data_generator with sample R54A09-20181019_64_H1.zarr and shape (430, 683, 686, 3).
+Crop shape: (160, 160, 160, 3), padding: (4, 16, 16). Input axes: ZYXC. Mask input axes: ZYXC.
+Output data axes order: ZYXC. 
+[11:31:40.962029] Chunked test generator with 1 workers
+[11:31:42.075751] [Rank 0 (990245)] Patch number [0, 1] processing patches [[0:152,0:128,0:128], [0:152,0:128,128:256]] from [430, 683, 686]
+[11:31:42.829024] [Rank 0 (990245)] Patch number [2, 3] processing patches [[0:152,0:128,256:384], [0:152,0:128,384:512]] from [430, 683, 686]
+[11:31:43.640473] [Rank 0 (990245)] Patch number [4, 5] processing patches [[0:152,0:128,512:640], [0:152,0:128,640:686]] from [430, 683, 686]
+[11:31:44.418386] [Rank 0 (990245)] Patch number [6, 7] processing patches [[0:152,128:256,0:128], [0:152,128:256,128:256]] from [430, 683, 686]
+[11:31:45.085597] [Rank 0 (990245)] Patch number [8, 9] processing patches [[0:152,128:256,256:384], [0:152,128:256,384:512]] from [430, 683, 686]
+[11:31:45.860089] [Rank 0 (990245)] Patch number [10, 11] processing patches [[0:152,128:256,512:640], [0:152,128:256,640:686]] from [430, 683, 686]
+[11:31:46.668052] [Rank 0 (990245)] Patch number [12, 13] processing patches [[0:152,256:384,0:128], [0:152,256:384,128:256]] from [430, 683, 686]
+[11:31:47.409404] [Rank 0 (990245)] Patch number [14, 15] processing patches [[0:152,256:384,256:384], [0:152,256:384,384:512]] from [430, 683, 686]
+[11:31:48.132799] [Rank 0 (990245)] Patch number [16, 17] processing patches [[0:152,256:384,512:640], [0:152,256:384,640:686]] from [430, 683, 686]
+[11:31:48.839943] [Rank 0 (990245)] Patch number [18, 19] processing patches [[0:152,384:512,0:128], [0:152,384:512,128:256]] from [430, 683, 686]
+[11:31:49.645770] [Rank 0 (990245)] Patch number [20, 21] processing patches [[0:152,384:512,256:384], [0:152,384:512,384:512]] from [430, 683, 686]
+[11:31:50.343426] [Rank 0 (990245)] Patch number [22, 23] processing patches [[0:152,384:512,512:640], [0:152,384:512,640:686]] from [430, 683, 686]
+[11:31:51.080705] [Rank 0 (990245)] Patch number [24, 25] processing patches [[0:152,512:640,0:128], [0:152,512:640,128:256]] from [430, 683, 686]
+[11:31:51.851142] [Rank 0 (990245)] Patch number [26, 27] processing patches [[0:152,512:640,256:384], [0:152,512:640,384:512]] from [430, 683, 686]
+[11:31:52.615251] [Rank 0 (990245)] Patch number [28, 29] processing patches [[0:152,512:640,512:640], [0:152,512:640,640:686]] from [430, 683, 686]
+[11:31:53.311665] [Rank 0 (990245)] Patch number [30, 31] processing patches [[0:152,640:683,0:128], [0:152,640:683,128:256]] from [430, 683, 686]
+[11:31:53.929261] [Rank 0 (990245)] Patch number [32, 33] processing patches [[0:152,640:683,256:384], [0:152,640:683,384:512]] from [430, 683, 686]
+[11:31:54.508159] [Rank 0 (990245)] Patch number [34, 35] processing patches [[0:152,640:683,512:640], [0:152,640:683,640:686]] from [430, 683, 686]
+[11:31:55.108990] [Rank 0 (990245)] Patch number [36, 37] processing patches [[152:304,0:128,0:128], [152:304,0:128,128:256]] from [430, 683, 686]
+[11:31:55.848012] [Rank 0 (990245)] Patch number [38, 39] processing patches [[152:304,0:128,256:384], [152:304,0:128,384:512]] from [430, 683, 686]
+[11:31:56.589081] [Rank 0 (990245)] Patch number [40, 41] processing patches [[152:304,0:128,512:640], [152:304,0:128,640:686]] from [430, 683, 686]
+[11:31:57.306692] [Rank 0 (990245)] Patch number [42, 43] processing patches [[152:304,128:256,0:128], [152:304,128:256,128:256]] from [430, 683, 686]
+[11:31:58.078211] [Rank 0 (990245)] Patch number [44, 45] processing patches [[152:304,128:256,256:384], [152:304,128:256,384:512]] from [430, 683, 686]
+[11:31:58.782826] [Rank 0 (990245)] Patch number [46, 47] processing patches [[152:304,128:256,512:640], [152:304,128:256,640:686]] from [430, 683, 686]
+[11:31:59.486537] [Rank 0 (990245)] Patch number [48, 49] processing patches [[152:304,256:384,0:128], [152:304,256:384,128:256]] from [430, 683, 686]
+[11:32:00.261222] [Rank 0 (990245)] Patch number [50, 51] processing patches [[152:304,256:384,256:384], [152:304,256:384,384:512]] from [430, 683, 686]
+[11:32:00.960309] [Rank 0 (990245)] Patch number [52, 53] processing patches [[152:304,256:384,512:640], [152:304,256:384,640:686]] from [430, 683, 686]
+[11:32:01.631511] [Rank 0 (990245)] Patch number [54, 55] processing patches [[152:304,384:512,0:128], [152:304,384:512,128:256]] from [430, 683, 686]
+[11:32:02.339484] [Rank 0 (990245)] Patch number [56, 57] processing patches [[152:304,384:512,256:384], [152:304,384:512,384:512]] from [430, 683, 686]
+[11:32:03.078507] [Rank 0 (990245)] Patch number [58, 59] processing patches [[152:304,384:512,512:640], [152:304,384:512,640:686]] from [430, 683, 686]
+[11:32:03.796247] [Rank 0 (990245)] Patch number [60, 61] processing patches [[152:304,512:640,0:128], [152:304,512:640,128:256]] from [430, 683, 686]
+[11:32:04.590296] [Rank 0 (990245)] Patch number [62, 63] processing patches [[152:304,512:640,256:384], [152:304,512:640,384:512]] from [430, 683, 686]
+[11:32:05.363807] [Rank 0 (990245)] Patch number [64, 65] processing patches [[152:304,512:640,512:640], [152:304,512:640,640:686]] from [430, 683, 686]
+[11:32:06.112293] [Rank 0 (990245)] Patch number [66, 67] processing patches [[152:304,640:683,0:128], [152:304,640:683,128:256]] from [430, 683, 686]
+[11:32:06.747570] [Rank 0 (990245)] Patch number [68, 69] processing patches [[152:304,640:683,256:384], [152:304,640:683,384:512]] from [430, 683, 686]
+[11:32:07.336690] [Rank 0 (990245)] Patch number [70, 71] processing patches [[152:304,640:683,512:640], [152:304,640:683,640:686]] from [430, 683, 686]
+[11:32:08.016487] [Rank 0 (990245)] Patch number [72, 73] processing patches [[304:430,0:128,0:128], [304:430,0:128,128:256]] from [430, 683, 686]
+[11:32:08.705119] [Rank 0 (990245)] Patch number [74, 75] processing patches [[304:430,0:128,256:384], [304:430,0:128,384:512]] from [430, 683, 686]
+[11:32:09.446785] [Rank 0 (990245)] Patch number [76, 77] processing patches [[304:430,0:128,512:640], [304:430,0:128,640:686]] from [430, 683, 686]
+[11:32:10.135604] [Rank 0 (990245)] Patch number [78, 79] processing patches [[304:430,128:256,0:128], [304:430,128:256,128:256]] from [430, 683, 686]
+[11:32:10.826696] [Rank 0 (990245)] Patch number [80, 81] processing patches [[304:430,128:256,256:384], [304:430,128:256,384:512]] from [430, 683, 686]
+[11:32:11.524137] [Rank 0 (990245)] Patch number [82, 83] processing patches [[304:430,128:256,512:640], [304:430,128:256,640:686]] from [430, 683, 686]
+[11:32:12.170659] [Rank 0 (990245)] Patch number [84, 85] processing patches [[304:430,256:384,0:128], [304:430,256:384,128:256]] from [430, 683, 686]
+[11:32:12.853023] [Rank 0 (990245)] Patch number [86, 87] processing patches [[304:430,256:384,256:384], [304:430,256:384,384:512]] from [430, 683, 686]
+[11:32:13.579854] [Rank 0 (990245)] Patch number [88, 89] processing patches [[304:430,256:384,512:640], [304:430,256:384,640:686]] from [430, 683, 686]
+[11:32:14.303220] [Rank 0 (990245)] Patch number [90, 91] processing patches [[304:430,384:512,0:128], [304:430,384:512,128:256]] from [430, 683, 686]
+[11:32:15.004073] [Rank 0 (990245)] Patch number [92, 93] processing patches [[304:430,384:512,256:384], [304:430,384:512,384:512]] from [430, 683, 686]
+[11:32:15.697227] [Rank 0 (990245)] Patch number [94, 95] processing patches [[304:430,384:512,512:640], [304:430,384:512,640:686]] from [430, 683, 686]
+[11:32:16.363460] [Rank 0 (990245)] Patch number [96, 97] processing patches [[304:430,512:640,0:128], [304:430,512:640,128:256]] from [430, 683, 686]
+[11:32:17.093788] [Rank 0 (990245)] Patch number [98, 99] processing patches [[304:430,512:640,256:384], [304:430,512:640,384:512]] from [430, 683, 686]
+[11:32:17.791129] [Rank 0 (990245)] Patch number [100, 101] processing patches [[304:430,512:640,512:640], [304:430,512:640,640:686]] from [430, 683, 686]
+[11:32:18.511064] [Rank 0 (990245)] Patch number [102, 103] processing patches [[304:430,640:683,0:128], [304:430,640:683,128:256]] from [430, 683, 686]
+[11:32:19.089798] [Rank 0 (990245)] Patch number [104, 105] processing patches [[304:430,640:683,256:384], [304:430,640:683,384:512]] from [430, 683, 686]
+[11:32:19.678805] [Rank 0 (990245)] Patch number [106, 107] processing patches [[304:430,640:683,512:640], [304:430,640:683,640:686]] from [430, 683, 686]
+[11:32:22.771438] Saving (1, 430, 683, 686, 4) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image
+[11:33:02.095378] Thresholds used: {'seed': [0.2825208604335785], 'growth_mask': [0.15917938947677612]}
+[11:33:11.822780] Saving (1, 430, 683, 686, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_instances
+[11:33:12.899663] Calculating matching stats . . .
+[11:33:12.901721] Its respective image seems to be: fisbe/biapy-no-aug-zarr/test/label/R54A09-20181019_64_H1.zarr
+[11:34:41.023610] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(7582), 'tp': np.int64(1), 'fn': np.int64(0), 'precision': np.float64(0.00013187392852433074), 'recall': np.float64(1.0), 'accuracy': np.float64(0.00013187392852433074), 'f1': np.float64(0.00026371308016877635), 'n_true': 1, 'n_pred': 7583, 'mean_true_score': np.float32(0.34693512), 'mean_matched_score': np.float64(0.34693512320518494), 'panoptic_quality': np.float64(9.149132995917325e-05)}
+[11:34:41.039889] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 7583, 'tp': 0, 'fn': 1, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 1, 'n_pred': 7583, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:34:41.055828] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 7583, 'tp': 0, 'fn': 1, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 1, 'n_pred': 7583, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:34:41.055923] Removing small objects . . .
+[11:34:43.086347] Saving (1, 430, 683, 686, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_post_processing
+[11:34:44.107214] Calculating matching stats after post-processing . . .
+[11:36:10.333991] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(65), 'tp': np.int64(1), 'fn': np.int64(0), 'precision': np.float64(0.015151515151515152), 'recall': np.float64(1.0), 'accuracy': np.float64(0.015151515151515152), 'f1': np.float64(0.029850746268656716), 'n_true': 1, 'n_pred': 66, 'mean_true_score': np.float32(0.34693512), 'mean_matched_score': np.float64(0.34693512320518494), 'panoptic_quality': np.float64(0.010356272334483132)}
+[11:36:10.354686] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 66, 'tp': 0, 'fn': 1, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 1, 'n_pred': 66, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:36:10.377286] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 66, 'tp': 0, 'fn': 1, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 1, 'n_pred': 66, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:36:10.412789] [Rank 0 (990245)] Processing image (by chunks): VT011145-20171222_63_I1.zarr (GT: VT011145-20171222_63_I1.zarr)
+[11:36:10.412936] Initialized chunked_test_pair_data_generator with sample VT011145-20171222_63_I1.zarr and shape (417, 685, 685, 3).
+Crop shape: (160, 160, 160, 3), padding: (4, 16, 16). Input axes: ZYXC. Mask input axes: ZYXC.
+Output data axes order: ZYXC. 
+[11:36:10.412969] Chunked test generator with 1 workers
+[11:36:11.619025] [Rank 0 (990245)] Patch number [0, 1] processing patches [[0:152,0:128,0:128], [0:152,0:128,128:256]] from [417, 685, 685]
+[11:36:12.373892] [Rank 0 (990245)] Patch number [2, 3] processing patches [[0:152,0:128,256:384], [0:152,0:128,384:512]] from [417, 685, 685]
+[11:36:13.160824] [Rank 0 (990245)] Patch number [4, 5] processing patches [[0:152,0:128,512:640], [0:152,0:128,640:685]] from [417, 685, 685]
+[11:36:13.887823] [Rank 0 (990245)] Patch number [6, 7] processing patches [[0:152,128:256,0:128], [0:152,128:256,128:256]] from [417, 685, 685]
+[11:36:14.582155] [Rank 0 (990245)] Patch number [8, 9] processing patches [[0:152,128:256,256:384], [0:152,128:256,384:512]] from [417, 685, 685]
+[11:36:15.408231] [Rank 0 (990245)] Patch number [10, 11] processing patches [[0:152,128:256,512:640], [0:152,128:256,640:685]] from [417, 685, 685]
+[11:36:16.158091] [Rank 0 (990245)] Patch number [12, 13] processing patches [[0:152,256:384,0:128], [0:152,256:384,128:256]] from [417, 685, 685]
+[11:36:16.878146] [Rank 0 (990245)] Patch number [14, 15] processing patches [[0:152,256:384,256:384], [0:152,256:384,384:512]] from [417, 685, 685]
+[11:36:17.599484] [Rank 0 (990245)] Patch number [16, 17] processing patches [[0:152,256:384,512:640], [0:152,256:384,640:685]] from [417, 685, 685]
+[11:36:18.356962] [Rank 0 (990245)] Patch number [18, 19] processing patches [[0:152,384:512,0:128], [0:152,384:512,128:256]] from [417, 685, 685]
+[11:36:19.096251] [Rank 0 (990245)] Patch number [20, 21] processing patches [[0:152,384:512,256:384], [0:152,384:512,384:512]] from [417, 685, 685]
+[11:36:19.829392] [Rank 0 (990245)] Patch number [22, 23] processing patches [[0:152,384:512,512:640], [0:152,384:512,640:685]] from [417, 685, 685]
+[11:36:20.550695] [Rank 0 (990245)] Patch number [24, 25] processing patches [[0:152,512:640,0:128], [0:152,512:640,128:256]] from [417, 685, 685]
+[11:36:21.361418] [Rank 0 (990245)] Patch number [26, 27] processing patches [[0:152,512:640,256:384], [0:152,512:640,384:512]] from [417, 685, 685]
+[11:36:22.140944] [Rank 0 (990245)] Patch number [28, 29] processing patches [[0:152,512:640,512:640], [0:152,512:640,640:685]] from [417, 685, 685]
+[11:36:22.787964] [Rank 0 (990245)] Patch number [30, 31] processing patches [[0:152,640:685,0:128], [0:152,640:685,128:256]] from [417, 685, 685]
+[11:36:23.354663] [Rank 0 (990245)] Patch number [32, 33] processing patches [[0:152,640:685,256:384], [0:152,640:685,384:512]] from [417, 685, 685]
+[11:36:23.930236] [Rank 0 (990245)] Patch number [34, 35] processing patches [[0:152,640:685,512:640], [0:152,640:685,640:685]] from [417, 685, 685]
+[11:36:24.507368] [Rank 0 (990245)] Patch number [36, 37] processing patches [[152:304,0:128,0:128], [152:304,0:128,128:256]] from [417, 685, 685]
+[11:36:25.246074] [Rank 0 (990245)] Patch number [38, 39] processing patches [[152:304,0:128,256:384], [152:304,0:128,384:512]] from [417, 685, 685]
+[11:36:25.955024] [Rank 0 (990245)] Patch number [40, 41] processing patches [[152:304,0:128,512:640], [152:304,0:128,640:685]] from [417, 685, 685]
+[11:36:26.645309] [Rank 0 (990245)] Patch number [42, 43] processing patches [[152:304,128:256,0:128], [152:304,128:256,128:256]] from [417, 685, 685]
+[11:36:27.405142] [Rank 0 (990245)] Patch number [44, 45] processing patches [[152:304,128:256,256:384], [152:304,128:256,384:512]] from [417, 685, 685]
+[11:36:28.088567] [Rank 0 (990245)] Patch number [46, 47] processing patches [[152:304,128:256,512:640], [152:304,128:256,640:685]] from [417, 685, 685]
+[11:36:28.732343] [Rank 0 (990245)] Patch number [48, 49] processing patches [[152:304,256:384,0:128], [152:304,256:384,128:256]] from [417, 685, 685]
+[11:36:29.472842] [Rank 0 (990245)] Patch number [50, 51] processing patches [[152:304,256:384,256:384], [152:304,256:384,384:512]] from [417, 685, 685]
+[11:36:30.219133] [Rank 0 (990245)] Patch number [52, 53] processing patches [[152:304,256:384,512:640], [152:304,256:384,640:685]] from [417, 685, 685]
+[11:36:30.957775] [Rank 0 (990245)] Patch number [54, 55] processing patches [[152:304,384:512,0:128], [152:304,384:512,128:256]] from [417, 685, 685]
+[11:36:31.740141] [Rank 0 (990245)] Patch number [56, 57] processing patches [[152:304,384:512,256:384], [152:304,384:512,384:512]] from [417, 685, 685]
+[11:36:32.488454] [Rank 0 (990245)] Patch number [58, 59] processing patches [[152:304,384:512,512:640], [152:304,384:512,640:685]] from [417, 685, 685]
+[11:36:33.233622] [Rank 0 (990245)] Patch number [60, 61] processing patches [[152:304,512:640,0:128], [152:304,512:640,128:256]] from [417, 685, 685]
+[11:36:34.016090] [Rank 0 (990245)] Patch number [62, 63] processing patches [[152:304,512:640,256:384], [152:304,512:640,384:512]] from [417, 685, 685]
+[11:36:34.778696] [Rank 0 (990245)] Patch number [64, 65] processing patches [[152:304,512:640,512:640], [152:304,512:640,640:685]] from [417, 685, 685]
+[11:36:35.429218] [Rank 0 (990245)] Patch number [66, 67] processing patches [[152:304,640:685,0:128], [152:304,640:685,128:256]] from [417, 685, 685]
+[11:36:36.044161] [Rank 0 (990245)] Patch number [68, 69] processing patches [[152:304,640:685,256:384], [152:304,640:685,384:512]] from [417, 685, 685]
+[11:36:36.694368] [Rank 0 (990245)] Patch number [70, 71] processing patches [[152:304,640:685,512:640], [152:304,640:685,640:685]] from [417, 685, 685]
+[11:36:37.300057] [Rank 0 (990245)] Patch number [72, 73] processing patches [[304:417,0:128,0:128], [304:417,0:128,128:256]] from [417, 685, 685]
+[11:36:37.995252] [Rank 0 (990245)] Patch number [74, 75] processing patches [[304:417,0:128,256:384], [304:417,0:128,384:512]] from [417, 685, 685]
+[11:36:38.619675] [Rank 0 (990245)] Patch number [76, 77] processing patches [[304:417,0:128,512:640], [304:417,0:128,640:685]] from [417, 685, 685]
+[11:36:39.256849] [Rank 0 (990245)] Patch number [78, 79] processing patches [[304:417,128:256,0:128], [304:417,128:256,128:256]] from [417, 685, 685]
+[11:36:39.947763] [Rank 0 (990245)] Patch number [80, 81] processing patches [[304:417,128:256,256:384], [304:417,128:256,384:512]] from [417, 685, 685]
+[11:36:40.708818] [Rank 0 (990245)] Patch number [82, 83] processing patches [[304:417,128:256,512:640], [304:417,128:256,640:685]] from [417, 685, 685]
+[11:36:41.379666] [Rank 0 (990245)] Patch number [84, 85] processing patches [[304:417,256:384,0:128], [304:417,256:384,128:256]] from [417, 685, 685]
+[11:36:42.081240] [Rank 0 (990245)] Patch number [86, 87] processing patches [[304:417,256:384,256:384], [304:417,256:384,384:512]] from [417, 685, 685]
+[11:36:42.793965] [Rank 0 (990245)] Patch number [88, 89] processing patches [[304:417,256:384,512:640], [304:417,256:384,640:685]] from [417, 685, 685]
+[11:36:43.488793] [Rank 0 (990245)] Patch number [90, 91] processing patches [[304:417,384:512,0:128], [304:417,384:512,128:256]] from [417, 685, 685]
+[11:36:44.208975] [Rank 0 (990245)] Patch number [92, 93] processing patches [[304:417,384:512,256:384], [304:417,384:512,384:512]] from [417, 685, 685]
+[11:36:44.905406] [Rank 0 (990245)] Patch number [94, 95] processing patches [[304:417,384:512,512:640], [304:417,384:512,640:685]] from [417, 685, 685]
+[11:36:45.578422] [Rank 0 (990245)] Patch number [96, 97] processing patches [[304:417,512:640,0:128], [304:417,512:640,128:256]] from [417, 685, 685]
+[11:36:46.383707] [Rank 0 (990245)] Patch number [98, 99] processing patches [[304:417,512:640,256:384], [304:417,512:640,384:512]] from [417, 685, 685]
+[11:36:47.030820] [Rank 0 (990245)] Patch number [100, 101] processing patches [[304:417,512:640,512:640], [304:417,512:640,640:685]] from [417, 685, 685]
+[11:36:47.681315] [Rank 0 (990245)] Patch number [102, 103] processing patches [[304:417,640:685,0:128], [304:417,640:685,128:256]] from [417, 685, 685]
+[11:36:48.286518] [Rank 0 (990245)] Patch number [104, 105] processing patches [[304:417,640:685,256:384], [304:417,640:685,384:512]] from [417, 685, 685]
+[11:36:48.915754] [Rank 0 (990245)] Patch number [106, 107] processing patches [[304:417,640:685,512:640], [304:417,640:685,640:685]] from [417, 685, 685]
+[11:36:51.870309] Saving (1, 417, 685, 685, 4) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image
+[11:37:30.604175] Thresholds used: {'seed': [0.4080449044704437], 'growth_mask': [0.20797064900398254]}
+[11:37:39.660757] Saving (1, 417, 685, 685, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_instances
+[11:37:40.864352] Calculating matching stats . . .
+[11:37:40.865863] Its respective image seems to be: fisbe/biapy-no-aug-zarr/test/label/VT011145-20171222_63_I1.zarr
+[11:39:06.223402] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 1330, 'tp': 0, 'fn': 9, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 9, 'n_pred': 1330, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:39:06.240374] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 1330, 'tp': 0, 'fn': 9, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 9, 'n_pred': 1330, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:39:06.259873] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 1330, 'tp': 0, 'fn': 9, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 9, 'n_pred': 1330, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:39:06.259962] Removing small objects . . .
+[11:39:08.222783] Saving (1, 417, 685, 685, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_post_processing
+[11:39:09.226046] Calculating matching stats after post-processing . . .
+[11:40:33.423726] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 18, 'tp': 0, 'fn': 9, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 9, 'n_pred': 18, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:40:33.452372] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 18, 'tp': 0, 'fn': 9, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 9, 'n_pred': 18, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:40:33.471658] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 18, 'tp': 0, 'fn': 9, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 9, 'n_pred': 18, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:40:33.504878] [Rank 0 (990245)] Processing image (by chunks): VT027175-20171031_62_H3.zarr (GT: VT027175-20171031_62_H3.zarr)
+[11:40:33.505068] Initialized chunked_test_pair_data_generator with sample VT027175-20171031_62_H3.zarr and shape (425, 687, 684, 3).
+Crop shape: (160, 160, 160, 3), padding: (4, 16, 16). Input axes: ZYXC. Mask input axes: ZYXC.
+Output data axes order: ZYXC. 
+[11:40:33.505099] Chunked test generator with 1 workers
+[11:40:34.651950] [Rank 0 (990245)] Patch number [0, 1] processing patches [[0:152,0:128,0:128], [0:152,0:128,128:256]] from [425, 687, 684]
+[11:40:35.485886] [Rank 0 (990245)] Patch number [2, 3] processing patches [[0:152,0:128,256:384], [0:152,0:128,384:512]] from [425, 687, 684]
+[11:40:36.293716] [Rank 0 (990245)] Patch number [4, 5] processing patches [[0:152,0:128,512:640], [0:152,0:128,640:684]] from [425, 687, 684]
+[11:40:36.997271] [Rank 0 (990245)] Patch number [6, 7] processing patches [[0:152,128:256,0:128], [0:152,128:256,128:256]] from [425, 687, 684]
+[11:40:37.763700] [Rank 0 (990245)] Patch number [8, 9] processing patches [[0:152,128:256,256:384], [0:152,128:256,384:512]] from [425, 687, 684]
+[11:40:38.542181] [Rank 0 (990245)] Patch number [10, 11] processing patches [[0:152,128:256,512:640], [0:152,128:256,640:684]] from [425, 687, 684]
+[11:40:39.303965] [Rank 0 (990245)] Patch number [12, 13] processing patches [[0:152,256:384,0:128], [0:152,256:384,128:256]] from [425, 687, 684]
+[11:40:40.107874] [Rank 0 (990245)] Patch number [14, 15] processing patches [[0:152,256:384,256:384], [0:152,256:384,384:512]] from [425, 687, 684]
+[11:40:40.982170] [Rank 0 (990245)] Patch number [16, 17] processing patches [[0:152,256:384,512:640], [0:152,256:384,640:684]] from [425, 687, 684]
+[11:40:41.762160] [Rank 0 (990245)] Patch number [18, 19] processing patches [[0:152,384:512,0:128], [0:152,384:512,128:256]] from [425, 687, 684]
+[11:40:42.523236] [Rank 0 (990245)] Patch number [20, 21] processing patches [[0:152,384:512,256:384], [0:152,384:512,384:512]] from [425, 687, 684]
+[11:40:43.374732] [Rank 0 (990245)] Patch number [22, 23] processing patches [[0:152,384:512,512:640], [0:152,384:512,640:684]] from [425, 687, 684]
+[11:40:44.135913] [Rank 0 (990245)] Patch number [24, 25] processing patches [[0:152,512:640,0:128], [0:152,512:640,128:256]] from [425, 687, 684]
+[11:40:44.898020] [Rank 0 (990245)] Patch number [26, 27] processing patches [[0:152,512:640,256:384], [0:152,512:640,384:512]] from [425, 687, 684]
+[11:40:45.734587] [Rank 0 (990245)] Patch number [28, 29] processing patches [[0:152,512:640,512:640], [0:152,512:640,640:684]] from [425, 687, 684]
+[11:40:46.465558] [Rank 0 (990245)] Patch number [30, 31] processing patches [[0:152,640:687,0:128], [0:152,640:687,128:256]] from [425, 687, 684]
+[11:40:47.012366] [Rank 0 (990245)] Patch number [32, 33] processing patches [[0:152,640:687,256:384], [0:152,640:687,384:512]] from [425, 687, 684]
+[11:40:47.623159] [Rank 0 (990245)] Patch number [34, 35] processing patches [[0:152,640:687,512:640], [0:152,640:687,640:684]] from [425, 687, 684]
+[11:40:48.200420] [Rank 0 (990245)] Patch number [36, 37] processing patches [[152:304,0:128,0:128], [152:304,0:128,128:256]] from [425, 687, 684]
+[11:40:48.895685] [Rank 0 (990245)] Patch number [38, 39] processing patches [[152:304,0:128,256:384], [152:304,0:128,384:512]] from [425, 687, 684]
+[11:40:49.635026] [Rank 0 (990245)] Patch number [40, 41] processing patches [[152:304,0:128,512:640], [152:304,0:128,640:684]] from [425, 687, 684]
+[11:40:50.315616] [Rank 0 (990245)] Patch number [42, 43] processing patches [[152:304,128:256,0:128], [152:304,128:256,128:256]] from [425, 687, 684]
+[11:40:51.087317] [Rank 0 (990245)] Patch number [44, 45] processing patches [[152:304,128:256,256:384], [152:304,128:256,384:512]] from [425, 687, 684]
+[11:40:51.792236] [Rank 0 (990245)] Patch number [46, 47] processing patches [[152:304,128:256,512:640], [152:304,128:256,640:684]] from [425, 687, 684]
+[11:40:52.526330] [Rank 0 (990245)] Patch number [48, 49] processing patches [[152:304,256:384,0:128], [152:304,256:384,128:256]] from [425, 687, 684]
+[11:40:53.367209] [Rank 0 (990245)] Patch number [50, 51] processing patches [[152:304,256:384,256:384], [152:304,256:384,384:512]] from [425, 687, 684]
+[11:40:54.108642] [Rank 0 (990245)] Patch number [52, 53] processing patches [[152:304,256:384,512:640], [152:304,256:384,640:684]] from [425, 687, 684]
+[11:40:54.858629] [Rank 0 (990245)] Patch number [54, 55] processing patches [[152:304,384:512,0:128], [152:304,384:512,128:256]] from [425, 687, 684]
+[11:40:55.643377] [Rank 0 (990245)] Patch number [56, 57] processing patches [[152:304,384:512,256:384], [152:304,384:512,384:512]] from [425, 687, 684]
+[11:40:56.378927] [Rank 0 (990245)] Patch number [58, 59] processing patches [[152:304,384:512,512:640], [152:304,384:512,640:684]] from [425, 687, 684]
+[11:40:57.114270] [Rank 0 (990245)] Patch number [60, 61] processing patches [[152:304,512:640,0:128], [152:304,512:640,128:256]] from [425, 687, 684]
+[11:40:57.919825] [Rank 0 (990245)] Patch number [62, 63] processing patches [[152:304,512:640,256:384], [152:304,512:640,384:512]] from [425, 687, 684]
+[11:40:58.645049] [Rank 0 (990245)] Patch number [64, 65] processing patches [[152:304,512:640,512:640], [152:304,512:640,640:684]] from [425, 687, 684]
+[11:40:59.374119] [Rank 0 (990245)] Patch number [66, 67] processing patches [[152:304,640:687,0:128], [152:304,640:687,128:256]] from [425, 687, 684]
+[11:40:59.978490] [Rank 0 (990245)] Patch number [68, 69] processing patches [[152:304,640:687,256:384], [152:304,640:687,384:512]] from [425, 687, 684]
+[11:41:00.658719] [Rank 0 (990245)] Patch number [70, 71] processing patches [[152:304,640:687,512:640], [152:304,640:687,640:684]] from [425, 687, 684]
+[11:41:01.285576] [Rank 0 (990245)] Patch number [72, 73] processing patches [[304:425,0:128,0:128], [304:425,0:128,128:256]] from [425, 687, 684]
+[11:41:01.963708] [Rank 0 (990245)] Patch number [74, 75] processing patches [[304:425,0:128,256:384], [304:425,0:128,384:512]] from [425, 687, 684]
+[11:41:02.639222] [Rank 0 (990245)] Patch number [76, 77] processing patches [[304:425,0:128,512:640], [304:425,0:128,640:684]] from [425, 687, 684]
+[11:41:03.338121] [Rank 0 (990245)] Patch number [78, 79] processing patches [[304:425,128:256,0:128], [304:425,128:256,128:256]] from [425, 687, 684]
+[11:41:04.056323] [Rank 0 (990245)] Patch number [80, 81] processing patches [[304:425,128:256,256:384], [304:425,128:256,384:512]] from [425, 687, 684]
+[11:41:04.760981] [Rank 0 (990245)] Patch number [82, 83] processing patches [[304:425,128:256,512:640], [304:425,128:256,640:684]] from [425, 687, 684]
+[11:41:05.450774] [Rank 0 (990245)] Patch number [84, 85] processing patches [[304:425,256:384,0:128], [304:425,256:384,128:256]] from [425, 687, 684]
+[11:41:06.208123] [Rank 0 (990245)] Patch number [86, 87] processing patches [[304:425,256:384,256:384], [304:425,256:384,384:512]] from [425, 687, 684]
+[11:41:06.927165] [Rank 0 (990245)] Patch number [88, 89] processing patches [[304:425,256:384,512:640], [304:425,256:384,640:684]] from [425, 687, 684]
+[11:41:07.614450] [Rank 0 (990245)] Patch number [90, 91] processing patches [[304:425,384:512,0:128], [304:425,384:512,128:256]] from [425, 687, 684]
+[11:41:08.352871] [Rank 0 (990245)] Patch number [92, 93] processing patches [[304:425,384:512,256:384], [304:425,384:512,384:512]] from [425, 687, 684]
+[11:41:09.066891] [Rank 0 (990245)] Patch number [94, 95] processing patches [[304:425,384:512,512:640], [304:425,384:512,640:684]] from [425, 687, 684]
+[11:41:09.738664] [Rank 0 (990245)] Patch number [96, 97] processing patches [[304:425,512:640,0:128], [304:425,512:640,128:256]] from [425, 687, 684]
+[11:41:10.453788] [Rank 0 (990245)] Patch number [98, 99] processing patches [[304:425,512:640,256:384], [304:425,512:640,384:512]] from [425, 687, 684]
+[11:41:11.145505] [Rank 0 (990245)] Patch number [100, 101] processing patches [[304:425,512:640,512:640], [304:425,512:640,640:684]] from [425, 687, 684]
+[11:41:11.772427] [Rank 0 (990245)] Patch number [102, 103] processing patches [[304:425,640:687,0:128], [304:425,640:687,128:256]] from [425, 687, 684]
+[11:41:12.410070] [Rank 0 (990245)] Patch number [104, 105] processing patches [[304:425,640:687,256:384], [304:425,640:687,384:512]] from [425, 687, 684]
+[11:41:13.038079] [Rank 0 (990245)] Patch number [106, 107] processing patches [[304:425,640:687,512:640], [304:425,640:687,640:684]] from [425, 687, 684]
+[11:41:16.151650] Saving (1, 425, 687, 684, 4) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image
+[11:41:55.605612] Thresholds used: {'seed': [0.2945452332496643], 'growth_mask': [0.16498997807502747]}
+[11:42:05.200027] Saving (1, 425, 687, 684, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_instances
+[11:42:06.303122] Calculating matching stats . . .
+[11:42:06.304515] Its respective image seems to be: fisbe/biapy-no-aug-zarr/test/label/VT027175-20171031_62_H3.zarr
+[11:43:36.786874] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 10907, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 10907, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:43:36.803942] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 10907, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 10907, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:43:36.817820] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 10907, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 10907, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:43:36.817911] Removing small objects . . .
+[11:43:38.834816] Saving (1, 425, 687, 684, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_post_processing
+[11:43:39.849061] Calculating matching stats after post-processing . . .
+[11:45:06.332293] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': 104, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 104, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:45:06.352804] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 104, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 104, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:45:06.368129] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 104, 'tp': 0, 'fn': 3, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 3, 'n_pred': 104, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:45:06.405463] [Rank 0 (990245)] Processing image (by chunks): VT027175-20171031_62_H4.zarr (GT: VT027175-20171031_62_H4.zarr)
+[11:45:06.405627] Initialized chunked_test_pair_data_generator with sample VT027175-20171031_62_H4.zarr and shape (409, 687, 684, 3).
+Crop shape: (160, 160, 160, 3), padding: (4, 16, 16). Input axes: ZYXC. Mask input axes: ZYXC.
+Output data axes order: ZYXC. 
+[11:45:06.405664] Chunked test generator with 1 workers
+[11:45:07.539602] [Rank 0 (990245)] Patch number [0, 1] processing patches [[0:152,0:128,0:128], [0:152,0:128,128:256]] from [409, 687, 684]
+[11:45:08.298027] [Rank 0 (990245)] Patch number [2, 3] processing patches [[0:152,0:128,256:384], [0:152,0:128,384:512]] from [409, 687, 684]
+[11:45:09.010406] [Rank 0 (990245)] Patch number [4, 5] processing patches [[0:152,0:128,512:640], [0:152,0:128,640:684]] from [409, 687, 684]
+[11:45:09.756475] [Rank 0 (990245)] Patch number [6, 7] processing patches [[0:152,128:256,0:128], [0:152,128:256,128:256]] from [409, 687, 684]
+[11:45:10.476641] [Rank 0 (990245)] Patch number [8, 9] processing patches [[0:152,128:256,256:384], [0:152,128:256,384:512]] from [409, 687, 684]
+[11:45:11.222011] [Rank 0 (990245)] Patch number [10, 11] processing patches [[0:152,128:256,512:640], [0:152,128:256,640:684]] from [409, 687, 684]
+[11:45:12.006302] [Rank 0 (990245)] Patch number [12, 13] processing patches [[0:152,256:384,0:128], [0:152,256:384,128:256]] from [409, 687, 684]
+[11:45:12.715991] [Rank 0 (990245)] Patch number [14, 15] processing patches [[0:152,256:384,256:384], [0:152,256:384,384:512]] from [409, 687, 684]
+[11:45:13.497727] [Rank 0 (990245)] Patch number [16, 17] processing patches [[0:152,256:384,512:640], [0:152,256:384,640:684]] from [409, 687, 684]
+[11:45:14.201757] [Rank 0 (990245)] Patch number [18, 19] processing patches [[0:152,384:512,0:128], [0:152,384:512,128:256]] from [409, 687, 684]
+[11:45:14.914466] [Rank 0 (990245)] Patch number [20, 21] processing patches [[0:152,384:512,256:384], [0:152,384:512,384:512]] from [409, 687, 684]
+[11:45:15.650336] [Rank 0 (990245)] Patch number [22, 23] processing patches [[0:152,384:512,512:640], [0:152,384:512,640:684]] from [409, 687, 684]
+[11:45:16.368864] [Rank 0 (990245)] Patch number [24, 25] processing patches [[0:152,512:640,0:128], [0:152,512:640,128:256]] from [409, 687, 684]
+[11:45:17.069057] [Rank 0 (990245)] Patch number [26, 27] processing patches [[0:152,512:640,256:384], [0:152,512:640,384:512]] from [409, 687, 684]
+[11:45:17.834477] [Rank 0 (990245)] Patch number [28, 29] processing patches [[0:152,512:640,512:640], [0:152,512:640,640:684]] from [409, 687, 684]
+[11:45:18.460695] [Rank 0 (990245)] Patch number [30, 31] processing patches [[0:152,640:687,0:128], [0:152,640:687,128:256]] from [409, 687, 684]
+[11:45:19.045017] [Rank 0 (990245)] Patch number [32, 33] processing patches [[0:152,640:687,256:384], [0:152,640:687,384:512]] from [409, 687, 684]
+[11:45:19.580596] [Rank 0 (990245)] Patch number [34, 35] processing patches [[0:152,640:687,512:640], [0:152,640:687,640:684]] from [409, 687, 684]
+[11:45:20.186363] [Rank 0 (990245)] Patch number [36, 37] processing patches [[152:304,0:128,0:128], [152:304,0:128,128:256]] from [409, 687, 684]
+[11:45:20.922720] [Rank 0 (990245)] Patch number [38, 39] processing patches [[152:304,0:128,256:384], [152:304,0:128,384:512]] from [409, 687, 684]
+[11:45:21.621977] [Rank 0 (990245)] Patch number [40, 41] processing patches [[152:304,0:128,512:640], [152:304,0:128,640:684]] from [409, 687, 684]
+[11:45:22.312378] [Rank 0 (990245)] Patch number [42, 43] processing patches [[152:304,128:256,0:128], [152:304,128:256,128:256]] from [409, 687, 684]
+[11:45:23.065507] [Rank 0 (990245)] Patch number [44, 45] processing patches [[152:304,128:256,256:384], [152:304,128:256,384:512]] from [409, 687, 684]
+[11:45:23.782661] [Rank 0 (990245)] Patch number [46, 47] processing patches [[152:304,128:256,512:640], [152:304,128:256,640:684]] from [409, 687, 684]
+[11:45:24.499199] [Rank 0 (990245)] Patch number [48, 49] processing patches [[152:304,256:384,0:128], [152:304,256:384,128:256]] from [409, 687, 684]
+[11:45:25.206454] [Rank 0 (990245)] Patch number [50, 51] processing patches [[152:304,256:384,256:384], [152:304,256:384,384:512]] from [409, 687, 684]
+[11:45:25.937704] [Rank 0 (990245)] Patch number [52, 53] processing patches [[152:304,256:384,512:640], [152:304,256:384,640:684]] from [409, 687, 684]
+[11:45:26.650752] [Rank 0 (990245)] Patch number [54, 55] processing patches [[152:304,384:512,0:128], [152:304,384:512,128:256]] from [409, 687, 684]
+[11:45:27.444119] [Rank 0 (990245)] Patch number [56, 57] processing patches [[152:304,384:512,256:384], [152:304,384:512,384:512]] from [409, 687, 684]
+[11:45:28.209120] [Rank 0 (990245)] Patch number [58, 59] processing patches [[152:304,384:512,512:640], [152:304,384:512,640:684]] from [409, 687, 684]
+[11:45:28.941305] [Rank 0 (990245)] Patch number [60, 61] processing patches [[152:304,512:640,0:128], [152:304,512:640,128:256]] from [409, 687, 684]
+[11:45:29.701899] [Rank 0 (990245)] Patch number [62, 63] processing patches [[152:304,512:640,256:384], [152:304,512:640,384:512]] from [409, 687, 684]
+[11:45:30.458869] [Rank 0 (990245)] Patch number [64, 65] processing patches [[152:304,512:640,512:640], [152:304,512:640,640:684]] from [409, 687, 684]
+[11:45:31.113847] [Rank 0 (990245)] Patch number [66, 67] processing patches [[152:304,640:687,0:128], [152:304,640:687,128:256]] from [409, 687, 684]
+[11:45:31.738210] [Rank 0 (990245)] Patch number [68, 69] processing patches [[152:304,640:687,256:384], [152:304,640:687,384:512]] from [409, 687, 684]
+[11:45:32.370117] [Rank 0 (990245)] Patch number [70, 71] processing patches [[152:304,640:687,512:640], [152:304,640:687,640:684]] from [409, 687, 684]
+[11:45:32.969531] [Rank 0 (990245)] Patch number [72, 73] processing patches [[304:409,0:128,0:128], [304:409,0:128,128:256]] from [409, 687, 684]
+[11:45:33.598423] [Rank 0 (990245)] Patch number [74, 75] processing patches [[304:409,0:128,256:384], [304:409,0:128,384:512]] from [409, 687, 684]
+[11:45:34.278098] [Rank 0 (990245)] Patch number [76, 77] processing patches [[304:409,0:128,512:640], [304:409,0:128,640:684]] from [409, 687, 684]
+[11:45:34.939251] [Rank 0 (990245)] Patch number [78, 79] processing patches [[304:409,128:256,0:128], [304:409,128:256,128:256]] from [409, 687, 684]
+[11:45:35.681757] [Rank 0 (990245)] Patch number [80, 81] processing patches [[304:409,128:256,256:384], [304:409,128:256,384:512]] from [409, 687, 684]
+[11:45:36.433255] [Rank 0 (990245)] Patch number [82, 83] processing patches [[304:409,128:256,512:640], [304:409,128:256,640:684]] from [409, 687, 684]
+[11:45:37.121405] [Rank 0 (990245)] Patch number [84, 85] processing patches [[304:409,256:384,0:128], [304:409,256:384,128:256]] from [409, 687, 684]
+[11:45:37.873089] [Rank 0 (990245)] Patch number [86, 87] processing patches [[304:409,256:384,256:384], [304:409,256:384,384:512]] from [409, 687, 684]
+[11:45:38.633200] [Rank 0 (990245)] Patch number [88, 89] processing patches [[304:409,256:384,512:640], [304:409,256:384,640:684]] from [409, 687, 684]
+[11:45:39.300211] [Rank 0 (990245)] Patch number [90, 91] processing patches [[304:409,384:512,0:128], [304:409,384:512,128:256]] from [409, 687, 684]
+[11:45:40.020179] [Rank 0 (990245)] Patch number [92, 93] processing patches [[304:409,384:512,256:384], [304:409,384:512,384:512]] from [409, 687, 684]
+[11:45:40.734532] [Rank 0 (990245)] Patch number [94, 95] processing patches [[304:409,384:512,512:640], [304:409,384:512,640:684]] from [409, 687, 684]
+[11:45:41.412487] [Rank 0 (990245)] Patch number [96, 97] processing patches [[304:409,512:640,0:128], [304:409,512:640,128:256]] from [409, 687, 684]
+[11:45:42.162730] [Rank 0 (990245)] Patch number [98, 99] processing patches [[304:409,512:640,256:384], [304:409,512:640,384:512]] from [409, 687, 684]
+[11:45:42.868168] [Rank 0 (990245)] Patch number [100, 101] processing patches [[304:409,512:640,512:640], [304:409,512:640,640:684]] from [409, 687, 684]
+[11:45:43.470968] [Rank 0 (990245)] Patch number [102, 103] processing patches [[304:409,640:687,0:128], [304:409,640:687,128:256]] from [409, 687, 684]
+[11:45:44.073482] [Rank 0 (990245)] Patch number [104, 105] processing patches [[304:409,640:687,256:384], [304:409,640:687,384:512]] from [409, 687, 684]
+[11:45:44.729129] [Rank 0 (990245)] Patch number [106, 107] processing patches [[304:409,640:687,512:640], [304:409,640:687,640:684]] from [409, 687, 684]
+[11:45:47.674766] Saving (1, 409, 687, 684, 4) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image
+[11:46:25.107540] Thresholds used: {'seed': [0.34925195574760437], 'growth_mask': [0.1805795282125473]}
+[11:46:34.523256] Saving (1, 409, 687, 684, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_instances
+[11:46:35.792152] Calculating matching stats . . .
+[11:46:35.793655] Its respective image seems to be: fisbe/biapy-no-aug-zarr/test/label/VT027175-20171031_62_H4.zarr
+[11:48:00.486907] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(8661), 'tp': np.int64(1), 'fn': np.int64(5), 'precision': np.float64(0.00011544677903486493), 'recall': np.float64(0.16666666666666666), 'accuracy': np.float64(0.00011538017768547363), 'f1': np.float64(0.00023073373327180433), 'n_true': 6, 'n_pred': 8662, 'mean_true_score': np.float32(0.051406216), 'mean_matched_score': np.float64(0.3084372878074646), 'panoptic_quality': np.float64(7.116688689604628e-05)}
+[11:48:00.512060] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 8662, 'tp': 0, 'fn': 6, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 6, 'n_pred': 8662, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:48:00.532818] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 8662, 'tp': 0, 'fn': 6, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 6, 'n_pred': 8662, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:48:00.532901] Removing small objects . . .
+[11:48:02.471914] Saving (1, 409, 687, 684, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_post_processing
+[11:48:03.497043] Calculating matching stats after post-processing . . .
+[11:49:27.546092] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(124), 'tp': np.int64(1), 'fn': np.int64(5), 'precision': np.float64(0.008), 'recall': np.float64(0.16666666666666666), 'accuracy': np.float64(0.007692307692307693), 'f1': np.float64(0.015267175572519083), 'n_true': 6, 'n_pred': 125, 'mean_true_score': np.float32(0.051406216), 'mean_matched_score': np.float64(0.3084372878074646), 'panoptic_quality': np.float64(0.004708966226068162)}
+[11:49:27.569723] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 125, 'tp': 0, 'fn': 6, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 6, 'n_pred': 125, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:49:27.589351] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 125, 'tp': 0, 'fn': 6, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 6, 'n_pred': 125, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:49:27.623776] [Rank 0 (990245)] Processing image (by chunks): VT050157-20171110_61_C1.zarr (GT: VT050157-20171110_61_C1.zarr)
+[11:49:27.623949] Initialized chunked_test_pair_data_generator with sample VT050157-20171110_61_C1.zarr and shape (377, 683, 686, 3).
+Crop shape: (160, 160, 160, 3), padding: (4, 16, 16). Input axes: ZYXC. Mask input axes: ZYXC.
+Output data axes order: ZYXC. 
+[11:49:27.623983] Chunked test generator with 1 workers
+[11:49:28.779851] [Rank 0 (990245)] Patch number [0, 1] processing patches [[0:152,0:128,0:128], [0:152,0:128,128:256]] from [377, 683, 686]
+[11:49:29.530862] [Rank 0 (990245)] Patch number [2, 3] processing patches [[0:152,0:128,256:384], [0:152,0:128,384:512]] from [377, 683, 686]
+[11:49:30.348027] [Rank 0 (990245)] Patch number [4, 5] processing patches [[0:152,0:128,512:640], [0:152,0:128,640:686]] from [377, 683, 686]
+[11:49:31.098050] [Rank 0 (990245)] Patch number [6, 7] processing patches [[0:152,128:256,0:128], [0:152,128:256,128:256]] from [377, 683, 686]
+[11:49:31.812276] [Rank 0 (990245)] Patch number [8, 9] processing patches [[0:152,128:256,256:384], [0:152,128:256,384:512]] from [377, 683, 686]
+[11:49:32.626587] [Rank 0 (990245)] Patch number [10, 11] processing patches [[0:152,128:256,512:640], [0:152,128:256,640:686]] from [377, 683, 686]
+[11:49:33.515931] [Rank 0 (990245)] Patch number [12, 13] processing patches [[0:152,256:384,0:128], [0:152,256:384,128:256]] from [377, 683, 686]
+[11:49:34.227438] [Rank 0 (990245)] Patch number [14, 15] processing patches [[0:152,256:384,256:384], [0:152,256:384,384:512]] from [377, 683, 686]
+[11:49:34.996213] [Rank 0 (990245)] Patch number [16, 17] processing patches [[0:152,256:384,512:640], [0:152,256:384,640:686]] from [377, 683, 686]
+[11:49:35.790315] [Rank 0 (990245)] Patch number [18, 19] processing patches [[0:152,384:512,0:128], [0:152,384:512,128:256]] from [377, 683, 686]
+[11:49:36.549009] [Rank 0 (990245)] Patch number [20, 21] processing patches [[0:152,384:512,256:384], [0:152,384:512,384:512]] from [377, 683, 686]
+[11:49:37.281710] [Rank 0 (990245)] Patch number [22, 23] processing patches [[0:152,384:512,512:640], [0:152,384:512,640:686]] from [377, 683, 686]
+[11:49:38.038541] [Rank 0 (990245)] Patch number [24, 25] processing patches [[0:152,512:640,0:128], [0:152,512:640,128:256]] from [377, 683, 686]
+[11:49:38.806209] [Rank 0 (990245)] Patch number [26, 27] processing patches [[0:152,512:640,256:384], [0:152,512:640,384:512]] from [377, 683, 686]
+[11:49:39.589178] [Rank 0 (990245)] Patch number [28, 29] processing patches [[0:152,512:640,512:640], [0:152,512:640,640:686]] from [377, 683, 686]
+[11:49:40.320473] [Rank 0 (990245)] Patch number [30, 31] processing patches [[0:152,640:683,0:128], [0:152,640:683,128:256]] from [377, 683, 686]
+[11:49:40.918045] [Rank 0 (990245)] Patch number [32, 33] processing patches [[0:152,640:683,256:384], [0:152,640:683,384:512]] from [377, 683, 686]
+[11:49:41.475417] [Rank 0 (990245)] Patch number [34, 35] processing patches [[0:152,640:683,512:640], [0:152,640:683,640:686]] from [377, 683, 686]
+[11:49:42.086356] [Rank 0 (990245)] Patch number [36, 37] processing patches [[152:304,0:128,0:128], [152:304,0:128,128:256]] from [377, 683, 686]
+[11:49:42.816545] [Rank 0 (990245)] Patch number [38, 39] processing patches [[152:304,0:128,256:384], [152:304,0:128,384:512]] from [377, 683, 686]
+[11:49:43.591279] [Rank 0 (990245)] Patch number [40, 41] processing patches [[152:304,0:128,512:640], [152:304,0:128,640:686]] from [377, 683, 686]
+[11:49:44.274451] [Rank 0 (990245)] Patch number [42, 43] processing patches [[152:304,128:256,0:128], [152:304,128:256,128:256]] from [377, 683, 686]
+[11:49:45.031757] [Rank 0 (990245)] Patch number [44, 45] processing patches [[152:304,128:256,256:384], [152:304,128:256,384:512]] from [377, 683, 686]
+[11:49:45.726974] [Rank 0 (990245)] Patch number [46, 47] processing patches [[152:304,128:256,512:640], [152:304,128:256,640:686]] from [377, 683, 686]
+[11:49:46.417125] [Rank 0 (990245)] Patch number [48, 49] processing patches [[152:304,256:384,0:128], [152:304,256:384,128:256]] from [377, 683, 686]
+[11:49:47.186807] [Rank 0 (990245)] Patch number [50, 51] processing patches [[152:304,256:384,256:384], [152:304,256:384,384:512]] from [377, 683, 686]
+[11:49:47.923773] [Rank 0 (990245)] Patch number [52, 53] processing patches [[152:304,256:384,512:640], [152:304,256:384,640:686]] from [377, 683, 686]
+[11:49:48.632290] [Rank 0 (990245)] Patch number [54, 55] processing patches [[152:304,384:512,0:128], [152:304,384:512,128:256]] from [377, 683, 686]
+[11:49:49.426561] [Rank 0 (990245)] Patch number [56, 57] processing patches [[152:304,384:512,256:384], [152:304,384:512,384:512]] from [377, 683, 686]
+[11:49:50.256466] [Rank 0 (990245)] Patch number [58, 59] processing patches [[152:304,384:512,512:640], [152:304,384:512,640:686]] from [377, 683, 686]
+[11:49:50.900978] [Rank 0 (990245)] Patch number [60, 61] processing patches [[152:304,512:640,0:128], [152:304,512:640,128:256]] from [377, 683, 686]
+[11:49:51.645211] [Rank 0 (990245)] Patch number [62, 63] processing patches [[152:304,512:640,256:384], [152:304,512:640,384:512]] from [377, 683, 686]
+[11:49:52.425666] [Rank 0 (990245)] Patch number [64, 65] processing patches [[152:304,512:640,512:640], [152:304,512:640,640:686]] from [377, 683, 686]
+[11:49:53.063286] [Rank 0 (990245)] Patch number [66, 67] processing patches [[152:304,640:683,0:128], [152:304,640:683,128:256]] from [377, 683, 686]
+[11:49:53.668123] [Rank 0 (990245)] Patch number [68, 69] processing patches [[152:304,640:683,256:384], [152:304,640:683,384:512]] from [377, 683, 686]
+[11:49:54.278280] [Rank 0 (990245)] Patch number [70, 71] processing patches [[152:304,640:683,512:640], [152:304,640:683,640:686]] from [377, 683, 686]
+[11:49:54.879071] [Rank 0 (990245)] Patch number [72, 73] processing patches [[304:377,0:128,0:128], [304:377,0:128,128:256]] from [377, 683, 686]
+[11:49:55.544016] [Rank 0 (990245)] Patch number [74, 75] processing patches [[304:377,0:128,256:384], [304:377,0:128,384:512]] from [377, 683, 686]
+[11:49:56.261120] [Rank 0 (990245)] Patch number [76, 77] processing patches [[304:377,0:128,512:640], [304:377,0:128,640:686]] from [377, 683, 686]
+[11:49:56.893078] [Rank 0 (990245)] Patch number [78, 79] processing patches [[304:377,128:256,0:128], [304:377,128:256,128:256]] from [377, 683, 686]
+[11:49:57.457441] [Rank 0 (990245)] Patch number [80, 81] processing patches [[304:377,128:256,256:384], [304:377,128:256,384:512]] from [377, 683, 686]
+[11:49:58.102424] [Rank 0 (990245)] Patch number [82, 83] processing patches [[304:377,128:256,512:640], [304:377,128:256,640:686]] from [377, 683, 686]
+[11:49:58.738637] [Rank 0 (990245)] Patch number [84, 85] processing patches [[304:377,256:384,0:128], [304:377,256:384,128:256]] from [377, 683, 686]
+[11:49:59.427235] [Rank 0 (990245)] Patch number [86, 87] processing patches [[304:377,256:384,256:384], [304:377,256:384,384:512]] from [377, 683, 686]
+[11:50:00.163435] [Rank 0 (990245)] Patch number [88, 89] processing patches [[304:377,256:384,512:640], [304:377,256:384,640:686]] from [377, 683, 686]
+[11:50:00.751091] [Rank 0 (990245)] Patch number [90, 91] processing patches [[304:377,384:512,0:128], [304:377,384:512,128:256]] from [377, 683, 686]
+[11:50:01.382141] [Rank 0 (990245)] Patch number [92, 93] processing patches [[304:377,384:512,256:384], [304:377,384:512,384:512]] from [377, 683, 686]
+[11:50:02.047699] [Rank 0 (990245)] Patch number [94, 95] processing patches [[304:377,384:512,512:640], [304:377,384:512,640:686]] from [377, 683, 686]
+[11:50:02.697451] [Rank 0 (990245)] Patch number [96, 97] processing patches [[304:377,512:640,0:128], [304:377,512:640,128:256]] from [377, 683, 686]
+[11:50:03.337176] [Rank 0 (990245)] Patch number [98, 99] processing patches [[304:377,512:640,256:384], [304:377,512:640,384:512]] from [377, 683, 686]
+[11:50:04.008861] [Rank 0 (990245)] Patch number [100, 101] processing patches [[304:377,512:640,512:640], [304:377,512:640,640:686]] from [377, 683, 686]
+[11:50:04.608326] [Rank 0 (990245)] Patch number [102, 103] processing patches [[304:377,640:683,0:128], [304:377,640:683,128:256]] from [377, 683, 686]
+[11:50:05.176400] [Rank 0 (990245)] Patch number [104, 105] processing patches [[304:377,640:683,256:384], [304:377,640:683,384:512]] from [377, 683, 686]
+[11:50:05.745061] [Rank 0 (990245)] Patch number [106, 107] processing patches [[304:377,640:683,512:640], [304:377,640:683,640:686]] from [377, 683, 686]
+[11:50:08.402085] Saving (1, 377, 683, 686, 4) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image
+[11:50:41.695649] Thresholds used: {'seed': [0.333281010389328], 'growth_mask': [0.1766016036272049]}
+[11:50:49.844618] Saving (1, 377, 683, 686, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_instances
+[11:50:50.798623] Calculating matching stats . . .
+[11:50:50.800024] Its respective image seems to be: fisbe/biapy-no-aug-zarr/test/label/VT050157-20171110_61_C1.zarr
+[11:52:08.157329] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(4625), 'tp': np.int64(1), 'fn': np.int64(4), 'precision': np.float64(0.00021616947686986597), 'recall': np.float64(0.2), 'accuracy': np.float64(0.00021598272138228941), 'f1': np.float64(0.0004318721658389117), 'n_true': 5, 'n_pred': 4626, 'mean_true_score': np.float32(0.07821888), 'mean_matched_score': np.float64(0.3910943865776062), 'panoptic_quality': np.float64(0.00016890277977871137)}
+[11:52:08.177662] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 4626, 'tp': 0, 'fn': 5, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 5, 'n_pred': 4626, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:52:08.194867] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 4626, 'tp': 0, 'fn': 5, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 5, 'n_pred': 4626, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:52:08.194948] Removing small objects . . .
+[11:52:09.976771] Saving (1, 377, 683, 686, 1) data as .tif in folder: metrics/biapy/biapy-channel-scale-zarr-unetr/results/biapy-channel-scale-zarr-unetr_0/per_image_post_processing
+[11:52:10.887948] Calculating matching stats after post-processing . . .
+[11:53:26.567478] DatasetMatching: {'criterion': 'iou', 'thresh': 0.3, 'fp': np.int64(84), 'tp': np.int64(1), 'fn': np.int64(4), 'precision': np.float64(0.011764705882352941), 'recall': np.float64(0.2), 'accuracy': np.float64(0.011235955056179775), 'f1': np.float64(0.022222222222222223), 'n_true': 5, 'n_pred': 85, 'mean_true_score': np.float32(0.07821888), 'mean_matched_score': np.float64(0.3910943865776062), 'panoptic_quality': np.float64(0.00869098636839125)}
+[11:53:26.584839] DatasetMatching: {'criterion': 'iou', 'thresh': 0.5, 'fp': 85, 'tp': 0, 'fn': 5, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 5, 'n_pred': 85, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:53:26.601482] DatasetMatching: {'criterion': 'iou', 'thresh': 0.75, 'fp': 85, 'tp': 0, 'fn': 5, 'precision': 0, 'recall': 0, 'accuracy': 0, 'f1': 0, 'n_true': 5, 'n_pred': 85, 'mean_true_score': 0.0, 'mean_matched_score': 0.0, 'panoptic_quality': 0.0}
+[11:53:26.614897] Releasing memory . . .
+[11:53:26.614953] #############
+[11:53:26.614965] #  RESULTS  #
+[11:53:26.614974] #############
+[11:53:26.614984] The values below represent the averages across all test samples
+[11:53:26.616168] Test IoU (F channel) (per patch): 0.04045875467060974
+[11:53:26.616183] Test L1 (Dc channel) (per patch): 0.0002280987127238722
+[11:53:26.616192] Test L1 (Dn channel) (per patch): 0.0003055147946012704
+[11:53:26.616206] Test IoU (P channel) (per patch): 0.028170012298490355
+[11:53:26.616214] 
+[11:53:26.628804] Instance segmentation specific metrics:
+[11:53:26.628861] IoU TH=0.3
+[11:53:26.628876]       Merge patches:
+[11:53:26.628921]       DatasetMatching(criterion='iou', thresh=0.3, fp=np.int64(52648), tp=np.int64(5), fn=np.int64(29), precision=np.float64(0.0001037177789868929), recall=np.float64(0.26326530612244897), accuracy=np.float64(0.00010364834181360193), f1=np.float64(0.00020726259712104567), n_true=34, n_pred=52653, mean_true_score=np.float32(0.09872954), mean_matched_score=np.float64(0.27525499888828825), panoptic_quality=np.float64(7.943466263096255e-05), by_image=True)
+[11:53:26.628937] IoU (post-processing) TH=0.3
+[11:53:26.628947]       Merge patches (post-processing):
+[11:53:26.628983]       DatasetMatching(criterion='iou', thresh=0.3, fp=np.int64(560), tp=np.int64(5), fn=np.int64(29), precision=np.float64(0.009114137224337238), recall=np.float64(0.26326530612244897), accuracy=np.float64(0.008656418487879161), f1=np.float64(0.017083336485359778), n_true=34, n_pred=565, mean_true_score=np.float32(0.09872954), mean_matched_score=np.float64(0.27525499888828825), panoptic_quality=np.float64(0.0066076099863028965), by_image=True)
+[11:53:26.628999] IoU TH=0.5
+[11:53:26.629009]       Merge patches:
+[11:53:26.629023]       DatasetMatching(criterion='iou', thresh=0.5, fp=52653, tp=0, fn=34, precision=0.0, recall=0.0, accuracy=0.0, f1=0.0, n_true=34, n_pred=52653, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=True)
+[11:53:26.629035] IoU (post-processing) TH=0.5
+[11:53:26.629045]       Merge patches (post-processing):
+[11:53:26.629060]       DatasetMatching(criterion='iou', thresh=0.5, fp=565, tp=0, fn=34, precision=0.0, recall=0.0, accuracy=0.0, f1=0.0, n_true=34, n_pred=565, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=True)
+[11:53:26.629074] IoU TH=0.75
+[11:53:26.629084]       Merge patches:
+[11:53:26.629097]       DatasetMatching(criterion='iou', thresh=0.75, fp=52653, tp=0, fn=34, precision=0.0, recall=0.0, accuracy=0.0, f1=0.0, n_true=34, n_pred=52653, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=True)
+[11:53:26.629108] IoU (post-processing) TH=0.75
+[11:53:26.629117]       Merge patches (post-processing):
+[11:53:26.629130]       DatasetMatching(criterion='iou', thresh=0.75, fp=565, tp=0, fn=34, precision=0.0, recall=0.0, accuracy=0.0, f1=0.0, n_true=34, n_pred=565, mean_true_score=0.0, mean_matched_score=0.0, panoptic_quality=0.0, by_image=True)

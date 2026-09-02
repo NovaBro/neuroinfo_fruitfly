@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=biapy-channel-scale
+#SBATCH --job-name=biapy-debug-zarr
 #SBATCH --cpus-per-task=12
 #SBATCH --time=2:00:00
 #SBATCH --mem=256g
@@ -22,12 +22,11 @@ singularity exec --nv \
     /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
     /bin/bash -c "source /ext3/env.sh; \
     conda activate BiaPy_env; \
-    echo \"running BiaPy/biapy_prep_main.py\"; \
-    python3 -u BiaPy/biapy_prep_main.py \
+    echo \"running biapy_work_folder/biapy_prep_main.py\"; \
+    python3 -u biapy_work_folder/biapy_prep_main.py \
         -o ${output_dir} \
         -s train val test \
-        --channel-scale \
-        --num-channel-scales 8 \
+        --max-num-samples 2 \
         -v info \
         -c \
         -w ${SLURM_CPUS_PER_TASK} \

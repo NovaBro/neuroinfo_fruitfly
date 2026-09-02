@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 128, in <module>
+    _patch_biapy_zarr_channel_dtype()
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 107, in _patch_biapy_zarr_channel_dtype
+    raise RuntimeError(
+RuntimeError: Could not patch Zarr channel dtype block in create_instance_channels

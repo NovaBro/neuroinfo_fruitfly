@@ -1,0 +1,95 @@
+/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/check_configuration.py:395: UserWarning: Seems that the channels requested are custom so BiaPy did not fill some variables by default. You will need to fill the following variables: PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH, PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH.
+  warnings.warn(
+  0%|          | 0/75 [00:00<?, ?it/s] 12%|#2        | 9/75 [00:00<00:00, 85.41it/s] 37%|###7      | 28/75 [00:00<00:00, 143.89it/s] 57%|#####7    | 43/75 [00:00<00:00, 109.81it/s] 73%|#######3  | 55/75 [00:00<00:00, 106.56it/s] 89%|########9 | 67/75 [00:00<00:00, 109.31it/s]100%|##########| 75/75 [00:00<00:00, 111.81it/s]
+  0%|          | 0/75 [00:00<?, ?it/s] 16%|#6        | 12/75 [00:00<00:00, 104.27it/s] 32%|###2      | 24/75 [00:00<00:00, 112.52it/s] 52%|#####2    | 39/75 [00:00<00:00, 123.92it/s] 69%|######9   | 52/75 [00:00<00:00, 115.07it/s] 88%|########8 | 66/75 [00:00<00:00, 123.03it/s]100%|##########| 75/75 [00:00<00:00, 114.15it/s]
+  0%|          | 0/150 [00:00<?, ?it/s]  1%|          | 1/150 [00:00<00:33,  4.41it/s]  1%|1         | 2/150 [00:00<00:43,  3.37it/s]  2%|2         | 3/150 [00:00<00:46,  3.14it/s]  3%|2         | 4/150 [00:01<00:48,  2.99it/s]  3%|3         | 5/150 [00:01<00:41,  3.52it/s]  4%|4         | 6/150 [00:01<00:40,  3.54it/s]  5%|4         | 7/150 [00:02<00:50,  2.83it/s]  5%|5         | 8/150 [00:02<00:57,  2.46it/s]  6%|6         | 9/150 [00:03<00:59,  2.35it/s]  7%|6         | 10/150 [00:03<00:52,  2.65it/s]  7%|7         | 11/150 [00:03<00:44,  3.15it/s]  8%|8         | 12/150 [00:04<00:45,  3.02it/s]  9%|8         | 13/150 [00:04<00:46,  2.96it/s]  9%|9         | 14/150 [00:04<00:46,  2.94it/s] 10%|#         | 15/150 [00:04<00:39,  3.38it/s] 11%|#         | 16/150 [00:05<00:38,  3.47it/s] 11%|#1        | 17/150 [00:05<00:47,  2.80it/s] 12%|#2        | 18/150 [00:06<00:52,  2.50it/s] 13%|#2        | 19/150 [00:06<00:57,  2.30it/s] 13%|#3        | 20/150 [00:07<00:50,  2.59it/s] 14%|#4        | 21/150 [00:07<00:41,  3.13it/s] 15%|#4        | 22/150 [00:07<00:42,  3.01it/s] 15%|#5        | 23/150 [00:07<00:43,  2.93it/s] 16%|#6        | 24/150 [00:08<00:43,  2.89it/s] 17%|#6        | 25/150 [00:08<00:36,  3.40it/s] 17%|#7        | 26/150 [00:08<00:34,  3.59it/s] 18%|#8        | 27/150 [00:09<00:41,  2.99it/s] 19%|#8        | 28/150 [00:09<00:45,  2.66it/s] 19%|#9        | 29/150 [00:10<00:48,  2.50it/s] 20%|##        | 30/150 [00:10<00:42,  2.82it/s] 21%|##        | 31/150 [00:10<00:42,  2.79it/s] 21%|##1       | 32/150 [00:11<00:53,  2.20it/s] 22%|##2       | 33/150 [00:12<01:01,  1.89it/s] 23%|##2       | 34/150 [00:12<01:06,  1.73it/s] 23%|##3       | 35/150 [00:13<00:58,  1.95it/s] 24%|##4       | 36/150 [00:13<00:49,  2.32it/s] 25%|##4       | 37/150 [00:13<00:49,  2.28it/s]/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/data/pre_processing.py:1272: FutureWarning: `binary_dilation` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.dilation` instead. Note the lack of mirroring for non-symmetric footprints (see docstring notes).
+  p_out = binary_dilation(p_out, footprint=generate_ellipse_footprint(p_dil)).astype(np.uint8)
+
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A 25%|##5       | 38/150 [00:15<01:22,  1.36it/s] 26%|##6       | 39/150 [00:15<01:12,  1.54it/s] 27%|##6       | 40/150 [00:15<00:58,  1.90it/s] 27%|##7       | 41/150 [00:16<00:49,  2.19it/s] 28%|##8       | 42/150 [00:16<00:56,  1.91it/s] 29%|##8       | 43/150 [00:17<00:59,  1.81it/s]
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A 29%|##9       | 44/150 [00:19<01:31,  1.16it/s] 30%|###       | 45/150 [00:19<01:14,  1.41it/s] 31%|###       | 46/150 [00:19<00:58,  1.77it/s] 31%|###1      | 47/150 [00:20<01:04,  1.60it/s] 32%|###2      | 48/150 [00:20<00:59,  1.71it/s]
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A 33%|###2      | 49/150 [00:22<01:19,  1.27it/s] 33%|###3      | 50/150 [00:22<01:02,  1.60it/s] 34%|###4      | 51/150 [00:22<00:48,  2.06it/s] 35%|###4      | 52/150 [00:22<00:42,  2.29it/s] 35%|###5      | 53/150 [00:23<00:39,  2.47it/s] 36%|###6      | 54/150 [00:23<00:36,  2.62it/s] 37%|###6      | 55/150 [00:23<00:30,  3.15it/s] 37%|###7      | 56/150 [00:23<00:27,  3.47it/s] 38%|###8      | 57/150 [00:24<00:31,  2.91it/s] 39%|###8      | 58/150 [00:24<00:35,  2.63it/s] 39%|###9      | 59/150 [00:25<00:36,  2.51it/s] 40%|####      | 60/150 [00:25<00:31,  2.83it/s] 41%|####      | 61/150 [00:25<00:26,  3.33it/s] 41%|####1     | 62/150 [00:26<00:27,  3.23it/s]
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A 42%|####2     | 63/150 [00:27<00:45,  1.91it/s] 43%|####2     | 64/150 [00:27<00:40,  2.14it/s] 43%|####3     | 65/150 [00:27<00:32,  2.65it/s] 44%|####4     | 66/150 [00:27<00:27,  3.01it/s] 45%|####4     | 67/150 [00:28<00:31,  2.60it/s] 45%|####5     | 68/150 [00:28<00:34,  2.40it/s]
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A 46%|####6     | 69/150 [00:30<00:54,  1.47it/s] 47%|####6     | 70/150 [00:30<00:43,  1.82it/s] 47%|####7     | 71/150 [00:30<00:34,  2.30it/s] 48%|####8     | 72/150 [00:30<00:31,  2.47it/s] 49%|####8     | 73/150 [00:31<00:29,  2.61it/s]
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A 49%|####9     | 74/150 [00:32<00:47,  1.60it/s]
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A
+  0%|          | 0/1 [00:00<?, ?it/s][A
+                                     [A 50%|#####     | 75/150 [00:33<00:57,  1.30it/s] 50%|#####     | 75/150 [00:33<00:33,  2.23it/s]
+Traceback (most recent call last):
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 507, in <module>
+    main()
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 340, in main
+    biapy = BiaPy(
+            ^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 371, in __init__
+    self._build_workflow()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 396, in _build_workflow
+    self.workflow = getattr(mdl, name)(
+                    ^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/instance_seg.py", line 124, in __init__
+    self.original_test_path, self.original_test_mask_path = self.prepare_instance_data()
+                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/instance_seg.py", line 2896, in prepare_instance_data
+    create_instance_channels(self.cfg)
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/data/pre_processing.py<zarr_dtype_patch>", line 173, in create_instance_channels
+UnboundLocalError: cannot access local variable 'fid_mask' where it is not associated with a value

@@ -1,0 +1,103 @@
+Output Data to fisbe/biapy-no-aug-zarr
+running BiaPy/biapy_prep_main.py
+2026-08-18 21:19:44,317 - INFO     - main                     : source: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely
+2026-08-18 21:19:44,317 - INFO     - main                     : output: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr
+2026-08-18 21:19:44,320 - INFO     - main                     : Converting train, Found (18 volumes), Processing None
+2026-08-18 21:19:44,330 - INFO     - convert_split            : Save workers: 12
+2026-08-18 21:19:44,330 - INFO     - convert_split            : Augmentations enabled: False
+2026-08-18 21:19:44,330 - INFO     - process_samples          : /// Processing Sample [1 / 18]: R38F04-20181005_63_G3.zarr ///
+2026-08-18 21:19:46,556 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G3 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:19:46,557 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G3, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:19:49,731 - INFO     - process_samples          : /// Processing Sample [2 / 18]: R38F04-20181005_63_G5.zarr ///
+2026-08-18 21:19:52,447 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_G5 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:19:52,447 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_G5, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:19:55,523 - INFO     - process_samples          : /// Processing Sample [3 / 18]: R38F04-20181005_63_H1.zarr ///
+2026-08-18 21:19:58,056 - INFO     - save_and_log_data        : Saving raw to file: R38F04-20181005_63_H1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:19:58,056 - INFO     - save_and_log_data        : Saving label to file: R38F04-20181005_63_H1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:20:01,068 - INFO     - process_samples          : /// Processing Sample [4 / 18]: R53A10-20181019_64_A4.zarr ///
+2026-08-18 21:20:03,064 - INFO     - save_and_log_data        : Saving raw to file: R53A10-20181019_64_A4 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:20:03,064 - INFO     - save_and_log_data        : Saving label to file: R53A10-20181019_64_A4, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:20:05,969 - INFO     - process_samples          : /// Processing Sample [5 / 18]: R75E01-20181030_64_D1.zarr ///
+2026-08-18 21:20:08,526 - INFO     - save_and_log_data        : Saving raw to file: R75E01-20181030_64_D1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:20:08,526 - INFO     - save_and_log_data        : Saving label to file: R75E01-20181030_64_D1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:20:11,569 - INFO     - process_samples          : /// Processing Sample [6 / 18]: VT008647-20171222_63_D1.zarr ///
+2026-08-18 21:20:15,173 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:20:15,173 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:20:18,481 - INFO     - process_samples          : /// Processing Sample [7 / 18]: VT008647-20171222_63_D2.zarr ///
+2026-08-18 21:20:21,980 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_D2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:20:21,980 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_D2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:20:25,192 - INFO     - process_samples          : /// Processing Sample [8 / 18]: VT008647-20171222_63_E1.zarr ///
+2026-08-18 21:20:29,632 - INFO     - save_and_log_data        : Saving raw to file: VT008647-20171222_63_E1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:20:29,632 - INFO     - save_and_log_data        : Saving label to file: VT008647-20171222_63_E1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:20:32,936 - INFO     - process_samples          : /// Processing Sample [9 / 18]: VT019303-20171013_65_B6.zarr ///
+2026-08-18 21:20:35,148 - INFO     - save_and_log_data        : Saving raw to file: VT019303-20171013_65_B6 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:20:35,148 - INFO     - save_and_log_data        : Saving label to file: VT019303-20171013_65_B6, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:20:37,810 - INFO     - process_samples          : /// Processing Sample [10 / 18]: VT019307-20171013_65_F1.zarr ///
+2026-08-18 21:20:41,235 - INFO     - save_and_log_data        : Saving raw to file: VT019307-20171013_65_F1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:20:41,235 - INFO     - save_and_log_data        : Saving label to file: VT019307-20171013_65_F1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:20:44,521 - INFO     - process_samples          : /// Processing Sample [11 / 18]: VT033051-20171128_61_E2.zarr ///
+2026-08-18 21:20:47,050 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:20:47,050 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:20:49,568 - INFO     - process_samples          : /// Processing Sample [12 / 18]: VT033051-20171128_61_E4.zarr ///
+2026-08-18 21:20:51,672 - INFO     - save_and_log_data        : Saving raw to file: VT033051-20171128_61_E4 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:20:51,672 - INFO     - save_and_log_data        : Saving label to file: VT033051-20171128_61_E4, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:20:54,651 - INFO     - process_samples          : /// Processing Sample [13 / 18]: VT040433-20170919_63_D6.zarr ///
+2026-08-18 21:20:58,255 - INFO     - save_and_log_data        : Saving raw to file: VT040433-20170919_63_D6 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:20:58,255 - INFO     - save_and_log_data        : Saving label to file: VT040433-20170919_63_D6, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:21:01,197 - INFO     - process_samples          : /// Processing Sample [14 / 18]: VT047848-20171020_66_I2.zarr ///
+2026-08-18 21:21:06,281 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:21:06,281 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:21:11,260 - INFO     - process_samples          : /// Processing Sample [15 / 18]: VT047848-20171020_66_I3.zarr ///
+2026-08-18 21:21:16,949 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I3 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:21:16,949 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I3, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:21:22,855 - INFO     - process_samples          : /// Processing Sample [16 / 18]: VT047848-20171020_66_I5.zarr ///
+2026-08-18 21:21:42,466 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_I5 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:21:42,466 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_I5, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:21:47,987 - INFO     - process_samples          : /// Processing Sample [17 / 18]: VT047848-20171020_66_J2.zarr ///
+2026-08-18 21:21:54,047 - INFO     - save_and_log_data        : Saving raw to file: VT047848-20171020_66_J2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:21:54,047 - INFO     - save_and_log_data        : Saving label to file: VT047848-20171020_66_J2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:21:59,085 - INFO     - process_samples          : /// Processing Sample [18 / 18]: VT061467-20180911_62_E5.zarr ///
+2026-08-18 21:22:02,148 - INFO     - save_and_log_data        : Saving raw to file: VT061467-20180911_62_E5 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/raw
+2026-08-18 21:22:02,149 - INFO     - save_and_log_data        : Saving label to file: VT061467-20180911_62_E5, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/train/label
+2026-08-18 21:22:05,303 - INFO     - main                     : Converting val, Found (5 volumes), Processing None
+2026-08-18 21:22:05,312 - INFO     - convert_split            : Save workers: 12
+2026-08-18 21:22:05,312 - INFO     - convert_split            : Augmentations enabled: False
+2026-08-18 21:22:05,312 - INFO     - process_samples          : /// Processing Sample [1 / 5]: R22C03-20180918_66_J2.zarr ///
+2026-08-18 21:22:06,903 - INFO     - save_and_log_data        : Saving raw to file: R22C03-20180918_66_J2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/val/raw
+2026-08-18 21:22:06,903 - INFO     - save_and_log_data        : Saving label to file: R22C03-20180918_66_J2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/val/label
+2026-08-18 21:22:09,681 - INFO     - process_samples          : /// Processing Sample [2 / 5]: VT012403-20171128_61_B2.zarr ///
+2026-08-18 21:22:12,685 - INFO     - save_and_log_data        : Saving raw to file: VT012403-20171128_61_B2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/val/raw
+2026-08-18 21:22:12,685 - INFO     - save_and_log_data        : Saving label to file: VT012403-20171128_61_B2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/val/label
+2026-08-18 21:22:15,408 - INFO     - process_samples          : /// Processing Sample [3 / 5]: VT033614-20171124_64_H1.zarr ///
+2026-08-18 21:22:18,093 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/val/raw
+2026-08-18 21:22:18,093 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/val/label
+2026-08-18 21:22:20,867 - INFO     - process_samples          : /// Processing Sample [4 / 5]: VT033614-20171124_64_H5.zarr ///
+2026-08-18 21:22:23,854 - INFO     - save_and_log_data        : Saving raw to file: VT033614-20171124_64_H5 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/val/raw
+2026-08-18 21:22:23,855 - INFO     - save_and_log_data        : Saving label to file: VT033614-20171124_64_H5, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/val/label
+2026-08-18 21:22:26,812 - INFO     - process_samples          : /// Processing Sample [5 / 5]: VT041298-20171114_63_C3.zarr ///
+2026-08-18 21:22:30,250 - INFO     - save_and_log_data        : Saving raw to file: VT041298-20171114_63_C3 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/val/raw
+2026-08-18 21:22:30,250 - INFO     - save_and_log_data        : Saving label to file: VT041298-20171114_63_C3, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/val/label
+2026-08-18 21:22:32,864 - INFO     - main                     : Converting test, Found (7 volumes), Processing None
+2026-08-18 21:22:32,877 - INFO     - convert_split            : Save workers: 12
+2026-08-18 21:22:32,877 - INFO     - convert_split            : Augmentations enabled: False
+2026-08-18 21:22:32,878 - INFO     - process_samples          : /// Processing Sample [1 / 7]: JRC_SS04989-20160318_24_A2.zarr ///
+2026-08-18 21:22:35,829 - INFO     - save_and_log_data        : Saving raw to file: JRC_SS04989-20160318_24_A2 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/raw
+2026-08-18 21:22:35,829 - INFO     - save_and_log_data        : Saving label to file: JRC_SS04989-20160318_24_A2, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/label
+2026-08-18 21:22:38,556 - INFO     - process_samples          : /// Processing Sample [2 / 7]: R14A02-20180905_65_A6.zarr ///
+2026-08-18 21:22:42,301 - INFO     - save_and_log_data        : Saving raw to file: R14A02-20180905_65_A6 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/raw
+2026-08-18 21:22:42,301 - INFO     - save_and_log_data        : Saving label to file: R14A02-20180905_65_A6, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/label
+2026-08-18 21:22:45,227 - INFO     - process_samples          : /// Processing Sample [3 / 7]: R54A09-20181019_64_H1.zarr ///
+2026-08-18 21:22:46,681 - INFO     - save_and_log_data        : Saving raw to file: R54A09-20181019_64_H1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/raw
+2026-08-18 21:22:46,681 - INFO     - save_and_log_data        : Saving label to file: R54A09-20181019_64_H1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/label
+2026-08-18 21:22:49,747 - INFO     - process_samples          : /// Processing Sample [4 / 7]: VT011145-20171222_63_I1.zarr ///
+2026-08-18 21:22:54,383 - INFO     - save_and_log_data        : Saving raw to file: VT011145-20171222_63_I1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/raw
+2026-08-18 21:22:54,383 - INFO     - save_and_log_data        : Saving label to file: VT011145-20171222_63_I1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/label
+2026-08-18 21:22:57,489 - INFO     - process_samples          : /// Processing Sample [5 / 7]: VT027175-20171031_62_H3.zarr ///
+2026-08-18 21:22:59,618 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H3 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/raw
+2026-08-18 21:22:59,618 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H3, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/label
+2026-08-18 21:23:02,760 - INFO     - process_samples          : /// Processing Sample [6 / 7]: VT027175-20171031_62_H4.zarr ///
+2026-08-18 21:23:06,685 - INFO     - save_and_log_data        : Saving raw to file: VT027175-20171031_62_H4 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/raw
+2026-08-18 21:23:06,685 - INFO     - save_and_log_data        : Saving label to file: VT027175-20171031_62_H4, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/label
+2026-08-18 21:23:09,674 - INFO     - process_samples          : /// Processing Sample [7 / 7]: VT050157-20171110_61_C1.zarr ///
+2026-08-18 21:23:12,904 - INFO     - save_and_log_data        : Saving raw to file: VT050157-20171110_61_C1 , Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/raw
+2026-08-18 21:23:12,904 - INFO     - save_and_log_data        : Saving label to file: VT050157-20171110_61_C1, Dir: /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy-no-aug-zarr/test/label

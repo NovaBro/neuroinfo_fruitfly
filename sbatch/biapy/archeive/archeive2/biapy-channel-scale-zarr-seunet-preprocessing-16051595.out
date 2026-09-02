@@ -1,0 +1,3 @@
+SBATCH Run: biapy-channel-scale-zarr-seunet.yaml, mode: preprocessing, job-name: biapy-channel-scale-zarr-seunet, run-id: 0
+SLURM_CPUS_PER_TASK=8
+running BiaPy/run_biapy-py.py

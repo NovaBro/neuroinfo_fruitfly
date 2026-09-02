@@ -1,0 +1,22 @@
+/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/check_configuration.py:395: UserWarning: Seems that the channels requested are custom so BiaPy did not fill some variables by default. You will need to fill the following variables: PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH, PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 566, in <module>
+    main()
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 556, in main
+    biapy.test()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 918, in test
+    self.workflow.test()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/base_workflow.py", line 1453, in test
+    self.process_test_sample_by_chunks()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/base_workflow.py", line 2479, in process_test_sample_by_chunks
+    self.after_all_chunk_prediction_workflow_process_master_rank()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/instance_seg.py", line 2375, in after_all_chunk_prediction_workflow_process_master_rank
+    pred_file, pred = read_chunked_data(fpath)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/data/data_3D_manipulation.py", line 1543, in read_chunked_data
+    raise ValueError(f"File {filename} does not exist.")
+ValueError: File metrics/biapy/biapy-channel-scale-zarr-seunet/results/biapy-channel-scale-zarr-seunet_r3/per_image/JRC_SS04989-20160318_24_A2.zarr does not exist.

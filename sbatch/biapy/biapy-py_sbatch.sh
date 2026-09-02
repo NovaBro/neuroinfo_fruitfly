@@ -66,8 +66,8 @@ singularity "${singularity_args[@]}" \
     conda activate BiaPy_env; \
     export LD_PRELOAD=\"\${CONDA_PREFIX}/lib/libstdc++.so.6\${LD_PRELOAD:+:\$LD_PRELOAD}\"; \
     export PYTHONUNBUFFERED=1; \
-    echo \"running BiaPy/run_biapy-py.py\"; \
-    python3 -u BiaPy/run_biapy-py.py \
+    echo \"running biapy_work_folder/run_biapy-py.py\"; \
+    python3 -u biapy_work_folder/run_biapy-py.py \
         -c \"${config_file}\" \
         -m \"${mode}\" \
         --job-name \"${job_name}\" \

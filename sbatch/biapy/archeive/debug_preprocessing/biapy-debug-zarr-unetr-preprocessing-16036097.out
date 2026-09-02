@@ -1,0 +1,4 @@
+SBATCH Run: biapy-debug-zarr-unetr.yaml, mode: preprocessing, job-name: biapy-debug-zarr-unetr, run-id: 0
+SLURM_CPUS_PER_TASK=8
+running BiaPy/run_biapy-py.py
+Patched BiaPy create_instance_channels: fid_mask=None (Zarr volume-switch UnboundLocalError)

@@ -1,0 +1,1560 @@
+SBATCH Run: biapy-channel-scale-zarr-seunet-FP.yaml, mode: preprocessing, job-name: biapy-channel-scale-zarr-seunet-FP, run-id: 1
+SLURM_CPUS_PER_TASK=8
+running BiaPy/run_biapy-py.py
+Patched BiaPy create_instance_channels: float32 channels + full-volume Zarr v2 GT export
+Mode overrides (preprocessing): leaving YAML flags as-is (TRAIN.ENABLE=True, TEST.ENABLE=True, MODEL.LOAD_CHECKPOINT=False)
+CPU overrides: SYSTEM.NUM_CPUS=8, SYSTEM.NUM_WORKERS=8
+Date     : 2026-08-21 22:00:58
+Arguments: Namespace(config={'SYSTEM': {'NUM_CPUS': 8, 'NUM_WORKERS': -1}, 'PROBLEM': {'TYPE': 'INSTANCE_SEG', 'NDIM': '3D', 'INSTANCE_SEG': {'DATA_CHANNELS': ['F', 'P'], 'DATA_CHANNELS_EXTRA_OPTS': [{'P': {'type': 'skeleton', 'dilation': 2}, 'F': {'erosion': 1, 'dilation': 1}}], 'DATA_CHANNEL_WEIGHTS': '(2.0, 1.0)', 'WATERSHED': {'SEED_CHANNELS': ['P'], 'SEED_CHANNELS_THRESH': ['auto'], 'TOPOGRAPHIC_SURFACE_CHANNEL': 'F', 'GROWTH_MASK_CHANNELS': ['F'], 'GROWTH_MASK_CHANNELS_THRESH': ['auto'], 'DATA_CHECK_MW': True, 'DATA_REMOVE_BEFORE_MW': True, 'DATA_REMOVE_SMALL_OBJ_BEFORE': 250}}}, 'DATA': {'PATCH_SIZE': '(80, 128, 128, 3)', 'TRAIN': {'PATH': 'fisbe/biapy-channel-scale-zarr/train/raw', 'GT_PATH': 'fisbe/biapy-channel-scale-zarr/train/label', 'INPUT_IMG_AXES_ORDER': 'ZYXC', 'INPUT_MASK_AXES_ORDER': 'ZYXC', 'IN_MEMORY': False}, 'VAL': {'PATH': 'fisbe/biapy-no-aug-zarr/val/raw', 'GT_PATH': 'fisbe/biapy-no-aug-zarr/val/label', 'FROM_TRAIN': False, 'INPUT_IMG_AXES_ORDER': 'ZYXC', 'INPUT_MASK_AXES_ORDER': 'ZYXC', 'IN_MEMORY': False}, 'TEST': {'PATH': 'fisbe/biapy-no-aug-zarr/test/raw', 'GT_PATH': 'fisbe/biapy-no-aug-zarr/test/label', 'INPUT_IMG_AXES_ORDER': 'ZYXC', 'INPUT_MASK_AXES_ORDER': 'ZYXC', 'IN_MEMORY': False, 'LOAD_GT': True, 'PADDING': '(4,16,16)'}}, 'AUGMENTOR': {'ENABLE': False, 'RANDOM_ROT': False, 'VFLIP': False, 'HFLIP': False, 'ZFLIP': False}, 'MODEL': {'ARCHITECTURE': 'seunet', 'FEATURE_MAPS': [16, 32, 64, 128, 256], 'Z_DOWN': [1, 1, 1, 1], 'LOAD_CHECKPOINT': False}, 'TRAIN': {'ENABLE': True, 'OPTIMIZER': 'ADAMW', 'LR': 0.0001, 'BATCH_SIZE': 34, 'EPOCHS': 60, 'PATIENCE': 10, 'LR_SCHEDULER': {'NAME': 'onecycle'}}, 'TEST': {'ENABLE': True, 'AUGMENTATION': False, 'FULL_IMG': False, 'BY_CHUNKS': {'ENABLE': True, 'FORMAT': 'zarr', 'SAVE_OUT_TIF': True, 'INPUT_IMG_AXES_ORDER': 'ZYXC', 'WORKFLOW_PROCESS': {'ENABLE': True, 'TYPE': 'entire_pred'}}, 'POST_PROCESSING': {'INSTANCE_REFINEMENT': {'ENABLE': True, 'OPERATIONS': ['remove_small_objects'], 'VALUES': [1000]}}}}, result_dir='metrics/biapy', name='biapy-channel-scale-zarr-seunet-FP', run_id='1', gpu='', world_size=1, local_rank=-1, dist_on_itp=False, dist_url='env://', dist_backend='nccl')
+Job      : biapy-channel-scale-zarr-seunet-FP_1
+BiaPy    : 3.7.0
+Python   : 3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:34:02) [GCC 14.3.0]
+PyTorch  : 2.12.1+cu130
+The following changes were made in order to adapt the input configuration:
+Not using distributed mode
+[22:00:58.926803] **** Using 'cpu' for training
+[22:00:59.064769] CPU budget(total)=8 | per_rank=8 | main_threads=4 | num_workers(per_rank)=3 | world_size=1
+[22:00:59.111347] Configuration details:
+[22:00:59.111379] AUGMENTOR:
+  AFFINE_MODE: reflect
+  AUG_NUM_SAMPLES: 10
+  AUG_SAMPLES: True
+  BRIGHTNESS: False
+  BRIGHTNESS_FACTOR: (-0.1, 0.1)
+  BRIGHTNESS_PROB: 0.5
+  CBLUR_DOWN_RANGE: (2, 8)
+  CBLUR_INSIDE: True
+  CBLUR_SIZE: (0.2, 0.4)
+  CHANNEL_SHUFFLE: False
+  CHANNEL_SHUFFLE_PROB: 0.5
+  CMIX_SIZE: (0.2, 0.4)
+  CNOISE_NB_ITERATIONS: (1, 3)
+  CNOISE_SCALE: (0.05, 0.1)
+  CNOISE_SIZE: (0.2, 0.4)
+  CONTRAST: False
+  CONTRAST_FACTOR: (-0.1, 0.1)
+  CONTRAST_PROB: 0.5
+  COUT_APPLY_TO_MASK: False
+  COUT_CVAL: 0.0
+  COUT_NB_ITERATIONS: (1, 3)
+  COUT_SIZE: (0.05, 0.3)
+  CUTBLUR: False
+  CUTBLUR_PROB: 0.5
+  CUTMIX: False
+  CUTMIX_PROB: 0.5
+  CUTNOISE: False
+  CUTNOISE_PROB: 0.5
+  CUTOUT: False
+  CUTOUT_PROB: 0.5
+  DRAW_GRID: True
+  DROPOUT: False
+  DROPOUT_PROB: 0.5
+  DROP_RANGE: (0, 0.2)
+  ELASTIC: False
+  ELASTIC_PROB: 0.5
+  ENABLE: False
+  E_ALPHA: (12, 16)
+  E_MODE: constant
+  E_SIGMA: 4
+  GAMMA_CONTRAST: False
+  GAMMA_CONTRAST_PROB: 0.5
+  GAUSSIAN_NOISE: False
+  GAUSSIAN_NOISE_MEAN: 0.0
+  GAUSSIAN_NOISE_PROB: 0.5
+  GAUSSIAN_NOISE_USE_INPUT_IMG_MEAN_AND_VAR: False
+  GAUSSIAN_NOISE_VAR: 0.05
+  GC_GAMMA: (1.25, 1.75)
+  GRAYSCALE: False
+  GRAYSCALE_PROB: 0.5
+  GRIDMASK: False
+  GRIDMASK_PROB: 0.5
+  GRID_D_RANGE: (0.4, 1)
+  GRID_INVERT: False
+  GRID_RATIO: 0.6
+  GRID_ROTATE: 1.0
+  G_BLUR: False
+  G_BLUR_PROB: 0.5
+  G_SIGMA: (1.0, 2.0)
+  HFLIP: False
+  HFLIP_PROB: 0.5
+  MB_KERNEL: (3, 7)
+  MEDIAN_BLUR: False
+  MEDIAN_BLUR_PROB: 0.5
+  MISALIGNMENT: False
+  MISALIGNMENT_PROB: 0.5
+  MISSING_SECTIONS: False
+  MISSING_SECTIONS_PROB: 0.5
+  MISSP_CHANNEL_PB: 0.5
+  MISSP_ITERATIONS: (10, 30)
+  MOTB_K_RANGE: (8, 12)
+  MOTION_BLUR: False
+  MOTION_BLUR_PROB: 0.5
+  MS_DISPLACEMENT: 16
+  MS_ROTATE_RATIO: 0.5
+  PEPPER: False
+  PEPPER_AMOUNT: 0.05
+  PEPPER_PROB: 0.5
+  POISSON_NOISE: False
+  POISSON_NOISE_PROB: 0.5
+  RANDOM_ROT: False
+  RANDOM_ROT_PROB: 0.5
+  RANDOM_ROT_RANGE: (-180, 180)
+  ROT90: False
+  ROT90_PROB: 0.5
+  SALT: False
+  SALT_AMOUNT: 0.05
+  SALT_AND_PEPPER: False
+  SALT_AND_PEPPER_AMOUNT: 0.05
+  SALT_AND_PEPPER_PROB: 0.5
+  SALT_AND_PEPPER_PROP: 0.5
+  SALT_PROB: 0.5
+  SHEAR: False
+  SHEAR_PROB: 0.5
+  SHEAR_RANGE: (-20, 20)
+  SHIFT: False
+  SHIFT_PROB: 0.5
+  SHIFT_RANGE: (0.1, 0.2)
+  SHUFFLE_TRAIN_DATA_EACH_EPOCH: True
+  SHUFFLE_VAL_DATA_EACH_EPOCH: False
+  VFLIP: False
+  VFLIP_PROB: 0.5
+  ZFLIP: False
+  ZFLIP_PROB: 0.5
+  ZOOM: False
+  ZOOM_IN_Z: False
+  ZOOM_PROB: 0.5
+  ZOOM_RANGE: (0.5, 1.5)
+DATA:
+  CHECK_GENERATORS: False
+  FILTER_BY_IMAGE: False
+  FORCE_RGB: False
+  NORMALIZATION:
+    PERC_CLIP:
+      ENABLE: False
+      LOWER_PERC: -1.0
+      LOWER_VALUE: [-1.0]
+      UPPER_PERC: -1.0
+      UPPER_VALUE: [-1.0]
+    TYPE: zero_mean_unit_variance
+    ZERO_MEAN_UNIT_VAR:
+      MEAN_VAL: [-1.0]
+      STD_VAL: [-1.0]
+  N_CLASSES: 2
+  PATCH_SIZE: (80, 128, 128, 3)
+  PREPROCESS:
+    CANNY:
+      ENABLE: False
+      HIGH_THRESHOLD: None
+      LOW_THRESHOLD: None
+    CLAHE:
+      CLIP_LIMIT: 0.01
+      ENABLE: False
+      KERNEL_SIZE: None
+    GAUSSIAN_BLUR:
+      CHANNEL_AXIS: None
+      ENABLE: False
+      MODE: nearest
+      SIGMA: 1
+    MATCH_HISTOGRAM:
+      ENABLE: False
+      REFERENCE_PATH: user_data/test/x
+    MEDIAN_BLUR:
+      ENABLE: False
+      KERNEL_SIZE: (3, 3, 1)
+    RESIZE:
+      ANTI_ALIASING: False
+      CLIP: True
+      CVAL: 0.0
+      ENABLE: False
+      MODE: reflect
+      ORDER: 1
+      OUTPUT_SHAPE: (512, 512)
+      PRESERVE_RANGE: True
+    TEST: False
+    TRAIN: False
+    VAL: False
+    ZOOM:
+      ENABLE: False
+      ZOOM_FACTOR: [1, 1, 1, 1, 1]
+  REFLECT_TO_COMPLETE_SHAPE: True
+  SAVE_FILTERED_IMAGES: False
+  SAVE_FILTERED_IMAGES_NUM: 3
+  TEST:
+    BINARY_MASKS: fisbe/biapy-no-aug-zarr/test/raw/../bin_mask
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy-no-aug-zarr/test/label_detection_masks_2
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy-no-aug-zarr/test/label
+    INPUT_IMG_AXES_ORDER: ZYXC
+    INPUT_MASK_AXES_ORDER: ZYXC
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-no-aug-zarr/test/label_F.erosion-1.dilation-1_P.type-skeleton.dilation-2.erosion-0
+    IN_MEMORY: False
+    LOAD_GT: True
+    MEDIAN_PADDING: False
+    OVERLAP: (0, 0, 0)
+    PADDING: (4, 16, 16)
+    PATH: fisbe/biapy-no-aug-zarr/test/raw
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy-no-aug-zarr/test/raw_ssl_source
+    USE_VAL_AS_TEST: False
+  TRAIN:
+    CHECK_DATA: True
+    DETECTION_MASK_DIR: fisbe/biapy-channel-scale-zarr/train/label_detection_masks_2
+    EXTRACT_RANDOM_PATCH: False
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    GT_PATH: fisbe/biapy-channel-scale-zarr/train/label
+    INPUT_IMG_AXES_ORDER: ZYXC
+    INPUT_MASK_AXES_ORDER: ZYXC
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-channel-scale-zarr/train/label_F.erosion-1.dilation-1_P.type-skeleton.dilation-2.erosion-0
+    IN_MEMORY: False
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: fisbe/biapy-channel-scale-zarr/train/raw
+    PROBABILITY_MAP: False
+    REPLICATE: 0
+    RESOLUTION: (1, 1, 1)
+    SSL_SOURCE_DIR: fisbe/biapy-channel-scale-zarr/train/raw_ssl_source
+    W_BACKGROUND: 0.06
+    W_FOREGROUND: 0.94
+  VAL:
+    CROSS_VAL: False
+    CROSS_VAL_FOLD: 1
+    CROSS_VAL_NFOLD: 5
+    DETECTION_MASK_DIR: fisbe/biapy-no-aug-zarr/val/label_detection_masks_2
+    DIST_EVAL: True
+    FILTER_SAMPLES:
+      ENABLE: False
+      NORM_BEFORE: False
+      PROPS: []
+      SIGNS: []
+      VALUES: []
+    FROM_TRAIN: False
+    GT_PATH: fisbe/biapy-no-aug-zarr/val/label
+    INPUT_IMG_AXES_ORDER: ZYXC
+    INPUT_MASK_AXES_ORDER: ZYXC
+    INPUT_ZARR_MULTIPLE_DATA: False
+    INPUT_ZARR_MULTIPLE_DATA_GT_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_ID_PATH: annotations.ids
+    INPUT_ZARR_MULTIPLE_DATA_LOCATIONS_PATH: annotations.locations
+    INPUT_ZARR_MULTIPLE_DATA_PARTNERS_PATH: annotations.presynaptic_site.partners
+    INPUT_ZARR_MULTIPLE_DATA_RAW_PATH: 
+    INPUT_ZARR_MULTIPLE_DATA_RESOLUTION_PATH: volumes.raw
+    INSTANCE_CHANNELS_MASK_DIR: fisbe/biapy-no-aug-zarr/val/label_F.erosion-1.dilation-1_P.type-skeleton.dilation-2.erosion-0
+    IN_MEMORY: False
+    OVERLAP: (0, 0, 0)
+    PADDING: (0, 0, 0)
+    PATH: fisbe/biapy-no-aug-zarr/val/raw
+    RANDOM: True
+    RESOLUTION: (1, 1, 1)
+    SPLIT_TRAIN: 0.1
+    SSL_SOURCE_DIR: fisbe/biapy-no-aug-zarr/val/raw_ssl_source
+LOG:
+  CHART_CREATION_FREQ: 5
+  LOG_DIR: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/logs
+  LOG_FILE_PREFIX: biapy-channel-scale-zarr-seunet-FP_1
+  TENSORBOARD_LOG_DIR: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/tensorboard
+LOSS:
+  CLASS_REBALANCE: none
+  CLASS_WEIGHTS: []
+  CONTRAST:
+    ENABLE: False
+    MEMORY_SIZE: 5000
+    PIXEL_UPD_FREQ: 10
+    PROJ_DIM: 256
+  CYCLEGAN:
+    ALPHA_PERCEPTUAL: 0.0
+    DELTA_MSE: 0.0
+    GAMMA_SSIM: 1.0
+    LAMBDA_GAN: 1.0
+    LAMBDA_RECON: 10.0
+  IGNORE_INDEX: -1
+  TYPE: 
+  WEIGHTS: [1.0, 1.0]
+MODEL:
+  ACTIVATION: elu
+  ARCHITECTURE: seunet
+  BMZ:
+    EXPORT:
+      AUTHORS: []
+      CITE: []
+      DATASET_INFO: [{}]
+      DESCRIPTION: 
+      DOCUMENTATION: 
+      ENABLE: False
+      LICENSE: CC-BY-4.0
+      MODEL_NAME: 
+      MODEL_VERSION: 0.1.0
+      REUSE_BMZ_CONFIG: False
+      TAGS: []
+    SOURCE_MODEL_ID: 
+  CONVNEXT_LAYER_SCALE: 1e-06
+  CONVNEXT_SD_PROB: 0.1
+  CONVNEXT_STEM_K_SIZE: 2
+  CONV_BLOCK_ORDER: conv_norm_act
+  CONV_LAYERS: [2, 2, 2, 2, 2]
+  DROPOUT_VALUES: [0.0, 0.0, 0.0, 0.0, 0.0]
+  FEATURE_MAPS: [16, 32, 64, 128, 256]
+  FREEZE_LAYERS_MATCHING: []
+  HRNET:
+    BLOCK_TYPE: BASIC
+    HEAD_TYPE: FCN
+    NUM_BLOCKS: [[4, 4], [4, 4, 4], [4, 4, 4, 4]]
+    NUM_BRANCHES: [2, 3, 4]
+    NUM_CHANNELS: [[18, 36], [18, 36, 72], [18, 36, 72, 144]]
+    NUM_MODULES: [1, 4, 3]
+    NUM_STAGES: 3
+    VARIANT: W48
+    YX_DOWN: [0, 0, 0]
+    Z_DOWN: [0, 0, 0]
+  ISOTROPY: [True, True, True, True, True]
+  ITEMS_TO_LOAD_FROM_CHECKPOINT: ['weights', 'norm', 'model_arch']
+  KERNEL_SIZE: 3
+  LARGER_IO: False
+  LOAD_CHECKPOINT: False
+  LOAD_CHECKPOINT_EPOCH: best_on_val
+  MAE_DEC_HIDDEN_SIZE: 512
+  MAE_DEC_MLP_DIMS: 2048
+  MAE_DEC_NUM_HEADS: 16
+  MAE_DEC_NUM_LAYERS: 8
+  MAE_MASK_RATIO: 0.5
+  MAE_MASK_TYPE: grid
+  NAFNET:
+    ARCHITECTURE_D: patchgan
+    DEC_BLK_NUMS: [2, 2, 2, 2]
+    DW_EXPAND: 2
+    ENC_BLK_NUMS: [2, 2, 4, 8]
+    FFN_EXPAND: 2
+    MIDDLE_BLK_NUM: 12
+    PATCHGAN:
+      BASE_FILTERS: 64
+    WIDTH: 16
+  NORMALIZATION: in
+  OUT_CHECKPOINT_FORMAT: pth
+  RCAN_CONV_FILTERS: 16
+  RCAN_RCAB_BLOCK_NUM: 20
+  RCAN_REDUCTION_RATIO: 16
+  RCAN_RG_BLOCK_NUM: 10
+  RCAN_UPSCALING_LAYER: True
+  SAVE_CKPT_FREQ: -1
+  SKIP_UNMATCHED_LAYERS: False
+  SOURCE: biapy
+  STUNET:
+    PRETRAINED: False
+    VARIANT: base
+  TORCHVISION_MODEL_NAME: 
+  UNETR_VIT_HIDD_MULT: -1
+  UNETR_VIT_MODEL: custom
+  UNETR_VIT_NUM_FILTERS: 16
+  UNET_SR_UPSAMPLE_POSITION: pre
+  UPSAMPLE_LAYER: convtranspose
+  VIT_EMBED_DIM: 768
+  VIT_MLP_RATIO: 4.0
+  VIT_MODEL: custom
+  VIT_NORM_EPS: 1e-06
+  VIT_NUM_HEADS: 12
+  VIT_NUM_LAYERS: 12
+  VIT_PRETRAINED_WEIGHTS: 
+  VIT_TOKEN_SIZE: 16
+  YX_DOWN: [2, 2, 2, 2]
+  Z_DOWN: [1, 1, 1, 1]
+PATHS:
+  BMZ_EXPORT_PATH: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/BMZ_files
+  CHARTS: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/charts
+  CHECKPOINT: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/checkpoints
+  CHECKPOINT_FILE: 
+  DA_SAMPLES: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/aug
+  FIL_SAMPLES_DIR: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/filtering_information
+  GEN_CHECKS: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/gen_check
+  GEN_MASK_CHECKS: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/gen_mask_check
+  MAE_OUT_DIR: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/MAE_checks
+  PROB_MAP_DIR: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/prob_map
+  PROB_MAP_FILENAME: prob_map.npy
+  PROFILER: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/profiler
+  RESULT_DIR:
+    AS_3D_STACK: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/as_3d_stack
+    AS_3D_STACK_BIN: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/as_3d_stack_binarized
+    AS_3D_STACK_POST_PROCESSING: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/as_3d_stack_post_processing
+    DET_ASSOC_POINTS: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/point_associations
+    DET_LOCAL_MAX_COORDS_CHECK: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/per_image_local_max_check
+    DET_LOCAL_MAX_COORDS_CHECK_POST_PROCESSING: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/per_image_local_max_check_post_processing
+    FULL_IMAGE: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/full_image
+    FULL_IMAGE_BIN: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/full_image_binarized
+    FULL_IMAGE_INSTANCES: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/full_image_instances
+    FULL_IMAGE_POST_PROCESSING: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/full_image_post_processing
+    INST_ASSOC_POINTS: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/instance_associations
+    PATH: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1
+    PER_IMAGE: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/per_image
+    PER_IMAGE_BIN: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/per_image_binarized
+    PER_IMAGE_INSTANCES: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/per_image_instances
+    PER_IMAGE_POST_PROCESSING: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/per_image_post_processing
+  TEST_FULL_GT_H5: fisbe/biapy-no-aug-zarr/test/label/h5
+  TEST_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/test_FP_instance_channels
+  TRAIN_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/train_FP_instance_channels
+  VAL_INSTANCE_CHANNELS_CHECK: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/val_FP_instance_channels
+  WATERSHED_DIR: metrics/biapy/biapy-channel-scale-zarr-seunet-FP/results/biapy-channel-scale-zarr-seunet-FP_1/watershed
+PROBLEM:
+  DENOISING:
+    LOAD_GT_DATA: False
+    N2V_MANIPULATOR: uniform_withCP
+    N2V_NEIGHBORHOOD_RADIUS: 5
+    N2V_PERC_PIX: 0.198
+    N2V_STRUCTMASK: False
+  DETECTION:
+    CENTRAL_POINT_DILATION: [2]
+    CHECK_POINTS_CREATED: True
+    CLASS_REBALANCE_WITHIN_CHANNELS: True
+    DATA_CHANNEL_WEIGHTS: (1, 1)
+    DATA_CHECK_MW: False
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+  IMAGE_TO_IMAGE:
+    CHANNELS_PER_HEAD_INFO: []
+    MULTIPLE_RAW_ONE_TARGET_LOADER: False
+    OUTPUT_CHANNELS: 1
+    OUTPUT_CHANNEL_ACT: []
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+  INSTANCE_SEG:
+    BORDER_EXTRA_WEIGHTS: 
+    CELLPOSE:
+      DIAMETER: 0.0
+      DIAM_MEAN: 30.0
+      FG_THRESH: 0.5
+      FLOW_THRESHOLD: 0.4
+      N_STEPS: 200
+      SCALE_RANGE: 0.5
+      TEST_DOUBLE_INFERENCE: True
+    CHANNELS_PER_HEAD_INFO: []
+    CLASS_REBALANCE_WITHIN_CHANNELS: True
+    DATA_CHANNELS: ['F', 'P']
+    DATA_CHANNELS_EXTRA_OPTS: [{'P': {'type': 'skeleton', 'dilation': 2, 'erosion': 0}, 'F': {'erosion': 1, 'dilation': 1}}]
+    DATA_CHANNELS_LOSSES: ['bce', 'bce']
+    DATA_CHANNEL_WEIGHTS: (2.0, 1.0)
+    EMBEDSEG:
+      FG_THRESH: 0.5
+      GRID_SIZE: -1
+      MIN_MASK_SUM: 0
+      MIN_UNCLUSTERED_SUM: 0
+      SEED_THRESH: 0.9
+    INSTANCE_CREATION_PROCESS: watershed
+    OMNIPOSE:
+      FLOW_THRESHOLD: 0.4
+      MASK_THRESHOLD: 0.0
+      NITER: 0
+    SEPARATED_DECODERS_DIVIDE_FEATURE_MAPS: False
+    SEPARATED_DECODERS_PER_HEAD: False
+    STARDIST:
+      GRID: []
+      NMS_IOU_THRESH: 0.3
+      PROB_THRESH: 0.4
+    SYNAPSES:
+      BLOB_LOG_MAX_SIGMA: 10
+      BLOB_LOG_MIN_SIGMA: 5
+      BLOB_LOG_NUM_SIGMA: 2
+      EXCLUDE_BORDER: False
+      MIN_TH_TO_BE_PEAK: 0.2
+      PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+      POINT_CREATION_FUNCTION: peak_local_max
+      REMOVE_CLOSE_POINTS_RADIUS_BY_MASK: False
+      REMOVE_CLOSE_POST_POINTS_RADIUS: 0
+      REMOVE_CLOSE_PRE_POINTS_RADIUS: 0
+      TH_TYPE: auto
+    TYPE: regular
+    WATERSHED:
+      BY_2D_SLICES: False
+      DATA_CHECK_MW: True
+      DATA_REMOVE_BEFORE_MW: True
+      DATA_REMOVE_SMALL_OBJ_BEFORE: 250
+      ERODE_AND_DILATE_GROWTH_MASK: False
+      FORE_DILATION_RADIUS: 5
+      FORE_EROSION_RADIUS: 5
+      GROWTH_MASK_CHANNELS: ['F']
+      GROWTH_MASK_CHANNELS_THRESH: ['auto']
+      SEED_CHANNELS: ['P']
+      SEED_CHANNELS_THRESH: ['auto']
+      SEED_MORPH_RADIUS: []
+      SEED_MORPH_SEQUENCE: []
+      TOPOGRAPHIC_SURFACE_CHANNEL: F
+  NDIM: 3D
+  PRINT_OLD_KEY_CHANGES: True
+  SELF_SUPERVISED:
+    NOISE: 0.2
+    PRETEXT_TASK: crappify
+    RESIZING_FACTOR: 4
+  SEMANTIC_SEG:
+    IGNORE_CLASS_ID: 0
+  SUPER_RESOLUTION:
+    UPSCALING: (1, 1, 1)
+  TYPE: INSTANCE_SEG
+SYSTEM:
+  DEVICE: cpu
+  NUM_CPUS: 8
+  NUM_GPUS: 0
+  NUM_WORKERS: -1
+  PIN_MEM: True
+  SEED: 0
+TEST:
+  ANALIZE_2D_IMGS_AS_3D_STACK: False
+  AUGMENTATION: False
+  AUGMENTATION_GROUP: auto
+  AUGMENTATION_MODE: mean
+  BY_CHUNKS:
+    ENABLE: True
+    FLUSH_EACH: 100
+    PHASES: ['prediction', 'instance_creation', 'instance_merging']
+    SAVE_OUT_TIF: True
+    WORKFLOW_PROCESS:
+      ENABLE: True
+      INSTANCE_SEG_HALO: -1
+      INSTANCE_SEG_MERGE_IOU_TH: 0.3
+      TYPE: entire_pred
+    Z_END: -1
+    Z_START: -1
+  DET_BLOB_LOG_MAX_SIGMA: 10
+  DET_BLOB_LOG_MIN_SIGMA: 5
+  DET_BLOB_LOG_NUM_SIGMA: 2
+  DET_EXCLUDE_BORDER: False
+  DET_IGNORE_POINTS_OUTSIDE_BOX: []
+  DET_MIN_TH_TO_BE_PEAK: 0.2
+  DET_PEAK_LOCAL_MAX_MIN_DISTANCE: 1
+  DET_POINT_CREATION_FUNCTION: peak_local_max
+  DET_TH_TYPE: manual
+  DET_TOLERANCE: 10
+  ENABLE: True
+  FULL_IMG: False
+  MATCHING_STATS: True
+  MATCHING_STATS_BY_IMAGE: True
+  MATCHING_STATS_THS: [0.3, 0.5, 0.75]
+  MATCHING_STATS_THS_COLORED_IMG: []
+  METRICS: ['iou']
+  METRICS_IN_CPU: False
+  POST_PROCESSING:
+    APPLY_MASK: False
+    DET_WATERSHED: False
+    DET_WATERSHED_DONUTS_CLASSES: [-1]
+    DET_WATERSHED_DONUTS_NUCLEUS_DIAMETER: 30
+    DET_WATERSHED_DONUTS_PATCH: [13, 120, 120]
+    DET_WATERSHED_FIRST_DILATION: [-1, -1]
+    INSTANCE_REFINEMENT:
+      ENABLE: True
+      OPERATIONS: ['remove_small_objects']
+      VALUES: [1000]
+    MEASURE_PROPERTIES:
+      ENABLE: False
+      EXTRA_PROPS: []
+      REMOVE_BY_PROPERTIES:
+        ENABLE: False
+        PROPS: []
+        SIGNS: []
+        VALUES: []
+    MEDIAN_FILTER: False
+    MEDIAN_FILTER_AXIS: []
+    MEDIAN_FILTER_SIZE: []
+    REMOVE_CLOSE_POINTS: False
+    REMOVE_CLOSE_POINTS_RADIUS: 0
+    REPARE_LARGE_BLOBS_SIZE: -1
+    VORONOI_ON_MASK: False
+    VORONOI_TH: 0.0
+  REDUCE_MEMORY: False
+  REUSE_PREDICTIONS: False
+  SAVE_MODEL_RAW_OUTPUT: True
+  VERBOSE: True
+TRAIN:
+  BATCH_SIZE: 34
+  CHECKPOINT_MONITOR: val_loss
+  ENABLE: True
+  EPOCHS: 60
+  GRADIENT_CLIP_NORM: 0.0
+  LR: [0.0001]
+  LR_SCHEDULER:
+    MIN_LR: [-1.0]
+    NAME: onecycle
+    REDUCEONPLATEAU_FACTOR: 0.5
+    REDUCEONPLATEAU_PATIENCE: -1
+    WARMUP_COSINE_DECAY_EPOCHS: -1
+  METRICS: ['iou']
+  OPTIMIZER: ['ADAMW']
+  OPT_BETAS: [[0.9, 0.999]]
+  PATIENCE: 10
+  VERBOSE: False
+  W_DECAY: 0.02
+[22:00:59.346412] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+[22:00:59.346443] Initializing Instance_Segmentation_Workflow
+[22:00:59.346450] *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
+
+[22:00:59.535072] Creating normalization module . . .
+[22:00:59.535114] Normalization module created with the following configuration:
+[22:00:59.535122]   type: zero_mean_unit_variance
+[22:00:59.535129]   target_type: mask
+[22:00:59.535135]   out_dtype: float32
+[22:00:59.535141]   norm_target: False
+[22:00:59.535146]   percentile_clip: False
+[22:00:59.535154]   per_lower_bound: -1.0
+[22:00:59.535159]   per_upper_bound: -1.0
+[22:00:59.535173]   lower_bound_val: [-1.0]
+[22:00:59.535179]   upper_bound_val: [-1.0]
+[22:00:59.535184]   mean: [-1.0]
+[22:00:59.535190]   std: [-1.0]
+[22:00:59.535211] ###########################
+[22:00:59.535217] #  PREPARE INSTANCE DATA  #
+[22:00:59.535222] ###########################
+[22:00:59.535871] You select to create ['F', 'P'] channels from given instance labels and no file is detected in fisbe/biapy-channel-scale-zarr/train/label_F.erosion-1.dilation-1_P.type-skeleton.dilation-2.erosion-0 . So let's prepare the data. This process will be done just once!
+[22:00:59.541630] Working with Zarr files . . .
+[22:00:59.541690] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R38F04-20181005_63_G3_cs0.26_1.39_1.50.zarr
+[22:00:59.553213] ### 3D-OV-CROP ###
+[22:00:59.553248] Cropping (431, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:00:59.553257] Minimum overlap selected: (0, 0, 0)
+[22:00:59.553263] Padding: (0, 0, 0)
+[22:00:59.553287] Real overlapping (%): (0.1125, 0.125, 0.125)
+[22:00:59.553295] Real overlapping (pixels): (9.0, 16.0, 16.0)
+[22:00:59.553302] (6, 6, 6) patches per (z,y,x) axis
+[22:00:59.553325] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:00:59.553335] Positions of each volume in Z axis: {0: [0, 80], 1: [71, 151], 2: [142, 222], 3: [213, 293], 4: [284, 364], 5: [355, 431]}
+[22:00:59.553342] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:01.047190] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R38F04-20181005_63_G3_cs0.31_0.33_0.32.zarr
+[22:01:01.058347] ### 3D-OV-CROP ###
+[22:01:01.058385] Cropping (431, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:01.058393] Minimum overlap selected: (0, 0, 0)
+[22:01:01.058399] Padding: (0, 0, 0)
+[22:01:01.058418] Real overlapping (%): (0.1125, 0.125, 0.125)
+[22:01:01.058431] Real overlapping (pixels): (9.0, 16.0, 16.0)
+[22:01:01.058437] (6, 6, 6) patches per (z,y,x) axis
+[22:01:01.058449] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:01.058457] Positions of each volume in Z axis: {0: [0, 80], 1: [71, 151], 2: [142, 222], 3: [213, 293], 4: [284, 364], 5: [355, 431]}
+[22:01:01.058464] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:02.531206] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R38F04-20181005_63_G3_cs1.39_1.47_0.27.zarr
+[22:01:02.541780] ### 3D-OV-CROP ###
+[22:01:02.541811] Cropping (431, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:02.541819] Minimum overlap selected: (0, 0, 0)
+[22:01:02.541825] Padding: (0, 0, 0)
+[22:01:02.541843] Real overlapping (%): (0.1125, 0.125, 0.125)
+[22:01:02.541851] Real overlapping (pixels): (9.0, 16.0, 16.0)
+[22:01:02.541857] (6, 6, 6) patches per (z,y,x) axis
+[22:01:02.541868] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:02.541877] Positions of each volume in Z axis: {0: [0, 80], 1: [71, 151], 2: [142, 222], 3: [213, 293], 4: [284, 364], 5: [355, 431]}
+[22:01:02.541884] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:04.047573] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R38F04-20181005_63_G3_cs1.47_0.34_0.31.zarr
+[22:01:04.058690] ### 3D-OV-CROP ###
+[22:01:04.058722] Cropping (431, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:04.058730] Minimum overlap selected: (0, 0, 0)
+[22:01:04.058737] Padding: (0, 0, 0)
+[22:01:04.058755] Real overlapping (%): (0.1125, 0.125, 0.125)
+[22:01:04.058763] Real overlapping (pixels): (9.0, 16.0, 16.0)
+[22:01:04.058768] (6, 6, 6) patches per (z,y,x) axis
+[22:01:04.058780] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:04.058789] Positions of each volume in Z axis: {0: [0, 80], 1: [71, 151], 2: [142, 222], 3: [213, 293], 4: [284, 364], 5: [355, 431]}
+[22:01:04.058796] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:05.969215] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R38F04-20181005_63_G5_cs0.31_1.43_0.35.zarr
+[22:01:05.978625] ### 3D-OV-CROP ###
+[22:01:05.978657] Cropping (421, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:05.978665] Minimum overlap selected: (0, 0, 0)
+[22:01:05.978672] Padding: (0, 0, 0)
+[22:01:05.978690] Real overlapping (%): (0.1375, 0.125, 0.125)
+[22:01:05.978698] Real overlapping (pixels): (11.0, 16.0, 16.0)
+[22:01:05.978704] (6, 6, 6) patches per (z,y,x) axis
+[22:01:05.978716] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:05.978725] Positions of each volume in Z axis: {0: [0, 80], 1: [69, 149], 2: [138, 218], 3: [207, 287], 4: [276, 356], 5: [345, 421]}
+[22:01:05.978732] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:07.497624] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R38F04-20181005_63_G5_cs1.41_1.45_0.34.zarr
+[22:01:07.506240] ### 3D-OV-CROP ###
+[22:01:07.506273] Cropping (421, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:07.506281] Minimum overlap selected: (0, 0, 0)
+[22:01:07.506287] Padding: (0, 0, 0)
+[22:01:07.506308] Real overlapping (%): (0.1375, 0.125, 0.125)
+[22:01:07.506315] Real overlapping (pixels): (11.0, 16.0, 16.0)
+[22:01:07.506321] (6, 6, 6) patches per (z,y,x) axis
+[22:01:07.506333] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:07.506342] Positions of each volume in Z axis: {0: [0, 80], 1: [69, 149], 2: [138, 218], 3: [207, 287], 4: [276, 356], 5: [345, 421]}
+[22:01:07.506349] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:08.830428] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R38F04-20181005_63_G5_cs1.43_0.36_1.50.zarr
+[22:01:08.838673] ### 3D-OV-CROP ###
+[22:01:08.838703] Cropping (421, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:08.838711] Minimum overlap selected: (0, 0, 0)
+[22:01:08.838718] Padding: (0, 0, 0)
+[22:01:08.838736] Real overlapping (%): (0.1375, 0.125, 0.125)
+[22:01:08.838744] Real overlapping (pixels): (11.0, 16.0, 16.0)
+[22:01:08.838750] (6, 6, 6) patches per (z,y,x) axis
+[22:01:08.838761] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:08.838775] Positions of each volume in Z axis: {0: [0, 80], 1: [69, 149], 2: [138, 218], 3: [207, 287], 4: [276, 356], 5: [345, 421]}
+[22:01:08.838782] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:10.180288] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R38F04-20181005_63_G5_cs1.48_0.26_0.36.zarr
+[22:01:10.190851] ### 3D-OV-CROP ###
+[22:01:10.190884] Cropping (421, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:10.190891] Minimum overlap selected: (0, 0, 0)
+[22:01:10.190897] Padding: (0, 0, 0)
+[22:01:10.190916] Real overlapping (%): (0.1375, 0.125, 0.125)
+[22:01:10.190923] Real overlapping (pixels): (11.0, 16.0, 16.0)
+[22:01:10.190929] (6, 6, 6) patches per (z,y,x) axis
+[22:01:10.190941] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:10.190950] Positions of each volume in Z axis: {0: [0, 80], 1: [69, 149], 2: [138, 218], 3: [207, 287], 4: [276, 356], 5: [345, 421]}
+[22:01:10.190957] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:11.501634] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R38F04-20181005_63_H1_cs0.31_1.43_0.29.zarr
+[22:01:11.509856] ### 3D-OV-CROP ###
+[22:01:11.509889] Cropping (399, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:11.509897] Minimum overlap selected: (0, 0, 0)
+[22:01:11.509903] Padding: (0, 0, 0)
+[22:01:11.509921] Real overlapping (%): (0.0, 0.125, 0.125)
+[22:01:11.509928] Real overlapping (pixels): (0.0, 16.0, 16.0)
+[22:01:11.509933] (5, 6, 6) patches per (z,y,x) axis
+[22:01:11.509944] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:01:11.509953] Positions of each volume in Z axis: {0: [0, 80], 1: [80, 160], 2: [160, 240], 3: [240, 320], 4: [320, 399]}
+[22:01:11.509960] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:13.295493] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R38F04-20181005_63_H1_cs1.44_0.27_0.26.zarr
+[22:01:13.304734] ### 3D-OV-CROP ###
+[22:01:13.304765] Cropping (399, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:13.304779] Minimum overlap selected: (0, 0, 0)
+[22:01:13.304786] Padding: (0, 0, 0)
+[22:01:13.304804] Real overlapping (%): (0.0, 0.125, 0.125)
+[22:01:13.304811] Real overlapping (pixels): (0.0, 16.0, 16.0)
+[22:01:13.304817] (5, 6, 6) patches per (z,y,x) axis
+[22:01:13.304828] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:01:13.304836] Positions of each volume in Z axis: {0: [0, 80], 1: [80, 160], 2: [160, 240], 3: [240, 320], 4: [320, 399]}
+[22:01:13.304843] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:15.144034] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R38F04-20181005_63_H1_cs1.44_1.49_0.35.zarr
+[22:01:15.159097] ### 3D-OV-CROP ###
+[22:01:15.159129] Cropping (399, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:15.159137] Minimum overlap selected: (0, 0, 0)
+[22:01:15.159143] Padding: (0, 0, 0)
+[22:01:15.159161] Real overlapping (%): (0.0, 0.125, 0.125)
+[22:01:15.159168] Real overlapping (pixels): (0.0, 16.0, 16.0)
+[22:01:15.159175] (5, 6, 6) patches per (z,y,x) axis
+[22:01:15.159186] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:01:15.159195] Positions of each volume in Z axis: {0: [0, 80], 1: [80, 160], 2: [160, 240], 3: [240, 320], 4: [320, 399]}
+[22:01:15.159207] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:17.147345] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R38F04-20181005_63_H1_cs1.49_0.30_1.49.zarr
+[22:01:17.157899] ### 3D-OV-CROP ###
+[22:01:17.157932] Cropping (399, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:17.157940] Minimum overlap selected: (0, 0, 0)
+[22:01:17.157946] Padding: (0, 0, 0)
+[22:01:17.157965] Real overlapping (%): (0.0, 0.125, 0.125)
+[22:01:17.157973] Real overlapping (pixels): (0.0, 16.0, 16.0)
+[22:01:17.157979] (5, 6, 6) patches per (z,y,x) axis
+[22:01:17.157991] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:01:17.157999] Positions of each volume in Z axis: {0: [0, 80], 1: [80, 160], 2: [160, 240], 3: [240, 320], 4: [320, 399]}
+[22:01:17.158006] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:19.219128] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R53A10-20181019_64_A4_cs0.28_1.49_1.48.zarr
+[22:01:19.230516] ### 3D-OV-CROP ###
+[22:01:19.230549] Cropping (410, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:19.230557] Minimum overlap selected: (0, 0, 0)
+[22:01:19.230563] Padding: (0, 0, 0)
+[22:01:19.230584] Real overlapping (%): (0.175, 0.1328125, 0.125)
+[22:01:19.230591] Real overlapping (pixels): (14.0, 17.0, 16.0)
+[22:01:19.230597] (6, 6, 6) patches per (z,y,x) axis
+[22:01:19.230609] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:19.230618] Positions of each volume in Z axis: {0: [0, 80], 1: [66, 146], 2: [132, 212], 3: [198, 278], 4: [264, 344], 5: [330, 410]}
+[22:01:19.230625] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:20.227799] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R53A10-20181019_64_A4_cs0.30_1.40_0.34.zarr
+[22:01:20.235854] ### 3D-OV-CROP ###
+[22:01:20.235888] Cropping (410, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:20.235897] Minimum overlap selected: (0, 0, 0)
+[22:01:20.235903] Padding: (0, 0, 0)
+[22:01:20.235923] Real overlapping (%): (0.175, 0.1328125, 0.125)
+[22:01:20.235930] Real overlapping (pixels): (14.0, 17.0, 16.0)
+[22:01:20.235936] (6, 6, 6) patches per (z,y,x) axis
+[22:01:20.235948] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:20.235957] Positions of each volume in Z axis: {0: [0, 80], 1: [66, 146], 2: [132, 212], 3: [198, 278], 4: [264, 344], 5: [330, 410]}
+[22:01:20.235964] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:21.298263] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R53A10-20181019_64_A4_cs1.41_0.28_1.43.zarr
+[22:01:21.313829] ### 3D-OV-CROP ###
+[22:01:21.313866] Cropping (410, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:21.313875] Minimum overlap selected: (0, 0, 0)
+[22:01:21.313881] Padding: (0, 0, 0)
+[22:01:21.313900] Real overlapping (%): (0.175, 0.1328125, 0.125)
+[22:01:21.313908] Real overlapping (pixels): (14.0, 17.0, 16.0)
+[22:01:21.313914] (6, 6, 6) patches per (z,y,x) axis
+[22:01:21.313926] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:21.313935] Positions of each volume in Z axis: {0: [0, 80], 1: [66, 146], 2: [132, 212], 3: [198, 278], 4: [264, 344], 5: [330, 410]}
+[22:01:21.313942] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:22.303758] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R53A10-20181019_64_A4_cs1.41_1.40_0.32.zarr
+[22:01:22.315160] ### 3D-OV-CROP ###
+[22:01:22.315197] Cropping (410, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:22.315207] Minimum overlap selected: (0, 0, 0)
+[22:01:22.315214] Padding: (0, 0, 0)
+[22:01:22.315235] Real overlapping (%): (0.175, 0.1328125, 0.125)
+[22:01:22.315251] Real overlapping (pixels): (14.0, 17.0, 16.0)
+[22:01:22.315258] (6, 6, 6) patches per (z,y,x) axis
+[22:01:22.315273] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:22.315283] Positions of each volume in Z axis: {0: [0, 80], 1: [66, 146], 2: [132, 212], 3: [198, 278], 4: [264, 344], 5: [330, 410]}
+[22:01:22.315292] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:23.279893] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R75E01-20181030_64_D1_cs0.36_0.36_0.35.zarr
+[22:01:23.289255] ### 3D-OV-CROP ###
+[22:01:23.289293] Cropping (401, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:23.289302] Minimum overlap selected: (0, 0, 0)
+[22:01:23.289309] Padding: (0, 0, 0)
+[22:01:23.289330] Real overlapping (%): (0.1875, 0.125, 0.125)
+[22:01:23.289339] Real overlapping (pixels): (15.0, 16.0, 16.0)
+[22:01:23.289347] (6, 6, 6) patches per (z,y,x) axis
+[22:01:23.289367] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:23.289378] Positions of each volume in Z axis: {0: [0, 80], 1: [65, 145], 2: [130, 210], 3: [195, 275], 4: [260, 340], 5: [325, 401]}
+[22:01:23.289387] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:24.297929] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R75E01-20181030_64_D1_cs0.36_1.43_1.48.zarr
+[22:01:24.307993] ### 3D-OV-CROP ###
+[22:01:24.308025] Cropping (401, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:24.308033] Minimum overlap selected: (0, 0, 0)
+[22:01:24.308039] Padding: (0, 0, 0)
+[22:01:24.308056] Real overlapping (%): (0.1875, 0.125, 0.125)
+[22:01:24.308064] Real overlapping (pixels): (15.0, 16.0, 16.0)
+[22:01:24.308069] (6, 6, 6) patches per (z,y,x) axis
+[22:01:24.308081] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:24.308090] Positions of each volume in Z axis: {0: [0, 80], 1: [65, 145], 2: [130, 210], 3: [195, 275], 4: [260, 340], 5: [325, 401]}
+[22:01:24.308097] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:25.341497] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R75E01-20181030_64_D1_cs1.44_0.37_1.48.zarr
+[22:01:25.351539] ### 3D-OV-CROP ###
+[22:01:25.351572] Cropping (401, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:25.351580] Minimum overlap selected: (0, 0, 0)
+[22:01:25.351586] Padding: (0, 0, 0)
+[22:01:25.351606] Real overlapping (%): (0.1875, 0.125, 0.125)
+[22:01:25.351612] Real overlapping (pixels): (15.0, 16.0, 16.0)
+[22:01:25.351619] (6, 6, 6) patches per (z,y,x) axis
+[22:01:25.351630] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:25.351639] Positions of each volume in Z axis: {0: [0, 80], 1: [65, 145], 2: [130, 210], 3: [195, 275], 4: [260, 340], 5: [325, 401]}
+[22:01:25.351646] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:26.386354] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/R75E01-20181030_64_D1_cs1.45_1.50_0.30.zarr
+[22:01:26.395354] ### 3D-OV-CROP ###
+[22:01:26.395395] Cropping (401, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:26.395402] Minimum overlap selected: (0, 0, 0)
+[22:01:26.395409] Padding: (0, 0, 0)
+[22:01:26.395427] Real overlapping (%): (0.1875, 0.125, 0.125)
+[22:01:26.395434] Real overlapping (pixels): (15.0, 16.0, 16.0)
+[22:01:26.395440] (6, 6, 6) patches per (z,y,x) axis
+[22:01:26.395451] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:26.395461] Positions of each volume in Z axis: {0: [0, 80], 1: [65, 145], 2: [130, 210], 3: [195, 275], 4: [260, 340], 5: [325, 401]}
+[22:01:26.395468] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:27.439046] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT008647-20171222_63_D1_cs0.35_0.37_0.26.zarr
+[22:01:27.448072] ### 3D-OV-CROP ###
+[22:01:27.448104] Cropping (417, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:27.448112] Minimum overlap selected: (0, 0, 0)
+[22:01:27.448118] Padding: (0, 0, 0)
+[22:01:27.448136] Real overlapping (%): (0.15, 0.125, 0.125)
+[22:01:27.448144] Real overlapping (pixels): (12.0, 16.0, 16.0)
+[22:01:27.448150] (6, 6, 6) patches per (z,y,x) axis
+[22:01:27.448162] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:27.448172] Positions of each volume in Z axis: {0: [0, 80], 1: [68, 148], 2: [136, 216], 3: [204, 284], 4: [272, 352], 5: [340, 417]}
+[22:01:27.448179] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:29.490966] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT008647-20171222_63_D1_cs0.36_1.49_0.25.zarr
+[22:01:29.503397] ### 3D-OV-CROP ###
+[22:01:29.503429] Cropping (417, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:29.503437] Minimum overlap selected: (0, 0, 0)
+[22:01:29.503444] Padding: (0, 0, 0)
+[22:01:29.503462] Real overlapping (%): (0.15, 0.125, 0.125)
+[22:01:29.503470] Real overlapping (pixels): (12.0, 16.0, 16.0)
+[22:01:29.503476] (6, 6, 6) patches per (z,y,x) axis
+[22:01:29.503487] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:29.503495] Positions of each volume in Z axis: {0: [0, 80], 1: [68, 148], 2: [136, 216], 3: [204, 284], 4: [272, 352], 5: [340, 417]}
+[22:01:29.503502] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:31.341127] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT008647-20171222_63_D1_cs0.37_0.36_1.49.zarr
+[22:01:31.349072] ### 3D-OV-CROP ###
+[22:01:31.349102] Cropping (417, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:31.349110] Minimum overlap selected: (0, 0, 0)
+[22:01:31.349116] Padding: (0, 0, 0)
+[22:01:31.349134] Real overlapping (%): (0.15, 0.125, 0.125)
+[22:01:31.349142] Real overlapping (pixels): (12.0, 16.0, 16.0)
+[22:01:31.349148] (6, 6, 6) patches per (z,y,x) axis
+[22:01:31.349159] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:31.349169] Positions of each volume in Z axis: {0: [0, 80], 1: [68, 148], 2: [136, 216], 3: [204, 284], 4: [272, 352], 5: [340, 417]}
+[22:01:31.349175] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:33.247526] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT008647-20171222_63_D1_cs1.46_1.45_1.39.zarr
+[22:01:33.257281] ### 3D-OV-CROP ###
+[22:01:33.257314] Cropping (417, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:33.257322] Minimum overlap selected: (0, 0, 0)
+[22:01:33.257329] Padding: (0, 0, 0)
+[22:01:33.257348] Real overlapping (%): (0.15, 0.125, 0.125)
+[22:01:33.257364] Real overlapping (pixels): (12.0, 16.0, 16.0)
+[22:01:33.257370] (6, 6, 6) patches per (z,y,x) axis
+[22:01:33.257382] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:33.257392] Positions of each volume in Z axis: {0: [0, 80], 1: [68, 148], 2: [136, 216], 3: [204, 284], 4: [272, 352], 5: [340, 417]}
+[22:01:33.257399] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:35.140377] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT008647-20171222_63_D2_cs0.37_1.40_1.43.zarr
+[22:01:35.152409] ### 3D-OV-CROP ###
+[22:01:35.152442] Cropping (412, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:35.152450] Minimum overlap selected: (0, 0, 0)
+[22:01:35.152456] Padding: (0, 0, 0)
+[22:01:35.152476] Real overlapping (%): (0.1625, 0.125, 0.125)
+[22:01:35.152483] Real overlapping (pixels): (13.0, 16.0, 16.0)
+[22:01:35.152490] (6, 6, 6) patches per (z,y,x) axis
+[22:01:35.152502] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:35.152510] Positions of each volume in Z axis: {0: [0, 80], 1: [67, 147], 2: [134, 214], 3: [201, 281], 4: [268, 348], 5: [335, 412]}
+[22:01:35.152527] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:36.861488] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT008647-20171222_63_D2_cs1.39_0.28_0.32.zarr
+[22:01:36.871771] ### 3D-OV-CROP ###
+[22:01:36.871806] Cropping (412, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:36.871814] Minimum overlap selected: (0, 0, 0)
+[22:01:36.871820] Padding: (0, 0, 0)
+[22:01:36.871840] Real overlapping (%): (0.1625, 0.125, 0.125)
+[22:01:36.871847] Real overlapping (pixels): (13.0, 16.0, 16.0)
+[22:01:36.871853] (6, 6, 6) patches per (z,y,x) axis
+[22:01:36.871865] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:36.871873] Positions of each volume in Z axis: {0: [0, 80], 1: [67, 147], 2: [134, 214], 3: [201, 281], 4: [268, 348], 5: [335, 412]}
+[22:01:36.871885] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:38.569567] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT008647-20171222_63_D2_cs1.39_1.42_1.41.zarr
+[22:01:38.579394] ### 3D-OV-CROP ###
+[22:01:38.579424] Cropping (412, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:38.579431] Minimum overlap selected: (0, 0, 0)
+[22:01:38.579438] Padding: (0, 0, 0)
+[22:01:38.579455] Real overlapping (%): (0.1625, 0.125, 0.125)
+[22:01:38.579462] Real overlapping (pixels): (13.0, 16.0, 16.0)
+[22:01:38.579469] (6, 6, 6) patches per (z,y,x) axis
+[22:01:38.579481] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:38.579491] Positions of each volume in Z axis: {0: [0, 80], 1: [67, 147], 2: [134, 214], 3: [201, 281], 4: [268, 348], 5: [335, 412]}
+[22:01:38.579498] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:40.456206] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT008647-20171222_63_D2_cs1.39_1.45_0.29.zarr
+[22:01:40.468291] ### 3D-OV-CROP ###
+[22:01:40.468324] Cropping (412, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:40.468332] Minimum overlap selected: (0, 0, 0)
+[22:01:40.468339] Padding: (0, 0, 0)
+[22:01:40.468365] Real overlapping (%): (0.1625, 0.125, 0.125)
+[22:01:40.468373] Real overlapping (pixels): (13.0, 16.0, 16.0)
+[22:01:40.468380] (6, 6, 6) patches per (z,y,x) axis
+[22:01:40.468391] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:40.468400] Positions of each volume in Z axis: {0: [0, 80], 1: [67, 147], 2: [134, 214], 3: [201, 281], 4: [268, 348], 5: [335, 412]}
+[22:01:40.468407] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:42.209006] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT008647-20171222_63_E1_cs0.28_0.31_0.36.zarr
+[22:01:42.219375] ### 3D-OV-CROP ###
+[22:01:42.219408] Cropping (416, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:42.219416] Minimum overlap selected: (0, 0, 0)
+[22:01:42.219423] Padding: (0, 0, 0)
+[22:01:42.219441] Real overlapping (%): (0.15, 0.125, 0.125)
+[22:01:42.219449] Real overlapping (pixels): (12.0, 16.0, 16.0)
+[22:01:42.219455] (6, 6, 6) patches per (z,y,x) axis
+[22:01:42.219466] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:42.219475] Positions of each volume in Z axis: {0: [0, 80], 1: [68, 148], 2: [136, 216], 3: [204, 284], 4: [272, 352], 5: [340, 416]}
+[22:01:42.219482] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:44.310263] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT008647-20171222_63_E1_cs0.31_1.50_1.42.zarr
+[22:01:44.322321] ### 3D-OV-CROP ###
+[22:01:44.322351] Cropping (416, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:44.322366] Minimum overlap selected: (0, 0, 0)
+[22:01:44.322372] Padding: (0, 0, 0)
+[22:01:44.322396] Real overlapping (%): (0.15, 0.125, 0.125)
+[22:01:44.322403] Real overlapping (pixels): (12.0, 16.0, 16.0)
+[22:01:44.322409] (6, 6, 6) patches per (z,y,x) axis
+[22:01:44.322421] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:44.322429] Positions of each volume in Z axis: {0: [0, 80], 1: [68, 148], 2: [136, 216], 3: [204, 284], 4: [272, 352], 5: [340, 416]}
+[22:01:44.322436] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:46.194742] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT008647-20171222_63_E1_cs0.36_0.33_1.47.zarr
+[22:01:46.206874] ### 3D-OV-CROP ###
+[22:01:46.206907] Cropping (416, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:46.206916] Minimum overlap selected: (0, 0, 0)
+[22:01:46.206922] Padding: (0, 0, 0)
+[22:01:46.206941] Real overlapping (%): (0.15, 0.125, 0.125)
+[22:01:46.206948] Real overlapping (pixels): (12.0, 16.0, 16.0)
+[22:01:46.206954] (6, 6, 6) patches per (z,y,x) axis
+[22:01:46.206971] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:46.206980] Positions of each volume in Z axis: {0: [0, 80], 1: [68, 148], 2: [136, 216], 3: [204, 284], 4: [272, 352], 5: [340, 416]}
+[22:01:46.206987] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:48.113018] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT008647-20171222_63_E1_cs1.39_1.43_0.25.zarr
+[22:01:48.124810] ### 3D-OV-CROP ###
+[22:01:48.124843] Cropping (416, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:48.124852] Minimum overlap selected: (0, 0, 0)
+[22:01:48.124858] Padding: (0, 0, 0)
+[22:01:48.124878] Real overlapping (%): (0.15, 0.125, 0.125)
+[22:01:48.124885] Real overlapping (pixels): (12.0, 16.0, 16.0)
+[22:01:48.124892] (6, 6, 6) patches per (z,y,x) axis
+[22:01:48.124903] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:48.124912] Positions of each volume in Z axis: {0: [0, 80], 1: [68, 148], 2: [136, 216], 3: [204, 284], 4: [272, 352], 5: [340, 416]}
+[22:01:48.124919] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:50.064919] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT019303-20171013_65_B6_cs0.25_1.42_1.42.zarr
+[22:01:50.073805] ### 3D-OV-CROP ###
+[22:01:50.073839] Cropping (362, 685, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:50.073847] Minimum overlap selected: (0, 0, 0)
+[22:01:50.073854] Padding: (0, 0, 0)
+[22:01:50.073873] Real overlapping (%): (0.1125, 0.125, 0.125)
+[22:01:50.073881] Real overlapping (pixels): (9.0, 16.0, 16.0)
+[22:01:50.073887] (5, 6, 6) patches per (z,y,x) axis
+[22:01:50.073898] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:01:50.073907] Positions of each volume in Z axis: {0: [0, 80], 1: [71, 151], 2: [142, 222], 3: [213, 293], 4: [284, 362]}
+[22:01:50.073914] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:51.057365] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT019303-20171013_65_B6_cs0.26_0.31_1.44.zarr
+[22:01:51.068235] ### 3D-OV-CROP ###
+[22:01:51.068268] Cropping (362, 685, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:51.068275] Minimum overlap selected: (0, 0, 0)
+[22:01:51.068282] Padding: (0, 0, 0)
+[22:01:51.068302] Real overlapping (%): (0.1125, 0.125, 0.125)
+[22:01:51.068309] Real overlapping (pixels): (9.0, 16.0, 16.0)
+[22:01:51.068315] (5, 6, 6) patches per (z,y,x) axis
+[22:01:51.068325] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:01:51.068334] Positions of each volume in Z axis: {0: [0, 80], 1: [71, 151], 2: [142, 222], 3: [213, 293], 4: [284, 362]}
+[22:01:51.068341] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:52.064737] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT019303-20171013_65_B6_cs1.40_0.32_0.30.zarr
+[22:01:52.073832] ### 3D-OV-CROP ###
+[22:01:52.073864] Cropping (362, 685, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:52.073872] Minimum overlap selected: (0, 0, 0)
+[22:01:52.073878] Padding: (0, 0, 0)
+[22:01:52.073897] Real overlapping (%): (0.1125, 0.125, 0.125)
+[22:01:52.073905] Real overlapping (pixels): (9.0, 16.0, 16.0)
+[22:01:52.073911] (5, 6, 6) patches per (z,y,x) axis
+[22:01:52.073922] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:01:52.073930] Positions of each volume in Z axis: {0: [0, 80], 1: [71, 151], 2: [142, 222], 3: [213, 293], 4: [284, 362]}
+[22:01:52.073937] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:53.104886] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT019303-20171013_65_B6_cs1.47_0.34_1.39.zarr
+[22:01:53.113372] ### 3D-OV-CROP ###
+[22:01:53.113404] Cropping (362, 685, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:53.113411] Minimum overlap selected: (0, 0, 0)
+[22:01:53.113418] Padding: (0, 0, 0)
+[22:01:53.113437] Real overlapping (%): (0.1125, 0.125, 0.125)
+[22:01:53.113444] Real overlapping (pixels): (9.0, 16.0, 16.0)
+[22:01:53.113450] (5, 6, 6) patches per (z,y,x) axis
+[22:01:53.113461] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:01:53.113470] Positions of each volume in Z axis: {0: [0, 80], 1: [71, 151], 2: [142, 222], 3: [213, 293], 4: [284, 362]}
+[22:01:53.113477] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:54.080210] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT019307-20171013_65_F1_cs0.31_1.38_1.48.zarr
+[22:01:54.090812] ### 3D-OV-CROP ###
+[22:01:54.090845] Cropping (408, 685, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:54.090852] Minimum overlap selected: (0, 0, 0)
+[22:01:54.090859] Padding: (0, 0, 0)
+[22:01:54.090877] Real overlapping (%): (0.175, 0.125, 0.125)
+[22:01:54.090886] Real overlapping (pixels): (14.0, 16.0, 16.0)
+[22:01:54.090892] (6, 6, 6) patches per (z,y,x) axis
+[22:01:54.090904] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:54.090913] Positions of each volume in Z axis: {0: [0, 80], 1: [66, 146], 2: [132, 212], 3: [198, 278], 4: [264, 344], 5: [330, 408]}
+[22:01:54.090920] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:55.721666] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT019307-20171013_65_F1_cs0.37_0.37_1.49.zarr
+[22:01:55.731421] ### 3D-OV-CROP ###
+[22:01:55.731454] Cropping (408, 685, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:55.731461] Minimum overlap selected: (0, 0, 0)
+[22:01:55.731467] Padding: (0, 0, 0)
+[22:01:55.731487] Real overlapping (%): (0.175, 0.125, 0.125)
+[22:01:55.731494] Real overlapping (pixels): (14.0, 16.0, 16.0)
+[22:01:55.731500] (6, 6, 6) patches per (z,y,x) axis
+[22:01:55.731512] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:55.731521] Positions of each volume in Z axis: {0: [0, 80], 1: [66, 146], 2: [132, 212], 3: [198, 278], 4: [264, 344], 5: [330, 408]}
+[22:01:55.731528] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:57.341192] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT019307-20171013_65_F1_cs1.41_0.35_0.30.zarr
+[22:01:57.353246] ### 3D-OV-CROP ###
+[22:01:57.353279] Cropping (408, 685, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:57.353286] Minimum overlap selected: (0, 0, 0)
+[22:01:57.353292] Padding: (0, 0, 0)
+[22:01:57.353313] Real overlapping (%): (0.175, 0.125, 0.125)
+[22:01:57.353321] Real overlapping (pixels): (14.0, 16.0, 16.0)
+[22:01:57.353328] (6, 6, 6) patches per (z,y,x) axis
+[22:01:57.353339] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:57.353350] Positions of each volume in Z axis: {0: [0, 80], 1: [66, 146], 2: [132, 212], 3: [198, 278], 4: [264, 344], 5: [330, 408]}
+[22:01:57.353369] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:01:59.025041] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT019307-20171013_65_F1_cs1.43_1.41_1.42.zarr
+[22:01:59.032927] ### 3D-OV-CROP ###
+[22:01:59.032961] Cropping (408, 685, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:01:59.032969] Minimum overlap selected: (0, 0, 0)
+[22:01:59.032975] Padding: (0, 0, 0)
+[22:01:59.032993] Real overlapping (%): (0.175, 0.125, 0.125)
+[22:01:59.033001] Real overlapping (pixels): (14.0, 16.0, 16.0)
+[22:01:59.033007] (6, 6, 6) patches per (z,y,x) axis
+[22:01:59.033019] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:01:59.033028] Positions of each volume in Z axis: {0: [0, 80], 1: [66, 146], 2: [132, 212], 3: [198, 278], 4: [264, 344], 5: [330, 408]}
+[22:01:59.033035] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:02:00.720958] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT033051-20171128_61_E2_cs0.29_0.36_0.31.zarr
+[22:02:00.728747] ### 3D-OV-CROP ###
+[22:02:00.728780] Cropping (345, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:00.728788] Minimum overlap selected: (0, 0, 0)
+[22:02:00.728794] Padding: (0, 0, 0)
+[22:02:00.728814] Real overlapping (%): (0.1625, 0.1328125, 0.125)
+[22:02:00.728822] Real overlapping (pixels): (13.0, 17.0, 16.0)
+[22:02:00.728828] (5, 6, 6) patches per (z,y,x) axis
+[22:02:00.728840] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:00.728849] Positions of each volume in Z axis: {0: [0, 80], 1: [67, 147], 2: [134, 214], 3: [201, 281], 4: [268, 345]}
+[22:02:00.728857] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:02:02.165388] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT033051-20171128_61_E2_cs0.30_0.31_1.49.zarr
+[22:02:02.174050] ### 3D-OV-CROP ###
+[22:02:02.174082] Cropping (345, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:02.174090] Minimum overlap selected: (0, 0, 0)
+[22:02:02.174097] Padding: (0, 0, 0)
+[22:02:02.174115] Real overlapping (%): (0.1625, 0.1328125, 0.125)
+[22:02:02.174128] Real overlapping (pixels): (13.0, 17.0, 16.0)
+[22:02:02.174135] (5, 6, 6) patches per (z,y,x) axis
+[22:02:02.174146] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:02.174155] Positions of each volume in Z axis: {0: [0, 80], 1: [67, 147], 2: [134, 214], 3: [201, 281], 4: [268, 345]}
+[22:02:02.174162] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:02:03.520133] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT033051-20171128_61_E2_cs1.44_1.38_1.47.zarr
+[22:02:03.532427] ### 3D-OV-CROP ###
+[22:02:03.532458] Cropping (345, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:03.532466] Minimum overlap selected: (0, 0, 0)
+[22:02:03.532472] Padding: (0, 0, 0)
+[22:02:03.532491] Real overlapping (%): (0.1625, 0.1328125, 0.125)
+[22:02:03.532498] Real overlapping (pixels): (13.0, 17.0, 16.0)
+[22:02:03.532504] (5, 6, 6) patches per (z,y,x) axis
+[22:02:03.532515] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:03.532524] Positions of each volume in Z axis: {0: [0, 80], 1: [67, 147], 2: [134, 214], 3: [201, 281], 4: [268, 345]}
+[22:02:03.532531] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:02:04.884873] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT033051-20171128_61_E2_cs1.46_1.41_0.30.zarr
+[22:02:04.894479] ### 3D-OV-CROP ###
+[22:02:04.894511] Cropping (345, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:04.894518] Minimum overlap selected: (0, 0, 0)
+[22:02:04.894525] Padding: (0, 0, 0)
+[22:02:04.894544] Real overlapping (%): (0.1625, 0.1328125, 0.125)
+[22:02:04.894557] Real overlapping (pixels): (13.0, 17.0, 16.0)
+[22:02:04.894562] (5, 6, 6) patches per (z,y,x) axis
+[22:02:04.894574] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:04.894582] Positions of each volume in Z axis: {0: [0, 80], 1: [67, 147], 2: [134, 214], 3: [201, 281], 4: [268, 345]}
+[22:02:04.894589] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:02:06.135190] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT033051-20171128_61_E4_cs0.31_0.33_0.34.zarr
+[22:02:06.143438] ### 3D-OV-CROP ###
+[22:02:06.143471] Cropping (379, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:06.143479] Minimum overlap selected: (0, 0, 0)
+[22:02:06.143485] Padding: (0, 0, 0)
+[22:02:06.143503] Real overlapping (%): (0.0625, 0.1328125, 0.125)
+[22:02:06.143510] Real overlapping (pixels): (5.0, 17.0, 16.0)
+[22:02:06.143516] (5, 6, 6) patches per (z,y,x) axis
+[22:02:06.143528] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:06.143537] Positions of each volume in Z axis: {0: [0, 80], 1: [75, 155], 2: [150, 230], 3: [225, 305], 4: [300, 379]}
+[22:02:06.143544] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:02:07.294962] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT033051-20171128_61_E4_cs1.38_1.50_0.30.zarr
+[22:02:07.303695] ### 3D-OV-CROP ###
+[22:02:07.303727] Cropping (379, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:07.303735] Minimum overlap selected: (0, 0, 0)
+[22:02:07.303741] Padding: (0, 0, 0)
+[22:02:07.303759] Real overlapping (%): (0.0625, 0.1328125, 0.125)
+[22:02:07.303766] Real overlapping (pixels): (5.0, 17.0, 16.0)
+[22:02:07.303772] (5, 6, 6) patches per (z,y,x) axis
+[22:02:07.303784] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:07.303792] Positions of each volume in Z axis: {0: [0, 80], 1: [75, 155], 2: [150, 230], 3: [225, 305], 4: [300, 379]}
+[22:02:07.303799] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:02:08.243451] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT033051-20171128_61_E4_cs1.41_0.35_0.35.zarr
+[22:02:08.252453] ### 3D-OV-CROP ###
+[22:02:08.252485] Cropping (379, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:08.252493] Minimum overlap selected: (0, 0, 0)
+[22:02:08.252499] Padding: (0, 0, 0)
+[22:02:08.252518] Real overlapping (%): (0.0625, 0.1328125, 0.125)
+[22:02:08.252525] Real overlapping (pixels): (5.0, 17.0, 16.0)
+[22:02:08.252531] (5, 6, 6) patches per (z,y,x) axis
+[22:02:08.252542] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:08.252550] Positions of each volume in Z axis: {0: [0, 80], 1: [75, 155], 2: [150, 230], 3: [225, 305], 4: [300, 379]}
+[22:02:08.252557] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:02:09.164438] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT033051-20171128_61_E4_cs1.41_1.40_1.38.zarr
+[22:02:09.174304] ### 3D-OV-CROP ###
+[22:02:09.174336] Cropping (379, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:09.174345] Minimum overlap selected: (0, 0, 0)
+[22:02:09.174351] Padding: (0, 0, 0)
+[22:02:09.174376] Real overlapping (%): (0.0625, 0.1328125, 0.125)
+[22:02:09.174384] Real overlapping (pixels): (5.0, 17.0, 16.0)
+[22:02:09.174394] (5, 6, 6) patches per (z,y,x) axis
+[22:02:09.174406] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:09.174415] Positions of each volume in Z axis: {0: [0, 80], 1: [75, 155], 2: [150, 230], 3: [225, 305], 4: [300, 379]}
+[22:02:09.174422] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:02:10.253836] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT040433-20170919_63_D6_cs0.27_1.46_0.36.zarr
+[22:02:10.263312] ### 3D-OV-CROP ###
+[22:02:10.263351] Cropping (372, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:10.263368] Minimum overlap selected: (0, 0, 0)
+[22:02:10.263374] Padding: (0, 0, 0)
+[22:02:10.263394] Real overlapping (%): (0.0875, 0.1328125, 0.125)
+[22:02:10.263402] Real overlapping (pixels): (7.0, 17.0, 16.0)
+[22:02:10.263408] (5, 6, 6) patches per (z,y,x) axis
+[22:02:10.263420] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:10.263428] Positions of each volume in Z axis: {0: [0, 80], 1: [73, 153], 2: [146, 226], 3: [219, 299], 4: [292, 372]}
+[22:02:10.263435] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:02:12.287145] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT040433-20170919_63_D6_cs1.39_0.31_0.29.zarr
+[22:02:12.303296] ### 3D-OV-CROP ###
+[22:02:12.303325] Cropping (372, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:12.303332] Minimum overlap selected: (0, 0, 0)
+[22:02:12.303338] Padding: (0, 0, 0)
+[22:02:12.303362] Real overlapping (%): (0.0875, 0.1328125, 0.125)
+[22:02:12.303370] Real overlapping (pixels): (7.0, 17.0, 16.0)
+[22:02:12.303376] (5, 6, 6) patches per (z,y,x) axis
+[22:02:12.303387] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:12.303395] Positions of each volume in Z axis: {0: [0, 80], 1: [73, 153], 2: [146, 226], 3: [219, 299], 4: [292, 372]}
+[22:02:12.303402] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:02:14.067061] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT040433-20170919_63_D6_cs1.41_1.45_0.29.zarr
+[22:02:14.076435] ### 3D-OV-CROP ###
+[22:02:14.076467] Cropping (372, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:14.076475] Minimum overlap selected: (0, 0, 0)
+[22:02:14.076481] Padding: (0, 0, 0)
+[22:02:14.076500] Real overlapping (%): (0.0875, 0.1328125, 0.125)
+[22:02:14.076507] Real overlapping (pixels): (7.0, 17.0, 16.0)
+[22:02:14.076513] (5, 6, 6) patches per (z,y,x) axis
+[22:02:14.076524] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:14.076533] Positions of each volume in Z axis: {0: [0, 80], 1: [73, 153], 2: [146, 226], 3: [219, 299], 4: [292, 372]}
+[22:02:14.076539] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:02:15.904603] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT040433-20170919_63_D6_cs1.47_1.44_1.41.zarr
+[22:02:15.913843] ### 3D-OV-CROP ###
+[22:02:15.913876] Cropping (372, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:15.913883] Minimum overlap selected: (0, 0, 0)
+[22:02:15.913889] Padding: (0, 0, 0)
+[22:02:15.913908] Real overlapping (%): (0.0875, 0.1328125, 0.125)
+[22:02:15.913916] Real overlapping (pixels): (7.0, 17.0, 16.0)
+[22:02:15.913922] (5, 6, 6) patches per (z,y,x) axis
+[22:02:15.913933] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:15.913942] Positions of each volume in Z axis: {0: [0, 80], 1: [73, 153], 2: [146, 226], 3: [219, 299], 4: [292, 372]}
+[22:02:15.913949] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:02:17.956084] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_I2_cs0.35_1.46_1.42.zarr
+[22:02:17.965176] ### 3D-OV-CROP ###
+[22:02:17.965209] Cropping (388, 889, 863, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:17.965217] Minimum overlap selected: (0, 0, 0)
+[22:02:17.965223] Padding: (0, 0, 0)
+[22:02:17.965243] Real overlapping (%): (0.0375, 0.0078125, 0.0390625)
+[22:02:17.965251] Real overlapping (pixels): (3.0, 1.0, 5.0)
+[22:02:17.965257] (5, 7, 7) patches per (z,y,x) axis
+[22:02:17.965267] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:17.965282] Positions of each volume in Z axis: {0: [0, 80], 1: [77, 157], 2: [154, 234], 3: [231, 311], 4: [308, 388]}
+[22:02:17.965288] Rank 0: Total number of patches: 245 - (5, 7, 7) patches per (z,y,x) axis (per GPU)
+[22:02:19.656980] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_I2_cs1.38_0.33_0.36.zarr
+[22:02:19.666065] ### 3D-OV-CROP ###
+[22:02:19.666100] Cropping (388, 889, 863, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:19.666108] Minimum overlap selected: (0, 0, 0)
+[22:02:19.666114] Padding: (0, 0, 0)
+[22:02:19.666134] Real overlapping (%): (0.0375, 0.0078125, 0.0390625)
+[22:02:19.666142] Real overlapping (pixels): (3.0, 1.0, 5.0)
+[22:02:19.666149] (5, 7, 7) patches per (z,y,x) axis
+[22:02:19.666160] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:19.666169] Positions of each volume in Z axis: {0: [0, 80], 1: [77, 157], 2: [154, 234], 3: [231, 311], 4: [308, 388]}
+[22:02:19.666176] Rank 0: Total number of patches: 245 - (5, 7, 7) patches per (z,y,x) axis (per GPU)
+[22:02:21.307590] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_I2_cs1.43_1.48_1.38.zarr
+[22:02:21.319876] ### 3D-OV-CROP ###
+[22:02:21.319909] Cropping (388, 889, 863, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:21.319918] Minimum overlap selected: (0, 0, 0)
+[22:02:21.319925] Padding: (0, 0, 0)
+[22:02:21.319944] Real overlapping (%): (0.0375, 0.0078125, 0.0390625)
+[22:02:21.319951] Real overlapping (pixels): (3.0, 1.0, 5.0)
+[22:02:21.319957] (5, 7, 7) patches per (z,y,x) axis
+[22:02:21.319968] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:21.319977] Positions of each volume in Z axis: {0: [0, 80], 1: [77, 157], 2: [154, 234], 3: [231, 311], 4: [308, 388]}
+[22:02:21.319984] Rank 0: Total number of patches: 245 - (5, 7, 7) patches per (z,y,x) axis (per GPU)
+[22:02:22.895822] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_I2_cs1.48_0.29_1.48.zarr
+[22:02:22.906825] ### 3D-OV-CROP ###
+[22:02:22.906858] Cropping (388, 889, 863, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:22.906867] Minimum overlap selected: (0, 0, 0)
+[22:02:22.906873] Padding: (0, 0, 0)
+[22:02:22.906893] Real overlapping (%): (0.0375, 0.0078125, 0.0390625)
+[22:02:22.906900] Real overlapping (pixels): (3.0, 1.0, 5.0)
+[22:02:22.906906] (5, 7, 7) patches per (z,y,x) axis
+[22:02:22.906917] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:22.906926] Positions of each volume in Z axis: {0: [0, 80], 1: [77, 157], 2: [154, 234], 3: [231, 311], 4: [308, 388]}
+[22:02:22.906933] Rank 0: Total number of patches: 245 - (5, 7, 7) patches per (z,y,x) axis (per GPU)
+[22:02:24.594348] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_I3_cs0.36_1.48_0.27.zarr
+[22:02:24.604387] ### 3D-OV-CROP ###
+[22:02:24.604420] Cropping (390, 1058, 907, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:24.604429] Minimum overlap selected: (0, 0, 0)
+[22:02:24.604435] Padding: (0, 0, 0)
+[22:02:24.604455] Real overlapping (%): (0.025, 0.0859375, 0.125)
+[22:02:24.604463] Real overlapping (pixels): (2.0, 11.0, 16.0)
+[22:02:24.604470] (5, 8, 9) patches per (z,y,x) axis
+[22:02:24.604481] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:24.604490] Positions of each volume in Z axis: {0: [0, 80], 1: [78, 158], 2: [156, 236], 3: [234, 314], 4: [312, 390]}
+[22:02:24.604496] Rank 0: Total number of patches: 360 - (5, 8, 9) patches per (z,y,x) axis (per GPU)
+[22:02:27.302196] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_I3_cs1.40_0.32_0.31.zarr
+[22:02:27.313570] ### 3D-OV-CROP ###
+[22:02:27.313602] Cropping (390, 1058, 907, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:27.313610] Minimum overlap selected: (0, 0, 0)
+[22:02:27.313616] Padding: (0, 0, 0)
+[22:02:27.313635] Real overlapping (%): (0.025, 0.0859375, 0.125)
+[22:02:27.313643] Real overlapping (pixels): (2.0, 11.0, 16.0)
+[22:02:27.313649] (5, 8, 9) patches per (z,y,x) axis
+[22:02:27.313665] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:27.313674] Positions of each volume in Z axis: {0: [0, 80], 1: [78, 158], 2: [156, 236], 3: [234, 314], 4: [312, 390]}
+[22:02:27.313683] Rank 0: Total number of patches: 360 - (5, 8, 9) patches per (z,y,x) axis (per GPU)
+[22:02:29.743537] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_I3_cs1.41_1.38_1.48.zarr
+[22:02:29.754710] ### 3D-OV-CROP ###
+[22:02:29.754743] Cropping (390, 1058, 907, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:29.754752] Minimum overlap selected: (0, 0, 0)
+[22:02:29.754758] Padding: (0, 0, 0)
+[22:02:29.754777] Real overlapping (%): (0.025, 0.0859375, 0.125)
+[22:02:29.754784] Real overlapping (pixels): (2.0, 11.0, 16.0)
+[22:02:29.754790] (5, 8, 9) patches per (z,y,x) axis
+[22:02:29.754801] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:29.754810] Positions of each volume in Z axis: {0: [0, 80], 1: [78, 158], 2: [156, 236], 3: [234, 314], 4: [312, 390]}
+[22:02:29.754817] Rank 0: Total number of patches: 360 - (5, 8, 9) patches per (z,y,x) axis (per GPU)
+[22:02:32.184173] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_I3_cs1.47_1.46_0.29.zarr
+[22:02:32.198863] ### 3D-OV-CROP ###
+[22:02:32.198895] Cropping (390, 1058, 907, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:32.198903] Minimum overlap selected: (0, 0, 0)
+[22:02:32.198909] Padding: (0, 0, 0)
+[22:02:32.198928] Real overlapping (%): (0.025, 0.0859375, 0.125)
+[22:02:32.198936] Real overlapping (pixels): (2.0, 11.0, 16.0)
+[22:02:32.198942] (5, 8, 9) patches per (z,y,x) axis
+[22:02:32.198953] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:02:32.198962] Positions of each volume in Z axis: {0: [0, 80], 1: [78, 158], 2: [156, 236], 3: [234, 314], 4: [312, 390]}
+[22:02:32.198969] Rank 0: Total number of patches: 360 - (5, 8, 9) patches per (z,y,x) axis (per GPU)
+[22:02:34.685669] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_I5_cs0.35_0.34_0.34.zarr
+[22:02:34.694435] ### 3D-OV-CROP ###
+[22:02:34.694467] Cropping (401, 982, 895, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:34.694475] Minimum overlap selected: (0, 0, 0)
+[22:02:34.694481] Padding: (0, 0, 0)
+[22:02:34.694499] Real overlapping (%): (0.1875, 0.046875, 0.0)
+[22:02:34.694507] Real overlapping (pixels): (15.0, 6.0, 0.0)
+[22:02:34.694513] (6, 7, 8) patches per (z,y,x) axis
+[22:02:34.694526] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:02:34.694535] Positions of each volume in Z axis: {0: [0, 80], 1: [65, 145], 2: [130, 210], 3: [195, 275], 4: [260, 340], 5: [325, 401]}
+[22:02:34.694542] Rank 0: Total number of patches: 336 - (6, 7, 8) patches per (z,y,x) axis (per GPU)
+[22:02:37.952303] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_I5_cs0.36_1.43_1.42.zarr
+[22:02:37.962715] ### 3D-OV-CROP ###
+[22:02:37.962747] Cropping (401, 982, 895, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:37.962755] Minimum overlap selected: (0, 0, 0)
+[22:02:37.962761] Padding: (0, 0, 0)
+[22:02:37.962779] Real overlapping (%): (0.1875, 0.046875, 0.0)
+[22:02:37.962787] Real overlapping (pixels): (15.0, 6.0, 0.0)
+[22:02:37.962793] (6, 7, 8) patches per (z,y,x) axis
+[22:02:37.962805] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:02:37.962814] Positions of each volume in Z axis: {0: [0, 80], 1: [65, 145], 2: [130, 210], 3: [195, 275], 4: [260, 340], 5: [325, 401]}
+[22:02:37.962821] Rank 0: Total number of patches: 336 - (6, 7, 8) patches per (z,y,x) axis (per GPU)
+[22:02:41.077290] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_I5_cs1.39_1.46_1.48.zarr
+[22:02:41.087426] ### 3D-OV-CROP ###
+[22:02:41.087458] Cropping (401, 982, 895, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:41.087471] Minimum overlap selected: (0, 0, 0)
+[22:02:41.087478] Padding: (0, 0, 0)
+[22:02:41.087496] Real overlapping (%): (0.1875, 0.046875, 0.0)
+[22:02:41.087503] Real overlapping (pixels): (15.0, 6.0, 0.0)
+[22:02:41.087509] (6, 7, 8) patches per (z,y,x) axis
+[22:02:41.087521] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:02:41.087530] Positions of each volume in Z axis: {0: [0, 80], 1: [65, 145], 2: [130, 210], 3: [195, 275], 4: [260, 340], 5: [325, 401]}
+[22:02:41.087536] Rank 0: Total number of patches: 336 - (6, 7, 8) patches per (z,y,x) axis (per GPU)
+[22:02:44.428455] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_I5_cs1.47_0.35_0.25.zarr
+[22:02:44.443171] ### 3D-OV-CROP ###
+[22:02:44.443204] Cropping (401, 982, 895, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:44.443212] Minimum overlap selected: (0, 0, 0)
+[22:02:44.443219] Padding: (0, 0, 0)
+[22:02:44.443238] Real overlapping (%): (0.1875, 0.046875, 0.0)
+[22:02:44.443245] Real overlapping (pixels): (15.0, 6.0, 0.0)
+[22:02:44.443251] (6, 7, 8) patches per (z,y,x) axis
+[22:02:44.443263] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:02:44.443273] Positions of each volume in Z axis: {0: [0, 80], 1: [65, 145], 2: [130, 210], 3: [195, 275], 4: [260, 340], 5: [325, 401]}
+[22:02:44.443285] Rank 0: Total number of patches: 336 - (6, 7, 8) patches per (z,y,x) axis (per GPU)
+[22:02:47.425833] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_J2_cs0.26_0.26_0.28.zarr
+[22:02:47.437438] ### 3D-OV-CROP ###
+[22:02:47.437471] Cropping (404, 934, 911, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:47.437479] Minimum overlap selected: (0, 0, 0)
+[22:02:47.437485] Padding: (0, 0, 0)
+[22:02:47.437504] Real overlapping (%): (0.1875, 0.09375, 0.125)
+[22:02:47.437512] Real overlapping (pixels): (15.0, 12.0, 16.0)
+[22:02:47.437517] (6, 8, 8) patches per (z,y,x) axis
+[22:02:47.437529] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:02:47.437538] Positions of each volume in Z axis: {0: [0, 80], 1: [65, 145], 2: [130, 210], 3: [195, 275], 4: [260, 340], 5: [325, 404]}
+[22:02:47.437544] Rank 0: Total number of patches: 384 - (6, 8, 8) patches per (z,y,x) axis (per GPU)
+[22:02:50.292209] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_J2_cs0.33_1.47_0.35.zarr
+[22:02:50.303790] ### 3D-OV-CROP ###
+[22:02:50.303822] Cropping (404, 934, 911, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:50.303830] Minimum overlap selected: (0, 0, 0)
+[22:02:50.303837] Padding: (0, 0, 0)
+[22:02:50.303858] Real overlapping (%): (0.1875, 0.09375, 0.125)
+[22:02:50.303866] Real overlapping (pixels): (15.0, 12.0, 16.0)
+[22:02:50.303872] (6, 8, 8) patches per (z,y,x) axis
+[22:02:50.303888] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:02:50.303898] Positions of each volume in Z axis: {0: [0, 80], 1: [65, 145], 2: [130, 210], 3: [195, 275], 4: [260, 340], 5: [325, 404]}
+[22:02:50.303906] Rank 0: Total number of patches: 384 - (6, 8, 8) patches per (z,y,x) axis (per GPU)
+[22:02:53.258403] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_J2_cs1.42_1.42_1.44.zarr
+[22:02:53.266952] ### 3D-OV-CROP ###
+[22:02:53.266984] Cropping (404, 934, 911, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:53.266992] Minimum overlap selected: (0, 0, 0)
+[22:02:53.266998] Padding: (0, 0, 0)
+[22:02:53.267017] Real overlapping (%): (0.1875, 0.09375, 0.125)
+[22:02:53.267025] Real overlapping (pixels): (15.0, 12.0, 16.0)
+[22:02:53.267031] (6, 8, 8) patches per (z,y,x) axis
+[22:02:53.267044] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:02:53.267052] Positions of each volume in Z axis: {0: [0, 80], 1: [65, 145], 2: [130, 210], 3: [195, 275], 4: [260, 340], 5: [325, 404]}
+[22:02:53.267059] Rank 0: Total number of patches: 384 - (6, 8, 8) patches per (z,y,x) axis (per GPU)
+[22:02:56.484462] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT047848-20171020_66_J2_cs1.48_1.49_0.35.zarr
+[22:02:56.494276] ### 3D-OV-CROP ###
+[22:02:56.494309] Cropping (404, 934, 911, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:56.494318] Minimum overlap selected: (0, 0, 0)
+[22:02:56.494324] Padding: (0, 0, 0)
+[22:02:56.494343] Real overlapping (%): (0.1875, 0.09375, 0.125)
+[22:02:56.494360] Real overlapping (pixels): (15.0, 12.0, 16.0)
+[22:02:56.494367] (6, 8, 8) patches per (z,y,x) axis
+[22:02:56.494379] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:02:56.494388] Positions of each volume in Z axis: {0: [0, 80], 1: [65, 145], 2: [130, 210], 3: [195, 275], 4: [260, 340], 5: [325, 404]}
+[22:02:56.494395] Rank 0: Total number of patches: 384 - (6, 8, 8) patches per (z,y,x) axis (per GPU)
+[22:02:59.414124] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT061467-20180911_62_E5_cs0.29_0.26_1.42.zarr
+[22:02:59.422433] ### 3D-OV-CROP ###
+[22:02:59.422465] Cropping (423, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:02:59.422474] Minimum overlap selected: (0, 0, 0)
+[22:02:59.422479] Padding: (0, 0, 0)
+[22:02:59.422498] Real overlapping (%): (0.1375, 0.125, 0.125)
+[22:02:59.422506] Real overlapping (pixels): (11.0, 16.0, 16.0)
+[22:02:59.422512] (6, 6, 6) patches per (z,y,x) axis
+[22:02:59.422524] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:02:59.422533] Positions of each volume in Z axis: {0: [0, 80], 1: [69, 149], 2: [138, 218], 3: [207, 287], 4: [276, 356], 5: [345, 423]}
+[22:02:59.422540] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:03:00.974437] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT061467-20180911_62_E5_cs0.32_0.32_0.37.zarr
+[22:03:00.984167] ### 3D-OV-CROP ###
+[22:03:00.984197] Cropping (423, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:03:00.984205] Minimum overlap selected: (0, 0, 0)
+[22:03:00.984212] Padding: (0, 0, 0)
+[22:03:00.984229] Real overlapping (%): (0.1375, 0.125, 0.125)
+[22:03:00.984237] Real overlapping (pixels): (11.0, 16.0, 16.0)
+[22:03:00.984243] (6, 6, 6) patches per (z,y,x) axis
+[22:03:00.984254] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:03:00.984263] Positions of each volume in Z axis: {0: [0, 80], 1: [69, 149], 2: [138, 218], 3: [207, 287], 4: [276, 356], 5: [345, 423]}
+[22:03:00.984270] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:03:02.425144] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT061467-20180911_62_E5_cs1.38_0.37_1.38.zarr
+[22:03:02.438715] ### 3D-OV-CROP ###
+[22:03:02.438748] Cropping (423, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:03:02.438756] Minimum overlap selected: (0, 0, 0)
+[22:03:02.438763] Padding: (0, 0, 0)
+[22:03:02.438782] Real overlapping (%): (0.1375, 0.125, 0.125)
+[22:03:02.438790] Real overlapping (pixels): (11.0, 16.0, 16.0)
+[22:03:02.438796] (6, 6, 6) patches per (z,y,x) axis
+[22:03:02.438807] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:03:02.438816] Positions of each volume in Z axis: {0: [0, 80], 1: [69, 149], 2: [138, 218], 3: [207, 287], 4: [276, 356], 5: [345, 423]}
+[22:03:02.438823] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:03:03.782957] Reading Zarr/H5 file: fisbe/biapy-channel-scale-zarr/train/label/VT061467-20180911_62_E5_cs1.49_0.26_0.31.zarr
+[22:03:03.793144] ### 3D-OV-CROP ###
+[22:03:03.793173] Cropping (423, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:03:03.793181] Minimum overlap selected: (0, 0, 0)
+[22:03:03.793187] Padding: (0, 0, 0)
+[22:03:03.793205] Real overlapping (%): (0.1375, 0.125, 0.125)
+[22:03:03.793212] Real overlapping (pixels): (11.0, 16.0, 16.0)
+[22:03:03.793222] (6, 6, 6) patches per (z,y,x) axis
+[22:03:03.793234] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:03:03.793242] Positions of each volume in Z axis: {0: [0, 80], 1: [69, 149], 2: [138, 218], 3: [207, 287], 4: [276, 356], 5: [345, 423]}
+[22:03:03.793249] Rank 0: Total number of patches: 216 - (6, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:03:05.162803] Creating Y_train channels . . .
+[22:37:30.357112] You select to create ['F', 'P'] channels from given instance labels and no file is detected in fisbe/biapy-no-aug-zarr/val/label_F.erosion-1.dilation-1_P.type-skeleton.dilation-2.erosion-0 . So let's prepare the data. This process will be done just once!
+[22:37:30.362066] Working with Zarr files . . .
+[22:37:30.362120] Reading Zarr/H5 file: fisbe/biapy-no-aug-zarr/val/label/R22C03-20180918_66_J2.zarr
+[22:37:30.371780] ### 3D-OV-CROP ###
+[22:37:30.371811] Cropping (399, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:37:30.371820] Minimum overlap selected: (0, 0, 0)
+[22:37:30.371826] Padding: (0, 0, 0)
+[22:37:30.371848] Real overlapping (%): (0.0, 0.1328125, 0.125)
+[22:37:30.371855] Real overlapping (pixels): (0.0, 17.0, 16.0)
+[22:37:30.371860] (5, 6, 6) patches per (z,y,x) axis
+[22:37:30.371871] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:37:30.371880] Positions of each volume in Z axis: {0: [0, 80], 1: [80, 160], 2: [160, 240], 3: [240, 320], 4: [320, 399]}
+[22:37:30.371887] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:37:31.280811] Reading Zarr/H5 file: fisbe/biapy-no-aug-zarr/val/label/VT012403-20171128_61_B2.zarr
+[22:37:31.290124] ### 3D-OV-CROP ###
+[22:37:31.290155] Cropping (369, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:37:31.290163] Minimum overlap selected: (0, 0, 0)
+[22:37:31.290170] Padding: (0, 0, 0)
+[22:37:31.290189] Real overlapping (%): (0.0875, 0.1328125, 0.125)
+[22:37:31.290196] Real overlapping (pixels): (7.0, 17.0, 16.0)
+[22:37:31.290202] (5, 6, 6) patches per (z,y,x) axis
+[22:37:31.290212] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:37:31.290221] Positions of each volume in Z axis: {0: [0, 80], 1: [73, 153], 2: [146, 226], 3: [219, 299], 4: [292, 369]}
+[22:37:31.290227] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:37:32.472677] Reading Zarr/H5 file: fisbe/biapy-no-aug-zarr/val/label/VT033614-20171124_64_H1.zarr
+[22:37:32.482296] ### 3D-OV-CROP ###
+[22:37:32.482329] Cropping (379, 685, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:37:32.482337] Minimum overlap selected: (0, 0, 0)
+[22:37:32.482344] Padding: (0, 0, 0)
+[22:37:32.482369] Real overlapping (%): (0.0625, 0.125, 0.125)
+[22:37:32.482377] Real overlapping (pixels): (5.0, 16.0, 16.0)
+[22:37:32.482383] (5, 6, 6) patches per (z,y,x) axis
+[22:37:32.482394] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:37:32.482403] Positions of each volume in Z axis: {0: [0, 80], 1: [75, 155], 2: [150, 230], 3: [225, 305], 4: [300, 379]}
+[22:37:32.482409] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:37:34.200624] Reading Zarr/H5 file: fisbe/biapy-no-aug-zarr/val/label/VT033614-20171124_64_H5.zarr
+[22:37:34.209799] ### 3D-OV-CROP ###
+[22:37:34.209829] Cropping (395, 685, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:37:34.209837] Minimum overlap selected: (0, 0, 0)
+[22:37:34.209843] Padding: (0, 0, 0)
+[22:37:34.209862] Real overlapping (%): (0.0125, 0.125, 0.125)
+[22:37:34.209869] Real overlapping (pixels): (1.0, 16.0, 16.0)
+[22:37:34.209876] (5, 6, 6) patches per (z,y,x) axis
+[22:37:34.209886] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:37:34.209895] Positions of each volume in Z axis: {0: [0, 80], 1: [79, 159], 2: [158, 238], 3: [237, 317], 4: [316, 395]}
+[22:37:34.209902] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:37:35.432261] Reading Zarr/H5 file: fisbe/biapy-no-aug-zarr/val/label/VT041298-20171114_63_C3.zarr
+[22:37:35.441690] ### 3D-OV-CROP ###
+[22:37:35.441721] Cropping (356, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:37:35.441729] Minimum overlap selected: (0, 0, 0)
+[22:37:35.441735] Padding: (0, 0, 0)
+[22:37:35.441754] Real overlapping (%): (0.1375, 0.125, 0.125)
+[22:37:35.441761] Real overlapping (pixels): (11.0, 16.0, 16.0)
+[22:37:35.441767] (5, 6, 6) patches per (z,y,x) axis
+[22:37:35.441778] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4]]
+[22:37:35.441787] Positions of each volume in Z axis: {0: [0, 80], 1: [69, 149], 2: [138, 218], 3: [207, 287], 4: [276, 356]}
+[22:37:35.441793] Rank 0: Total number of patches: 180 - (5, 6, 6) patches per (z,y,x) axis (per GPU)
+[22:37:37.005369] Creating Y_val channels . . .
+[22:39:18.923368] You select to create ['F', 'P'] channels from given instance labels and no file is detected in fisbe/biapy-no-aug-zarr/test/label_F.erosion-1.dilation-1_P.type-skeleton.dilation-2.erosion-0 . So let's prepare the data. This process will be done just once!
+[22:39:18.928298] Working with Zarr files . . .
+[22:39:18.928352] Reading Zarr/H5 file: fisbe/biapy-no-aug-zarr/test/label/JRC_SS04989-20160318_24_A2.zarr
+[22:39:18.938789] ### 3D-OV-CROP ###
+[22:39:18.938823] Cropping (390, 680, 680, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:39:18.938831] Minimum overlap selected: (0, 0, 0)
+[22:39:18.938838] Padding: (4, 16, 16)
+[22:39:18.938860] Real overlapping (%): (0.1111111111111111, 0.125, 0.125)
+[22:39:18.938867] Real overlapping (pixels): (8.0, 12.0, 12.0)
+[22:39:18.938874] (6, 8, 8) patches per (z,y,x) axis
+[22:39:18.938886] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:39:18.938895] Positions of each volume in Z axis: {0: [0, 72], 1: [64, 136], 2: [128, 200], 3: [192, 264], 4: [256, 328], 5: [320, 390]}
+[22:39:18.938901] Rank 0: Total number of patches: 384 - (6, 8, 8) patches per (z,y,x) axis (per GPU)
+[22:39:21.246645] Reading Zarr/H5 file: fisbe/biapy-no-aug-zarr/test/label/R14A02-20180905_65_A6.zarr
+[22:39:21.257771] ### 3D-OV-CROP ###
+[22:39:21.257802] Cropping (385, 685, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:39:21.257810] Minimum overlap selected: (0, 0, 0)
+[22:39:21.257816] Padding: (4, 16, 16)
+[22:39:21.257834] Real overlapping (%): (0.125, 0.11458333333333333, 0.11458333333333333)
+[22:39:21.257842] Real overlapping (pixels): (9.0, 11.0, 11.0)
+[22:39:21.257848] (6, 8, 8) patches per (z,y,x) axis
+[22:39:21.257859] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:39:21.257868] Positions of each volume in Z axis: {0: [0, 72], 1: [63, 135], 2: [126, 198], 3: [189, 261], 4: [252, 324], 5: [315, 385]}
+[22:39:21.257881] Rank 0: Total number of patches: 384 - (6, 8, 8) patches per (z,y,x) axis (per GPU)
+[22:39:24.790052] Reading Zarr/H5 file: fisbe/biapy-no-aug-zarr/test/label/R54A09-20181019_64_H1.zarr
+[22:39:24.799762] ### 3D-OV-CROP ###
+[22:39:24.799793] Cropping (430, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:39:24.799801] Minimum overlap selected: (0, 0, 0)
+[22:39:24.799807] Padding: (4, 16, 16)
+[22:39:24.799826] Real overlapping (%): (0.0, 0.125, 0.11458333333333333)
+[22:39:24.799834] Real overlapping (pixels): (0.0, 12.0, 11.0)
+[22:39:24.799840] (6, 8, 8) patches per (z,y,x) axis
+[22:39:24.799852] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:39:24.799861] Positions of each volume in Z axis: {0: [0, 72], 1: [72, 144], 2: [144, 216], 3: [216, 288], 4: [288, 360], 5: [360, 430]}
+[22:39:24.799868] Rank 0: Total number of patches: 384 - (6, 8, 8) patches per (z,y,x) axis (per GPU)
+[22:39:26.921040] Reading Zarr/H5 file: fisbe/biapy-no-aug-zarr/test/label/VT011145-20171222_63_I1.zarr
+[22:39:26.930449] ### 3D-OV-CROP ###
+[22:39:26.930482] Cropping (417, 685, 685, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:39:26.930496] Minimum overlap selected: (0, 0, 0)
+[22:39:26.930503] Padding: (4, 16, 16)
+[22:39:26.930521] Real overlapping (%): (0.041666666666666664, 0.11458333333333333, 0.11458333333333333)
+[22:39:26.930530] Real overlapping (pixels): (3.0, 11.0, 11.0)
+[22:39:26.930536] (6, 8, 8) patches per (z,y,x) axis
+[22:39:26.930550] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:39:26.930559] Positions of each volume in Z axis: {0: [0, 72], 1: [69, 141], 2: [138, 210], 3: [207, 279], 4: [276, 348], 5: [345, 417]}
+[22:39:26.930566] Rank 0: Total number of patches: 384 - (6, 8, 8) patches per (z,y,x) axis (per GPU)
+[22:39:29.693752] Reading Zarr/H5 file: fisbe/biapy-no-aug-zarr/test/label/VT027175-20171031_62_H3.zarr
+[22:39:29.702198] ### 3D-OV-CROP ###
+[22:39:29.702230] Cropping (425, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:39:29.702239] Minimum overlap selected: (0, 0, 0)
+[22:39:29.702245] Padding: (4, 16, 16)
+[22:39:29.702264] Real overlapping (%): (0.013888888888888888, 0.11458333333333333, 0.125)
+[22:39:29.702272] Real overlapping (pixels): (1.0, 11.0, 12.0)
+[22:39:29.702278] (6, 8, 8) patches per (z,y,x) axis
+[22:39:29.702290] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:39:29.702299] Positions of each volume in Z axis: {0: [0, 72], 1: [71, 143], 2: [142, 214], 3: [213, 285], 4: [284, 356], 5: [355, 425]}
+[22:39:29.702307] Rank 0: Total number of patches: 384 - (6, 8, 8) patches per (z,y,x) axis (per GPU)
+[22:39:32.492126] Reading Zarr/H5 file: fisbe/biapy-no-aug-zarr/test/label/VT027175-20171031_62_H4.zarr
+[22:39:32.501108] ### 3D-OV-CROP ###
+[22:39:32.501140] Cropping (409, 687, 684, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:39:32.501148] Minimum overlap selected: (0, 0, 0)
+[22:39:32.501155] Padding: (4, 16, 16)
+[22:39:32.501175] Real overlapping (%): (0.05555555555555555, 0.11458333333333333, 0.125)
+[22:39:32.501182] Real overlapping (pixels): (4.0, 11.0, 12.0)
+[22:39:32.501189] (6, 8, 8) patches per (z,y,x) axis
+[22:39:32.501201] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:39:32.501220] Positions of each volume in Z axis: {0: [0, 72], 1: [68, 140], 2: [136, 208], 3: [204, 276], 4: [272, 344], 5: [340, 409]}
+[22:39:32.501227] Rank 0: Total number of patches: 384 - (6, 8, 8) patches per (z,y,x) axis (per GPU)
+[22:39:35.364519] Reading Zarr/H5 file: fisbe/biapy-no-aug-zarr/test/label/VT050157-20171110_61_C1.zarr
+[22:39:35.373619] ### 3D-OV-CROP ###
+[22:39:35.373651] Cropping (377, 683, 686, 1) images into (80, 128, 128, 1) with overlapping (axis order: ZYXC). . .
+[22:39:35.373659] Minimum overlap selected: (0, 0, 0)
+[22:39:35.373666] Padding: (4, 16, 16)
+[22:39:35.373685] Real overlapping (%): (0.1527777777777778, 0.125, 0.11458333333333333)
+[22:39:35.373692] Real overlapping (pixels): (11.0, 12.0, 11.0)
+[22:39:35.373699] (6, 8, 8) patches per (z,y,x) axis
+[22:39:35.373711] List of volume IDs to be processed by each GPU: [[0, 1, 2, 3, 4, 5]]
+[22:39:35.373719] Positions of each volume in Z axis: {0: [0, 72], 1: [61, 133], 2: [122, 194], 3: [183, 255], 4: [244, 316], 5: [305, 377]}
+[22:39:35.373726] Rank 0: Total number of patches: 384 - (6, 8, 8) patches per (z,y,x) axis (per GPU)
+[22:39:38.303216] Creating Y_test channels . . .
+[22:42:15.926900] DATA.TRAIN.GT_PATH changed from fisbe/biapy-channel-scale-zarr/train/label to fisbe/biapy-channel-scale-zarr/train/label_F.erosion-1.dilation-1_P.type-skeleton.dilation-2.erosion-0
+[22:42:15.927844] DATA.VAL.GT_PATH changed from fisbe/biapy-no-aug-zarr/val/label to fisbe/biapy-no-aug-zarr/val/label_F.erosion-1.dilation-1_P.type-skeleton.dilation-2.erosion-0
+[22:42:15.927869] DATA.TEST.GT_PATH changed from fisbe/biapy-no-aug-zarr/test/label to fisbe/biapy-no-aug-zarr/test/label_F.erosion-1.dilation-1_P.type-skeleton.dilation-2.erosion-0

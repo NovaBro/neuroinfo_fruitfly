@@ -1,0 +1,26 @@
+INFO:    FUSE2FS (3): Warning: Mounting unchecked fs, running e2fsck is recommended.
+/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/check_configuration.py:395: UserWarning: Seems that the channels requested are custom so BiaPy did not fill some variables by default. You will need to fill the following variables: PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.SEED_CHANNELS_THRESH, PROBLEM.INSTANCE_SEG.WATERSHED.TOPOGRAPHIC_SURFACE_CHANNEL, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS, PROBLEM.INSTANCE_SEG.WATERSHED.GROWTH_MASK_CHANNELS_THRESH.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 450, in <module>
+    main()
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 283, in main
+    biapy = BiaPy(
+            ^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 371, in __init__
+    self._build_workflow()
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 396, in _build_workflow
+    self.workflow = getattr(mdl, name)(
+                    ^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/instance_seg.py", line 124, in __init__
+    self.original_test_path, self.original_test_mask_path = self.prepare_instance_data()
+                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/engine/instance_seg.py", line 2896, in prepare_instance_data
+    create_instance_channels(self.cfg)
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/data/pre_processing.py<fid_mask_patch>", line 60, in create_instance_channels
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/data/data_3D_manipulation.py", line 128, in load_3D_efficient_files
+    obj = next(__unnamed_iterator)
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/data/data_3D_manipulation.py", line 940, in extract_3D_patch_with_overlap_and_padding_yield
+    raise ValueError(
+ValueError: 'vol_shape[1]' 160 greater than 1 (you can reduce 'DATA.PATCH_SIZE')

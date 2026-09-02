@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 450, in <module>
+    main()
+  File "/scratch/wmz2007/neuroinfo_fruitfly/BiaPy/run_biapy-py.py", line 432, in main
+    biapy = BiaPy(
+            ^^^^^^
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/biapy/_biapy.py", line 285, in __init__
+    cfg_manager._C.merge_from_other_cfg(temp_cfg)
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/yacs/config.py", line 217, in merge_from_other_cfg
+    _merge_a_into_b(cfg_other, self, self, [])
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/yacs/config.py", line 478, in _merge_a_into_b
+    _merge_a_into_b(v, b[k], root, key_list + [k])
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/yacs/config.py", line 478, in _merge_a_into_b
+    _merge_a_into_b(v, b[k], root, key_list + [k])
+  File "/ext3/miniforge3/envs/BiaPy_env/lib/python3.11/site-packages/yacs/config.py", line 491, in _merge_a_into_b
+    raise KeyError("Non-existent config key: {}".format(full_key))
+KeyError: 'Non-existent config key: TEST.BY_CHUNKS.SHAPE'

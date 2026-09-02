@@ -8,7 +8,7 @@
 #   ./sbatch/biapy/biapy-py_sbatch_chain.sh [-j JOB_NAME] [-r RUN_ID] <stem> train test
 #   ./sbatch/biapy/biapy-py_sbatch_chain.sh [-j JOB_NAME] [-r RUN_ID] <stem> preprocessing train test
 #
-# Stem is the YAML basename under BiaPy/configs/ (e.g. biapy-v1-channel-rot).
+# Stem is the YAML basename under biapy_work_folder/configs/ (e.g. biapy-v1-channel-rot).
 # Resolves to ${stem}.yaml for all modes (mode is passed separately to the job).
 # -j/--job-name overrides BiaPy --job-name and the SLURM job-name base (default: stem).
 # -r/--run-id overrides BiaPy --run-id (default: 0).
@@ -22,8 +22,8 @@ set -euo pipefail
 # Print help to stderr and exit with failure.
 usage() {
   echo "Usage: $0 [-j JOB_NAME] [-r RUN_ID] <stem> <preprocessing|train|test> [preprocessing|train|test]..." >&2
-  echo "  Stem is the YAML basename under BiaPy/configs/ (e.g. biapy-v1-channel-rot)." >&2
-  echo "  Resolves to BiaPy/configs/\${stem}.yaml for all modes." >&2
+  echo "  Stem is the YAML basename under biapy_work_folder/configs/ (e.g. biapy-v1-channel-rot)." >&2
+  echo "  Resolves to biapy_work_folder/configs/\${stem}.yaml for all modes." >&2
   echo "  Modes (1–3, no duplicates): preprocessing, train, test." >&2
   echo "  Chain order: preprocessing → train → test (afterok)." >&2
   echo "  -j, --job-name   BiaPy/SLURM job-name override (default: stem)" >&2
@@ -125,9 +125,9 @@ done
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SBATCH_SCRIPT="${SCRIPT_DIR}/biapy-py_sbatch.sh"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-CONFIG_DIR="${REPO_ROOT}/BiaPy/configs"
+CONFIG_DIR="${REPO_ROOT}/biapy_work_folder/configs"
 
-# Flat config shared by all modes: BiaPy/configs/${stem}.yaml
+# Flat config shared by all modes: biapy_work_folder/configs/${stem}.yaml
 config_file="${stem}.yaml"
 config_path="${CONFIG_DIR}/${config_file}"
 if [[ ! -f "${config_path}" ]]; then
@@ -145,7 +145,7 @@ prev_id=""
 if [[ "$do_preprocessing" -eq 1 ]]; then
   sbatch_args=(
     --parsable
-    --job-name="BiaPy-py-${slurm_name_base}-preprocessing"
+    --job-name="${slurm_name_base}-r${run_id}-preprocessing"
     --cpus-per-task=8
     --time=14:00:00
     --mem=256g
@@ -159,12 +159,14 @@ fi
 if [[ "$do_train" -eq 1 ]]; then
   sbatch_args=(
     --parsable
-    --job-name="BiaPy-py-${slurm_name_base}-train"
-    --cpus-per-task=16
-    --time=48:00:00
-    --mem=240g
+    --job-name="${slurm_name_base}-r${run_id}-train"
+    --time=24:00:00
     --gres=gpu:1
+    # --cpus-per-task=16
+    # --mem=240g
     # --constraint='l40s'
+    --cpus-per-task=16
+    --mem=384g
     --constraint='h200'
   )
   if [[ -n "$prev_id" ]]; then
@@ -184,7 +186,7 @@ fi
 if [[ "$do_test" -eq 1 ]]; then
   sbatch_args=(
     --parsable
-    --job-name="BiaPy-py-${slurm_name_base}-test"
+    --job-name="${slurm_name_base}-r${run_id}-test"
     --cpus-per-task=6
     --time=3:00:00
     --mem=128g
