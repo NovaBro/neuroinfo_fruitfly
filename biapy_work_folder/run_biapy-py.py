@@ -187,6 +187,164 @@ def _patch_biapy_zarr_create_instance_channels():
 _patch_biapy_zarr_create_instance_channels()
 
 
+def _rebind_biapy_symbol(name, new_fn, orig_fn=None):
+    """Rebind ``name`` on biapy modules that still point at ``orig_fn`` (or any prior value)."""
+    import sys
+
+    for mod in list(sys.modules.values()):
+        if mod is None:
+            continue
+        mod_name = getattr(mod, "__name__", "") or ""
+        if not mod_name.startswith("biapy"):
+            continue
+        if not hasattr(mod, name):
+            continue
+        cur = getattr(mod, name)
+        if orig_fn is not None and cur is not orig_fn and cur is not new_fn:
+            continue
+        setattr(mod, name, new_fn)
+
+
+def _patch_biapy_fast_rot90():
+    """Use np.rot90 for unit-scale 90°-multiple affines instead of SciPy resample.
+
+    BiaPy folds ROT90 into affine_transform even when scale is 1.0; that full float
+    resample dominates online DA CPU cost. Preserve semantics for zoom / RANDOM_ROT
+    (non-unit scale or non-90° angles still use stock affine_transform).
+    """
+    import numpy as np
+    import biapy.data.generators.augmentors as aug
+
+    orig = aug.affine_transform
+    if getattr(orig, "_biapy_fast_rot90", False):
+        return
+
+    def affine_transform(
+        img,
+        mask=None,
+        heat=None,
+        scale_xy=1.0,
+        scale_z=1.0,
+        angle=0.0,
+        mode="reflect",
+        mask_type="mask",
+        flow_heat=None,
+        **kwargs,
+    ):
+        # Compatible with biapy 3.7.0 (no img_type) and newer forks (optional img_type kw).
+        if abs(float(scale_xy) - 1.0) <= 1e-3 and abs(float(scale_z) - 1.0) <= 1e-3:
+            ang = float(angle) % 360.0
+            # Identity already handled in stock path; also catch exact 0 here.
+            if ang == 0.0:
+                return img if mask is None else (img, mask, heat)
+            # Exact 90° multiples: np.rot90 matches in-plane CCW rotation without resample.
+            nearest_k = int(round(ang / 90.0))
+            if abs(ang - 90.0 * nearest_k) <= 1e-6:
+                k = nearest_k % 4
+                if k != 0:
+                    assert img.ndim in (3, 4), f"Image must be 3D or 4D, got shape {img.shape}"
+                    axes = (1, 2) if img.ndim == 4 else (0, 1)
+                    img = np.rot90(img, k=k, axes=axes)
+                    if mask is not None:
+                        mask = np.rot90(mask, k=k, axes=axes)
+                    if heat is not None:
+                        heat = np.rot90(heat, k=k, axes=axes)
+                        heat = aug.rotate_flow_vectors(heat, flow_heat, angle)
+                    return img if mask is None else (img, mask, heat)
+
+        return orig(
+            img,
+            mask=mask,
+            heat=heat,
+            scale_xy=scale_xy,
+            scale_z=scale_z,
+            angle=angle,
+            mode=mode,
+            mask_type=mask_type,
+            flow_heat=flow_heat,
+            **kwargs,
+        )
+
+    affine_transform._biapy_fast_rot90 = True
+    affine_transform.__wrapped__ = orig
+    aug.affine_transform = affine_transform
+    _rebind_biapy_symbol("affine_transform", affine_transform, orig_fn=orig)
+    print("Patched BiaPy apply_transform: fast np.rot90 for ROT90-only")
+
+
+def _patch_biapy_inplace_intensity_augs():
+    """Avoid redundant brightness/contrast .copy() on float arrays.
+
+    load_sample already copies each patch, so mutating floats in place is safe and
+    skips an extra ~0.5GB allocation per sample when those augs fire.
+    """
+    import numpy as np
+    import biapy.data.generators.augmentors as aug
+
+    if getattr(aug.brightness, "_biapy_inplace_intensity", False):
+        return
+
+    orig_brightness = aug.brightness
+    orig_contrast = aug.contrast
+
+    def brightness(image, brightness_factor=(0, 0)):
+        assert image.ndim in (3, 4), f"Image must be 3D or 4D, got {image.shape}"
+
+        lo, hi = float(brightness_factor[0]), float(brightness_factor[1])
+        if lo == 0.0 and hi == 0.0:
+            return image
+        if lo > hi:
+            lo, hi = hi, lo
+        if image.size == 0:
+            return image
+
+        delta = float(np.random.uniform(lo, hi))
+        if np.issubdtype(image.dtype, np.floating):
+            image += delta
+            return image
+
+        info = np.iinfo(image.dtype)
+        tmp = image.astype(np.float32, copy=False) + delta
+        np.clip(tmp, info.min, info.max, out=tmp)
+        return tmp.astype(image.dtype, copy=False)
+
+    def contrast(image, contrast_factor=(0, 0)):
+        assert image.ndim in (3, 4), f"Image must be 3D or 4D, got {image.shape}"
+
+        lo, hi = float(contrast_factor[0]), float(contrast_factor[1])
+        if lo == 0.0 and hi == 0.0:
+            return image
+        if lo > hi:
+            lo, hi = hi, lo
+        if image.size == 0:
+            return image
+
+        scale = 1.0 + float(np.random.uniform(lo, hi))
+        if np.issubdtype(image.dtype, np.floating):
+            image *= scale
+            return image
+
+        info = np.iinfo(image.dtype)
+        tmp = image.astype(np.float32, copy=False) * scale
+        np.clip(tmp, info.min, info.max, out=tmp)
+        return tmp.astype(image.dtype, copy=False)
+
+    brightness._biapy_inplace_intensity = True
+    contrast._biapy_inplace_intensity = True
+    brightness.__wrapped__ = orig_brightness
+    contrast.__wrapped__ = orig_contrast
+
+    aug.brightness = brightness
+    aug.contrast = contrast
+    _rebind_biapy_symbol("brightness", brightness, orig_fn=orig_brightness)
+    _rebind_biapy_symbol("contrast", contrast, orig_fn=orig_contrast)
+    print("Patched BiaPy brightness/contrast: in-place for float arrays")
+
+
+_patch_biapy_fast_rot90()
+_patch_biapy_inplace_intensity_augs()
+
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -378,7 +536,7 @@ def apply_cpu_overrides(cfg, n_cpus=None):
         return cfg
 
     cfg['SYSTEM']['NUM_CPUS'] = n_cpus
-    cfg['SYSTEM']['NUM_WORKERS'] = -1
+    cfg['SYSTEM']['NUM_WORKERS'] = 14
     print(
         f'CPU overrides: SYSTEM.NUM_CPUS={n_cpus}, '
         f'SYSTEM.NUM_WORKERS={n_cpus}'
