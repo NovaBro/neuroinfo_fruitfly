@@ -50,6 +50,7 @@ _KNOWN_METRIC_ALIASES = {
     "iou (c channel)": "iou_c",
     "l1 (db channel)": "l1_db",
     "l1 (dn channel)": "l1_dn",
+    "skeleton recall": "skel_recall",
 }
 
 
@@ -215,10 +216,12 @@ def consolidate_training_log(path: str | Path) -> pd.DataFrame:
         "train_iou_c",
         "train_l1_db",
         "train_l1_dn",
+        "train_skel_recall",
         "val_iou_f",
         "val_iou_c",
         "val_l1_db",
         "val_l1_dn",
+        "val_skel_recall",
         "lr",
         "early_stopped",
     ]

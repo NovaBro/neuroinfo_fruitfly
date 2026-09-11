@@ -8,49 +8,51 @@ PROBLEM:
     TYPE: INSTANCE_SEG
     NDIM: 3D
     INSTANCE_SEG:
-      DATA_CHANNELS: ['F', 'Db']
+      DATA_CHANNELS: ['F', 'Dc', 'Dn']
       DATA_CHANNELS_EXTRA_OPTS:
-        - Db:
+        - Dc:
+            type: 'skeleton'
             mask_values: False
-      DATA_CHANNEL_WEIGHTS: (1.0, 2.0)
+          Dn:
+            mask_values: False
+            decline_power: 2
+      DATA_CHANNEL_WEIGHTS: (1.0, 1.0, 1.0)
       WATERSHED:
-        SEED_CHANNELS: ['Db']
-        SEED_CHANNELS_THRESH: [0.05]
+        SEED_CHANNELS: ['Dc', 'Dn']             # keep seeds simple: trust P
+        SEED_CHANNELS_THRESH: ['auto', 0.05]
         TOPOGRAPHIC_SURFACE_CHANNEL: 'F'
         GROWTH_MASK_CHANNELS: ['F']
         GROWTH_MASK_CHANNELS_THRESH: ['auto']
         DATA_CHECK_MW: True
-        # DATA_REMOVE_BEFORE_MW: True
-        # DATA_REMOVE_SMALL_OBJ_BEFORE: 250
+
 
 DATA: 
     PATCH_SIZE: (80, 128, 128, 3)
-    # Patch-level filtering (Zarr always filters per patch; FILTER_BY_IMAGE is ignored).
-    # Drop near-empty patches so training/val are not dominated by all-background crops.
-    FILTER_BY_IMAGE: False
     TRAIN:
         PATH: fisbe/biapy-no-aug-zarr/train/raw
         GT_PATH: fisbe/biapy-no-aug-zarr/train/label
         INPUT_IMG_AXES_ORDER: ZYXC
         INPUT_MASK_AXES_ORDER: ZYXC
-        IN_MEMORY: True
-        FILTER_SAMPLES:
-            ENABLE: True
-            PROPS: [['foreground']]
-            VALUES: [[1.0e-22]]
-            SIGNS: [['lt']]
+        IN_MEMORY: False
+        # IN_MEMORY: True
+        # FILTER_SAMPLES:
+        #     ENABLE: True
+        #     PROPS: [['foreground']]
+        #     VALUES: [[1.0e-22]]
+        #     SIGNS: [['lt']]
     VAL:
         PATH: fisbe/biapy-no-aug-zarr/val/raw
         GT_PATH: fisbe/biapy-no-aug-zarr/val/label
         FROM_TRAIN: False
         INPUT_IMG_AXES_ORDER: ZYXC
         INPUT_MASK_AXES_ORDER: ZYXC
-        IN_MEMORY: True
-        FILTER_SAMPLES:
-            ENABLE: True
-            PROPS: [['foreground']]
-            VALUES: [[1.0e-22]]
-            SIGNS: [['lt']]
+        IN_MEMORY: False
+        # IN_MEMORY: True
+        # FILTER_SAMPLES:
+        #     ENABLE: True
+        #     PROPS: [['foreground']]
+        #     VALUES: [[1.0e-22]]
+        #     SIGNS: [['lt']]
     TEST:
         PATH: fisbe/biapy-no-aug-zarr/test/raw
         GT_PATH: fisbe/biapy-no-aug-zarr/test/label
@@ -87,15 +89,28 @@ MODEL:
 TRAIN:
     ENABLE: True
     OPTIMIZER: ADAMW
-    LR: 1.E-3
-    BATCH_SIZE: 30
+    # h200
+    # LR: 1.E-3
+    # BATCH_SIZE: 30
+
+    # l40
+    LR: 5.E-4
+    BATCH_SIZE: 15
+
     EPOCHS: 240
-    PATIENCE: 20
+    # PATIENCE: 20
     LR_SCHEDULER:
-        NAME: 'onecycle'    # use one-cycle learning rate scheduler
-        # NAME: 'warmupcosine'         # Learning rate scheduler with warmup and cosine decay
-        # MIN_LR: 1.E-5                # Minimum learning rate at the end of cosine decay
-        # WARMUP_COSINE_DECAY_EPOCHS: 5 # Number of epochs for the warmup + cosine decay schedule
+        # NAME: 'onecycle'    # use one-cycle learning rate scheduler
+        NAME: 'warmupcosine'         # Learning rate scheduler with warmup and cosine decay
+        MIN_LR: 1.E-5                # Minimum learning rate at the end of cosine decay
+        WARMUP_COSINE_DECAY_EPOCHS: 20 # Number of epochs for the warmup + cosine decay schedule
+
+LOSS:
+    SKELETON_RECALL:
+        ENABLE: True
+        WEIGHT: 0.1
+        TUBE_DILATIONS: 1
+        TARGET_CHANNEL: F
 
 TEST:
     ENABLE: True

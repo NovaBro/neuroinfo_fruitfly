@@ -1,4 +1,11 @@
 # BiaPy version: 3.7.0
+#
+# Skeleton Recall variant of biapy-aug-zarr-seunet-FDb.yaml (F+Db SE-UNet baseline).
+# LOSS.SKELETON_RECALL.ENABLE auto-appends Sk (tubed skeleton) and I (regen labels).
+# That changes the instance-channel cache folder suffix — re-run preprocessing before train.
+#
+# Launch from repo root:
+#   ./sbatch/biapy/biapy-py_sbatch_chain.sh biapy-aug-zarr-seunet-FDb-skel preprocessing train test
 
 SYSTEM:
     NUM_CPUS: 12
@@ -12,7 +19,7 @@ PROBLEM:
       DATA_CHANNELS_EXTRA_OPTS:
         - Db:
             mask_values: False
-      DATA_CHANNEL_WEIGHTS: (1.0, 2.0)
+      DATA_CHANNEL_WEIGHTS: (1.0, 1.0)
       WATERSHED:
         SEED_CHANNELS: ['Db']
         SEED_CHANNELS_THRESH: [0.05]
@@ -87,15 +94,28 @@ MODEL:
 TRAIN:
     ENABLE: True
     OPTIMIZER: ADAMW
+    # h200
     LR: 1.E-3
     BATCH_SIZE: 30
+
+    # l40
+    # LR: 5.E-4
+    # BATCH_SIZE: 15
+
     EPOCHS: 240
-    PATIENCE: 20
+    # PATIENCE: 20
     LR_SCHEDULER:
-        NAME: 'onecycle'    # use one-cycle learning rate scheduler
-        # NAME: 'warmupcosine'         # Learning rate scheduler with warmup and cosine decay
-        # MIN_LR: 1.E-5                # Minimum learning rate at the end of cosine decay
-        # WARMUP_COSINE_DECAY_EPOCHS: 5 # Number of epochs for the warmup + cosine decay schedule
+        # NAME: 'onecycle'    # use one-cycle learning rate scheduler
+        NAME: 'warmupcosine'         # Learning rate scheduler with warmup and cosine decay
+        MIN_LR: 1.E-5                # Minimum learning rate at the end of cosine decay
+        WARMUP_COSINE_DECAY_EPOCHS: 20 # Number of epochs for the warmup + cosine decay schedule
+
+LOSS:
+    SKELETON_RECALL:
+        ENABLE: True
+        WEIGHT: 0.1
+        TUBE_DILATIONS: 1
+        TARGET_CHANNEL: F
 
 TEST:
     ENABLE: True

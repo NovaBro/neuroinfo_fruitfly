@@ -116,6 +116,28 @@ def apply_cpu_overrides(cfg, n_cpus=None):
     return cfg
 
 
+def apply_stage_path_overrides(cfg):
+    """Point TRAIN/VAL paths at $BIAPY_STAGE_ROOT when sbatch staged data there.
+
+    GT_PATH keeps basename ``label`` so BiaPy still rewrites it to the staged
+    ``label_F…`` sibling directory.
+    """
+    root = os.environ.get('BIAPY_STAGE_ROOT')
+    if not root:
+        return cfg
+
+    root = Path(root)
+    cfg.setdefault('DATA', {})
+    cfg['DATA'].setdefault('TRAIN', {})
+    cfg['DATA'].setdefault('VAL', {})
+    cfg['DATA']['TRAIN']['PATH'] = str(root / 'train' / 'raw')
+    cfg['DATA']['TRAIN']['GT_PATH'] = str(root / 'train' / 'label')
+    cfg['DATA']['VAL']['PATH'] = str(root / 'val' / 'raw')
+    cfg['DATA']['VAL']['GT_PATH'] = str(root / 'val' / 'label')
+    print(f'Path overrides (staged): TRAIN/VAL under {root}')
+    return cfg
+
+
 def main():
     args = get_args()
 
@@ -123,6 +145,7 @@ def main():
     config_path = (CONFIG_DIR / args.config_file).as_posix()
     cfg = apply_mode_overrides(load_base_config(config_path), args.mode)
     cfg = apply_cpu_overrides(cfg, args.num_cpus)
+    cfg = apply_stage_path_overrides(cfg)
 
     match args.mode:
         case 'preprocessing':
@@ -137,7 +160,9 @@ def main():
         case 'train':
             # YAML GT_PATH is the raw instance-ID dir; BiaPy may rewrite it to a
             # multi-channel label_F... dir during prepare_instance_data.
-            yaml_train_gt = cfg['DATA']['TRAIN']['GT_PATH']
+            # Compare basenames (not Path.resolve): staging may symlink
+            # label -> label_F…, which would make resolve() a false positive.
+            yaml_train_gt = str(cfg['DATA']['TRAIN']['GT_PATH'])
 
             biapy = BiaPy(
                 config=cfg,
@@ -148,13 +173,13 @@ def main():
                 verbose=True
             )
 
-            train_gt = biapy.cfg.DATA.TRAIN.GT_PATH
+            train_gt = str(biapy.cfg.DATA.TRAIN.GT_PATH)
             data_channels = list(
                 biapy.cfg.PROBLEM.INSTANCE_SEG.DATA_CHANNELS or []
             )
             if (
                 len(data_channels) > 1
-                and Path(train_gt).resolve() == Path(yaml_train_gt).resolve()
+                and Path(train_gt).name == Path(yaml_train_gt).name
             ):
                 raise RuntimeError(
                     f'Expected BiaPy to rewrite DATA.TRAIN.GT_PATH to a '
