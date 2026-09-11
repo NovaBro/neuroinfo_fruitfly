@@ -1,6 +1,7 @@
 # .gitignore
 downloads/
 papers/
+logs/
 
 *.h5j
 *.tif
