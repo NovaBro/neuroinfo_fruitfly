@@ -17,6 +17,8 @@ PyQt6
 pycpd
 
 cajal
+# cajal[vis]
+# cajal[dl]
 umap-learn
 
 neuprint-python
