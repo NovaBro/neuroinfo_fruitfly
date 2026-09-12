@@ -18,8 +18,20 @@ DATA_DIR = PROJECT_DIR / "data"
 MANC_DIR = DATA_DIR / "MANC"
 
 INSTANCE_FILE_NAME = "T[1]_[LR]"
-ICDM_GEO_CSV = MANC_DIR / f"{INSTANCE_FILE_NAME}_icdm_geodesic.csv"
-RHO_JSON = MANC_DIR / "ugw_rho.json"
+
+# Overridable via the PRUNE_TAG env var (e.g. `sbatch
+# --export=ALL,PRUNE_TAG=strahler_tertiary ...`) to point the whole pipeline
+# at a pruned-skeleton condition's icdm/rho/UGW files instead of the baseline
+# (unpruned) ones. Default "" reproduces every path below exactly as it was
+# before pruning existed -- the baseline results are never at risk from this.
+PRUNE_TAG = os.environ.get("PRUNE_TAG", "")
+_prune_suffix = f"_pruned_{PRUNE_TAG}" if PRUNE_TAG else ""
+
+ICDM_GEO_CSV = MANC_DIR / f"{INSTANCE_FILE_NAME}{_prune_suffix}_icdm_geodesic.csv"
+# rho depends on the icdm matrix's own GW-cost quantile (see compute_rho.py),
+# which changes with the underlying tree geometry -- unlike EPS, it is NOT
+# reusable across pruning conditions and must be recomputed per PRUNE_TAG.
+RHO_JSON = MANC_DIR / (f"ugw_rho{_prune_suffix}.json" if PRUNE_TAG else "ugw_rho.json")
 
 MASS_KEPT = 0.80
 # Overridable via the UGW_EPS env var (e.g. `sbatch --export=ALL,UGW_EPS=300000
@@ -31,17 +43,18 @@ CHUNK_SIZE = 200
 # Derive the eps-tagged filenames from EPS itself so the chunk directory and
 # final CSV name can never drift out of sync with the actual value used
 # (this happened once already when EPS moved from 100 -> 1,000,000 but the
-# hardcoded "_eps100" filename suffix didn't).
+# hardcoded "_eps100" filename suffix didn't). Also folds in PRUNE_TAG so a
+# pruning-condition sweep never collides with the baseline or with each other.
 def eps_suffix(eps):
     return str(int(eps)) if float(eps).is_integer() else str(eps)
 
 
 def chunks_dir_for_eps(eps):
-    return MANC_DIR / f"ugw_chunks_eps{eps_suffix(eps)}"
+    return MANC_DIR / f"ugw_chunks_eps{eps_suffix(eps)}{_prune_suffix}"
 
 
 def final_ugw_csv_for_eps(eps):
-    return MANC_DIR / f"{INSTANCE_FILE_NAME}_ugw_dist_mass80_eps{eps_suffix(eps)}.csv"
+    return MANC_DIR / f"{INSTANCE_FILE_NAME}{_prune_suffix}_ugw_dist_mass80_eps{eps_suffix(eps)}.csv"
 
 
 CHUNKS_DIR = chunks_dir_for_eps(EPS)
