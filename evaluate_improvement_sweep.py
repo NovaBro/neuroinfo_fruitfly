@@ -90,6 +90,37 @@ def build_ensemble():
     return pd.DataFrame(stacked, index=aligned[0].index, columns=aligned[0].columns)
 
 
+def build_mirror_min():
+    """Elementwise min of the baseline and mirrored matrices.
+
+    Mirroring the *data* (mirror_skeletons.py) turned out to hurt: reflecting
+    a whole neuron by its soma side scrambles neurons whose arbor already
+    crosses the midline, and the same-side neighbour fraction rose from 0.798
+    to 0.964 instead of falling. Mirroring the *comparison* avoids that. A
+    reflection applied to both neurons of a pair is an isometry, so same-side
+    entries are identical in the two matrices; only cross-side entries differ,
+    where this takes best-of(direct, mirrored). The result is elementwise <=
+    baseline, so a true homolog can only get closer, never further.
+    """
+    mirrored_path = variant_csv("mirrored")
+    if not (BASELINE_CSV.exists() and mirrored_path.exists()):
+        print("Skipping mirror_min: baseline or mirrored matrix missing")
+        return None
+
+    base = load_matrix(BASELINE_CSV)
+    mirrored = load_matrix(mirrored_path)
+    shared = sorted(set(base.index) & set(mirrored.index))
+    base = base.loc[shared, shared]
+    mirrored = mirrored.loc[shared, shared]
+    assert list(base.index) == list(mirrored.index)
+    assert list(base.columns) == list(mirrored.columns)
+
+    combined = np.minimum(base.to_numpy(), mirrored.to_numpy())
+    print(f"mirror_min over {len(shared)} neurons: "
+          f"{(combined < base.to_numpy()).mean():.3f} of entries improved by the mirrored view")
+    return pd.DataFrame(combined, index=base.index, columns=base.columns)
+
+
 def summarize(sweep):
     best = sweep.loc[sweep["mcc"].idxmax()]
     k10 = sweep[sweep["k"] == 10].iloc[0]
@@ -116,6 +147,10 @@ def main():
     ensemble = build_ensemble()
     if ensemble is not None:
         variants.append(("ensemble_severities", ensemble))
+
+    mirror_min = build_mirror_min()
+    if mirror_min is not None:
+        variants.append(("mirror_min", mirror_min))
 
     baseline_cache = {}
     rows, curves = [], []
