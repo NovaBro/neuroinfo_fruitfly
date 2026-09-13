@@ -38,6 +38,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--skeleton-dir", required=True)
     parser.add_argument("--tag", required=True)
+    parser.add_argument("--use-alpha", action="store_true",
+                        help="Weight NBLAST scores by local neighbourhood linearity.")
+    parser.add_argument("--resample", type=float, default=None,
+                        help="Uniformly resample skeletons to this spacing (um) before dotprops.")
     args = parser.parse_args()
 
     skeleton_dir = Path(args.skeleton_dir)
@@ -58,11 +62,13 @@ def main():
     skels = navis.read_swc(swc_paths)
     skels_um = skels / NM_PER_VOXEL_OVER_UM
 
-    print("Building dotprops...")
-    dps = navis.make_dotprops(skels_um)
+    print(f"Building dotprops (resample={args.resample})...")
+    dps = navis.make_dotprops(skels_um, resample=args.resample or False)
 
-    print(f"Running all-by-all NBLAST on {num_cores} cores...")
-    raw_score_matrix = navis.nblast_allbyall(dps, n_cores=num_cores, normalized=False)
+    print(f"Running all-by-all NBLAST on {num_cores} cores (use_alpha={args.use_alpha})...")
+    raw_score_matrix = navis.nblast_allbyall(
+        dps, n_cores=num_cores, normalized=False, use_alpha=args.use_alpha
+    )
 
     score_matrix_self_normalized = raw_score_matrix.div(
         np.diag(raw_score_matrix), axis=0
