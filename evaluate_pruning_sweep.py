@@ -79,7 +79,7 @@ def main():
         id_to_class = pickle.load(f)
     print(f"Baseline common IDs: {len(common_ids_baseline)}")
 
-    rows = []
+    rows, curves = [], []
 
     baseline_csv = RESULTS_DIR / "results_comparison.csv"
     if baseline_csv.exists():
@@ -111,6 +111,13 @@ def main():
 
         for method, dist_matrix in matrices.items():
             sweep = em.evaluate_method(dist_matrix, surviving_ids, labels)
+            # Keep the whole curve, not just HEADLINE_K: best k is
+            # method-dependent (NBLAST peaks at k=1, UGW around k=6-7), and
+            # the figures report each method at its own best k.
+            curve = sweep.copy()
+            curve.insert(0, "method", method)
+            curve.insert(0, "tag", tag)
+            curves.append(curve)
             headline = sweep[sweep["k"] == em.HEADLINE_K].iloc[0].to_dict()
             print(f"  {method}: mcc={headline['mcc']:.3f} (k={em.HEADLINE_K}, n={len(surviving_ids)})")
             rows.append({
@@ -123,6 +130,10 @@ def main():
 
     result_df = pd.DataFrame(rows)
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    if curves:
+        curves_csv = RESULTS_DIR / "pruning_sweep_kcurves.csv"
+        pd.concat(curves, ignore_index=True).to_csv(curves_csv, index=False)
+        print(f"Saved full k curves to {curves_csv}")
     out_csv = RESULTS_DIR / "pruning_sweep_performance.csv"
     result_df.to_csv(out_csv, index=False)
     print(f"\nSaved pruning-sweep performance (k={em.HEADLINE_K}) to {out_csv}")

@@ -1,0 +1,17 @@
+#!/bin/bash
+#SBATCH --job-name=build_figure_data
+#SBATCH --output=logs/build_figure_data_%j.out
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=64G
+#SBATCH --time=02:00:00
+#SBATCH --account=torch_pr_61_general
+
+cd /scratch/vh2308/GitHub/Repos/neuroinfo_fruitfly
+mkdir -p logs
+
+singularity exec --fakeroot \
+  --overlay /scratch/vh2308/conda-envs/test_env/overlay-15GB-500K.ext3:ro \
+  /share/apps/images/cuda12.3.2-cudnn9.0.0-ubuntu-22.04.4.sif \
+  /bin/bash -c "source /ext3/env.sh && conda activate /ext3/miniforge3/envs/neurofly_2 && python -u build_figure_data.py"
