@@ -1,0 +1,14 @@
+# Layer B5: patch/fc=0.3, equal numinst thresholds (vs default [0.9, 0.1]).
+# numinst_threshs already in params_product → distinct folder.
+# Stack: default_l40s + basic_long8h + this + eval_rm0
+[validation]
+params_product = [ "mws", "skeletonize_foreground", "numinst_threshs", "includeSinglePatchCCS",]
+
+[vote_instances]
+patch_threshold = 0.3
+fc_threshold = 0.3
+ignore_small_comps = 100
+mws = true
+includeSinglePatchCCS = true
+skeletonize_foreground = true
+numinst_threshs = [ 0.334, 0.334,]

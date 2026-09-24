@@ -1,0 +1,14 @@
+# Layer B7: patch/fc=0.3, affinity graph voting on. affinity_graph_voting in
+# params_product so this does not overwrite the th=0.3 baseline HDF.
+# Stack: default_l40s + basic_long8h + this + eval_rm0
+[validation]
+params_product = [ "mws", "skeletonize_foreground", "numinst_threshs", "includeSinglePatchCCS", "affinity_graph_voting",]
+
+[vote_instances]
+patch_threshold = 0.3
+fc_threshold = 0.3
+ignore_small_comps = 100
+mws = true
+includeSinglePatchCCS = true
+skeletonize_foreground = true
+affinity_graph_voting = true

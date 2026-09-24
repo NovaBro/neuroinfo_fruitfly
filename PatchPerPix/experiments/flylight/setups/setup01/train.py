@@ -266,12 +266,14 @@ def train_until(**config):
             subsample=augment["elastic"].get("subsample", 1),
             spatial_dims=3 if is_3d else 2,
             temporal_dim=False)
-         if augment.get("elastic") is not None else gp.NoOp()) +
+         if (augment.get("elastic") is not None and
+             augment.get("elastic") is not False) else gp.NoOp()) +
 
         (gp.SimpleAugment(
             mirror_only=augment["simple"].get("mirror"),
             transpose_only=augment["simple"].get("transpose"))
-         if augment.get("simple") is not None else gp.NoOp()) +
+         if (augment.get("simple") is not None and
+             augment.get("simple") is not False) else gp.NoOp()) +
 
         nl.PermuteChannel(raw, config.get("probability_permute", 0)) +
 
@@ -283,11 +285,14 @@ def train_until(**config):
             numinst=gt_numinst if overlapping_inst else gt_fgbg,
             max_numinst=config["max_num_inst"] if overlapping_inst else 1,
             loss_mask=loss_mask if add_partly else None
-            ) if augment.get("overlay") is not None else gp.NoOp())  +
+            ) if (augment.get("overlay") is not None and
+                  augment.get("overlay") is not False) else gp.NoOp())  +
 
         (gp.ZeroPadChannels(
             gt_instances,
-            gt_max_num_inst if augment.get("overlay") is None
+            gt_max_num_inst if not (
+                augment.get("overlay") is not None and
+                augment.get("overlay") is not False)
             else gt_max_num_inst*2
         ) if overlapping_inst else gp.NoOp()) +
 
@@ -304,7 +309,8 @@ def train_until(**config):
             shift_max=augment["intensity"]["shift"][1],
             z_section_wise=False,
             clip=False)
-         if augment.get("intensity") is not None else gp.NoOp()) +
+         if (augment.get("intensity") is not None and
+             augment.get("intensity") is not False) else gp.NoOp()) +
 
         (gp.IntensityScaleShift(raw, 2, -1)
             if config.get("shift_intensity", False) else gp.NoOp()) +
@@ -351,7 +357,9 @@ def train_until(**config):
 
             (gp.ZeroPadChannels(
                 gt_instances,
-                gt_max_num_inst_val if augment.get("overlay") is None
+                gt_max_num_inst_val if not (
+                    augment.get("overlay") is not None and
+                    augment.get("overlay") is not False)
                 else gt_max_num_inst_val*2
             ) if overlapping_inst else gp.NoOp()) +
 
@@ -366,8 +374,8 @@ def train_until(**config):
              if add_affinities in ["cpu", "torch"] else gp.NoOp()) +
 
             (gp.PreCache(
-                cache_size=config["batch_size"],
-                num_workers=1)
+                cache_size=max(8, int(config.get("batch_size", 1))),
+                num_workers=max(1, min(4, int(config.get("num_workers", 1)))))
              if config["num_workers"] > 1 else gp.NoOp())
 
             + gp.Stack(config["batch_size"])

@@ -468,6 +468,12 @@ def mknet(args, config, train_folder, test_folder):
               debug=config['general']['debug'])
 
 
+# Do NOT @fork train. @fork uses multiprocessing spawn; train then starts
+# gunpowder PreCache (num_workers>>1) after CUDA init. That nested
+# spawn→CUDA→PreCache tree stalls the batch queue (GPU ~full, 0% util)
+# while predict/label @fork is fine (no PreCache-after-CUDA train loop).
+# VRAM handoff train→predict: use separate sbatch jobs (-d train, then
+# -id … -d predict label evaluate), not @fork on train.
 # @fork
 @time_func
 def train(args, config, train_folder):

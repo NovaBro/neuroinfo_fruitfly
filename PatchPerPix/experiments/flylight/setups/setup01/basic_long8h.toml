@@ -1,0 +1,30 @@
+# Overlay on default_l40s.toml — Part 3 resume: ~8h L40S wall (30k → 80k iters).
+# Usage: --config .../default_l40s.toml --config .../basic_long8h.toml
+# Submit train+infer only AFTER VI sweep review:
+#     bash sbatch/ppp/ppp_basic_long8h_chain.sh
+
+[data]
+test_data = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/val"
+
+[training]
+max_iterations = 80000
+checkpoints = 10000
+snapshots = 10000
+# Feed GPU faster on public partitions (idle-kill risk at ~25% util)
+# Match --cpus-per-task=16 on the train sbatch
+num_workers = 16
+cache_size = 48
+val_log_step = 100
+
+[training.augmentation]
+# Util: disable costly CPU augs (elastic warp+SO(3) rotate; overlay 2nd crop).
+# Keep simple (fast mirror/transpose) + intensity from default_l40s.toml via merge.
+elastic = false
+overlay = false
+
+[prediction]
+# Safer VRAM than batch 3; still fast enough for one volume
+batch_size = 1
+
+[validation]
+checkpoints = [80000]

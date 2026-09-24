@@ -1,0 +1,5 @@
+# Overlay for per-sample label arrays: skip finished HDFs on re-submit.
+# Stack after default_l40s (which sets overwrite=true). For a full redo, delete
+# baseline instanced HDFs first.
+[general]
+overwrite = false

@@ -1,0 +1,13 @@
+#!/bin/bash
+# Submit PatchPerPix basic train then infer (afterok). From repo root:
+#     bash sbatch/ppp/ppp_basic_8h_chain.sh
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+cd "${REPO_ROOT}"
+
+TRAIN_ID=$(sbatch --parsable sbatch/ppp/ppp_basic_8h_train_sbatch.sh)
+INFER_ID=$(sbatch --parsable --dependency="afterok:${TRAIN_ID}" \
+  sbatch/ppp/ppp_basic_8h_infer_sbatch.sh)
+echo "train=${TRAIN_ID} infer=${INFER_ID} (afterok) exp=metrics/ppp/ppp_basic_8h"

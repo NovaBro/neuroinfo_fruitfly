@@ -1,0 +1,28 @@
+# Overlay on default_l40s.toml — wider U-Net (num_fmaps 20→24), new -id ppp_basic_fmaps24.
+# Same logistics as basic_long8h (80k iters, workers/cache, soft augs off).
+# Usage: --config .../default_l40s.toml --config .../basic_fmaps24.toml
+# Train: sbatch sbatch/ppp/ppp_basic_fmaps24_train_sbatch.sh
+
+[data]
+test_data = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/val"
+
+[model]
+num_fmaps = 24
+
+[training]
+max_iterations = 80000
+checkpoints = 10000
+snapshots = 10000
+num_workers = 32
+cache_size = 48
+val_log_step = 100
+
+[training.augmentation]
+elastic = false
+overlay = false
+
+[prediction]
+batch_size = 1
+
+[validation]
+checkpoints = [80000]

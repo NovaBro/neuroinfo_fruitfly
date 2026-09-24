@@ -1,0 +1,15 @@
+# Intermediate prediction metrics (skip VI). Use with -d evaluate --checkpoint N.
+# run_ppp returns early when prediction_only_test is set (no label/instance eval).
+#
+# eval_patch_prediction loads full pred_affs (hundreds of GB materialize) → disabled.
+# Use FG mid-channel + numinst here; aff activity also via diagnose_ppp_basic_instances.py.
+[evaluation]
+prediction_only_test = true
+
+[evaluation.prediction]
+eval_numinst_prediction = true
+eval_fg_prediction = true
+eval_patch_prediction = false
+eval_patch_thresholds = [0.3, 0.5, 0.7]
+eval_fg_thresholds = [0.3, 0.5, 0.7, 0.9]
+max_numinst = 2

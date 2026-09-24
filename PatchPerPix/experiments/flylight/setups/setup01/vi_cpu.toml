@@ -1,0 +1,3 @@
+# Force vote_instances onto CPU (no CUDA). Use for cpu_short label/evaluate jobs.
+[vote_instances]
+cuda = false

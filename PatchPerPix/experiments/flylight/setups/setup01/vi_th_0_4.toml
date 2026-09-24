@@ -1,0 +1,6 @@
+# VI sweep overlay: patch/fc = 0.4; softer ignore_small_comps while debugging.
+# Stack: default_l40s + basic_long8h + this + eval_rm0
+[vote_instances]
+patch_threshold = 0.4
+fc_threshold = 0.4
+ignore_small_comps = 100

@@ -1,0 +1,13 @@
+# Layer B1: patch/fc=0.3, mws off. includeSinglePatchCCS in params_product so
+# output path does not collide with the threshold-sweep baseline.
+# Stack: default_l40s + basic_long8h + this + eval_rm0
+[validation]
+params_product = [ "mws", "skeletonize_foreground", "numinst_threshs", "includeSinglePatchCCS",]
+
+[vote_instances]
+patch_threshold = 0.3
+fc_threshold = 0.3
+ignore_small_comps = 100
+mws = false
+includeSinglePatchCCS = true
+skeletonize_foreground = true

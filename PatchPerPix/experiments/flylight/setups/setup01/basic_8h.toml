@@ -1,0 +1,17 @@
+# Overlay on default_l40s.toml — keeps train settings, makes test cheap/safe.
+# Usage: --config .../default_l40s.toml --config .../basic_8h.toml
+
+[data]
+test_data = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/val"
+
+[training]
+# Fewer snapshots (each ~400MB); leave max_iterations from default_l40s
+snapshots = 2000
+# Feed GPU faster on public partitions (idle-kill risk at ~25% util)
+num_workers = 14
+cache_size = 48
+val_log_step = 100
+
+[prediction]
+# Safer VRAM than batch 3; still fast enough for one volume
+batch_size = 1

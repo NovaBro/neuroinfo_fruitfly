@@ -1,0 +1,13 @@
+# Layer B3: patch/fc=0.3, cover full FG (not skeleton-only).
+# includeSinglePatchCCS in params_product to keep Layer B folders distinct.
+# Stack: default_l40s + basic_long8h + this + eval_rm0
+[validation]
+params_product = [ "mws", "skeletonize_foreground", "numinst_threshs", "includeSinglePatchCCS",]
+
+[vote_instances]
+patch_threshold = 0.3
+fc_threshold = 0.3
+ignore_small_comps = 100
+mws = true
+includeSinglePatchCCS = true
+skeletonize_foreground = false
