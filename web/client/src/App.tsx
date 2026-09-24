@@ -57,21 +57,44 @@ function App() {
       .catch(() => setPredictionSets([]));
   }, []);
 
+  // Refetch sample flags scoped to the selected prediction set; jump to a
+  // sample that actually has an overlay when the current one does not.
   useEffect(() => {
-    listSamples()
+    let cancelled = false;
+    setSamplesLoading(true);
+    listSamples(predictionSet)
       .then((data) => {
+        if (cancelled) return;
         setSamples(data);
+        const stillOk =
+          selected != null &&
+          data.some((s) => s.name === selected && s.path_exists);
+        const stillHasPred =
+          stillOk &&
+          data.some((s) => s.name === selected && s.has_predicted);
+        if (stillHasPred) return;
         const firstWithPredicted = data.find(
           (s) => s.path_exists && s.has_predicted,
         );
         const firstAvailable = data.find((s) => s.path_exists);
-        setSelected(
-          (firstWithPredicted ?? firstAvailable)?.name ?? null,
-        );
+        const next =
+          (firstWithPredicted ?? (stillOk ? data.find((s) => s.name === selected) : null) ?? firstAvailable)
+            ?.name ?? null;
+        setSelected(next);
       })
-      .catch(() => setSamples([]))
-      .finally(() => setSamplesLoading(false));
-  }, []);
+      .catch(() => {
+        if (!cancelled) setSamples([]);
+      })
+      .finally(() => {
+        if (!cancelled) setSamplesLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+    // Intentionally omit `selected` so changing the sample does not refetch;
+    // only prediction-set changes (and the initial null) drive this effect.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [predictionSet]);
 
   const header = (
     <div className="app-header">
@@ -206,6 +229,15 @@ function App() {
               sampleName={selected}
               meta={meta}
               predictionSet={predictionSet}
+              predictedLabel={
+                (() => {
+                  const set = predictionSets.find((s) => s.id === predictionSet);
+                  if (!set) return "Predicted instances";
+                  if (set.kind === "numinst") return "Predicted numinst";
+                  if (set.source === "ppp") return "Predicted instances (PatchPerPix)";
+                  return "Predicted instances";
+                })()
+              }
             />
           )}
         </>

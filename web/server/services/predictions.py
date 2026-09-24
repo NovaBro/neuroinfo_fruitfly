@@ -40,6 +40,35 @@ def stems_with_predictions_any() -> set[str]:
     )
 
 
+def stems_with_predictions(set_id: str | None = None) -> set[str]:
+    """Stems that have predicted output in ``set_id``, or any set if unset."""
+    if not set_id:
+        return stems_with_predictions_any()
+    if ppp_loader.is_ppp_set(set_id):
+        try:
+            kind, root = ppp_loader._resolve_root(set_id)
+        except (FileNotFoundError, ValueError):
+            return set()
+        return ppp_loader._set_stems(kind, root)
+    try:
+        root = biapy_loader.biapy.resolve_prediction_set_root(set_id)
+    except (FileNotFoundError, ValueError):
+        return set()
+    inst_dir = root / "per_image_instances"
+    if not inst_dir.is_dir():
+        return set()
+    return {biapy_loader.biapy.sample_stem(p) for p in inst_dir.glob("*.tif*")}
+
+
+def has_predicted_instances(stem: str, set_id: str | None = None) -> bool:
+    """True when ``stem`` has predicted output in the given set (or any set)."""
+    if not set_id:
+        return stem in stems_with_predictions_any()
+    if ppp_loader.is_ppp_set(set_id):
+        return ppp_loader.has_predicted_instances(stem, set_id)
+    return biapy_loader.has_predicted_instances(stem, set_id)
+
+
 def get_predicted_instances_meta(
     stem: str, set_id: str | None = None
 ) -> dict | None:

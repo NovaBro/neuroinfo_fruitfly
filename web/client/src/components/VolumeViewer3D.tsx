@@ -39,6 +39,8 @@ interface VolumeViewer3DProps {
   sampleName: string;
   meta: SampleMeta;
   predictionSet?: string | null;
+  /** Overlay checkbox label from the selected prediction set. */
+  predictedLabel?: string;
 }
 
 type VtkContext = {
@@ -52,6 +54,7 @@ export function VolumeViewer3D({
   sampleName,
   meta,
   predictionSet,
+  predictedLabel = "Predicted instances",
 }: VolumeViewer3DProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const vtkRef = useRef<VtkContext | null>(null);
@@ -422,6 +425,7 @@ export function VolumeViewer3D({
         onShowPredictedChange={setShowPredicted}
         predictedOpacity={predictedOpacity}
         onPredictedOpacityChange={setPredictedOpacity}
+        predictedLabel={predictedLabel}
       />
 
       <div

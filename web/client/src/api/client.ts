@@ -130,8 +130,13 @@ export async function checkHealth(): Promise<HealthResponse> {
   return fetchJson<HealthResponse>(`${API_BASE}/health`);
 }
 
-export async function listSamples(): Promise<SampleInfo[]> {
-  return fetchJson<SampleInfo[]>(`${API_BASE}/samples`);
+export async function listSamples(
+  predictionSet?: string | null,
+): Promise<SampleInfo[]> {
+  const qs = predictionSet
+    ? `?prediction_set=${encodeURIComponent(predictionSet)}`
+    : "";
+  return fetchJson<SampleInfo[]>(`${API_BASE}/samples${qs}`);
 }
 
 export async function listPredictionSets(): Promise<PredictionSet[]> {

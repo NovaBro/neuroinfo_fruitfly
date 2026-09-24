@@ -27,5 +27,6 @@ singularity exec --overlay "${OVERLAY}:ro" "${SIF}" /bin/bash -c "
   source /ext3/env.sh
   cd web/server
   export FISBE_ROOT=../../fisbe/completely
+  export PPP_EXPERIMENTS_BASE=../../metrics/ppp
   exec uvicorn main:app --host 0.0.0.0 --port ${API_PORT}
 "

@@ -23,7 +23,7 @@ echo "Tunnel from your laptop:"
 echo "  ssh -N -L ${CLIENT_PORT}:${NODE}:${CLIENT_PORT} ${USER}@greene.hpc.nyu.edu"
 
 # node comes from the user's nvm install (not a module).
-export NVM_DIR="${HOME}/.nvm"
+export NVM_DIR="/scratch/wmz2007/nvm"
 # shellcheck disable=SC1090
 [ -s "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh"
 

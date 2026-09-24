@@ -35,6 +35,8 @@ interface VolumeControlsProps {
   onShowPredictedChange: (value: boolean) => void;
   predictedOpacity: number;
   onPredictedOpacityChange: (value: number) => void;
+  /** Overlay checkbox label (e.g. "Predicted instances" / "Predicted numinst"). */
+  predictedLabel?: string;
 }
 
 /** Display/overlay control panel for {@link VolumeViewer3D} (presentational). */
@@ -60,6 +62,7 @@ export function VolumeControls({
   onShowPredictedChange,
   predictedOpacity,
   onPredictedOpacityChange,
+  predictedLabel = "Predicted instances",
 }: VolumeControlsProps) {
   const maxSizeIndex = VOLUME_MAX_SIZE_OPTIONS.indexOf(
     maxSize as (typeof VOLUME_MAX_SIZE_OPTIONS)[number],
@@ -173,7 +176,7 @@ export function VolumeControls({
                 checked={showPredicted}
                 onChange={(e) => onShowPredictedChange(e.target.checked)}
               />
-              Predicted instances (BiaPy)
+              {predictedLabel}
             </label>
           )}
           {hasPredicted && showPredicted && (

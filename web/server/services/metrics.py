@@ -162,8 +162,14 @@ def get_sample_metrics(stem: str, set_id: str | None = None) -> dict:
     """Return both metric sources for ``stem`` in the given prediction set.
 
     Missing sources come back as ``None`` (rather than raising) so the client
-    can render whatever is available.
+    can render whatever is available. PatchPerPix sets are routed to
+    ``ppp_metrics`` (summary.csv / pred_metrics.csv).
     """
+    from services import ppp_loader
+    from services.ppp_metrics import get_ppp_sample_metrics
+
+    if ppp_loader.is_ppp_set(set_id):
+        return get_ppp_sample_metrics(stem, set_id)
     try:
         result_root = biapy.resolve_prediction_set_root(set_id)
     except (FileNotFoundError, ValueError):

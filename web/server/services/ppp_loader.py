@@ -1,18 +1,19 @@
 """Load PatchPerPix prediction volumes for the web viewer.
 
 Each PatchPerPix experiment under ``PPP_EXPERIMENTS_BASE`` can expose two kinds
-of overlay, discovered independently as separate "prediction sets":
+of overlay, discovered independently as separate "prediction sets" under both
+the ``test/`` and ``val/`` split dirs:
 
 * **numinst** — the per-voxel overlap-count map written by ``predict``:
-  ``test/processed/<ckpt>/<stem>.zarr`` → ``volumes/pred_numinst``, shape
+  ``{split}/processed/<ckpt>/<stem>.zarr`` → ``volumes/pred_numinst``, shape
   ``(3, Z, Y, X)`` float16 (channels = P(0 instances), P(1), P(2+)). This is a
   foreground/count probability map, *not* per-neuron labels, so it renders as a
-  two-colour foreground (argmax over the count channels: 1-instance vs 2+
-  overlap regions).
+  two-colour foreground after argmax (1-instance = cyan, 2+ overlap = magenta).
 * **instances** — the final vote-instances labels:
-  ``test/instanced/<ckpt>/<params...>/<stem>.hdf`` → dataset ``vote_instances``,
+  ``{split}/instanced/<ckpt>/<params...>/<stem>.hdf`` → dataset ``vote_instances``,
   a ``(Z, Y, X)`` integer label volume coloured per neuron like the BiaPy/GT
-  overlays.
+  overlays. Requires ``h5py``; when it is missing, instances sets are omitted
+  from discovery and loads raise a clear error.
 
 Set ids are source-prefixed (``ppp-numinst:`` / ``ppp-inst:``) so the dispatcher
 in ``services/predictions.py`` can route to the right loader without colliding
@@ -31,7 +32,6 @@ from config import PPP_EXPERIMENTS_BASE
 from services.volume_pipeline import (
     VolumeBytesResult,
     compute_downsample_factor,
-    encode_label_volume_rgb,
     volume_array_to_bytes,
 )
 
@@ -40,6 +40,7 @@ INST_PREFIX = "ppp-inst:"
 
 _NUMINST_KEY = "volumes/pred_numinst"
 _VOTE_DATASET = "vote_instances"
+_SPLITS = ("test", "val")
 
 
 # --- discovery -------------------------------------------------------------
@@ -59,53 +60,170 @@ def _numinst_dir_has_data(processed_dir: Path) -> bool:
     )
 
 
+def _h5py_available() -> bool:
+    try:
+        import h5py  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
+_DEFAULT_NUMINST_THRESHS = "numinst_threshs__0_9_0_1_"
+
+
+def _tf_flag(part: str, prefix: str) -> str | None:
+    """Map ``{prefix}_True`` / ``{prefix}_False`` → ``T`` / ``F``."""
+    true_s, false_s = f"{prefix}_True", f"{prefix}_False"
+    if part == true_s:
+        return "T"
+    if part == false_s:
+        return "F"
+    return None
+
+
+def _format_numinst_name(exp: str, split: str, ckpt_dir: Path) -> str:
+    """Human label for a processed/<ckpt> numinst set."""
+    return f"{exp} · {split} · ckpt {ckpt_dir.name} · numinst"
+
+
+def _format_instances_name(
+    exp: str, split: str, param_dir: Path, instanced_base: Path
+) -> str:
+    """Human label encoding ckpt + VI params from the instanced path.
+
+    Example::
+
+        ppp_basic_long8h · test · ckpt 70000 · instances · th0.3 · mws=T · skel=T
+
+    Falls back to the leaf folder name when the path layout is unexpected.
+    """
+    try:
+        parts = param_dir.resolve().relative_to(instanced_base.resolve()).parts
+    except ValueError:
+        return f"{exp} · {split} · instances ({param_dir.name})"
+
+    if not parts:
+        return f"{exp} · {split} · instances ({param_dir.name})"
+
+    bits: list[str] = [exp, split]
+    idx = 0
+    if parts[0].isdigit():
+        bits.append(f"ckpt {parts[0]}")
+        idx = 1
+    bits.append("instances")
+
+    th: str | None = None
+    mws: str | None = None
+    skel: str | None = None
+    ccs: str | None = None
+    ni_label: str | None = None
+
+    for part in parts[idx:]:
+        if part.startswith("patch_threshold_"):
+            th = part[len("patch_threshold_") :].replace("_", ".", 1)
+        elif (flag := _tf_flag(part, "mws")) is not None:
+            mws = flag
+        elif (flag := _tf_flag(part, "skeletonize_foreground")) is not None:
+            skel = flag
+        elif (flag := _tf_flag(part, "includeSinglePatchCCS")) is not None:
+            ccs = flag
+        elif part.startswith("numinst_threshs_") and part != _DEFAULT_NUMINST_THRESHS:
+            # numinst_threshs__0_5_0_5_ → ni=0.5/0.5
+            raw = part[len("numinst_threshs_") :].strip("_")
+            toks = [t for t in raw.split("_") if t]
+            paired: list[str] = []
+            i = 0
+            while i + 1 < len(toks):
+                paired.append(f"{toks[i]}.{toks[i + 1]}")
+                i += 2
+            if paired:
+                ni_label = "ni=" + "/".join(paired)
+            elif toks:
+                ni_label = "ni=" + "/".join(toks)
+
+    if th is None and mws is None and skel is None and ccs is None:
+        # Unrecognised layout under instanced/ — keep old leaf label.
+        return f"{exp} · {split} · instances ({param_dir.name})"
+
+    if th is not None:
+        bits.append(f"th{th}")
+    if mws is not None:
+        bits.append(f"mws={mws}")
+    if skel is not None:
+        bits.append(f"skel={skel}")
+    if ccs is not None:
+        bits.append(f"CCS={ccs}")
+    if ni_label is not None:
+        bits.append(ni_label)
+
+    return " · ".join(bits)
+
+
 def discover_prediction_sets() -> list[dict]:
     """Discover every PatchPerPix numinst and instances set under the base.
 
     Each entry is ``{"id", "name", "path", "default", "source", "kind"}``.
     ``default`` is always False — the viewer defaults to a BiaPy set and the
     user opts into a PatchPerPix overlay via the dropdown.
+
+    Instances sets are omitted when ``h5py`` is not installable in the server
+    env (the HDF loader would fail at request time otherwise).
+
+    Display ``name`` encodes ckpt and VI params (e.g.
+    ``… · ckpt 70000 · instances · th0.3 · mws=T · skel=T``); set ``id`` remains
+    the full relative path so selections stay stable across renames.
     """
     base = _base()
     sets: list[dict] = []
     if not base.is_dir():
         return sets
 
+    can_read_hdf = _h5py_available()
+
     for exp_dir in sorted(p for p in base.iterdir() if p.is_dir()):
         exp = exp_dir.name
 
-        # numinst sets: one per test/processed/<ckpt> dir with pred_numinst.
-        processed_base = exp_dir / "test" / "processed"
-        if processed_base.is_dir():
-            for ckpt_dir in sorted(p for p in processed_base.iterdir() if p.is_dir()):
-                if not _numinst_dir_has_data(ckpt_dir):
-                    continue
-                sets.append(
-                    {
-                        "id": NUMINST_PREFIX + _rel(ckpt_dir),
-                        "name": f"{exp} · numinst @{ckpt_dir.name}",
-                        "path": str(ckpt_dir),
-                        "default": False,
-                        "source": "ppp",
-                        "kind": "numinst",
-                    }
-                )
+        for split in _SPLITS:
+            # numinst sets: one per {split}/processed/<ckpt> dir with pred_numinst.
+            processed_base = exp_dir / split / "processed"
+            if processed_base.is_dir():
+                for ckpt_dir in sorted(
+                    p for p in processed_base.iterdir() if p.is_dir()
+                ):
+                    if not _numinst_dir_has_data(ckpt_dir):
+                        continue
+                    sets.append(
+                        {
+                            "id": NUMINST_PREFIX + _rel(ckpt_dir),
+                            "name": _format_numinst_name(exp, split, ckpt_dir),
+                            "path": str(ckpt_dir),
+                            "default": False,
+                            "source": "ppp",
+                            "kind": "numinst",
+                        }
+                    )
 
-        # instances sets: one per leaf param dir containing *.hdf vote outputs.
-        instanced_base = exp_dir / "test" / "instanced"
-        if instanced_base.is_dir():
-            param_dirs = sorted({hdf.parent for hdf in instanced_base.glob("**/*.hdf")})
-            for param_dir in param_dirs:
-                sets.append(
-                    {
-                        "id": INST_PREFIX + _rel(param_dir),
-                        "name": f"{exp} · instances ({param_dir.name})",
-                        "path": str(param_dir),
-                        "default": False,
-                        "source": "ppp",
-                        "kind": "instances",
-                    }
+            # instances sets: one per leaf param dir containing *.hdf vote outputs.
+            if not can_read_hdf:
+                continue
+            instanced_base = exp_dir / split / "instanced"
+            if instanced_base.is_dir():
+                param_dirs = sorted(
+                    {hdf.parent for hdf in instanced_base.glob("**/*.hdf")}
                 )
+                for param_dir in param_dirs:
+                    sets.append(
+                        {
+                            "id": INST_PREFIX + _rel(param_dir),
+                            "name": _format_instances_name(
+                                exp, split, param_dir, instanced_base
+                            ),
+                            "path": str(param_dir),
+                            "default": False,
+                            "source": "ppp",
+                            "kind": "instances",
+                        }
+                    )
 
     return sets
 
@@ -206,7 +324,9 @@ def get_predicted_instances_meta(
     hdf = _inst_hdf(root, stem)
     if not hdf.is_file():
         return None
-    import h5py  # lazy: only the instances loader needs it
+    if not _h5py_available():
+        return None
+    import h5py
 
     with h5py.File(hdf, "r") as f:
         dset = f[_VOTE_DATASET]
@@ -214,6 +334,19 @@ def get_predicted_instances_meta(
 
 
 # --- rendering -------------------------------------------------------------
+
+# Fixed categorical palette for numinst argmax classes (not seeded random).
+_NUMINST_RGB_SINGLE = (0, 220, 255)    # cyan — one instance
+_NUMINST_RGB_OVERLAP = (255, 40, 200)  # magenta — 2+ overlap
+
+
+def _encode_numinst_rgb(labels: np.ndarray) -> np.ndarray:
+    """Map numinst argmax labels ``{0,1,2}`` to Z,Y,X,3 RGB (fixed palette)."""
+    rgb = np.zeros((*labels.shape, 3), dtype=np.uint8)
+    rgb[labels == 1] = _NUMINST_RGB_SINGLE
+    rgb[labels == 2] = _NUMINST_RGB_OVERLAP
+    return rgb
+
 
 def _numinst_argmax_labels(zarr_path: Path, max_size: int) -> tuple[np.ndarray, tuple[int, int, int], int]:
     """Downsample ``pred_numinst`` to a Z,Y,X argmax-of-count label volume.
@@ -259,7 +392,7 @@ def predicted_instances_to_bytes(
         if not (zarr_path / "volumes" / "pred_numinst" / ".zarray").is_file():
             raise FileNotFoundError(f"No pred_numinst for {stem!r} in {root}")
         labels, original_shape, factor = _numinst_argmax_labels(zarr_path, max_size)
-        rgb = encode_label_volume_rgb(labels)
+        rgb = _encode_numinst_rgb(labels)
         return VolumeBytesResult(
             data=rgb.tobytes(),
             shape=tuple(int(s) for s in rgb.shape[:3]),
@@ -268,10 +401,15 @@ def predicted_instances_to_bytes(
             components=3,
         )
 
+    if not _h5py_available():
+        raise RuntimeError(
+            "PatchPerPix instances overlays require h5py in the webdev env "
+            "(pip install h5py into env/webdev.ext3)."
+        )
     hdf = _inst_hdf(root, stem)
     if not hdf.is_file():
         raise FileNotFoundError(f"No vote_instances hdf for {stem!r} in {root}")
-    import h5py  # lazy
+    import h5py
 
     with h5py.File(hdf, "r") as f:
         volume = np.asarray(f[_VOTE_DATASET])

@@ -15,7 +15,7 @@ from services.predictions import (
     get_predicted_instances_meta,
     list_prediction_sets,
     predicted_instances_to_bytes,
-    stems_with_predictions_any,
+    stems_with_predictions,
 )
 from services.aggregate_metrics import get_aggregate_metrics
 from services.fisbe_mip import fisbe_mip_png
@@ -68,9 +68,10 @@ def prediction_sets():
 
 
 @app.get("/api/samples")
-def list_samples():
+def list_samples(prediction_set: str | None = Query(None)):
+    """List samples; ``has_predicted`` is scoped to ``prediction_set`` when set."""
     entries = _cached_samples()
-    predicted = stems_with_predictions_any()
+    predicted = stems_with_predictions(prediction_set)
     return [
         {
             "split": e.split,

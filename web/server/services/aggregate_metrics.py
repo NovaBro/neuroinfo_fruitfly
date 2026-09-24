@@ -1,18 +1,8 @@
-"""Aggregate per-sample BiaPy scoring metrics into a samples x metrics matrix.
+"""Aggregate per-sample scoring metrics into a samples x metrics matrix.
 
-The per-sample metrics come from the same two sources ``services.metrics``
-reads for a single sample (``test_results_metrics.csv`` and the per-stem
-``tests/metrics/<stem>.zarr.toml``). Here they are collected across *every*
-sample in the split list so the client can render one heatmap of
-samples (rows) x metrics (columns).
-
-Only a curated "core quality" set of metrics is exposed. The threshold-free
-scalars come straight through; the threshold-dependent CSV metrics are flattened
-at a caller-chosen detection threshold (default ``0.5``).
-
-Alongside the matrix, each column is summarised by its mean and median across
-samples (``summary``). Those are derived rows, not samples, so they are returned
-separately from ``samples``/``values``.
+BiaPy sets use ``test_results_metrics.csv`` + TOML. PatchPerPix *instances*
+sets use evaluated ``summary.csv`` (via ``ppp_metrics``). Numinst sets have no
+aggregate matrix (voxel CSV only) and return an empty samples list.
 """
 
 from __future__ import annotations
@@ -21,6 +11,11 @@ from statistics import fmean, median
 
 from services.metrics import _csv_row_keys, _load_toml_metrics, load_csv_table
 from services.biapy_loader import biapy
+from services import ppp_loader
+from services.ppp_metrics import (
+    PPP_INSTANCE_METRIC_SPECS,
+    load_ppp_instances_summary_table,
+)
 from services.sample_list import parse_sample_list
 
 # Detection thresholds the CSV carries a full column group for.
@@ -32,6 +27,7 @@ DEFAULT_THRESHOLD = "0.5"
 #   source="csv-th"       -> csv["thresholds"][threshold][field]
 #   source="toml-summary" -> toml["summary"][field]   (confusion_matrix avg)
 #   source="toml-general" -> toml["general"][field]
+#   source="toml-th"      -> toml["thresholds"][threshold][field]  (PPP)
 # ``higher_is_better`` documents metric orientation for the client legend.
 METRIC_SPECS: tuple[dict, ...] = (
     {"key": "iou_f", "label": "IoU (f channel)", "source": "csv-scalar",
@@ -86,22 +82,26 @@ def _extract(spec: dict, csv_data: dict | None, toml_data: dict | None,
         if not toml_data:
             return None
         return _as_number(toml_data.get("general", {}).get(field))
+    if source == "toml-th":
+        if not toml_data:
+            return None
+        return _as_number(
+            toml_data.get("thresholds", {}).get(threshold, {}).get(field)
+        )
     return None
 
 
-def _column_summary(samples: list[str],
-                    values: dict[str, dict[str, float | None]]) -> dict:
-    """Per-column mean/median across samples, over the cells that have a value.
-
-    ``n`` reports how many samples actually contributed to each column, so a
-    mean taken over a subset is never mistaken for one over every sample. A
-    column with no values at all summarises to ``None``.
-    """
+def _column_summary(
+    samples: list[str],
+    values: dict[str, dict[str, float | None]],
+    specs: tuple[dict, ...],
+) -> dict:
+    """Per-column mean/median across samples, over the cells that have a value."""
     means: dict[str, float | None] = {}
     medians: dict[str, float | None] = {}
     counts: dict[str, int] = {}
 
-    for spec in METRIC_SPECS:
+    for spec in specs:
         key = spec["key"]
         column = [
             v
@@ -116,6 +116,60 @@ def _column_summary(samples: list[str],
     return {"mean": means, "median": medians, "n": counts}
 
 
+def _empty_aggregate(set_id: str | None, threshold: str, specs: tuple[dict, ...]) -> dict:
+    return {
+        "prediction_set": set_id,
+        "threshold": threshold,
+        "thresholdChoices": list(THRESHOLD_CHOICES),
+        "metrics": [
+            {
+                "key": s["key"],
+                "label": s["label"],
+                "source": s["source"],
+                "higherIsBetter": s["higher_is_better"],
+            }
+            for s in specs
+        ],
+        "samples": [],
+        "values": {},
+        "summary": _column_summary([], {}, specs),
+    }
+
+
+def _aggregate_ppp_instances(set_id: str, threshold: str) -> dict:
+    specs = PPP_INSTANCE_METRIC_SPECS
+    table = load_ppp_instances_summary_table(set_id)
+    if not table:
+        return _empty_aggregate(set_id, threshold, specs)
+
+    samples: list[str] = []
+    values: dict[str, dict[str, float | None]] = {}
+    for stem, toml_data in table.items():
+        values[stem] = {
+            spec["key"]: _extract(spec, None, toml_data, threshold)
+            for spec in specs
+        }
+        samples.append(stem)
+
+    return {
+        "prediction_set": set_id,
+        "threshold": threshold,
+        "thresholdChoices": list(THRESHOLD_CHOICES),
+        "metrics": [
+            {
+                "key": s["key"],
+                "label": s["label"],
+                "source": s["source"],
+                "higherIsBetter": s["higher_is_better"],
+            }
+            for s in specs
+        ],
+        "samples": samples,
+        "values": values,
+        "summary": _column_summary(samples, values, specs),
+    }
+
+
 def get_aggregate_metrics(set_id: str | None = None,
                           threshold: str | None = None) -> dict:
     """Build the samples x metrics matrix for the given prediction set.
@@ -125,6 +179,12 @@ def get_aggregate_metrics(set_id: str | None = None,
     as ``None``.
     """
     threshold = threshold if threshold in THRESHOLD_CHOICES else DEFAULT_THRESHOLD
+
+    if ppp_loader.is_ppp_set(set_id):
+        if set_id and set_id.startswith(ppp_loader.INST_PREFIX):
+            return _aggregate_ppp_instances(set_id, threshold)
+        # numinst: voxel-level CSV only — no instance aggregate matrix.
+        return _empty_aggregate(set_id, threshold, PPP_INSTANCE_METRIC_SPECS)
 
     try:
         result_root = biapy.resolve_prediction_set_root(set_id)
@@ -141,10 +201,6 @@ def get_aggregate_metrics(set_id: str | None = None,
     values: dict[str, dict[str, float | None]] = {}
 
     if result_root is not None:
-        # Read each source once for the whole sweep: the CSV is parsed a single
-        # time, and the metrics dir is listed once. Most sample-list stems have
-        # no scores in a given set, so this also lets us skip them without any
-        # per-stem filesystem probing.
         csv_table = load_csv_table(result_root)
         metrics_dir = result_root / "tests" / "metrics"
         toml_names = (
@@ -182,9 +238,7 @@ def get_aggregate_metrics(set_id: str | None = None,
         "threshold": threshold,
         "thresholdChoices": list(THRESHOLD_CHOICES),
         "metrics": metrics_meta,
-        # Real samples only — the client normalises each column against these,
-        # so the derived summary rows below are deliberately kept out of it.
         "samples": samples,
         "values": values,
-        "summary": _column_summary(samples, values),
+        "summary": _column_summary(samples, values, METRIC_SPECS),
     }

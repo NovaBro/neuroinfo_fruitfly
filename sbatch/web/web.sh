@@ -40,13 +40,14 @@ singularity exec --overlay "${OVERLAY}:ro" "${SIF}" /bin/bash -c "
   source /ext3/env.sh
   cd web/server
   export FISBE_ROOT=../../fisbe/completely
+  export PPP_EXPERIMENTS_BASE=../../metrics/ppp
   exec uvicorn main:app --host 127.0.0.1 --port ${API_PORT}
 " &
 SERVER_PID=$!
 trap 'kill ${SERVER_PID} 2>/dev/null' EXIT
 
 # --- Frontend: Vite dev server on the host (node comes from nvm) -------------
-export NVM_DIR="${HOME}/.nvm"
+export NVM_DIR="/scratch/wmz2007/nvm"
 # shellcheck disable=SC1090
 [ -s "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh"
 

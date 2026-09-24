@@ -13,8 +13,8 @@ For how a voxel becomes a pixel end-to-end — the server downsample/contrast pi
 
 ## Prerequisites
 
-- Node.js 18+ (on Greene this comes from the user's `nvm` install, loaded by `~/.bashrc`)
-- Python 3.10+ (on Greene this is the base conda env inside the `webdev.ext3` overlay)
+- Node.js 18+ (on Greene this is the `nvm` install at `/scratch/wmz2007/nvm`, loaded by the web SLURM scripts)
+- Python 3.10+ (on Greene this is the base conda env inside the `webdev.ext3` overlay). PatchPerPix **instances** overlays also need `h5py` in that env.
 - FISBe data extracted locally under `fisbe/completely/` (see root README for download instructions)
 
 ## Running on NYU Greene (compute node — recommended)
@@ -39,7 +39,7 @@ prints this line to `sbatch/web/web.out`):
 
 ```bash
 squeue --me --name=web --states=R -o '%N'   # e.g. cs123
-ssh -S none -N -L 9000:cs123:5173 $USER@login.torch.hpc.nyu.edu
+ssh -S none -N -L 9000:cs123:5173 wmz2007@login.torch.hpc.nyu.edu
 ```
 
 Browse `http://localhost:9000`. Vite (port 5173 on the compute node) is forwarded to
@@ -105,7 +105,8 @@ npm run dev
 | `BIAPY_RESULTS_BASE` | `../../biapy_work_folder/results` | Primary BiaPy results base (also used for legacy bare prediction-set ids) |
 | `BIAPY_RESULTS_BASES` | `biapy_work_folder/results:metrics/biapy` | Colon-separated list of bases scanned for BiaPy prediction sets (any run dir containing a `per_image_instances` folder). Default includes train-eval runs under `metrics/biapy` alongside `biapy_work_folder/results`. |
 | `BIAPY_RESULT_ROOT` | `../../biapy_work_folder/results/train_3d_instance_segmentation/results/train_3d_instance_segmentation_1` | Default prediction set (used when the client doesn't pick one) |
-| `PPP_EXPERIMENTS_BASE` | `../../PatchPerPix/experiments/ppp_experiments` | Base dir scanned for PatchPerPix prediction sets (per experiment: `numinst` count maps under `test/processed/`, `instances` vote-labels under `test/instanced/`) |
+| `PPP_EXPERIMENTS_BASE` | `../../metrics/ppp` | Base dir scanned for PatchPerPix prediction sets (per experiment: `numinst` under `{test,val}/processed/`, `instances` under `{test,val}/instanced/`). Matches PPP SLURM `--root ../../metrics/ppp`. |
+
 
 ## API endpoints
 
@@ -156,15 +157,15 @@ unfilled numbers below a rule.
 `/api/prediction-sets` merges sets from every model source, so you can compare predictions across setups. The **Predictions** dropdown above the viewer tabs (grouped by **BiaPy** / **PatchPerPix**) switches which set is overlaid; the predicted overlay and reported shapes update accordingly. The set marked `default` (a BiaPy set matching `BIAPY_RESULT_ROOT`) is selected on load.
 
 - **BiaPy** — every run directory under each path in `BIAPY_RESULTS_BASES` (default: `biapy_work_folder/results` and `metrics/biapy`) with a `per_image_instances` folder. Set ids are repo-relative so the two trees do not collide. Rendered as per-neuron coloured instance labels.
-- **PatchPerPix** — every experiment under `PPP_EXPERIMENTS_BASE`, each exposing up to two overlays:
-  - **numinst** — the per-voxel overlap-count map (`test/processed/<ckpt>/<stem>.zarr` → `volumes/pred_numinst`, `(3, Z, Y, X)` = P(0/1/2+ instances)). This is a foreground/count probability map, **not** per-neuron labels, so it renders as a two-colour foreground (argmax of the count channels: 1-instance vs 2+-overlap regions). Streamed in Z-blocks so the ~0.5 GB float16 array is never fully loaded.
-  - **instances** — the final vote-instances labels (`test/instanced/.../<stem>.hdf` → dataset `vote_instances`), coloured per neuron like the BiaPy/GT overlays. **Requires `h5py`** in the server env to read the HDF5 output.
+- **PatchPerPix** — every experiment under `PPP_EXPERIMENTS_BASE` (default `metrics/ppp`), each exposing overlays from both `test/` and `val/`:
+  - **numinst** — the per-voxel overlap-count map (`{test,val}/processed/<ckpt>/<stem>.zarr` → `volumes/pred_numinst`, `(3, Z, Y, X)` = P(0/1/2+ instances)). This is a foreground/count probability map, **not** per-neuron labels, so it renders as a two-colour foreground (argmax of the count channels: **single = cyan**, **overlap = magenta**). Streamed in Z-blocks so the ~0.5 GB float16 array is never fully loaded. Voxel metrics come from `<stem>_pred_metrics.csv` beside the zarr. Dropdown label: `{exp} · {split} · ckpt {N} · numinst`.
+  - **instances** — the final vote-instances labels (`{test,val}/instanced/.../<stem>.hdf` → dataset `vote_instances`), coloured per neuron like the BiaPy/GT overlays. **Requires `h5py`** in the `webdev` overlay. Instance scores come from the matching `evaluated/.../summary.csv` when present. Dropdown label encodes ckpt + VI params from the path, e.g. `{exp} · {split} · ckpt 70000 · instances · th0.3 · mws=T · skel=T` (Layer B adds `CCS=T/F`); set ids still use the full relative path.
 
-Scoring metrics in the right-hand column are currently BiaPy-only; PatchPerPix sets report no metrics.
+Note: PPP jobs often set `test_data` to the FISBe **val** split, so overlays under PPP’s `test/` tree still line up with **val** sample names in the sidebar. The Predictions dropdown scopes the sample list’s `has_predicted` flag to the selected set.
 
 ## Follow-ups (not in scaffold)
 
 - h5j / MCFO raw stack support via PyImageJ pipeline
 - Full-resolution in-browser 3D volume rendering (tile streaming)
-- PatchPerPix scoring metrics in the **Scoring Metrics** column
+- PatchPerPix scoring metrics in the **Scoring Metrics** column are driven by PPP `summary.csv` / `*_pred_metrics.csv` (not full BiaPy TOML parity)
 - Authentication and production deployment
