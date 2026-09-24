@@ -16,9 +16,21 @@ metrics/
 /__pycache__
 __pycache__
 *.DS_Store
+.cache/
+.ipynb_checkpoints/
+**/probe_out/
+
+# Local vendor clones (own .git)
+BiaPy-novabro/
+Skeleton-Recall/
+vesselFM/
+
+# Scratch GPU util dumps (keep archived gpu_log/ if already tracked)
+gpu_usage_log_*.csv
 
 # BiaPy
-BiaPy/results
+biapy_work_folder/results
+biapy_work_folder/configs/trials/
 
 # PatchPerPix
 PatchPerPix/experiments/ppp_experiments/
