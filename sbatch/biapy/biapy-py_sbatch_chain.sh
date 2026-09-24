@@ -162,12 +162,12 @@ if [[ "$do_train" -eq 1 ]]; then
     --job-name="${slurm_name_base}-r${run_id}-train"
     --time=24:00:00
     --gres=gpu:1
-    # --cpus-per-task=16
-    # --mem=240g
-    # --constraint='l40s'
     --cpus-per-task=16
-    --mem=384g
-    --constraint='h200'
+    --mem=250g
+    --constraint='l40s'
+    # --cpus-per-task=16
+    # --mem=384g
+    # --constraint='h200'
   )
   if [[ -n "$prev_id" ]]; then
     sbatch_args+=(--dependency="afterok:${prev_id}")

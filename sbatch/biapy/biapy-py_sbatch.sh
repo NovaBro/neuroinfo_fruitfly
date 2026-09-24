@@ -70,30 +70,120 @@ if [[ "$mode" == "train" ]]; then
     exit 1
   fi
 
-  # Resolve exactly one label_F*_Sk*_I dir per split. Narrow by DATA_CHANNELS
-  # when both FDb and FDcDn skel caches exist under the same parent.
+  # True iff LOSS.SKELETON_RECALL.ENABLE is True (ignores other ENABLE keys).
+  config_wants_skeleton_recall() {
+    awk '
+      /^[^[:space:]#]/ {
+        in_loss = ($0 ~ /^LOSS:/)
+        in_sr = 0
+        sr_indent = -1
+        next
+      }
+      {
+        match($0, /^[[:space:]]*/)
+        ind = RLENGTH
+        line = $0
+        sub(/^[[:space:]]+/, "", line)
+        if (line == "" || line ~ /^#/) next
+
+        if (in_loss && !in_sr && line ~ /^SKELETON_RECALL:/) {
+          in_sr = 1
+          sr_indent = ind
+          next
+        }
+        if (in_sr) {
+          if (ind <= sr_indent && line ~ /^[A-Za-z0-9_]+:/) {
+            in_sr = 0
+          } else if (line ~ /^ENABLE:[[:space:]]*[Tt]rue([[:space:]]|#|$)/) {
+            found = 1
+            exit
+          }
+        }
+      }
+      END { exit found ? 0 : 1 }
+    ' "$1"
+  }
+
+  # Db.mask_values from EXTRA_OPTS (default False, matching BiaPy).
+  config_db_mask_values() {
+    awk '
+      /mask_values:[[:space:]]*[Ff]alse/ { print "False"; found=1; exit }
+      /mask_values:[[:space:]]*[Tt]rue/  { print "True";  found=1; exit }
+      END { if (!found) print "False" }
+    ' "$1"
+  }
+
+  # Resolve exactly one precomputed channel-GT dir per split.
+  # Skel-recall configs need *_Sk*_I; otherwise stage the non-Sk sibling so BiaPy
+  # finds INSTANCE_CHANNELS_MASK_DIR without regenerating from multi-channel GT.
   resolve_channel_gt() {
     local split="$1"
     local parent="${SRC_ROOT}/${split}"
     local -a matches=()
     local d
+    local want_skel=false
+    local family="generic"
+    local base
+    local db_mv
+
+    if config_wants_skeleton_recall "$CONFIG_PATH"; then
+      want_skel=true
+    fi
 
     if grep -qE "DATA_CHANNELS:[[:space:]]*\[.*'Dc'" "$CONFIG_PATH"; then
-      for d in "${parent}"/label_F*_Dc*_Dn*_Sk*_I; do
-        [[ -d "$d" ]] && matches+=("$d")
-      done
+      family="DcDn"
+      if [[ "$want_skel" == true ]]; then
+        for d in "${parent}"/label_F*_Dc*_Dn*_Sk*_I; do
+          [[ -d "$d" ]] && matches+=("$d")
+        done
+      else
+        # F+Dc+Dn only: drop Sk caches and older extras (_P, _I, …).
+        for d in "${parent}"/label_F*_Dc*_Dn*; do
+          [[ -d "$d" ]] || continue
+          base="$(basename "$d")"
+          [[ "$base" == *_Sk* || "$base" == *_P* || "$base" == *_I ]] && continue
+          [[ "$base" == *_I_* ]] && continue
+          matches+=("$d")
+        done
+      fi
     elif grep -qE "DATA_CHANNELS:[[:space:]]*\[.*'Db'" "$CONFIG_PATH"; then
-      for d in "${parent}"/label_F*_Db*_Sk*_I; do
-        [[ -d "$d" ]] && matches+=("$d")
-      done
+      family="Db"
+      db_mv="$(config_db_mask_values "$CONFIG_PATH")"
+      if [[ "$want_skel" == true ]]; then
+        for d in "${parent}"/label_F*_Db*_Sk*_I; do
+          [[ -d "$d" ]] || continue
+          base="$(basename "$d")"
+          [[ "$base" == *"mask_values-${db_mv}"* ]] || continue
+          matches+=("$d")
+        done
+      else
+        for d in "${parent}"/label_F*_Db*; do
+          [[ -d "$d" ]] || continue
+          base="$(basename "$d")"
+          [[ "$base" == *_Sk* || "$base" == *_P* || "$base" == *_I ]] && continue
+          [[ "$base" == *_I_* ]] && continue
+          [[ "$base" == *"mask_values-${db_mv}"* ]] || continue
+          matches+=("$d")
+        done
+      fi
     else
-      for d in "${parent}"/label_F*_Sk*_I; do
-        [[ -d "$d" ]] && matches+=("$d")
-      done
+      if [[ "$want_skel" == true ]]; then
+        for d in "${parent}"/label_F*_Sk*_I; do
+          [[ -d "$d" ]] && matches+=("$d")
+        done
+      else
+        for d in "${parent}"/label_F*; do
+          [[ -d "$d" ]] || continue
+          base="$(basename "$d")"
+          [[ "$base" == *_Sk* || "$base" == *_P* || "$base" == *_I ]] && continue
+          [[ "$base" == *_I_* ]] && continue
+          matches+=("$d")
+        done
+      fi
     fi
 
     if [[ ${#matches[@]} -ne 1 ]]; then
-      echo "Error: expected exactly one channel GT under ${parent} for ${config_file}, got ${#matches[@]}:" >&2
+      echo "Error: expected exactly one channel GT under ${parent} for ${config_file} (family=${family}, want_skel=${want_skel}), got ${#matches[@]}:" >&2
       printf '  %s\n' "${matches[@]:-}" >&2
       exit 1
     fi

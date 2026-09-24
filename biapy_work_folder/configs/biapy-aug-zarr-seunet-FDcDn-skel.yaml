@@ -18,8 +18,10 @@ PROBLEM:
             decline_power: 2
       DATA_CHANNEL_WEIGHTS: (1.0, 1.0, 1.0)
       WATERSHED:
-        SEED_CHANNELS: ['Dc', 'Dn']             # keep seeds simple: trust P
-        SEED_CHANNELS_THRESH: ['auto', 0.05]
+        # SEED_CHANNELS: ['Dc', 'Dn']             # keep seeds simple: trust P
+        # SEED_CHANNELS_THRESH: ['auto', 0.05]
+        SEED_CHANNELS: ['F']             # keep seeds simple: trust P
+        SEED_CHANNELS_THRESH: ['auto']
         TOPOGRAPHIC_SURFACE_CHANNEL: 'F'
         GROWTH_MASK_CHANNELS: ['F']
         GROWTH_MASK_CHANNELS_THRESH: ['auto']

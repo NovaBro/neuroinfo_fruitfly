@@ -1,11 +1,5 @@
 # BiaPy version: 3.7.0
-#
-# Skeleton Recall variant of biapy-aug-zarr-seunet-FDb.yaml (F+Db SE-UNet baseline).
-# LOSS.SKELETON_RECALL.ENABLE auto-appends Sk (tubed skeleton) and I (regen labels).
-# That changes the instance-channel cache folder suffix — re-run preprocessing before train.
-#
-# Launch from repo root:
-#   ./sbatch/biapy/biapy-py_sbatch_chain.sh biapy-aug-zarr-seunet-FDb-skel preprocessing train test
+# FDcDn channel setup with FDb-dice deltas (dice on F, L1 on Dc/Dn; L40S batch size).
 
 SYSTEM:
     NUM_CPUS: 12
@@ -15,20 +9,24 @@ PROBLEM:
     TYPE: INSTANCE_SEG
     NDIM: 3D
     INSTANCE_SEG:
-      DATA_CHANNELS: ['F', 'Db']
+      DATA_CHANNELS: ['F', 'Dc', 'Dn']
+      DATA_CHANNELS_LOSSES: ['dice', 'l1', 'l1']
       DATA_CHANNELS_EXTRA_OPTS:
-        - Db:
+        - Dc:
+            type: 'skeleton'
             mask_values: False
-      DATA_CHANNEL_WEIGHTS: (1.0, 1.0)
+          Dn:
+            mask_values: False
+            decline_power: 2
+      DATA_CHANNEL_WEIGHTS: (2.0, 3.0, 3.0)
       WATERSHED:
-        SEED_CHANNELS: ['Db']
-        SEED_CHANNELS_THRESH: [0.05]
+        SEED_CHANNELS: ['Dc', 'Dn']             # keep seeds simple: trust P
+        SEED_CHANNELS_THRESH: ['auto', 0.05]
         TOPOGRAPHIC_SURFACE_CHANNEL: 'F'
         GROWTH_MASK_CHANNELS: ['F']
         GROWTH_MASK_CHANNELS_THRESH: ['auto']
         DATA_CHECK_MW: True
-        # DATA_REMOVE_BEFORE_MW: True
-        # DATA_REMOVE_SMALL_OBJ_BEFORE: 250
+
 
 DATA: 
     PATCH_SIZE: (80, 128, 128, 3)
@@ -94,26 +92,15 @@ MODEL:
 TRAIN:
     ENABLE: True
     OPTIMIZER: ADAMW
-    # Ray Tune optuna_v5 winner (L40S; trial 9785df3c, val_loss=-0.0512)
-    LR: 5.715E-4
+    LR: 1.E-3
     BATCH_SIZE: 12
-    # prior h200 defaults: LR 1.E-3, BATCH_SIZE 30
-    # prior l40 guess: LR 5.E-4, BATCH_SIZE 15 (bs=15 OOMed in tune)
-
-    EPOCHS: 240
+    EPOCHS: 200
     # PATIENCE: 20
     LR_SCHEDULER:
-        # NAME: 'onecycle'    # use one-cycle learning rate scheduler
-        NAME: 'warmupcosine'         # Learning rate scheduler with warmup and cosine decay
-        MIN_LR: 1.E-5                # Minimum learning rate at the end of cosine decay
-        WARMUP_COSINE_DECAY_EPOCHS: 20 # Number of epochs for the warmup + cosine decay schedule
-
-LOSS:
-    SKELETON_RECALL:
-        ENABLE: True
-        WEIGHT: 0.1982               # Ray Tune winner skel_weight
-        TUBE_DILATIONS: 1
-        TARGET_CHANNEL: F
+        NAME: 'onecycle'    # use one-cycle learning rate scheduler
+        # NAME: 'warmupcosine'         # Learning rate scheduler with warmup and cosine decay
+        # MIN_LR: 1.E-5                # Minimum learning rate at the end of cosine decay
+        # WARMUP_COSINE_DECAY_EPOCHS: 5 # Number of epochs for the warmup + cosine decay schedule
 
 TEST:
     ENABLE: True
