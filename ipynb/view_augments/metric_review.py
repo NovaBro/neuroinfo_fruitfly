@@ -1,4 +1,4 @@
-"""Helpers for reviewing BiaPy metric / prediction / GT channel outputs."""
+"""Helpers for reviewing BiaPy and vesselFM metric / prediction / GT outputs."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Literal
 
 import matplotlib.pyplot as plt
+import nibabel as nib
 import numpy as np
 import tifffile
 import zarr
@@ -204,6 +205,193 @@ def plot_image_grid(paths, plot_fn, ncols=4, figsize_cell=(2, 2), dpi=100, **plo
     for j in range(n, len(axes_flat)):
         axes_flat[j].axis("off")
     plt.tight_layout()
+    plt.show()
+    return fig, axes
+
+
+def _nifti_stem(path: Path) -> str:
+    """Return file stem with ``.nii`` / ``.nii.gz`` stripped."""
+    name = Path(path).name
+    for suffix in (".nii.gz", ".nii"):
+        if name.endswith(suffix):
+            return name[: -len(suffix)]
+    return Path(path).stem
+
+
+def _load_nifti(path) -> np.ndarray:
+    """Load a NIfTI volume as a float ndarray."""
+    return np.asanyarray(nib.load(str(path)).dataobj)
+
+
+def get_vesselfm_pred_paths(output_dir="metrics/vesselfm/fisbe-completely-test"):
+    """Sorted ``*_pred.nii.gz`` paths under a vesselFM inference output folder."""
+    output_dir = Path(output_dir)
+    paths = sorted(output_dir.glob("*_pred.nii.gz"))
+    if not paths:
+        raise FileNotFoundError(f"No *_pred.nii.gz files in {output_dir}")
+    return paths
+
+
+def mip_binary_volume(
+    ax,
+    volume,
+    sample_name,
+    z_axis=2,
+    font_siz=6,
+    title=None,
+):
+    """Plot a grayscale Z-MIP of a binary/prob mask. Usable as ``plot_fn``."""
+    arr = np.asarray(volume)
+    mip = arr.max(axis=z_axis)
+    ax.imshow(mip, cmap="gray")
+    panel_title = title if title is not None else sample_name
+    ax.set_title(panel_title, wrap=True)
+    ax.title.set_fontsize(font_siz)
+    ax.axis("off")
+
+
+def plot_nifti_grid(paths, plot_fn, ncols=4, figsize_cell=(2, 2), dpi=100, **plot_kwargs):
+    """Load NIfTI volumes from ``paths`` and draw each with ``plot_fn`` in a grid.
+
+    ``plot_fn`` signature: ``plot_fn(ax, data, sample_name, **plot_kwargs)``.
+    """
+    paths = [Path(p) for p in paths]
+    n = len(paths)
+    nrows = max(1, int(np.ceil(n / ncols)))
+    fig, axes = plt.subplots(
+        nrows,
+        ncols,
+        figsize=(figsize_cell[0] * ncols, figsize_cell[1] * nrows),
+        dpi=dpi,
+        squeeze=False,
+    )
+    axes_flat = axes.ravel()
+
+    for i, path in enumerate(paths):
+        data = _load_nifti(path)
+        plot_fn(axes_flat[i], data, _nifti_stem(path), **plot_kwargs)
+
+    for j in range(n, len(axes_flat)):
+        axes_flat[j].axis("off")
+    plt.tight_layout()
+    plt.show()
+    return fig, axes
+
+
+def plot_vesselfm_pred_gt_mips(
+    output_dir="metrics/vesselfm/fisbe-completely-test",
+    *,
+    gt_dir="fisbe/vesselfm-fisbe/test_masks",
+    n_samples=None,
+    figsize=(8, 4),
+    dpi=100,
+    font_siz=6,
+    z_axis=2,
+):
+    """Plot one GT-vs-prediction binary MIP figure per vesselFM sample.
+
+    Reads ``*_pred.nii.gz`` from ``output_dir`` and matching
+    ``{sample}.nii.gz`` masks from ``gt_dir``.
+
+    Returns
+    -------
+    list[tuple[Figure, ndarray, str]]
+        One entry per plotted sample: ``(fig, axes, sample_id)``.
+    """
+    gt_dir = Path(gt_dir)
+    pred_paths = get_vesselfm_pred_paths(output_dir)
+    if n_samples is not None:
+        pred_paths = pred_paths[: max(0, int(n_samples))]
+        if not pred_paths:
+            raise ValueError("n_samples resolved to an empty path list")
+
+    results = []
+    for pred_path in pred_paths:
+        stem = _nifti_stem(pred_path)
+        if not stem.endswith("_pred"):
+            raise ValueError(f"Expected *_pred.nii.gz stem, got {stem!r} from {pred_path}")
+        sample_id = stem[: -len("_pred")]
+        gt_path = gt_dir / f"{sample_id}.nii.gz"
+        if not gt_path.is_file():
+            raise FileNotFoundError(f"Missing GT mask for {sample_id!r}: {gt_path}")
+
+        pred = _load_nifti(pred_path)
+        gt = _load_nifti(gt_path)
+
+        fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi)
+        mip_binary_volume(axes[0], gt, sample_id, z_axis=z_axis, title="GT", font_siz=font_siz)
+        mip_binary_volume(axes[1], pred, sample_id, z_axis=z_axis, title="Pred", font_siz=font_siz)
+        fig.suptitle(sample_id, fontsize=font_siz + 2)
+        fig.tight_layout()
+        plt.show()
+        results.append((fig, axes, sample_id))
+    return results
+
+
+def plot_vesselfm_pred_value_distribution(
+    output_dir="metrics/vesselfm/fisbe-completely-test",
+    *,
+    n_samples=None,
+    figsize=(10, 4),
+    dpi=100,
+    font_siz=8,
+):
+    """Plot the distribution of vesselFM prediction voxel values.
+
+    Left: pooled histogram of all prediction voxels (typically ``{0, 1}``).
+    Right: per-sample foreground (value ``> 0``) fraction.
+
+    Returns
+    -------
+    tuple[Figure, ndarray]
+        ``(fig, axes)`` for the 1×2 summary figure.
+    """
+    pred_paths = get_vesselfm_pred_paths(output_dir)
+    if n_samples is not None:
+        pred_paths = pred_paths[: max(0, int(n_samples))]
+        if not pred_paths:
+            raise ValueError("n_samples resolved to an empty path list")
+
+    sample_ids: list[str] = []
+    fg_fracs: list[float] = []
+    value_totals: dict[float, int] = {}
+
+    for pred_path in pred_paths:
+        stem = _nifti_stem(pred_path)
+        sample_id = stem[: -len("_pred")] if stem.endswith("_pred") else stem
+        pred = np.asarray(_load_nifti(pred_path)).ravel()
+        values, counts = np.unique(pred, return_counts=True)
+        for value, count in zip(values.tolist(), counts.tolist()):
+            value_totals[float(value)] = value_totals.get(float(value), 0) + int(count)
+        sample_ids.append(sample_id)
+        fg_fracs.append(float(np.mean(pred > 0)))
+
+    fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi)
+    sorted_values = sorted(value_totals)
+    pooled_counts = [value_totals[v] for v in sorted_values]
+    total = sum(pooled_counts) or 1
+    axes[0].bar([str(v) for v in sorted_values], pooled_counts, color="steelblue")
+    axes[0].set_xlabel("Predicted value")
+    axes[0].set_ylabel("Voxel count")
+    axes[0].set_title("Pooled prediction value histogram", fontsize=font_siz)
+    for x, count in zip([str(v) for v in sorted_values], pooled_counts):
+        axes[0].annotate(
+            f"{100.0 * count / total:.2f}%",
+            xy=(x, count),
+            ha="center",
+            va="bottom",
+            fontsize=font_siz - 1,
+        )
+
+    axes[1].bar(range(len(sample_ids)), fg_fracs, color="darkorange")
+    axes[1].set_xticks(range(len(sample_ids)))
+    axes[1].set_xticklabels(sample_ids, rotation=45, ha="right", fontsize=font_siz - 2)
+    axes[1].set_ylabel("Foreground fraction")
+    axes[1].set_title("Per-sample foreground fraction (value > 0)", fontsize=font_siz)
+    axes[1].set_ylim(0, max(fg_fracs) * 1.25 if fg_fracs else 1)
+
+    fig.suptitle(f"vesselFM pred value distribution ({Path(output_dir).name})", fontsize=font_siz + 1)
+    fig.tight_layout()
     plt.show()
     return fig, axes
 
