@@ -1,7 +1,67 @@
-# README
+# neuroinfo_fruitfly
 
-# Dataset
-## Fisbe Download Method
+Research workspace for **instance segmentation of fruit-fly (Drosophila) neurons** from the
+[FISBe](https://kainmueller-lab.github.io/fisbe/) light-microscopy dataset, run on **NYU Greene HPC**.
+
+## Goal
+
+Segment FISBe / MCFO volumes into individual neurons → skeletonize → run NBLAST.
+
+There is no single application here; it is a collection of independently runnable subprojects that
+share the FISBe data and the HPC environment.
+
+## Repo layout
+
+| Path | Role |
+|------|------|
+| [`PatchPerPix/`](PatchPerPix/) | Proposal-free instance segmentation (see [`CODEBASE.md`](PatchPerPix/CODEBASE.md)) |
+| [`biapy_work_folder/`](biapy_work_folder/) | BiaPy 3D instance-seg configs, prep, Ray Tune, watershed tools |
+| [`web/`](web/) | FastAPI + React viewer for FISBe Zarrs and prediction overlays |
+| [`sbatch/`](sbatch/) | SLURM job scripts (`ppp/`, `biapy/`, `evalinstseg/`, `web/`, `vesselfm/`) |
+| [`md_guides/`](md_guides/) | Experiment notes (PPP layers, Ray Tune, VesselFM, losses) |
+| [`ipynb/`](ipynb/) | Exploratory notebooks (EDA, augmentation review, metrics) |
+| [`evaluate-instance-segmentation/`](evaluate-instance-segmentation/) | Upstream eval tooling (`evalinstseg`) |
+| `metrics/` | Run outputs (gitignored): `metrics/ppp/`, `metrics/biapy/` |
+| `env/` | Singularity ext3 overlays (gitignored) |
+| `fisbe/` | Dataset (gitignored) |
+
+## HPC / containers (required)
+
+**Do not run GPU or heavy I/O work on a login node.** Jobs use a Singularity CUDA image plus a
+per-project **ext3 overlay** that holds the conda env.
+
+- CUDA image: `/share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif`
+- Overlays under `env/` (examples): `ppp.ext3` → env `ppp`, `BiaPy_env.ext3` → `BiaPy_env`, `webdev.ext3`
+- Inside the container: `source /ext3/env.sh; conda activate <env>`
+- Submit **from the repo root** (`/scratch/wmz2007/neuroinfo_fruitfly`) so `sbatch` `--output`/`--error` paths resolve
+- Account: `torch_pr_61_general`; typically `--gres=gpu:1`
+- GPU jobs should keep utilization high (public partitions cancel idle GPUs). Job scripts usually background an `nvidia-smi … -l … > gpu_usage_log_*.csv` logger — keep that when copying patterns
+- Install packages into an overlay with `:rw --fakeroot` (one writer at a time). Do **not** combine `:rw` with `--writable-tmpfs` on apptainer 1.5.1
+
+Canonical launch pattern:
+
+```bash
+singularity exec --nv --overlay env/ppp.ext3:ro \
+  /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
+  /bin/bash -c 'source /ext3/env.sh; conda activate ppp; <command>'
+```
+
+Overlay setup tutorial:
+https://services.rt.nyu.edu/docs/hpc/containers/singularity_with_conda/#using-your-singularity-container-in-a-slurm-batch-job
+
+Upstream installs (inside the matching overlay):
+
+- BiaPy: https://biapy.readthedocs.io/en/latest/get_started/installation.html
+- PatchPerPix: https://github.com/Kainmueller-Lab/PatchPerPix
+- evaluate-instance-segmentation: https://github.com/Kainmueller-Lab/evaluate-instance-segmentation
+
+## Dataset
+
+Volumes are **Zarr, CZYX**, under `fisbe/completely/{train,val,test}/` (and `fisbe/partly/`).
+The split manifest is `fisbe/sample_list_per_split.txt`.
+
+### FISBe download
+
 ```bash
 nohup bash -c '
   mkdir -p fisbe &&
@@ -17,140 +77,112 @@ nohup bash -c '
 echo "PID: $!"
 ```
 
-# Environment Setup
-## Conda Singularity
-Follow this tutorial
-https://services.rt.nyu.edu/docs/hpc/containers/singularity_with_conda/#using-your-singularity-container-in-a-slurm-batch-job
-
-For each model method and the evaluation method, you need to create a new environment, (saved_file_name.ext3).
-BiaPy (BiaPy_env.ext3): https://biapy.readthedocs.io/en/latest/get_started/installation.html
-Fisbe Evaluate Instance Segmentation (evaluate.ext3): https://github.com/Kainmueller-Lab/evaluate-instance-segmentation
-PatchPerPix (ppp.ext3): https://github.com/Kainmueller-Lab/PatchPerPix
-
-# Model
 ## PatchPerPix
-```bash
-# data preperation
-# /scratch/wmz2007/neuroinfo_fruitfly/PatchPerPix/experiments/flylight/prepare_fisbe_for_ppp.py
-# /scratch/wmz2007/neuroinfo_fruitfly/fisbe
-python3 PatchPerPix/experiments/flylight/prepare_fisbe_for_ppp.py --fisbe-root fisbe --opening-radius 1
-```
 
-``` bash
-# extra forgotten packages
-pip install monai pynrrd torchinfo torchmetrics
-```
+Architecture reference: [`PatchPerPix/CODEBASE.md`](PatchPerPix/CODEBASE.md).
+Experiment notes: [`md_guides/ppp_*.md`](md_guides/).
+
+### One-time setup
 
 ```bash
-# Base
-cd PatchPerPix/experiments/
-nohup env CUDA_VISIBLE_DEVICES=0 \
-python -u run_ppp.py \
---setup setup01 \
---config flylight/setups/setup01/default_train_code_l40s.toml \
--d train validate_checkpoints predict decode label evaluate \
---app flylight \
---root ppp_experiments \
---test-checkpoint last \
-> running.txt 2>&1 &
+# Inside the ppp overlay
+cd PatchPerPix && pip install -e .
+# Pin pycuda for Python 3.9 (2025.1+ breaks label/vote_instances)
+pip install 'pycuda<=2024.1.2'
 
-# For evaluation only on an existing experiment (after you have a real checkpoint):
-cd PatchPerPix/experiments/
-nohup env CUDA_VISIBLE_DEVICES=0 \
-python -u run_ppp.py \
---setup setup01 \
---config flylight/setups/setup01/default_train_code.toml \
--id ppp_experiments/flylight_setup01_260610_113923_103163 \
---run_from_exp \
--d validate_checkpoints predict decode label evaluate \
---app flylight \
---checkpoint 4000 \
-> evaluate.txt 2>&1 &
+# Add FISBe arrays expected by PPP (raw_normalized, gt_instances_rm_5, …)
+python3 PatchPerPix/experiments/flylight/prepare_fisbe_for_ppp.py \
+  --fisbe-root fisbe --opening-radius 1
 ```
 
+### Run (SLURM)
 
-## BiaPy Tutorial
-Very helpful tutorial on getting started and details.
-https://biapy.readthedocs.io/en/latest/workflows/semantic_segmentation.html
+From the repo root:
 
-NOTE: 
-PROBLEM.INSTANCE_SEG.DATA_CHANNELS and .DATA_CHANNELS_EXTRA_OPTS cause new data cache generation!
-Issue for running multiple parallele process that may need to read / write from same folder!
-
-### WARNING MAY BE OUTDATED
 ```bash
-# datapreprocessing to tiff
-# /scratch/wmz2007/neuroinfo_fruitfly/fisbe/biapy/prepare_tiff_data.py
+# Default / exploratory job (see script for staging, GPU logger, configs)
+sbatch sbatch/ppp/ppp_sbatch.sh
 
-# Make sure to have the interactive environment. 
-srun --cpus-per-task=8 --time 2:00:00 --mem=32g --account=torch_pr_61_general --pty /bin/bash
-# Whatever env you use (BiaPy_env), make sure it hase toml installed
-
-python3 biapy_work_folder/biapy_prep_main.py --splits test train val
+# Example chain: long8h train then infer (afterok)
+bash sbatch/ppp/ppp_basic_long8h_chain.sh
 ```
 
-Adjust experiment test and training parameters in `biapy_work_folder/3d_instance_segmentation.yaml`
+Entry point is `PatchPerPix/experiments/run_ppp.py` with `-d train validate_checkpoints predict decode label evaluate`.
+Configs live under `PatchPerPix/experiments/flylight/setups/setup01/` (base `default_train_code_l40s.toml` plus overlays such as `basic_long8h.toml`, `vi_th_0_*.toml`).
 
-in `./fisbe/biapy/biapy.sh`
+Active experiment roots are under `metrics/ppp/` (gitignored). Older runs may use `PatchPerPix/experiments/ppp_experiments/`.
+
+Prefer **separate jobs** for train vs predict/label (do not `@fork` train with PreCache after CUDA init). See comments in `run_ppp.py` and the `sbatch/ppp/ppp_basic_*` scripts.
+
+## BiaPy
+
+Docs: https://biapy.readthedocs.io/en/latest/workflows/semantic_segmentation.html
+
+### Data prep
+
 ```bash
-# Configuration file
-job_cfg_file=./fisbe/biapy/3d_instance_segmentation.yaml
-# Where the experiment output directory should be created
-result_dir=./fisbe/biapy/results
-# Just a name for the job
-job_name=3d_instance_segmentation
-# Number that should be increased when one need to run the same job multiple times (reproducibility)
-job_counter=1
-# Number of the GPU to run the job in (according to 'nvidia-smi' command)
-gpu_number=0
-
-# Load the environment
-conda activate BiaPy_env
-
-biapy \
-    --config $job_cfg_file \
-    --result_dir $result_dir  \
-    --name $job_name    \
-    --run_id $job_counter  \
-    --gpu "$gpu_number"
+python biapy_work_folder/biapy_prep_main.py -o fisbe/biapy-channel-scale-zarr ...
 ```
 
-Then submit jobs via `sbatch sbatch/biapy/biapy-py_sbatch_chain.sh <stem> train` (see `sbatch/biapy/`).
+### Train / test (SLURM)
+
+Configs: `biapy_work_folder/configs/<stem>.yaml` (e.g. `biapy-aug-zarr-seunet-FDb-skel`, winner YAMLs from Ray Tune).
+
+```bash
+# From repo root; stem = YAML basename without .yaml
+./sbatch/biapy/biapy-py_sbatch_chain.sh biapy-aug-zarr-seunet-FDb-skel train test
+./sbatch/biapy/biapy-py_sbatch_chain.sh -r 0 <stem> preprocessing train test
+```
+
+Runner: [`biapy_work_folder/run_biapy-py.py`](biapy_work_folder/run_biapy-py.py).
+Outputs: `metrics/biapy/` (preferred); legacy under `biapy_work_folder/results/`.
+
+**Warning:** changing `PROBLEM.INSTANCE_SEG.DATA_CHANNELS` or `DATA_CHANNELS_EXTRA_OPTS` regenerates the data cache — avoid concurrent jobs writing the same cache dir.
+
+### Ray Tune and watershed
+
+- Hyperparameter search: [`biapy_work_folder/raytune/`](biapy_work_folder/raytune/) + `sbatch/biapy/raytune_*_sbatch.sh`
+- Instance watershed probes: [`biapy_work_folder/watershed_tune/`](biapy_work_folder/watershed_tune/) + `sbatch/biapy/watershed_tune_*.sh`
+- Notes: [`md_guides/raytune_*.md`](md_guides/), [`md_guides/biapy_watershed_param_tune.md`](md_guides/biapy_watershed_param_tune.md)
 
 ## Evaluation
-NOTE: For `BiaPy` model, must run the `biapy_work_folder/evalinstseg_prep_zarr.py` script to get zarr file format instead of tif.
-For this project, run the evaluation through sbatch, `sbatch sbatch/evalinstseg/evalinstseg_sbatch.sh`.
+
+For BiaPy TIFF/instance outputs, convert to Zarr before scoring:
 
 ```bash
-# This command example is from the github.
-# Base Example
-evalinstseg \
-  --res_file tests/pred/sample_01.hdf \
-  --res_key volumes/gmm_label_cleaned \
-  --gt_file tests/gt/sample_01.zarr \
-  --gt_key volumes/gt_instances \
-  --split_file assets/sample_list_per_split.txt \
-  --out_dir tests/results \
-  --app flylight
+python biapy_work_folder/evalinstseg_prep_zarr.py ...
+```
 
-# Folders
-evalinstseg \
-  --res_file biapy_work_folder/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr \
-  --res_key volumes/pred_instance \
-  --gt_file fisbe/completely/train \
-  --gt_key volumes/gt_instances \
-  --out_dir tests/results/biapy \
-  --app flylight
+Submit via:
 
+```bash
+sbatch sbatch/evalinstseg/evalinstseg_sbatch.sh
+```
+
+Example (`evalinstseg` from the evaluate-instance-segmentation env):
+
+```bash
 evalinstseg \
-  --res_file biapy_work_folder/results/3d_instance_segmentation/results/3d_instance_segmentation_1/per_image_instances_zarr/JRC_SS04989-20160318_24_A2.zarr \
+  --res_file path/to/per_image_instances_zarr \
   --res_key volumes/pred_instance \
-  --gt_file fisbe/completely/test/JRC_SS04989-20160318_24_A2.zarr \
+  --gt_file fisbe/completely/test \
   --gt_key volumes/gt_instances \
+  --split_file fisbe/sample_list_per_split.txt \
   --out_dir tests/results/biapy \
   --app flylight
 ```
 
-## Web Viewer
+## Web viewer
 
-An isolated web app for browsing FISBe 3D volumes lives in [`web/`](web/). See [`web/README.md`](web/README.md) for setup: a FastAPI server serves Zarr slices/MIPs, and a Vite + React frontend provides a sample browser and orthographic slice viewer.
+Browse FISBe volumes and overlay BiaPy / PatchPerPix predictions.
+
+```bash
+sbatch sbatch/web/web.sh
+```
+
+Full setup, tunneling, and API details: [`web/README.md`](web/README.md).
+
+## Guides and notebooks
+
+- Experiment write-ups: [`md_guides/`](md_guides/)
+- Augmentation / metric notebooks: [`ipynb/`](ipynb/), helpers under [`ipynb/view_augments/`](ipynb/view_augments/)
