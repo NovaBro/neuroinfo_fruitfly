@@ -1,4 +1,5 @@
 # .gitignore
+.env
 .vscode/
 /.vscode
 env/
@@ -25,8 +26,11 @@ BiaPy-novabro/
 Skeleton-Recall/
 vesselFM/
 
-# Scratch GPU util dumps (keep archived gpu_log/ if already tracked)
+# Scratch GPU util dumps (tracked archive under gpu_log/archeive_* stays)
 gpu_usage_log_*.csv
+gpu_log/ppp/
+gpu_log/biapy/
+gpu_log/vesselfm/
 
 # BiaPy
 biapy_work_folder/results

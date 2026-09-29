@@ -81,31 +81,36 @@ def _tf_flag(part: str, prefix: str) -> str | None:
     return None
 
 
-def _format_numinst_name(exp: str, split: str, ckpt_dir: Path) -> str:
-    """Human label for a processed/<ckpt> numinst set."""
-    return f"{exp} · {split} · ckpt {ckpt_dir.name} · numinst"
+def _format_numinst_name(exp: str, ckpt_dir: Path) -> str:
+    """Human label for a processed/<ckpt> numinst set.
+
+    Omits the on-disk PPP split (``test``/``val``) from the label; discovery
+    still indexes both dirs (new runs route FISBe val→``val/``, test→``test/``).
+    """
+    return f"{exp} · ckpt {ckpt_dir.name} · numinst"
 
 
 def _format_instances_name(
-    exp: str, split: str, param_dir: Path, instanced_base: Path
+    exp: str, param_dir: Path, instanced_base: Path
 ) -> str:
     """Human label encoding ckpt + VI params from the instanced path.
 
     Example::
 
-        ppp_basic_long8h · test · ckpt 70000 · instances · th0.3 · mws=T · skel=T
+        ppp_basic_long8h · ckpt 70000 · instances · th0.3 · mws=T · skel=T
 
+    Omits the on-disk PPP split from the label (same as ``_format_numinst_name``).
     Falls back to the leaf folder name when the path layout is unexpected.
     """
     try:
         parts = param_dir.resolve().relative_to(instanced_base.resolve()).parts
     except ValueError:
-        return f"{exp} · {split} · instances ({param_dir.name})"
+        return f"{exp} · instances ({param_dir.name})"
 
     if not parts:
-        return f"{exp} · {split} · instances ({param_dir.name})"
+        return f"{exp} · instances ({param_dir.name})"
 
-    bits: list[str] = [exp, split]
+    bits: list[str] = [exp]
     idx = 0
     if parts[0].isdigit():
         bits.append(f"ckpt {parts[0]}")
@@ -143,7 +148,7 @@ def _format_instances_name(
 
     if th is None and mws is None and skel is None and ccs is None:
         # Unrecognised layout under instanced/ — keep old leaf label.
-        return f"{exp} · {split} · instances ({param_dir.name})"
+        return f"{exp} · instances ({param_dir.name})"
 
     if th is not None:
         bits.append(f"th{th}")
@@ -195,7 +200,7 @@ def discover_prediction_sets() -> list[dict]:
                     sets.append(
                         {
                             "id": NUMINST_PREFIX + _rel(ckpt_dir),
-                            "name": _format_numinst_name(exp, split, ckpt_dir),
+                            "name": _format_numinst_name(exp, ckpt_dir),
                             "path": str(ckpt_dir),
                             "default": False,
                             "source": "ppp",
@@ -216,7 +221,7 @@ def discover_prediction_sets() -> list[dict]:
                         {
                             "id": INST_PREFIX + _rel(param_dir),
                             "name": _format_instances_name(
-                                exp, split, param_dir, instanced_base
+                                exp, param_dir, instanced_base
                             ),
                             "path": str(param_dir),
                             "default": False,

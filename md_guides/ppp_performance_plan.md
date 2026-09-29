@@ -24,7 +24,7 @@ Primary debug sample: `R22C03-20180918_66_J2` (GT = 2 neurons under
 | Layer A | **Done** — A1 pick 30000; A2 train+sweep done; pick **70000** (FG F1@0.3 = 0.62) |
 | Layer B @ 30000 | Failed (B1–B3 flat/worse); B4 skipped |
 | Layer B @ 70000 | **Closed** — B1–B7 no winners (B6/B7 soft F1 0.123 = baseline) |
-| Next | **fmaps24 ckpt sweep** 50/60/70/80k (pilot @ 80k soft F1 **0.170** > long8h 0.123) |
+| Next | **fmaps24 full val+test array** @ locked ckpt **80000** (soft F1 0.170 on R22C03) |
 | rm500 trap | Eval `remove_small_components=500` → F1 ≈ 0.001 (fragments all tiny) |
 | Train GPU util | Mean **~44%**, VRAM **~91%** (batch_size=1, L40S) |
 
@@ -105,7 +105,7 @@ Also:
 | Resume same `-id` | `ppp_basic_long8h_train_sbatch.sh` | Closed recipe; do not extend |
 | Sampling balance | `[training.sampling]` | Leave for a later `-id` if fmaps24 fails |
 | Loss / bg | `mask_bg_weight`, `add_affinities="loss"` | Keep aff targets on GPU |
-| Capacity | `num_fmaps=24` under **`ppp_basic_fmaps24`** | Pilot soft F1 0.170 @ 80k; **ckpt sweep next** |
+| Capacity | `num_fmaps=24` under **`ppp_basic_fmaps24`** | Sweep pick **80000** (soft F1 0.170); full val/test array next |
 
 **Layer B closed → next is `ppp_basic_fmaps24` (do not resume long8h same-recipe).**
 
@@ -227,7 +227,8 @@ When one setting wins on the pilot sample:
 - [x] **B6 @ 70000** `do_nms=true` — soft F1 0.123 (flat); not a winner
 - [x] **B7 @ 70000** `affinity_graph_voting=true` — soft F1 0.123 (flat); not a winner
 - [x] **Capacity** `ppp_basic_fmaps24` — train+pilot infer @ 80000 soft F1 **0.170** (Pred 257) > long8h 0.123
-- [ ] **fmaps24 ckpt sweep** 50/60/70/80k — pick best before more recipe changes
+- [x] **fmaps24 ckpt sweep** 50/60/70/80k — pick **80000** (soft F1 0.170; 50/60/70: 0.112/0.155/0.150)
+- [ ] **fmaps24 full val+test array** @ 80000 — `ppp_basic_fmaps24_full_array_chain.sh`
 - [ ] **C** Only if sizes look healthy: set `remove_small_comps` / eval filter deliberately
 - [ ] **U** Try `training.batch_size=2` (fix OOM); log util before/after
 - [ ] **W** Full val (14) + test (20) @ long8h ckpt 70000 — sequential scripts ready (parallel OK with fmaps24)
@@ -242,7 +243,9 @@ When one setting wins on the pilot sample:
 | Job post-mortem | `md_guides/ppp_recommendations.md` |
 | Layer A runbook | `md_guides/ppp_layer_a_prediction.md` |
 | Layer B runbook (closed) | `md_guides/ppp_layer_b_merge.md` |
-| **Next** | `CKPTS="50000 60000 70000 80000" bash sbatch/ppp/ppp_basic_fmaps24_ckpt_sweep_chain.sh` |
+| **Next** | `bash sbatch/ppp/ppp_basic_fmaps24_full_array_chain.sh` |
+| **New train 400k** | `sbatch sbatch/ppp/ppp_basic_fmaps24_400k_train_sbatch.sh` |
+| fmaps24 ckpt sweep (done) | `CKPTS="50000 60000 70000 80000" bash sbatch/ppp/ppp_basic_fmaps24_ckpt_sweep_chain.sh` |
 | Full val @ 70000 | `sbatch sbatch/ppp/ppp_basic_long8h_full_val_sbatch.sh` |
 | Full test @ 70000 | `sbatch sbatch/ppp/ppp_basic_long8h_full_test_sbatch.sh` |
 | fmaps24 overlay | `…/setup01/basic_fmaps24.toml` (`num_fmaps=24`) |

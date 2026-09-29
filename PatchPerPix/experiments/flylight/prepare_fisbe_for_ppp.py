@@ -11,6 +11,9 @@ if hasattr(sys.stdout, "reconfigure"):
 import zarr
 from skimage.morphology import ball, opening
 
+# Match FISBe volumes/raw spatial chunking; avoid full-volume chunks (slow random crops).
+SPATIAL_CHUNKS = (64, 64, 64)
+
 
 def prepare_sample(zarr_path, clipmax=1500, opening_radius=1, overwrite=False):
     root = zarr.open(zarr_path, mode="a")
@@ -55,22 +58,22 @@ def prepare_sample(zarr_path, clipmax=1500, opening_radius=1, overwrite=False):
 
     volumes.zeros(
         "raw_normalized", shape=raw_normalized.shape, dtype="f4",
-        chunks=(1,) + raw_normalized.shape[1:])
+        chunks=(1,) + SPATIAL_CHUNKS)
     volumes["raw_normalized"][...] = raw_normalized
 
     volumes.zeros(
         "gt_instances_rm_5", shape=gt_instances_rm_5.shape,
-        dtype=gt_instances.dtype, chunks=(1,) + gt_instances_rm_5.shape[1:])
+        dtype=gt_instances.dtype, chunks=(1,) + SPATIAL_CHUNKS)
     volumes["gt_instances_rm_5"][...] = gt_instances_rm_5
 
     volumes.zeros(
         "gt_numinst", shape=gt_numinst.shape, dtype="u1",
-        chunks=gt_numinst.shape)
+        chunks=SPATIAL_CHUNKS)
     volumes["gt_numinst"][...] = gt_numinst
 
     volumes.zeros(
         "gt_fg_rm_5", shape=gt_fg_rm_5.shape, dtype="f4",
-        chunks=gt_fg_rm_5.shape)
+        chunks=SPATIAL_CHUNKS)
     volumes["gt_fg_rm_5"][...] = gt_fg_rm_5
     print(f"prepared: {zarr_path}", flush=True)
 

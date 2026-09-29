@@ -48,7 +48,8 @@ cleanup() {
 }
 trap cleanup EXIT
 if [[ "$mode" == "train" || "$mode" == "test" ]]; then
-  nohup nvidia-smi --query-gpu=timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total --format=csv -l 3 > "gpu_log/gpu_biapy-py_${job_name}_${mode}_${SLURM_JOB_ID}.csv" &
+  mkdir -p gpu_log/biapy
+  nohup nvidia-smi --query-gpu=timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total --format=csv -l 3 > "gpu_log/biapy/gpu_biapy-py_${job_name}_${mode}_${SLURM_JOB_ID}.csv" &
   GPU_LOGGER_PID=$!
 fi
 # <<<< GPU Tracking <<<<

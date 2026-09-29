@@ -30,7 +30,7 @@ OUTPUT_FOLDER="${REPO_ROOT}/metrics/vesselfm/fisbe-completely-test-ft"
 CKPT_PATH="${CKPT_PATH:-${REPO_ROOT}/metrics/vesselfm/checkpoints/fisbe_finetuned.pt}"
 HF_HOME="${REPO_ROOT}/.cache/huggingface"
 
-mkdir -p "${OUTPUT_FOLDER}" gpu_log "${HF_HOME}"
+mkdir -p "${OUTPUT_FOLDER}" gpu_log/vesselfm "${HF_HOME}"
 
 if [[ ! -f "${CKPT_PATH}" ]]; then
   echo "Error: ckpt not found: ${CKPT_PATH}" >&2
@@ -58,7 +58,7 @@ trap cleanup EXIT
 nohup nvidia-smi \
   --query-gpu=timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total \
   --format=csv -l 3 \
-  > "gpu_log/gpu_vesselfm_infer_ft_${SLURM_JOB_ID}.csv" &
+  > "gpu_log/vesselfm/gpu_vesselfm_infer_ft_${SLURM_JOB_ID}.csv" &
 GPU_LOGGER_PID=$!
 
 singularity exec --nv \

@@ -114,6 +114,31 @@ Active experiment roots are under `metrics/ppp/` (gitignored). Older runs may us
 
 Prefer **separate jobs** for train vs predict/label (do not `@fork` train with PreCache after CUDA init). See comments in `run_ppp.py` and the `sbatch/ppp/ppp_basic_*` scripts.
 
+### How to view (after tensorboard is in the overlay)
+
+Training writes TensorBoard event files under the experiment root, e.g.
+`metrics/ppp/ppp_basic_fmaps24_400k_bs5_aug/{train,validate}/`.
+Install once with `sbatch sbatch/ppp/ppp_env_install_tensorboard_sbatch.sh` (exclusive `:rw` on `env/ppp.ext3`).
+
+From the repo root on a Greene node:
+
+```bash
+singularity exec --overlay env/ppp.ext3:ro \
+  /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
+  /bin/bash -c 'source /ext3/env.sh; conda activate ppp; \
+    tensorboard --logdir metrics/ppp/ppp_basic_fmaps24_400k_bs5_aug --bind_all --port 6006'
+```
+
+On your laptop, tunnel and open the UI:
+
+```bash
+ssh -L 6006:localhost:6006 <you>@greene.hpc.nyu.edu
+```
+
+Browser: `http://localhost:6006` → Scalars.
+
+Point `--logdir` at `metrics/ppp/` to compare several experiments. Curves update live while training writes events (gunpowder skips TB writes for `iteration < 500` when `max_iterations >= 1000`); the same UI works after the run finishes.
+
 ## BiaPy
 
 Docs: https://biapy.readthedocs.io/en/latest/workflows/semantic_segmentation.html

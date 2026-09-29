@@ -7,6 +7,20 @@ import numpy as np
 import torch
 import torchmetrics
 
+# Cap diagnostic metric tensors so torchmetrics/CUB unique does not blow up on
+# the dense patch path (train_code=false can produce multi-billion-element flats).
+MAX_METRIC_ELEMS = 1_000_000
+
+
+def _flat_sample(pred, target, max_elems=MAX_METRIC_ELEMS):
+    """Flatten pred/target and randomly subsample to at most max_elems."""
+    pred = torch.flatten(pred)
+    target = torch.flatten(target)
+    n = pred.numel()
+    if n <= max_elems:
+        return pred, target
+    idx = torch.randint(0, n, (max_elems,), device=pred.device)
+    return pred[idx], target[idx]
 
 
 class MaskedCrossEntropyLoss(torch.nn.CrossEntropyLoss):
@@ -130,35 +144,31 @@ class LossWrapper(torch.nn.Module):
         loss_fg = self.fg_numinst_loss(pred_logits_fg, gt_fgbg_loss, loss_mask)
         loss = loss_patch + loss_fg
 
-        if pred_logits_affs.numel() > 0:
-            # Diagnostics only: never needed for backprop, and on the dense
-            # patch path (train_code=false) the flattened tensor is huge
-            # (~7.5e9 elems at batch 15), so torchmetrics' boolean intermediates
-            # OOM. no_grad lets them free immediately instead of being retained.
-            with torch.no_grad():
-                p_affs = torch.flatten(pred_logits_affs)
-                g_affs = torch.flatten(gt_affs_samples)
-                self.summaries['jaccard_patch'][0] = self.jaccard(p_affs, g_affs)
-                self.summaries['accuracy_patch'][0] = self.accuracy(p_affs, g_affs)
-                self.summaries['accuracy2_patch'][0] = self.accuracy2(p_affs, g_affs)
-                self.summaries['mse_patch'][0] = self.mse(
-                    torch.sigmoid(p_affs), g_affs)
-
-        if self.overlapping_inst:
-            gt_fgbg_loss = torch.nn.functional.one_hot(
-                gt_fgbg_loss, num_classes=self.config['max_num_inst']+1)
-            gt_fgbg_loss = torch.movedim(gt_fgbg_loss, -1, 1)
-            pred_logits_fg = torch.softmax(pred_logits_fg, dim=1)
-        else:
-            pred_logits_fg = torch.sigmoid(pred_logits_fg)
-
-        with torch.no_grad():
-            p_fg = torch.flatten(pred_logits_fg)
-            g_fg = torch.flatten(gt_fgbg_loss)
-            self.summaries['jaccard_fg'][0] = self.jaccard(p_fg, g_fg)
-            self.summaries['accuracy_fg'][0] = self.accuracy(p_fg, g_fg)
-            self.summaries['accuracy2_fg'][0] = self.accuracy2(p_fg, g_fg)
-            self.summaries['mse_fg'][0] = self.mse(p_fg, g_fg)
+        # TODO: re-enable diagnostic metrics (+ TensorBoard) after downsample / TB install.
+        # Dense-path flats hit CUB unique limits (RuntimeError: num_inp ... too big for CUB).
+        # if pred_logits_affs.numel() > 0:
+        #     with torch.no_grad():
+        #         p_affs, g_affs = _flat_sample(pred_logits_affs, gt_affs_samples)
+        #         self.summaries['jaccard_patch'][0] = self.jaccard(p_affs, g_affs)
+        #         self.summaries['accuracy_patch'][0] = self.accuracy(p_affs, g_affs)
+        #         self.summaries['accuracy2_patch'][0] = self.accuracy2(p_affs, g_affs)
+        #         self.summaries['mse_patch'][0] = self.mse(
+        #             torch.sigmoid(p_affs), g_affs)
+        #
+        # if self.overlapping_inst:
+        #     gt_fgbg_loss = torch.nn.functional.one_hot(
+        #         gt_fgbg_loss, num_classes=self.config['max_num_inst']+1)
+        #     gt_fgbg_loss = torch.movedim(gt_fgbg_loss, -1, 1)
+        #     pred_logits_fg = torch.softmax(pred_logits_fg, dim=1)
+        # else:
+        #     pred_logits_fg = torch.sigmoid(pred_logits_fg)
+        #
+        # with torch.no_grad():
+        #     p_fg, g_fg = _flat_sample(pred_logits_fg, gt_fgbg_loss)
+        #     self.summaries['jaccard_fg'][0] = self.jaccard(p_fg, g_fg)
+        #     self.summaries['accuracy_fg'][0] = self.accuracy(p_fg, g_fg)
+        #     self.summaries['accuracy2_fg'][0] = self.accuracy2(p_fg, g_fg)
+        #     self.summaries['mse_fg'][0] = self.mse(p_fg, g_fg)
 
         self.summaries['loss'][0] = loss
         self.summaries['loss_patch'][0] = loss_patch

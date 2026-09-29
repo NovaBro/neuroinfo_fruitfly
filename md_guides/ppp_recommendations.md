@@ -4,7 +4,7 @@ Post-mortem and next steps after the **`ppp_basic_8h`** smoke run and the
 **`ppp_basic_long8h`** (~30k iter) follow-up on FISBe. Primary debug sample:
 `R22C03-20180918_66_J2`.
 
-**Forward performance plan** (fmaps24 pilot soft F1 **0.170** @ 80k; **ckpt sweep next**):
+**Forward performance plan** (fmaps24 pick **80000** soft F1 **0.170**; **full val+test array next**):
 [`ppp_performance_plan.md`](ppp_performance_plan.md).
 
 **Layer A (prediction quality) runbook — A0/A1/A2 filled, pick ckpt 70000:**
@@ -159,41 +159,35 @@ not more same-recipe train.
 6. Layer B VI merge @ 70000 B1–B3 — done; no winner; B4 skipped
 7. Layer B B5–B7 — done; no winners (B6/B7 soft F1 0.123 = baseline)
 8. **Capacity** `ppp_basic_fmaps24` — done; pilot @ 80k soft F1 **0.170**
-9. **Next:** fmaps24 ckpt sweep 50/60/70/80k
-10. Widen beyond one sample last
+9. fmaps24 ckpt sweep — done; pick **80000**
+10. **Next:** full val+test array @ 80000
 ```
 
 What will **not** fix the score by itself: more GPU-util/staging tweaks, re-enabling
 `@fork` on train, or staring at F1 under rm500 without MIP/coverage.
 
-### Implemented artifacts (fmaps24 pilot done → ckpt sweep)
-
-**Layer B B5 (COMPLETED, not a winner):** evaluate `18280472` — soft F1 0.144, Num Pred
-902, false_split 613 vs baseline 0.123 / 365 / 300.
-
-**Layer B B6/B7 (COMPLETED, not winners):** evaluate `18343360` / `18343361` — soft F1
-**0.123** (identical to baseline). Layer B closed on this recipe.
+### Implemented artifacts (fmaps24 pick 80000 → full array)
 
 **fmaps24 pilot (COMPLETED):** infer `18429226` @ ckpt 80000 — soft F1 **0.170**, skel cov
 0.337, Num Pred 257, false_split 224 (vs long8h @ 70k: 0.123 / 0.246 / 365 / 300). Still TP=0.
 
-**Next — fmaps24 ckpt sweep** (pick best before more recipe changes):
+**fmaps24 ckpt sweep (COMPLETED):** pick **80000** (soft F1 0.112 / 0.155 / 0.150 / **0.170**
+at 50/60/70/80k). Unlike long8h, last is best.
+
+**Next — full val+test array @ locked 80000** (th=0.3 + rm0; concurrency %2):
 
 ```bash
 cd /scratch/wmz2007/neuroinfo_fruitfly
-CKPTS="50000 60000 70000 80000" bash sbatch/ppp/ppp_basic_fmaps24_ckpt_sweep_chain.sh
+bash sbatch/ppp/ppp_basic_fmaps24_full_array_chain.sh
 ```
 
-Do **not** submit `train_code` or sampling changes until the sweep picks a ckpt. Compare soft F1 /
-Num Pred / MIP to long8h @ 70000 (baseline soft F1 **0.123** on R22C03).
+On-disk: val=5, test=7 volumes. Outputs under `evaluated/80000/...`.
 
-**Full-split sequential (long8h @ 70000, th=0.3 + rm0):** can run alongside fmaps24 train.
-Pilot sample remains the primary debug number; val/test summaries land under
-`evaluated/70000/...`. If wall TIMEOUT, re-submit (skips finished volumes); else switch to array.
+**New train (parallel-able):** `ppp_basic_fmaps24_400k` — same fmaps24 recipe, `max_iterations=400002`,
+ckpt every 5k, `probability_hue=0`. Overlay `basic_fmaps24_400k.toml`.
 
 ```bash
-sbatch sbatch/ppp/ppp_basic_long8h_full_val_sbatch.sh
-sbatch sbatch/ppp/ppp_basic_long8h_full_test_sbatch.sh
+sbatch sbatch/ppp/ppp_basic_fmaps24_400k_train_sbatch.sh
 ```
 
 ---
@@ -221,8 +215,8 @@ sbatch sbatch/ppp/ppp_basic_long8h_full_test_sbatch.sh
 3. Spot-check `volumes/pred_affs` / `pred_numinst` on a compute node if needed
 
 **Branching:** strong affs + shredded instances → VI **merge** knobs (Layer B);
-weak/noisy affs → longer train / capacity. **Current branch:** fmaps24 pilot won @ 80k
-(soft F1 0.170) → **ckpt sweep** to pick best.
+weak/noisy affs → longer train / capacity. **Current branch:** fmaps24 locked **80000**
+→ **full val+test array**.
 
 ---
 
@@ -233,7 +227,9 @@ weak/noisy affs → longer train / capacity. **Current branch:** fmaps24 pilot w
 | Smoke chain | `sbatch/ppp/ppp_basic_8h_chain.sh` |
 | Layer A runbook (A2 done; pick 70000) | `md_guides/ppp_layer_a_prediction.md` |
 | Layer B runbook (closed) | `md_guides/ppp_layer_b_merge.md` |
-| **Next** | `CKPTS="50000 60000 70000 80000" bash sbatch/ppp/ppp_basic_fmaps24_ckpt_sweep_chain.sh` |
+| **Next** | `bash sbatch/ppp/ppp_basic_fmaps24_full_array_chain.sh` |
+| **New train** | `sbatch sbatch/ppp/ppp_basic_fmaps24_400k_train_sbatch.sh` (`-id ppp_basic_fmaps24_400k`, 400k iters, hue off) |
+| fmaps24 array / agg | `sbatch/ppp/ppp_basic_fmaps24_{array,eval_agg}_sbatch.sh` |
 | Full val @ 70000 | `sbatch sbatch/ppp/ppp_basic_long8h_full_val_sbatch.sh` |
 | Full test @ 70000 | `sbatch sbatch/ppp/ppp_basic_long8h_full_test_sbatch.sh` |
 | fmaps24 overlay | `PatchPerPix/.../setup01/basic_fmaps24.toml` |

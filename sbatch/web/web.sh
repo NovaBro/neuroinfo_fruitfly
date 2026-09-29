@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=web
 #SBATCH --cpus-per-task=4
-#SBATCH --time=03:00:00
+#SBATCH --time=06:00:00
 #SBATCH --mem=64g
 #SBATCH --account=torch_pr_61_general
 #SBATCH --output=sbatch/web/web.out

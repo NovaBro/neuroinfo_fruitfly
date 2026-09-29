@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A research workspace for **instance segmentation of fruit-fly (Drosophila) neurons** from the
 [FISBe](https://kainmueller-lab.github.io/fisbe/) light-microscopy dataset, run on **NYU Greene HPC**.
-The end goal (see `README.md` TODO) is: segment FISBe / MCFO volumes into individual neurons →
+The end goal (see Goal in `README.md`) is: segment FISBe / MCFO volumes into individual neurons →
 skeletonize → run NBLAST. There is no single application here; it is a collection of
 independently-runnable subprojects that share the FISBe data and the HPC environment.
 

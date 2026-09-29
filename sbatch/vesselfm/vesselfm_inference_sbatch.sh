@@ -29,7 +29,7 @@ MASK_PATH="${REPO_ROOT}/fisbe/vesselfm-fisbe/test_masks"
 OUTPUT_FOLDER="${REPO_ROOT}/metrics/vesselfm/fisbe-completely-test"
 HF_HOME="${REPO_ROOT}/.cache/huggingface"
 
-mkdir -p "${OUTPUT_FOLDER}" gpu_log "${HF_HOME}"
+mkdir -p "${OUTPUT_FOLDER}" gpu_log/vesselfm "${HF_HOME}"
 
 if [[ ! -d "${IMAGE_PATH}" ]]; then
   echo "Error: image_path not found: ${IMAGE_PATH}" >&2
@@ -58,7 +58,7 @@ trap cleanup EXIT
 nohup nvidia-smi \
   --query-gpu=timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total \
   --format=csv -l 3 \
-  > "gpu_log/gpu_vesselfm_infer_test_${SLURM_JOB_ID}.csv" &
+  > "gpu_log/vesselfm/gpu_vesselfm_infer_test_${SLURM_JOB_ID}.csv" &
 GPU_LOGGER_PID=$!
 # <<<< GPU Tracking <<<<
 

@@ -33,7 +33,7 @@ CKPT_IN="${REPO_ROOT}/metrics/vesselfm/checkpoints/vesselFM_all_lightning.ckpt"
 CKPT_OUT="${REPO_ROOT}/metrics/vesselfm/finetune_ckpts"
 HF_HOME="${REPO_ROOT}/.cache/huggingface"
 
-mkdir -p "${CKPT_OUT}" gpu_log "${HF_HOME}"
+mkdir -p "${CKPT_OUT}" gpu_log/vesselfm "${HF_HOME}"
 
 if [[ ! -f "${CKPT_IN}" ]]; then
   echo "Error: missing wrapped ckpt: ${CKPT_IN}" >&2
@@ -61,7 +61,7 @@ trap cleanup EXIT
 nohup nvidia-smi \
   --query-gpu=timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total \
   --format=csv -l 3 \
-  > "gpu_log/gpu_vesselfm_finetune_${SLURM_JOB_ID}.csv" &
+  > "gpu_log/vesselfm/gpu_vesselfm_finetune_${SLURM_JOB_ID}.csv" &
 GPU_LOGGER_PID=$!
 # <<<< GPU Tracking <<<<
 

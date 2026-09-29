@@ -10,7 +10,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
         "-i",
         "--input-file",
         required=True,
-        help="Path to a TIFF file to project",
+        help="Path to a TIFF, NRRD, or NPY file to project",
     )
     parser.set_defaults(func=run)
 

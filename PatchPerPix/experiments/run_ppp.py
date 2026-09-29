@@ -850,6 +850,19 @@ def select_validation_data(config, train_folder, val_folder):
     return data, output_folder
 
 
+def select_inference_output_folder(config, val_folder, test_folder):
+    """Route predict/label/evaluate outputs by FISBe split dirname.
+
+    Basename ``val`` → val_folder; ``test`` → test_folder; anything else
+    (single file, odd paths) → test_folder.
+    """
+    test_data = config['data'].get('test_data') or ''
+    split = os.path.basename(os.path.normpath(str(test_data)))
+    if split == 'val':
+        return val_folder
+    return test_folder
+
+
 @time_func
 def validate_checkpoint(args, config, data, checkpoint, params, train_folder,
                         test_folder, output_folder):
@@ -2250,10 +2263,12 @@ def main():
             " ", "").replace(",", "_").replace("[", "_").replace(
                 "]", "_").replace("(", "_").replace(")", "_")
                       for k, v in params.items()]
-        pred_folder = os.path.join(test_folder, 'processed', str(checkpoint))
-        inst_folder = os.path.join(test_folder, 'instanced', str(checkpoint),
+        out_folder = select_inference_output_folder(
+            config, val_folder, test_folder)
+        pred_folder = os.path.join(out_folder, 'processed', str(checkpoint))
+        inst_folder = os.path.join(out_folder, 'instanced', str(checkpoint),
                                    *params_str)
-        eval_folder = os.path.join(test_folder, 'evaluated', str(checkpoint),
+        eval_folder = os.path.join(out_folder, 'evaluated', str(checkpoint),
                                    *params_str)
 
     # predict test set
@@ -2270,7 +2285,7 @@ def main():
         else:
             predict(args, config, config['model']['test_net_name'],
                     config['data']['test_data'], checkpoint_file,
-                    test_folder, pred_folder)
+                    out_folder, pred_folder)
 
     if 'all' in args.do or 'decode' in args.do or 'infer' in args.do:
         if config['training'].get('train_code') or \
@@ -2287,7 +2302,7 @@ def main():
         logger.info("evaluating prediction checkpoint %d", checkpoint)
         return evaluate_prediction(
             args, config, config['data']['test_data'], pred_folder,
-            os.path.join(test_folder, "evaluated", str(checkpoint)))
+            os.path.join(out_folder, "evaluated", str(checkpoint)))
 
     if 'all' in args.do or 'label' in args.do or 'infer' in args.do:
         os.makedirs(inst_folder, exist_ok=True)
@@ -2367,8 +2382,10 @@ def main():
 
     if 'cleanup' in args.do:
         # if result from 'label' exists, dump result from 'predict'
-        pred_folder = os.path.join(test_folder, str(checkpoint), 'processed')
-        inst_folder = os.path.join(test_folder, str(checkpoint), 'instanced')
+        out_folder = select_inference_output_folder(
+            config, val_folder, test_folder)
+        pred_folder = os.path.join(out_folder, 'processed', str(checkpoint))
+        inst_folder = os.path.join(out_folder, 'instanced', str(checkpoint))
         cleanup(args, config, config['data']['test_data'], pred_folder, inst_folder)
 
 

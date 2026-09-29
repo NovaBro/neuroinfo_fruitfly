@@ -1,0 +1,30 @@
+# Overlay on default_l40s.toml — fmaps24 + long schedule (400002 iters), hue off.
+# Usage: --config .../default_l40s.toml --config .../basic_fmaps24_400k.toml
+# Train: sbatch sbatch/ppp/ppp_basic_fmaps24_400k_train_sbatch.sh
+# Exp id: ppp_basic_fmaps24_400k
+
+[data]
+test_data = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/val"
+
+[model]
+num_fmaps = 24
+
+[training]
+max_iterations = 400002
+checkpoints = 5000
+snapshots = 10000
+profiling = 1000
+probability_hue = 0
+num_workers = 32
+cache_size = 48
+val_log_step = 100
+
+[training.augmentation]
+elastic = false
+overlay = false
+
+[prediction]
+batch_size = 1
+
+[validation]
+checkpoints = [400002]
