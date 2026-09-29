@@ -1,0 +1,274 @@
+line,cell_types,em_ids,em_ids_in_manc,manc_types_from_ids,hl_from_ids,hl_from_label,hl_from_typename,superclass,vnc_only,quality,ref,doi,hemilineage,label_source,single_hemilineage,ids_vs_label_conflict
+SS46243,LBL40,,0,,,,07B,vnc_intrinsic,No,3,Feng; 2020,10.1038/s41467-020-19936-x,07B,manc_type_name,True,False
+SS46253,LBL40,,0,,,,07B,vnc_intrinsic,No,2,Feng; 2020,10.1038/s41467-020-19936-x,07B,manc_type_name,True,False
+SS47921,LBL40,,0,,,,07B,vnc_intrinsic,Yes,1,Feng; 2020,10.1038/s41467-020-19936-x,07B,manc_type_name,True,False
+SS47938,LBL40,,0,,,,07B,vnc_intrinsic,Yes,1,Feng; 2020,10.1038/s41467-020-19936-x,07B,manc_type_name,True,False
+SS51843,"LBI62, LBL40, LUI2",,0,,,,07B,vnc_intrinsic,No,4,Feng; 2020,10.1038/s41467-020-19936-x,07B,manc_type_name,True,False
+SS51907,LBL40,,0,,,,07B,vnc_intrinsic,No,1,Feng; 2020,10.1038/s41467-020-19936-x,07B,manc_type_name,True,False
+SS25478,HUL012 16A,159206,1,IN16B093,16B,16A,,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,True
+SS25482,WBL006 18B,15292,1,GFC2,18B,18B,,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,18B,manc_body_ids,True,False
+SS25500,"HUL011 16A, HUL012 16A",25908 159206,2,"IN16B093, IN16B111",16B,16A,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,True
+SS25502,"HUL002 2A, HUL005 2A, HUL006 2A",19838 28854 30628,3,"IN02A035, IN02A058, IN02A065",02A,02A,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,02A,manc_body_ids,True,False
+SS25511,WUL006 11B,30748,1,IN11B021,11B,11B,,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,11B,manc_body_ids,True,False
+SS25521,"WBI001 19B, WBI002 19B",15626 18477,2,"IN19B045, IN19B045,IN19B052",19B,19B,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,19B,manc_body_ids,True,False
+SS25532,"hDVMN, hi1 MN, hi2 MN",14322 17022 16222,3,"hDVM MN, hi1 MN, hi2 MN","08A, 16B",,"08A, 16B",vnc_motor,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"08A, 16B",manc_body_ids,False,False
+SS25553,"NBI008 6B, NBI009 6B, WBI011 6A",153964 24082 17089,3,"IN06A065, IN06B081, IN06B086","06A, 06B","06A, 06B",,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"06A, 06B",manc_body_ids,False,False
+SS28361,C2BI004 7B,21129,1,IN07B063,07B,07B,,ascending_neuron,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,07B,manc_body_ids,True,False
+SS29535,"HBI011 8B, HBI012 08B",24221 25288,2,IN07B098,07B,08B,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,07B,manc_body_ids,True,True
+SS29600,WBI021,21755,1,IN03B055,03B,,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,03B,manc_body_ids,True,False
+SS29602,"HBI018 3B, HBI019 3B, HBI020 3B",10251 10183 10668,3,w-cHIN,03B,03B,,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,03B,manc_body_ids,True,False
+SS29871,"WUI004, WBI021",15856 21755,2,"IN03B055, IN06B047","03B, 06B",,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 06B",manc_body_ids,False,False
+SS30330,"NBI003 6A, NBI004 6A",154367 22994,2,IN06A113,06A,06A,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,06A,manc_body_ids,True,False
+SS30816,"C2BL001 0A, C2BL002 0A, 19B",21011 20938,2,IN00A054,00A,"00A, 19B",,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,00A,manc_body_ids,True,False
+SS31246,HBI014 19B,27381,1,AN19B101,19B,19B,,ascending_neuron,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,19B,manc_body_ids,True,False
+SS31259,"WBL030 3B, WBI018 11B, WBI019 11B",16142 20190 18653,3,"IN11B001, IN11B009",11B,"03B, 11B",,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,11B,manc_body_ids,True,False
+SS31263,"WBL006 18B, WBL007 18B",15292 13645,2,GFC2,18B,18B,,vnc_intrinsic,Yes,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,18B,manc_body_ids,True,False
+SS31274,"HUL011 16A, HUL012 16A",25908 159206,2,"IN16B093, IN16B111",16B,16A,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,True
+SS31289,"C2BI008 7B, C2BI009 7B",21813 21493,2,IN07B073,07B,07B,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,07B,manc_body_ids,True,False
+SS31290,"C2BI006 7B, C2BI008 7B, C2BI009 7B, C2BI010 7B",23748 21813 21493 22311,4,IN07B073,07B,07B,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,07B,manc_body_ids,True,False
+SS31309,"WBL006 18B, WBL007 18B, NBI007 6A",15292 13645 37267,3,"GFC2, IN06A113","06A, 18B","06A, 18B",,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"06A, 18B",manc_body_ids,False,False
+SS31541,"DLMNs, DVMNs",10589 10014 10088 10592 10892 14898 3872348 6729 10733 15098 162114 11776,10,"DLMn a, b, DLMn c-f, DVMn 1a-c, DVMn 2a, b, DVMn 3a, b","03B, 16B, 18X",,,vnc_motor,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 16B, 18X",manc_body_ids,False,False
+SS31899,NBI002 07B,24473,1,IN07B077,07B,07B,,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,07B,manc_body_ids,True,False
+SS31950,"DLMNs, DVMNs",10589 10014 10088 10592 10892 14898 3872348 6729 10733 15098 162114 11776,10,"DLMn a, b, DLMn c-f, DVMn 1a-c, DVMn 2a, b, DVMn 3a, b","03B, 16B, 18X",,,vnc_motor,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 16B, 18X",manc_body_ids,False,False
+SS32023,hg1 MN,10011,1,hg1 MN,16B,,16B,vnc_motor,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS32377,HBI015 19B,18282,1,IN19B091,19B,19B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,19B,manc_body_ids,True,False
+SS32400,"NBI003 6A, NBI004 6A",154367 22994,2,IN06A113,06A,06A,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,06A,manc_body_ids,True,False
+SS33409,"WUL003 11B, WUL004 11B, WUL005 11B, WUL006 11B",163051 28381 26369 30748,4,IN11B021,11B,11B,,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,11B,manc_body_ids,True,False
+SS33437,"WBI001 19B, WBI002 19B",15626 18477,2,"IN19B045, IN19B045,IN19B052",19B,19B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,19B,manc_body_ids,True,False
+SS33489,XBI001 5B,25508,0,,,05B,,,Yes,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,05B,paper_label,True,False
+SS34781,i2 MN,10145,1,i2 MN,16B,,16B,vnc_motor,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS36076,"tp1 MN, hi2 MN",10778 16222,2,"hi2 MN, tp1 MN",16B,,16B,vnc_motor,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS37231,"hi1 MN, hi2 MN",17022 16222,2,"hi1 MN, hi2 MN","08A, 16B",,"08A, 16B",vnc_motor,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"08A, 16B",manc_body_ids,False,False
+SS37233,"WBL034 19B, WBL035 19B, WBL038 19B",14625 22530 23462,3,"IN19B067, IN19B070",19B,19B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,19B,manc_body_ids,True,False
+SS37246,i2 MN,10145,1,i2 MN,16B,,16B,vnc_motor,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS37252,"hg2 MN, hg3 MN",12927 10130,2,"hg2 MN, hg3 MN",16B,,16B,vnc_motor,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS37306,"WBL024 3B, WBI016 3B",24632 160309,2,"IN03B054, IN03B086",03B,03B,,vnc_intrinsic,Yes,4,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,03B,manc_body_ids,True,False
+SS37984,WBI001 19B,15626,1,IN19B045,19B,19B,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,19B,manc_body_ids,True,False
+SS40449,12A,,0,,,12A,,,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,12A,paper_label,True,False
+SS40456,"WUI006 6B, WUI008 6B, WUI009 6B",21505 18559 21009,3,IN06B074,06B,06B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,06B,manc_body_ids,True,False
+SS40778,"WBL035 19B, WBL038 19B",22530 23462,2,"IN19B067, IN19B070",19B,19B,,vnc_intrinsic,Yes,4,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,19B,manc_body_ids,True,False
+SS40782,"WBL001 18B, WBI002 19B",15505 18477,2,"GFC2, IN19B045,IN19B052","18B, 19B","18B, 19B",,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"18B, 19B",manc_body_ids,False,False
+SS40851,"hb1 MN, hb2 MN",24257 49582,1,MNhm42,16B,,,vnc_motor,No,4,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS40980,"b1 MN, iii1 MN, iii3 MN",10017 10129 10287,3,"b1 MN, iii1 MN, iii3 MN","03B, 16B",,"03B, 16B",vnc_motor,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 16B",manc_body_ids,False,False
+SS41039,"i1 MN, C2BI003 7B",10115 18297,2,"IN07B044, i1 MN","07B, 16B",07B,16B,"vnc_intrinsic, vnc_motor",No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"07B, 16B",manc_body_ids,False,False
+SS41041,HUL001 2A,152403,1,IN02A014,02A,02A,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,02A,manc_body_ids,True,False
+SS41052,tp1 MN,10778,1,tp1 MN,16B,,16B,vnc_motor,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS41068,DVMNs,3872348 6729 10733 15098 162114 11776,4,"DVMn 1a-c, DVMn 2a, b, DVMn 3a, b","03B, 16B",,,vnc_motor,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 16B",manc_body_ids,False,False
+SS42050,"HBI015 19B, HBI016",18282 25115,2,IN19B091,19B,19B,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,19B,manc_body_ids,True,False
+SS42079,"NBI010 6A, NBI011 6A, NBI012 6A",21092 18804 26184,3,"IN06A059, IN06A082",06A,06A,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,06A,manc_body_ids,True,False
+SS42438,"WUL011 17A, WUL012 17A, WBL014 17A, WBL016 17A, WBL018 17A, WBL020 17A, WBI013 17A",167001 14309 12742 13229 12520 10817 12056,7,"IN17A107, dMS2",17A,17A,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,17A,manc_body_ids,True,False
+SS42439,"WUL007 17A, WUL012 17A, WBL015 17A, WBL019 17A",14661 14309 11302 12207,4,"IN17A049, dMS2",17A,17A,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,17A,manc_body_ids,True,False
+SS42442,"WUL008 17A, WUL009 17A, WBL014 17A",16009 15754 12742,3,"IN17A049, dMS2",17A,17A,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,17A,manc_body_ids,True,False
+SS42446,"WBI005 6A, WBI006 6A, WBI007 6A, WBI009 6A",158479 26231 13756 154996,4,"IN06A032, IN06A116",06A,06A,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,06A,manc_body_ids,True,False
+SS42447,"WBL021 6B, WUI006 6B, WUI008 6B, WUI009 6B",22821 21505 18559 21009,4,"IN06B074, IN06B085",06B,06B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,06B,manc_body_ids,True,False
+SS42464,"tp2 MN, C2BI006 7B, C2BI007 7B, C2BI009 7B",10766 23748 24211 21493,4,"IN07B073, tp2 MN","07B, 16B",07B,16B,"vnc_intrinsic, vnc_motor",Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"07B, 16B",manc_body_ids,False,False
+SS42465,"WBL001 18B, WBL003 18B, WBL005 18B, WBL010 12A, WBL011 12A",15505 19834 13479 18452 20452,5,"GFC2, IN12A044, IN18B031, vMS12","12A, 18B","12A, 18B",,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"12A, 18B",manc_body_ids,False,False
+SS42475,"XBI002 0A, C2BI005 7B",21089 23779,2,"IN00A051, IN07B066","00A, 07B","00A, 07B",,vnc_intrinsic,Yes,4,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"00A, 07B",manc_body_ids,False,False
+SS42493,HBI015 19B,18282,1,IN19B091,19B,19B,,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,19B,manc_body_ids,True,False
+SS42498,"WUL007 17A, WUL008 17A, WUL010 17A, WUL012 17A, WBL014 17A",14661 16009 16664 14309 12742,5,"IN17A049, IN17A055, dMS2",17A,17A,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,17A,manc_body_ids,True,False
+SS42499,"C2BI005 7B, WBI012 3B, HBI003",23779 26518 24372,3,"IN07B066, IN07B084, IN18B054","07B, 18B","03B, 07B",,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"07B, 18B",manc_body_ids,False,False
+SS43546,XBL001 18B,11915,1,IN10B023,10B,18B,,vnc_intrinsic,Yes,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,10B,manc_body_ids,True,True
+SS43979,HBI003,166363,1,IN18B051,18B,,,vnc_intrinsic,Yes,4,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,18B,manc_body_ids,True,False
+SS44002,"WBL031 3B, WBL032 3B, HBI006 8B",10042 13557 25470,3,"IN03B001, IN08B008, IN11B021","03B, 08B, 11B","03B, 08B",,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 08B, 11B",manc_body_ids,False,False
+SS44003,"WBL030 3B, WBL031 3B, WBL032 3B, WBI018 11B, WBI019 11B",16142 10042 13557 20190 16248,5,"IN03B001, IN11B001, IN11B003, IN11B009, IN11B021","03B, 11B","03B, 11B",,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 11B",manc_body_ids,False,False
+SS44005,WBI018 11B,20190,1,IN11B001,11B,11B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,11B,manc_body_ids,True,False
+SS44009,03B,,0,,,03B,,,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,03B,paper_label,True,False
+SS44039,DLMNs,10589 10014 10088 10592 10892,5,"DLMn a, b, DLMn c-f","03B, 18X",,,vnc_motor,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 18X",manc_body_ids,False,False
+SS44051,"WBI018 11B, WBI019 11B",20190 18653,2,IN11B001,11B,11B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,11B,manc_body_ids,True,False
+SS44054,HBI020 3B,10668,1,w-cHIN,03B,03B,,vnc_intrinsic,No,4,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,03B,manc_body_ids,True,False
+SS44276,HBI013 6A,152354,1,IN06A125,06A,06A,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,06A,manc_body_ids,True,False
+SS44314,"NUL001 2A, WUL001 2A, WUL002 2A, HUL002 2A",18136 23475 24480 19838,4,"IN02A033, IN02A035, IN02A040, IN02A043",02A,02A,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,02A,manc_body_ids,True,False
+SS45385,"WBI003 6A, WBI004 6A, WBI007 6A, WBI010 6A, WBI011 6A",16826 16630 13756 39497 17089,5,"IN06A032, IN06A042, IN06A065, IN06A086, IN06A088",06A,06A,,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,06A,manc_body_ids,True,False
+SS45607,"WBL001 18B, WBL005 18B, WBL007 18B",15505 13479 13645,3,GFC2,18B,18B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,18B,manc_body_ids,True,False
+SS45611,HBL001 6B,16313,1,IN06A056,06A,06B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,06A,manc_body_ids,True,True
+SS45772,"tt MN, b2 MN, i2 MN",10110 10064 10145,3,"TTMn, b2 MN, i2 MN","08A, 16B",,16B,vnc_motor,No,4,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"08A, 16B",manc_body_ids,False,False
+SS45779,"WMN (mnb2?)b3 MN, iii3 MN, iii4 MN, hg1 MN",10055 100725 10123,3,"b3 MN, hg1 MN, iii3 MN","03B, 16B",,"03B, 16B",vnc_motor,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 16B",manc_body_ids,False,False
+SS45782,i2 MN,10145,1,i2 MN,16B,,16B,vnc_motor,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS45830,"T2LFN, WBL002 18B",17245,1,GFC2,18B,18B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,18B,manc_body_ids,True,False
+SS45843,"T2LFNb, WBL002 18B, WBL003 18B, WBL005 18B",17245 19834 13479,3,"GFC2, IN18B031",18B,18B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,18B,manc_body_ids,True,False
+SS46260,"HUI003 17A, HUI004 17A, HUI005 17A",19710 23127 18798,3,"IN17A082,IN17A086, IN17A091, IN17A115",17A,17A,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,17A,manc_body_ids,True,False
+SS46295,WBI014 0A,25798,1,IN00A043,00A,00A,,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,00A,manc_body_ids,True,False
+SS46645,T2VUM2 0B,11900,1,EN00B011,00B,00B,,vnc_efferent,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,00B,manc_body_ids,True,False
+SS46675,"WBL015 17A, WBL017 17A, WBL018 17A",11302 11032 12520,3,dMS2,17A,17A,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,17A,manc_body_ids,True,False
+SS46725,WBL008,27768,1,IN06B087,06B,,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,06B,manc_body_ids,True,False
+SS47120,tp2 MN,10766,1,tp2 MN,16B,,16B,vnc_motor,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS47125,tt MN,10110,1,TTMn,08A,,,vnc_motor,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,08A,manc_body_ids,True,False
+SS47152,ps1 MN,10204,1,ps1 MN,06A,,06A,vnc_motor,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,06A,manc_body_ids,True,False
+SS47160,"b2 MN, b3 MN, iii4 MN, hg1 MN, hg3 MN",10064 10067 13665 10011 10931,5,"MNwm35, b2 MN, b3 MN, hg1 MN, hg3 MN","03B, 16B",,16B,vnc_motor,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 16B",manc_body_ids,False,False
+SS47192,"WUL016 3B, WBL033 3B, 12A",22846 10507,2,"IN03B012, IN03B064",03B,"03B, 12A",,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,03B,manc_body_ids,True,False
+SS47195,"hi1 MN, hb1 MN, hb2 MN",17022 24257 49582,2,"MNhm42, hi1 MN","08A, 16B",,08A,vnc_motor,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"08A, 16B",manc_body_ids,False,False
+SS47200,"WBL012 6B, XBI002 0A",15946 21089,2,"IN00A051, IN06B043","00A, 06B","00A, 06B",,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"00A, 06B",manc_body_ids,False,False
+SS47204,"prosternal sensory, HBI007 8B",10611,1,IN08B008,08B,08B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,08B,manc_body_ids,True,False
+SS47214,"HBI004 8B, HBI006 8B, HBI007 8B",12947 25470 10611,3,IN08B008,08B,08B,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,08B,manc_body_ids,True,False
+SS47215,"HBI005 8B, HBI006 8B, HBI007 8B, HBI009 8B, HBI019 3B",18055 25470 10611 19386 10183,5,"IN08B008, IN08B036, IN08B070, w-cHIN","03B, 08B","03B, 08B",,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 08B",manc_body_ids,False,False
+SS47219,"WBL030 3B, WBI018 11B, WBI019 11B",16142 20190 16248,3,"IN11B001, IN11B003, IN11B009",11B,"03B, 11B",,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,11B,manc_body_ids,True,False
+SS47222,"WBL030 3B, WBI018 11B, WBI019 11B",16142 20190 16248,3,"IN11B001, IN11B003, IN11B009",11B,"03B, 11B",,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,11B,manc_body_ids,True,False
+SS48204,"WBI005 6A, WBI006 6A, WBI007 6A, WBI008 6A, WBI010 6A, WBI011 6A",29817 28684 13756 26231 39497 17089,6,"IN06A032, IN06A065, IN06A088, IN06A116",06A,06A,,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,06A,manc_body_ids,True,False
+SS48215,"WUL013 11B, WUL014 11B",17679 15175,2,IN11B013,11B,11B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,11B,manc_body_ids,True,False
+SS48268,"T2VPM1 2A, WUL015 3B, WUL016 3B, WBL030 3B, WBL032 3B",15493 20763 22846 16142 13557,5,"IN00A022, IN03B064, IN03B077, IN11B009, IN11B021","00A, 03B, 11B","02A, 03B",,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"00A, 03B, 11B",manc_body_ids,False,False
+SS48272,"WBL009 12A, WBL010 12A, WBL011 12A",26736 18452 20452,3,"IN12A044, vMS12",12A,12A,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,12A,manc_body_ids,True,False
+SS48619,NUI002 11B,15125,1,IN11B018,11B,11B,,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,11B,manc_body_ids,True,False
+SS48709,"HUI002 17A, HUI004 17A, HUI005 17A",35906 23127 18798,3,"IN17A082,IN17A086, IN17A103, IN17A115",17A,17A,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,17A,manc_body_ids,True,False
+SS49039,hg3 MN,10931,1,hg3 MN,16B,,16B,vnc_motor,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS49041,"WUL004 11B, WUL005 11B, WBL034 19B, WBL037 19B",28381 26369 14625 14502,4,"IN11B021, IN19B043, IN19B067","11B, 19B","11B, 19B",,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"11B, 19B",manc_body_ids,False,False
+SS49042,"WUL003 11B, WUL005 11B",163051 26369,2,IN11B021,11B,11B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,11B,manc_body_ids,True,False
+SS49125,HUL010 3B,16244,1,IN03B079,03B,03B,,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,03B,manc_body_ids,True,False
+SS49766,"WUL012 17A, WBL013 17A",14309 16116,2,"IN17A045, dMS2",17A,17A,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,17A,manc_body_ids,True,False
+SS49777,"PSI 18B, HBI001 18B, HBI002",11654 16223 23062,3,"IN18B035, IN18B054, PSI",18B,18B,,"vnc_efferent, vnc_intrinsic",No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,18B,manc_body_ids,True,False
+SS49778,"WUI001 3B, WUI002 3B",158944 23027,2,"IN03B068, IN03B070",03B,03B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,03B,manc_body_ids,True,False
+SS49779,"WBL022 3B, WUI005 3B, WBI015 3B, WBI016 03B",25342 14089 17024 160309,4,"IN03B043, IN03B054, IN03B057",03B,03B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,03B,manc_body_ids,True,False
+SS49784,"C2BI001 7B, C2BI002 7B, C2BI003 7B, C2BI009 7B",14155 16544 18297 21493,4,"IN07B044, IN07B073",07B,07B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,07B,manc_body_ids,True,False
+SS49797,"DLMNs, DVMNs",169914 14898 3872348 6729 10733 15783,4,"DVMn 1a-c, DVMn 2a, b, IN03B077","03B, 16B",,,"vnc_intrinsic, vnc_motor",Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 16B",manc_body_ids,False,False
+SS49799,"WBL012 6B, WUI010 06B",15946 29817,2,"IN06A116, IN06B043","06A, 06B",06B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"06A, 06B",manc_body_ids,False,False
+SS49800,"WUL005 11B, WUI001 3B, WUI002 3B, WUI011 3B, WUI012 3B",26369 158944 23027 23732 21110,5,"IN03B068, IN03B070, IN11B021","03B, 11B","03B, 11B",,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 11B",manc_body_ids,False,False
+SS49802,"WBI017 11B, WBI019 11B",13743 16248,2,"IN11B003, IN19B034","11B, 19B",11B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"11B, 19B",manc_body_ids,False,False
+SS49806,"b3 MN, hg1 MN, HBI017 3B",10067 10011 10244,3,"b3 MN, hg1 MN, w-cHIN","03B, 16B",03B,16B,"vnc_intrinsic, vnc_motor",No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 16B",manc_body_ids,False,False
+SS49807,"NBI005 6A, WUI002 3B, WUI003 3B",23878 23027 163396,3,"IN03B060, IN03B070, IN06A090","03B, 06A","03B, 06A",,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"03B, 06A",manc_body_ids,False,False
+SS49809,PSI 18B,11654,1,PSI,18B,18B,,vnc_efferent,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,18B,manc_body_ids,True,False
+SS49810,PSI 18B,11654,1,PSI,18B,18B,,vnc_efferent,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,18B,manc_body_ids,True,False
+SS49812,PSI 18B,11654,1,PSI,18B,18B,,vnc_efferent,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,18B,manc_body_ids,True,False
+SS49853,"HBI008 8B, HBI010 8B",13915 15850,2,"IN08B036, IN08B070",08B,08B,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,08B,manc_body_ids,True,False
+SS51508,A1VUM1,15253,1,EN00B024,00B,,,vnc_efferent,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,00B,manc_body_ids,True,False
+SS51524,hDVMN,14322,1,hDVM MN,08A,,,vnc_motor,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,08A,manc_body_ids,True,False
+SS51528,tpN MN,11294,1,tpn MN,16B,,,vnc_motor,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS51531,"HUI001 17A, HUI003 17A",16223 24372,2,"IN18B035, IN18B054",18B,17A,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,18B,manc_body_ids,True,True
+SS51830,"WBL024 3B, WBI016 3B",24632 160309,2,"IN03B054, IN03B086",03B,03B,,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,03B,manc_body_ids,True,False
+SS52389,"WBL025 3B, WBL026 3B, WBL027 3B, WBL028 3B, WBL029 03B",30134 25039 26016 19125 159799,5,IN03B086,03B,03B,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,03B,manc_body_ids,True,False
+SS52392,"C2BI001 7B, C2BI003 7B, C2BI006 7B, C2BI007 7B, C2BI010 7B",14155 18297 23748 24211 22311,5,"IN07B044, IN07B073",07B,07B,,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,07B,manc_body_ids,True,False
+SS52395,hg2 MN,12927,1,hg2 MN,16B,,16B,vnc_motor,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS52404,hg1 MN,10011,1,hg1 MN,16B,,16B,vnc_motor,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS53438,i2 MN,10145,1,i2 MN,16B,,16B,vnc_motor,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,16B,manc_body_ids,True,False
+SS54445,"WBL012 6B, WUI004",15946 15856,2,"IN06B043, IN06B047",06B,06B,,vnc_intrinsic,No,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,06B,manc_body_ids,True,False
+SS54480,"NUI001 6B, NBI003 6A, NBI004 6A, NBI007 06A",22272 154367 22994 37267,4,"IN06A113, IN06B082","06A, 06B","06A, 06B",,vnc_intrinsic,Yes,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"06A, 06B",manc_body_ids,False,False
+SS54495,"NUI001 6B, NBI006 6A, NBI007 6A, NBI008 6B, NBI009 6B",22272 24899 37267 153964 24082,5,"IN06A113, IN06A121, IN06B081, IN06B082, IN06B086","06A, 06B","06A, 06B",,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,"06A, 06B",manc_body_ids,False,False
+SS54506,"HUL001 2A, HUL002 2A, HUL003 2A, HUL004 2A, HUL005 2A, HUL007 2A, HUL008 2A, HUL009 2A",152403 19838 33104 32073 28854 34691 35192 19990,8,"IN02A014, IN02A032, IN02A035, IN02A058, IN02A065, IN02A066",02A,02A,,vnc_intrinsic,Yes,2,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,02A,manc_body_ids,True,False
+SS60603,"NBI001 7B, XBI001 5B, C2BI005 7B",19649 25508 23779,2,IN07B066,07B,"05B, 07B",,vnc_intrinsic,No,1,"Ehrhardt, Whitehead; 2023",10.1101/2023.05.31.542897,07B,manc_body_ids,True,False
+SS04723,13B,,0,,,13B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,13B,paper_label,True,False
+SS04724,10B,,0,,,10B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,10B,paper_label,True,False
+SS04726,12B,,0,,,12B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,12B,paper_label,True,False
+SS04728,12B,,0,,,12B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,12B,paper_label,True,False
+SS04730,01A,,0,,,01A,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,01A,paper_label,True,False
+SS04732,14A,,0,,,14A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,14A,paper_label,True,False
+SS04733,14A,,0,,,14A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,14A,paper_label,True,False
+SS04736,01B,,0,,,01B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,01B,paper_label,True,False
+SS04738,12B,,0,,,12B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,12B,paper_label,True,False
+SS04739,14A,,0,,,14A,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,14A,paper_label,True,False
+SS04741,01A,,0,,,01A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,01A,paper_label,True,False
+SS04742,01A,,0,,,01A,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,01A,paper_label,True,False
+SS04744,01A,,0,,,01A,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,01A,paper_label,True,False
+SS04745,23B,,0,,,23B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,23B,paper_label,True,False
+SS04746,23B,,0,,,23B,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,23B,paper_label,True,False
+SS04747,23B,,0,,,23B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,23B,paper_label,True,False
+SS04748,23B,,0,,,23B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,23B,paper_label,True,False
+SS04749,23B,,0,,,23B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,23B,paper_label,True,False
+SS04750,23B,,0,,,23B,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,23B,paper_label,True,False
+SS04751,10B,,0,,,10B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,10B,paper_label,True,False
+SS14728,07B,,0,,,07B,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,07B,paper_label,True,False
+SS20257,09A,,0,,,09A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,09A,paper_label,True,False
+SS20268,09A,,0,,,09A,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,09A,paper_label,True,False
+SS20301,01A,,0,,,01A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,01A,paper_label,True,False
+SS20733,19A,,0,,,19A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,19A,paper_label,True,False
+SS20738,19A,,0,,,19A,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,19A,paper_label,True,False
+SS20743,19A,,0,,,19A,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,19A,paper_label,True,False
+SS20748,19B,,0,,,19B,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,19B,paper_label,True,False
+SS20751,19A,,0,,,19A,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,19A,paper_label,True,False
+SS20752,19A,,0,,,19A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,19A,paper_label,True,False
+SS20754,19B,,0,,,19B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,19B,paper_label,True,False
+SS20765,05B,,0,,,05B,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,05B,paper_label,True,False
+SS20767,19B,,0,,,19B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,19B,paper_label,True,False
+SS20768,07B,,0,,,07B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,07B,paper_label,True,False
+SS20769,19B,,0,,,19B,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,19B,paper_label,True,False
+SS20770,05B,,0,,,05B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,05B,paper_label,True,False
+SS20774,06A,,0,,,06A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,06A,paper_label,True,False
+SS20790,08B,,0,,,08B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,08B,paper_label,True,False
+SS20791,08B,,0,,,08B,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,08B,paper_label,True,False
+SS20797,06A,,0,,,06A,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,06A,paper_label,True,False
+SS20806,07B,,0,,,07B,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,07B,paper_label,True,False
+SS20807,07B,,0,,,07B,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,07B,paper_label,True,False
+SS20810,07B,,0,,,07B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,07B,paper_label,True,False
+SS20818,10B,,0,,,10B,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,10B,paper_label,True,False
+SS20826,07B,,0,,,07B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,07B,paper_label,True,False
+SS20829,12A,,0,,,12A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,12A,paper_label,True,False
+SS20830,02A,,0,,,02A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,02A,paper_label,True,False
+SS20834,12A,,0,,,12A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,12A,paper_label,True,False
+SS20846,06B,,0,,,06B,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,06B,paper_label,True,False
+SS20847,14A,,0,,,14A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,14A,paper_label,True,False
+SS20849,07B,,0,,,07B,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,07B,paper_label,True,False
+SS20856,07B,,0,,,07B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,07B,paper_label,True,False
+SS20857,13B,,0,,,13B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,13B,paper_label,True,False
+SS25564,12A,,0,,,12A,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,12A,paper_label,True,False
+SS25572,06A,,0,,,06A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,06A,paper_label,True,False
+SS25573,06A,,0,,,06A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,06A,paper_label,True,False
+SS25575,08A,,0,,,08A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,08A,paper_label,True,False
+SS25576,"08A, 06B",,0,,,"06B, 08A",,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,"06B, 08A",paper_label,False,False
+SS25577,08A,,0,,,08A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,08A,paper_label,True,False
+SS25580,06B,,0,,,06B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,06B,paper_label,True,False
+SS25582,12A,,0,,,12A,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,12A,paper_label,True,False
+SS25585,18B,,0,,,18B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,18B,paper_label,True,False
+SS25586,18B,,0,,,18B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,18B,paper_label,True,False
+SS25587,18B,,0,,,18B,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,18B,paper_label,True,False
+SS25594,02A,,0,,,02A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,02A,paper_label,True,False
+SS25597,19B,,0,,,19B,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,19B,paper_label,True,False
+SS26953,20A-22A,,0,,,"20A, 22A",,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,"20A, 22A",paper_label,False,False
+SS26967,06A,,0,,,06A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,06A,paper_label,True,False
+SS26968,20A-22A,,0,,,"20A, 22A",,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,"20A, 22A",paper_label,False,False
+SS26973,20A-22A,,0,,,"20A, 22A",,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,"20A, 22A",paper_label,False,False
+SS26974,20A-22A,,0,,,"20A, 22A",,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,"20A, 22A",paper_label,False,False
+SS26977,21A,,0,,,21A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,21A,paper_label,True,False
+SS28598,07B,,0,,,07B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,07B,paper_label,True,False
+SS28943,10B,,0,,,10B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,10B,paper_label,True,False
+SS28945,00A,,0,,,00A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,00A,paper_label,True,False
+SS28951,06B,,0,,,06B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,06B,paper_label,True,False
+SS28953,06B,,0,,,06B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,06B,paper_label,True,False
+SS28954,06B,,0,,,06B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,06B,paper_label,True,False
+SS28958,09A,,0,,,09A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,09A,paper_label,True,False
+SS28961,09A,,0,,,09A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,09A,paper_label,True,False
+SS28963,09A,,0,,,09A,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,09A,paper_label,True,False
+SS28965,00A,,0,,,00A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,00A,paper_label,True,False
+SS28966,09A,,0,,,09A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,09A,paper_label,True,False
+SS28969,06B; MN,,0,,,06B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,06B,paper_label,True,False
+SS28970,06B,,0,,,06B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,06B,paper_label,True,False
+SS28975,09A,,0,,,09A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,09A,paper_label,True,False
+SS28977,09A,,0,,,09A,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,09A,paper_label,True,False
+SS28980,09A,,0,,,09A,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,09A,paper_label,True,False
+SS29258,09A,,0,,,09A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,09A,paper_label,True,False
+SS30185,06B,,0,,,06B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,06B,paper_label,True,False
+SS30784,11B,,0,,,11B,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,11B,paper_label,True,False
+SS30787,"11B, 18B",,0,,,"11B, 18B",,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,"11B, 18B",paper_label,False,False
+SS30790,03B,,0,,,03B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,03B,paper_label,True,False
+SS30793,03B,,0,,,03B,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,03B,paper_label,True,False
+SS30798,16B,,0,,,16B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,16B,paper_label,True,False
+SS30800,"03B, 11B",,0,,,"03B, 11B",,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,"03B, 11B",paper_label,False,False
+SS30801,03B,,0,,,03B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,03B,paper_label,True,False
+SS30804,01B,,0,,,01B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,01B,paper_label,True,False
+SS30815,01B,,0,,,01B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,01B,paper_label,True,False
+SS31465,07B,,0,,,07B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,07B,paper_label,True,False
+SS31466,02A,,0,,,02A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,02A,paper_label,True,False
+SS31986,"n-cHIN, w-cHIN",,0,,,,03B,vnc_intrinsic,No,2,Meissner; 2024,10.1101/2024.01.09.574419,03B,manc_type_name,True,False
+SS33445,18B,,0,,,18B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,18B,paper_label,True,False
+SS36063,13A,,0,,,13A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,13A,paper_label,True,False
+SS36116,11A,,0,,,11A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,11A,paper_label,True,False
+SS37641,12A,,0,,,12A,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,12A,paper_label,True,False
+SS37685,06A,,0,,,06A,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,06A,paper_label,True,False
+SS38007,17A,,0,,,17A,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,17A,paper_label,True,False
+SS40261,08B,,0,,,08B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,08B,paper_label,True,False
+SS40265,08B,,0,,,08B,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,08B,paper_label,True,False
+SS40272,06A,,0,,,06A,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,06A,paper_label,True,False
+SS40274,"07B, 08B",,0,,,"07B, 08B",,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,"07B, 08B",paper_label,False,False
+SS40275,17A,,0,,,17A,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,17A,paper_label,True,False
+SS40279,05B,,0,,,05B,,,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,05B,paper_label,True,False
+SS40280,05B,,0,,,05B,,,No,1,Meissner; 2024,10.1101/2024.01.09.574419,05B,paper_label,True,False
+SS40286,07B,,0,,,07B,,,No,2,Meissner; 2024,10.1101/2024.01.09.574419,07B,paper_label,True,False
+SS46285,"LBI63, LBI64, LBL40",,0,,,,07B,vnc_intrinsic,No,1,Meissner; 2024,10.1101/2024.01.09.574419,07B,manc_type_name,True,False
+SS51105,LBL40,,0,,,,07B,vnc_intrinsic,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,07B,manc_type_name,True,False
+SS58881,PSI,,0,,,,18B,vnc_efferent,No,2,Meissner; 2024,10.1101/2024.01.09.574419,18B,manc_type_name,True,False
+SS60605,LBL40,,0,,,,07B,vnc_intrinsic,No,2,Meissner; 2024,10.1101/2024.01.09.574419,07B,manc_type_name,True,False
+SS80982,w-cHIN,,0,,,,03B,vnc_intrinsic,No,1,Meissner; 2024,10.1101/2024.01.09.574419,03B,manc_type_name,True,False
+SS80984,w-cHIN,,0,,,,03B,vnc_intrinsic,No,1,Meissner; 2024,10.1101/2024.01.09.574419,03B,manc_type_name,True,False
+SS81814,w-cHIN,,0,,,,03B,vnc_intrinsic,No,1,Meissner; 2024,10.1101/2024.01.09.574419,03B,manc_type_name,True,False
+SS81815,w-cHIN,,0,,,,03B,vnc_intrinsic,No,1,Meissner; 2024,10.1101/2024.01.09.574419,03B,manc_type_name,True,False
+SS81816,"n-cHIN, w-cHIN",,0,,,,03B,vnc_intrinsic,Yes,1,Meissner; 2024,10.1101/2024.01.09.574419,03B,manc_type_name,True,False
+SS81837,w-cHIN,,0,,,,03B,vnc_intrinsic,No,2,Meissner; 2024,10.1101/2024.01.09.574419,03B,manc_type_name,True,False
+SS25470,08B,,0,,,08B,,,No,1,Minegishi; 2023,10.25378/janelia.23726103,08B,paper_label,True,False
+SS28596,07B,,0,,,07B,,,No,1,Minegishi; 2023,10.25378/janelia.23726103,07B,paper_label,True,False
+SS37652,19B,,0,,,19B,,,No,2,Minegishi; 2023,10.25378/janelia.23726103,19B,paper_label,True,False
