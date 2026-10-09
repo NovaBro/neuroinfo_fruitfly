@@ -5,19 +5,19 @@ Two on-disk sources (already produced by PPP eval / predict jobs):
 1. **instances** — per-sample TOMLs under the parallel evaluated param dir
    (primary)::
 
-       {split}/evaluated/<ckpt>/<params...>/<stem>_vote_instances_cldice_greedy.toml
+       {split}/evaluated/<ckpt>/<params...>/<dataset>/<stem>_vote_instances_cldice_greedy.toml
 
-   matching ``{split}/instanced/<ckpt>/<params...>``. Same ``[general]`` +
-   ``[confusion_matrix.th_*]`` shape as BiaPy. Falls back to a matching row in
-   ``summary.csv`` when the TOML is missing (semicolon-separated columns like
-   ``general Num GT``, ``th_0_5 fscore``).
+   matching ``{split}/instanced/<ckpt>/<params...>/<dataset>/``. Same
+   ``[general]`` + ``[confusion_matrix.th_*]`` shape as BiaPy. Falls back to a
+   matching row in ``summary.csv`` (sample column ``dataset/stem``) when the
+   TOML is missing.
 2. **numinst** — ``{stem}_pred_metrics.csv`` beside the processed zarr:
-   ``{split}/processed/<ckpt>/<stem>_pred_metrics.csv``. Comma-separated
-   rows of ``metric,thresh,f1,precision,recall,...``.
+   ``{split}/processed/<ckpt>/<dataset>/<stem>_pred_metrics.csv``.
 
 Both are reshaped into the same ``toml`` / ``csv`` payload the BiaPy metrics
 endpoint and MetricsPanel already understand, so the client needs no PPP-only
-rendering path.
+rendering path. Instance scores also expose a ``leaderboard`` list with FISBe
+website names (see ``services.fisbe_metrics``).
 """
 
 from __future__ import annotations
@@ -28,6 +28,7 @@ import tomllib
 from pathlib import Path
 
 from services import ppp_loader
+from services.fisbe_metrics import leaderboard_from_toml
 from services.metrics import _clean_value
 
 _TH_COL = re.compile(r"^th_(\d+(?:_\d+)?)\s+(.+)$")
@@ -55,13 +56,23 @@ def _threshold_label(raw: str) -> str:
 
 
 def _evaluated_dir(instanced_root: Path) -> Path | None:
-    """Map ``.../instanced/<ckpt>/<params...>`` → matching ``evaluated/...`` dir."""
+    """Map ``.../instanced/<ckpt>/<params...>`` → matching ``evaluated/...`` dir.
+
+    Instanced HDFs nest under ``{dataset}/``; the evaluated *params* leaf is the
+    parent of those dataset dirs (tomls live in ``evaluated/.../<dataset>/``).
+    If ``instanced_root`` itself ends in a dataset name, strip it first.
+    """
+    from services.ppp_loader import _DATASET_DIRS
+
     parts = list(instanced_root.parts)
     try:
         idx = parts.index("instanced")
     except ValueError:
         return None
-    evaluated = Path(*parts[:idx], "evaluated", *parts[idx + 1 :])
+    rem = parts[idx + 1 :]
+    if rem and rem[-1] in _DATASET_DIRS:
+        rem = rem[:-1]
+    evaluated = Path(*parts[:idx], "evaluated", *rem)
     return evaluated if evaluated.is_dir() else None
 
 
@@ -75,12 +86,38 @@ def _evaluated_summary_path(instanced_root: Path) -> Path | None:
 
 
 def _instances_toml_path(evaluated_dir: Path, stem: str) -> Path | None:
-    """Locate ``{stem}_vote_instances*.toml`` (prefer cldice_greedy)."""
+    """Locate ``{stem}_vote_instances*.toml`` (namespaced or flat).
+
+    ``stem`` may be ``dataset/name`` (preferred) or a bare basename.
+    """
+    from services.ppp_loader import _DATASET_DIRS
+
+    if "/" in stem:
+        dataset, base = stem.split("/", 1)
+        nested = evaluated_dir / dataset
+        preferred = nested / f"{base}_vote_instances_cldice_greedy.toml"
+        if preferred.is_file():
+            return preferred
+        matches = sorted(nested.glob(f"{base}_vote_instances*.toml"))
+        if matches:
+            return matches[0]
     preferred = evaluated_dir / f"{stem}_vote_instances_cldice_greedy.toml"
     if preferred.is_file():
         return preferred
     matches = sorted(evaluated_dir.glob(f"{stem}_vote_instances*.toml"))
-    return matches[0] if matches else None
+    if matches:
+        return matches[0]
+    # Bare stem under any dataset subdir.
+    base = stem.rsplit("/", 1)[-1]
+    for dataset in sorted(_DATASET_DIRS):
+        nested = evaluated_dir / dataset
+        preferred = nested / f"{base}_vote_instances_cldice_greedy.toml"
+        if preferred.is_file():
+            return preferred
+        matches = sorted(nested.glob(f"{base}_vote_instances*.toml"))
+        if matches:
+            return matches[0]
+    return None
 
 
 def _parse_instances_toml(path: Path) -> dict:
@@ -112,12 +149,20 @@ def _parse_instances_toml(path: Path) -> dict:
     }
 
 
-def _load_instances_toml(stem: str, set_id: str) -> dict | None:
+def _root_for_instances_stem(set_id: str, stem: str) -> Path | None:
+    """Resolve the instanced leaf that holds ``stem`` for a (possibly merged) set."""
     try:
-        kind, root = ppp_loader._resolve_root(set_id)
+        kind, roots = ppp_loader._resolve_roots(set_id)
     except (FileNotFoundError, ValueError):
         return None
     if kind != "instances":
+        return None
+    return ppp_loader._root_for_stem(kind, roots, stem)
+
+
+def _load_instances_toml(stem: str, set_id: str) -> dict | None:
+    root = _root_for_instances_stem(set_id, stem)
+    if root is None:
         return None
     evaluated = _evaluated_dir(root)
     if evaluated is None:
@@ -157,11 +202,8 @@ def _parse_summary_row(row: dict, source: str) -> dict:
 
 def _load_instances_summary_csv(stem: str, set_id: str) -> dict | None:
     """Fallback: one row from evaluated ``summary.csv``."""
-    try:
-        kind, root = ppp_loader._resolve_root(set_id)
-    except (FileNotFoundError, ValueError):
-        return None
-    if kind != "instances":
+    root = _root_for_instances_stem(set_id, stem)
+    if root is None:
         return None
     path = _evaluated_summary_path(root)
     if path is None:
@@ -194,10 +236,13 @@ def _load_instances_metrics(stem: str, set_id: str) -> dict | None:
 
 def _load_numinst_pred_metrics(stem: str, set_id: str) -> dict | None:
     try:
-        kind, root = ppp_loader._resolve_root(set_id)
+        kind, roots = ppp_loader._resolve_roots(set_id)
     except (FileNotFoundError, ValueError):
         return None
     if kind != "numinst":
+        return None
+    root = ppp_loader._root_for_stem(kind, roots, stem)
+    if root is None:
         return None
     path = root / f"{stem}_pred_metrics.csv"
     if not path.is_file():
@@ -240,59 +285,25 @@ def _load_numinst_pred_metrics(stem: str, set_id: str) -> dict | None:
 
 
 def get_ppp_sample_metrics(stem: str, set_id: str | None) -> dict:
-    """Return ``{toml, csv}`` for a PatchPerPix set (missing → ``None``)."""
+    """Return ``{toml, csv, leaderboard}`` for a PatchPerPix set.
+
+    ``leaderboard`` uses FISBe website names (S · avF1 · C · …); see
+    ``services.fisbe_metrics``. Missing sources are ``None`` / null values.
+    """
     if not set_id or not ppp_loader.is_ppp_set(set_id):
-        return {"toml": None, "csv": None}
+        return {"toml": None, "csv": None, "leaderboard": leaderboard_from_toml(None)}
     if set_id.startswith(ppp_loader.INST_PREFIX):
-        return {"toml": _load_instances_metrics(stem, set_id), "csv": None}
-    return {"toml": None, "csv": _load_numinst_pred_metrics(stem, set_id)}
-
-
-# Aggregate heatmap columns for PPP instances summary.csv.
-PPP_INSTANCE_METRIC_SPECS: tuple[dict, ...] = (
-    {
-        "key": "num_gt",
-        "label": "Num GT",
-        "source": "toml-general",
-        "field": "Num GT",
-        "higher_is_better": True,
-    },
-    {
-        "key": "num_pred",
-        "label": "Num Pred",
-        "source": "toml-general",
-        "field": "Num Pred",
-        "higher_is_better": False,
-    },
-    {
-        "key": "avg_f1_cov",
-        "label": "avg F1 cov",
-        "source": "toml-general",
-        "field": "avg_f1_cov_score",
-        "higher_is_better": True,
-    },
-    {
-        "key": "avFscore",
-        "label": "avFscore",
-        "source": "toml-summary",
-        "field": "avFscore",
-        "higher_is_better": True,
-    },
-    {
-        "key": "gt_skel_cov",
-        "label": "GT skel cov",
-        "source": "toml-general",
-        "field": "avg_gt_skel_coverage",
-        "higher_is_better": True,
-    },
-    {
-        "key": "fscore",
-        "label": "fscore",
-        "source": "toml-th",
-        "field": "fscore",
-        "higher_is_better": True,
-    },
-)
+        toml = _load_instances_metrics(stem, set_id)
+        return {
+            "toml": toml,
+            "csv": None,
+            "leaderboard": leaderboard_from_toml(toml),
+        }
+    return {
+        "toml": None,
+        "csv": _load_numinst_pred_metrics(stem, set_id),
+        "leaderboard": leaderboard_from_toml(None),
+    }
 
 
 def _stem_from_vote_toml(path: Path) -> str | None:
@@ -304,32 +315,86 @@ def _stem_from_vote_toml(path: Path) -> str | None:
     return name[:idx]
 
 
-def load_ppp_instances_summary_table(set_id: str) -> dict[str, dict]:
-    """Load per-sample metrics for the aggregate heatmap, keyed by stem.
+def _sample_id_from_vote_toml(path: Path, evaluated_root: Path) -> str | None:
+    """Return ``dataset/stem`` when nested, else bare stem (legacy flat)."""
+    from services.ppp_loader import _DATASET_DIRS
 
-    Prefers ``*_vote_instances*.toml`` in the evaluated leaf (complete even when
-    ``summary.csv`` was overwritten by a partial eval). Merges any CSV-only
-    stems as a fallback.
+    base = _stem_from_vote_toml(path)
+    if not base:
+        return None
+    parent = path.parent
+    if parent.name in _DATASET_DIRS and parent.parent == evaluated_root:
+        return f"{parent.name}/{base}"
+    return base
+
+
+def _iter_vote_tomls(evaluated: Path):
+    """Yield vote-instances tomls under nested dataset dirs, then flat legacy."""
+    from services.ppp_loader import _DATASET_DIRS
+
+    for dataset in sorted(_DATASET_DIRS):
+        nested = evaluated / dataset
+        if nested.is_dir():
+            yield from sorted(nested.glob("*_vote_instances*.toml"))
+    yield from sorted(evaluated.glob("*_vote_instances*.toml"))
+
+
+def load_ppp_instances_summary_table(set_id: str) -> dict[str, dict]:
+    """Load per-sample metrics for the aggregate heatmap, keyed by sample ID.
+
+    Keys are namespaced ``{dataset}/{stem}`` when tomls live under
+    ``evaluated/.../<dataset>/``. Prefers TOMLs over ``summary.csv`` rows.
+    Spans all roots of a merged val+test set; when an ID appears in more than
+    one leaf, prefers the FISBe sample-list split, then TOML over CSV.
     """
     try:
-        kind, root = ppp_loader._resolve_root(set_id)
+        kind, roots = ppp_loader._resolve_roots(set_id)
     except (FileNotFoundError, ValueError):
         return {}
     if kind != "instances":
         return {}
 
+    stem_split = ppp_loader._stem_to_fisbe_split()
     table: dict[str, dict] = {}
-    evaluated = _evaluated_dir(root)
-    if evaluated is not None:
-        for path in sorted(evaluated.glob("*_vote_instances*.toml")):
-            stem = _stem_from_vote_toml(path)
-            if not stem or stem in table:
-                continue
-            table[stem] = _parse_instances_toml(path)
+    # sample_id → (root_split, from_toml)
+    provenance: dict[str, tuple[str | None, bool]] = {}
 
-    # CSV fallback for stems without a TOML (rare once eval wrote both).
-    path = _evaluated_summary_path(root)
-    if path is not None:
+    def _fisbe_preferred(sample_id: str) -> str | None:
+        base = sample_id.rsplit("/", 1)[-1]
+        return stem_split.get(sample_id) or stem_split.get(base)
+
+    def _take(sample_id: str, root: Path, from_toml: bool) -> bool:
+        new_split = ppp_loader._split_of_root(root)
+        if sample_id not in table:
+            return True
+        old_split, old_toml = provenance[sample_id]
+        preferred = _fisbe_preferred(sample_id)
+        if preferred is not None:
+            old_ok = old_split == preferred
+            new_ok = new_split == preferred
+            if new_ok and not old_ok:
+                return True
+            if old_ok and not new_ok:
+                return False
+        if old_toml and not from_toml:
+            return False
+        if from_toml and not old_toml:
+            return True
+        return False
+
+    for root in roots:
+        evaluated = _evaluated_dir(root)
+        if evaluated is not None:
+            for path in _iter_vote_tomls(evaluated):
+                sample_id = _sample_id_from_vote_toml(path, evaluated)
+                if not sample_id or not _take(sample_id, root, True):
+                    continue
+                table[sample_id] = _parse_instances_toml(path)
+                provenance[sample_id] = (ppp_loader._split_of_root(root), True)
+
+        path = _evaluated_summary_path(root)
+        if path is None:
+            continue
         try:
             source = str(path.relative_to(ppp_loader._base()))
         except ValueError:
@@ -337,8 +402,13 @@ def load_ppp_instances_summary_table(set_id: str) -> dict[str, dict]:
         with path.open(newline="") as fh:
             for record in csv.DictReader(fh, delimiter=";"):
                 sample = (record.get("sample") or "").strip()
-                if not sample or sample in ("mean", "sum") or sample in table:
+                if (
+                    not sample
+                    or sample in ("mean", "sum")
+                    or not _take(sample, root, False)
+                ):
                     continue
                 table[sample] = _parse_summary_row(record, source)
+                provenance[sample] = (ppp_loader._split_of_root(root), False)
 
     return table

@@ -3,7 +3,7 @@ import { SampleInfo, Split } from "../api/client";
 import "./SampleBrowser.css";
 
 const SPLITS: Split[] = ["train", "val", "test"];
-type Dataset = "completely" | "partly";
+type Dataset = "completely" | "partly" | "synthetic";
 
 interface SampleBrowserProps {
   samples: SampleInfo[];
@@ -25,7 +25,7 @@ export function SampleBrowser({
   // Only offer a dataset toggle for datasets that are actually present.
   const datasets = useMemo<Dataset[]>(() => {
     const present = new Set(samples.map((s) => s.dataset));
-    return (["completely", "partly"] as Dataset[]).filter((d) =>
+    return (["completely", "partly", "synthetic"] as Dataset[]).filter((d) =>
       present.has(d),
     );
   }, [samples]);
@@ -95,25 +95,41 @@ export function SampleBrowser({
         <p className="sample-browser__status">Loading samples…</p>
       ) : (
         <ul className="sample-browser__list">
-          {filtered.map((sample) => (
-            <li key={sample.name}>
-              <button
-                type="button"
-                className={
-                  selected === sample.name
-                    ? "sample-browser__item sample-browser__item--selected"
-                    : "sample-browser__item"
-                }
-                onClick={() => onSelect(sample.name)}
-                title={sample.path_exists ? sample.name : "Data not on disk"}
-              >
-                <span className="sample-browser__name">{sample.name}</span>
-                {!sample.path_exists && (
-                  <span className="sample-browser__badge">missing</span>
-                )}
-              </button>
-            </li>
-          ))}
+          {filtered.map((sample) => {
+            const hasPred = Boolean(sample.has_predicted);
+            const titleParts = [
+              sample.name,
+              hasPred ? "Prediction available" : "No prediction",
+              !sample.path_exists ? "Data not on disk" : null,
+            ].filter(Boolean);
+            return (
+              <li key={sample.name}>
+                <button
+                  type="button"
+                  className={
+                    selected === sample.name
+                      ? "sample-browser__item sample-browser__item--selected"
+                      : "sample-browser__item"
+                  }
+                  onClick={() => onSelect(sample.name)}
+                  title={titleParts.join(" · ")}
+                >
+                  <span
+                    className={
+                      hasPred
+                        ? "sample-browser__pred-dot sample-browser__pred-dot--on"
+                        : "sample-browser__pred-dot sample-browser__pred-dot--off"
+                    }
+                    aria-hidden
+                  />
+                  <span className="sample-browser__name">{sample.name}</span>
+                  {!sample.path_exists && (
+                    <span className="sample-browser__badge">missing</span>
+                  )}
+                </button>
+              </li>
+            );
+          })}
           {filtered.length === 0 && (
             <li className="sample-browser__status">No samples in this split.</li>
           )}

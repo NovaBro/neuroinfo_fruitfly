@@ -3,7 +3,7 @@ export type Split = "train" | "val" | "test";
 export interface SampleInfo {
   split: Split;
   name: string;
-  dataset: "completely" | "partly";
+  dataset: "completely" | "partly" | "synthetic";
   path_exists: boolean;
   has_predicted?: boolean;
 }
@@ -16,7 +16,7 @@ export interface VolumeMeta {
 export interface SampleMeta {
   name: string;
   split: Split;
-  dataset: "completely" | "partly";
+  dataset: "completely" | "partly" | "synthetic";
   zarr_path: string;
   prediction_set?: string | null;
   raw: VolumeMeta;
@@ -41,11 +41,21 @@ export interface CsvMetrics {
   thresholds: MetricThresholds;
 }
 
+/** One FISBe website leaderboard cell (S · avF1 · C · clDiceTP · tp · FS · FM). */
+export interface LeaderboardMetric {
+  key: string;
+  label: string;
+  value: number | null;
+  higher_is_better: boolean;
+}
+
 export interface SampleMetrics {
   name: string;
   prediction_set?: string | null;
   toml: TomlMetrics | null;
   csv: CsvMetrics | null;
+  /** Curated FISBe website names; null/empty when unavailable. */
+  leaderboard?: LeaderboardMetric[] | null;
 }
 
 /** One heatmap column: a single metric across all samples. */
@@ -63,16 +73,27 @@ export interface AggregateSummary {
   n: Record<string, number>;
 }
 
+/** One Aggregate heatmap partition (``{split}/{dataset}``, e.g. test/completely). */
+export interface AggregateGroup {
+  /** Stem-only row labels (dataset is in the group key). */
+  samples: string[];
+  /** values[sample][metricKey] -> number | null (missing cell). */
+  values: Record<string, Record<string, number | null>>;
+  summary: AggregateSummary;
+}
+
+/** Group key = ``{fisbe_split}/{dataset}`` (e.g. ``test/completely``). */
+export type AggregateGroupKey = string;
+
 export interface AggregateMetrics {
   prediction_set?: string | null;
   threshold: string;
   thresholdChoices: string[];
   metrics: AggregateMetricSpec[];
-  /** Sample names in row order. Derived summary rows are NOT included here. */
-  samples: string[];
-  /** values[sample][metricKey] -> number | null (missing cell). */
-  values: Record<string, Record<string, number | null>>;
-  summary: AggregateSummary;
+  /** Scored samples partitioned for the Aggregate tab. */
+  groups: Record<AggregateGroupKey, AggregateGroup>;
+  /** Stable table order from the server. */
+  groupOrder?: AggregateGroupKey[];
 }
 
 export interface PredictionSet {
@@ -167,17 +188,47 @@ export async function getMetrics(
   );
 }
 
+/**
+ * In-memory cache of aggregate heatmap payloads, keyed by prediction set +
+ * threshold. Scoring CSVs are static for a given prediction run, so entries
+ * never go stale within a session. Switching samples or remounting the
+ * Aggregate tab reuses the already-fetched matrix instead of hitting the
+ * server again.
+ */
+const aggregateMetricsCache = new Map<string, AggregateMetrics>();
+
+function aggregateCacheKey(
+  predictionSet?: string | null,
+  threshold?: string | null,
+): string {
+  return `${predictionSet ?? ""}|${threshold ?? ""}`;
+}
+
+/** Synchronously return a cached aggregate payload, or undefined on a miss. */
+export function peekAggregateMetrics(
+  predictionSet?: string | null,
+  threshold?: string | null,
+): AggregateMetrics | undefined {
+  return aggregateMetricsCache.get(aggregateCacheKey(predictionSet, threshold));
+}
+
 export async function getAggregateMetrics(
   predictionSet?: string | null,
   threshold?: string | null,
 ): Promise<AggregateMetrics> {
+  const key = aggregateCacheKey(predictionSet, threshold);
+  const cached = aggregateMetricsCache.get(key);
+  if (cached) return cached;
+
   const params = new URLSearchParams();
   if (predictionSet) params.set("prediction_set", predictionSet);
   if (threshold) params.set("threshold", threshold);
   const qs = params.toString();
-  return fetchJson<AggregateMetrics>(
+  const data = await fetchJson<AggregateMetrics>(
     `${API_BASE}/aggregate-metrics${qs ? `?${qs}` : ""}`,
   );
+  aggregateMetricsCache.set(key, data);
+  return data;
 }
 
 export function sliceUrl(
@@ -352,8 +403,18 @@ export async function fetchVolumeData(
 ): Promise<VolumeData> {
   const url = volumeDataUrl(name, opts);
   const cached = touchCacheEntry(url);
-  if (cached) return cached;
+  if (cached) {
+    console.debug("[volume]", {
+      url,
+      clientCache: "hit",
+      totalMs: 0,
+      bytes: cached.data.byteLength,
+      shape: cached.shape,
+    });
+    return cached;
+  }
 
+  const t0 = performance.now();
   const res = await fetch(url, { signal: opts.signal });
   if (!res.ok) {
     const detail = await res.text();
@@ -375,6 +436,20 @@ export async function fetchVolumeData(
   }
 
   const buffer = await res.arrayBuffer();
+  const totalMs = Math.round(performance.now() - t0);
+  const computeHeader = res.headers.get("X-Volume-Compute-Ms");
+  const computeMs = computeHeader != null ? Number(computeHeader) : undefined;
+  const cache = res.headers.get("X-Volume-Cache") ?? undefined;
+  console.debug("[volume]", {
+    url,
+    clientCache: "miss",
+    totalMs,
+    computeMs: Number.isFinite(computeMs) ? computeMs : undefined,
+    cache,
+    bytes: buffer.byteLength,
+    shape,
+  });
+
   const vol: VolumeData = {
     data: new Uint8Array(buffer),
     shape,

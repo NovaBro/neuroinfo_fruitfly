@@ -37,6 +37,7 @@ SAMPLE_LIST_PATH = Path(
 # (``{test,val}/processed/<ckpt>/<stem>.zarr`` → ``volumes/pred_numinst``) and
 # the final vote-instances labels
 # (``{test,val}/instanced/.../<stem>.hdf`` → dataset ``vote_instances``).
+# Matching val/test leaves are merged into one logical set (see ppp_loader).
 # Jobs write here via ``--root ../../metrics/ppp``. See ``services/ppp_loader.py``.
 PPP_EXPERIMENTS_BASE = Path(
     os.environ.get(
@@ -44,6 +45,29 @@ PPP_EXPERIMENTS_BASE = Path(
         _REPO_ROOT / "metrics" / "ppp",
     )
 ).resolve()
+
+# Process-wide Zarr chunk cache (zarr.experimental.CacheStore). Soft budget in
+# bytes for decompressed chunks kept in RAM so concurrent raw/gt/RGB reads
+# reuse Blosc-decoded data. Default 2 GiB.
+WEB_ZARR_CACHE_BYTES = int(
+    os.environ.get("WEB_ZARR_CACHE_BYTES", str(2_000_000_000))
+)
+
+# Lazy copy-on-first-open destination for FISBe zarrs and prediction inputs.
+# When unset: use $SLURM_TMPDIR/fisbe_web_stage if SLURM_TMPDIR is set, else
+# disable staging (return source paths unchanged — safe for local dev).
+# Set WEB_STAGE_DIR="" explicitly to force-disable even under SLURM.
+def _default_stage_dir() -> Path | None:
+    if "WEB_STAGE_DIR" in os.environ:
+        raw = os.environ["WEB_STAGE_DIR"].strip()
+        return Path(raw).resolve() if raw else None
+    slurm_tmp = os.environ.get("SLURM_TMPDIR", "").strip()
+    if slurm_tmp:
+        return Path(slurm_tmp).resolve() / "fisbe_web_stage"
+    return None
+
+
+WEB_STAGE_DIR = _default_stage_dir()
 
 CORS_ORIGINS = [
     "http://localhost:5173",

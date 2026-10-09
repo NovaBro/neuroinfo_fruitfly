@@ -201,10 +201,13 @@ function App() {
       </div>
 
       {/* The aggregate tab spans all samples, so it never waits on a
-          per-sample selection or its volume metadata. */}
-      {activeTab === "aggregate" ? (
+          per-sample selection or its volume metadata. Keep it mounted (hidden
+          on other tabs) so a prediction's cached matrix survives sample and
+          tab switches without remounting. */}
+      <div hidden={activeTab !== "aggregate"}>
         <AggregateHeatmap predictionSet={predictionSet} />
-      ) : (
+      </div>
+      {activeTab !== "aggregate" && (
         <>
           {!selected && (
             <p className="app-main__placeholder">
@@ -265,6 +268,7 @@ function App() {
             sampleName={selected}
             toml={metrics?.toml ?? null}
             csv={metrics?.csv ?? null}
+            leaderboard={metrics?.leaderboard ?? null}
             loading={metricsLoading}
             error={metricsError}
           />

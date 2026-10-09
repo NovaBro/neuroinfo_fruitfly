@@ -45,11 +45,7 @@ def stems_with_predictions(set_id: str | None = None) -> set[str]:
     if not set_id:
         return stems_with_predictions_any()
     if ppp_loader.is_ppp_set(set_id):
-        try:
-            kind, root = ppp_loader._resolve_root(set_id)
-        except (FileNotFoundError, ValueError):
-            return set()
-        return ppp_loader._set_stems(kind, root)
+        return ppp_loader.stems_for_set(set_id)
     try:
         root = biapy_loader.biapy.resolve_prediction_set_root(set_id)
     except (FileNotFoundError, ValueError):

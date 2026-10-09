@@ -1,8 +1,14 @@
-"""Aggregate per-sample scoring metrics into a samples x metrics matrix.
+"""Aggregate per-sample scoring metrics into grouped samples x metrics matrices.
 
 BiaPy sets use ``test_results_metrics.csv`` + TOML. PatchPerPix *instances*
-sets use evaluated ``summary.csv`` (via ``ppp_metrics``). Numinst sets have no
-aggregate matrix (voxel CSV only) and return an empty samples list.
+sets use evaluated ``summary.csv`` / vote tomls (via ``ppp_metrics``). Numinst
+sets have no aggregate matrix (voxel-level CSV only) and return empty groups.
+
+Scored samples are partitioned into one table per ``(fisbe_split × dataset)``:
+
+* Keys like ``test/completely``, ``val/completely``, ``test/synthetic``.
+* Sample row labels inside a table are **stem only** (dataset is in the key).
+* Sample IDs on disk / in PPP metrics are namespaced ``{dataset}/{stem}``.
 """
 
 from __future__ import annotations
@@ -12,54 +18,24 @@ from statistics import fmean, median
 from services.metrics import _csv_row_keys, _load_toml_metrics, load_csv_table
 from services.biapy_loader import biapy
 from services import ppp_loader
-from services.ppp_metrics import (
-    PPP_INSTANCE_METRIC_SPECS,
-    load_ppp_instances_summary_table,
-)
+from services.fisbe_metrics import FISBE_LEADERBOARD_SPECS, _as_number
+from services.ppp_metrics import load_ppp_instances_summary_table
 from services.sample_list import parse_sample_list
 
 # Detection thresholds the CSV carries a full column group for.
 THRESHOLD_CHOICES = ("0.3", "0.5", "0.75")
 DEFAULT_THRESHOLD = "0.5"
 
-# Curated heatmap columns. Each entry describes where the value comes from:
-#   source="csv-scalar"   -> csv["scalars"][field]
-#   source="csv-th"       -> csv["thresholds"][threshold][field]
-#   source="toml-summary" -> toml["summary"][field]   (confusion_matrix avg)
-#   source="toml-general" -> toml["general"][field]
-#   source="toml-th"      -> toml["thresholds"][threshold][field]  (PPP)
-# ``higher_is_better`` documents metric orientation for the client legend.
-METRIC_SPECS: tuple[dict, ...] = (
-    {"key": "iou_f", "label": "IoU (f channel)", "source": "csv-scalar",
-     "field": "iou (f channel)", "higher_is_better": True},
-    {"key": "iou_c", "label": "IoU (c channel)", "source": "csv-scalar",
-     "field": "iou (c channel)", "higher_is_better": True},
-    {"key": "avAP", "label": "avAP", "source": "toml-summary",
-     "field": "avAP", "higher_is_better": True},
-    {"key": "avFscore", "label": "avFscore", "source": "toml-summary",
-     "field": "avFscore", "higher_is_better": True},
-    {"key": "cldice_05", "label": "clDice @0.5", "source": "toml-general",
-     "field": "avg_TP_05_cldice", "higher_is_better": True},
-    {"key": "tp05_rel", "label": "TP@0.5 (rel)", "source": "toml-general",
-     "field": "TP_05_rel", "higher_is_better": True},
-    {"key": "precision", "label": "precision", "source": "csv-th",
-     "field": "precision", "higher_is_better": True},
-    {"key": "recall", "label": "recall", "source": "csv-th",
-     "field": "recall", "higher_is_better": True},
-    {"key": "f1", "label": "f1", "source": "csv-th",
-     "field": "f1", "higher_is_better": True},
-    {"key": "panoptic_quality", "label": "panoptic quality", "source": "csv-th",
-     "field": "panoptic_quality", "higher_is_better": True},
+_DATASETS = ("completely", "partly", "synthetic")
+_SPLITS = ("test", "val")
+# Stable table order: test×datasets then val×datasets.
+GROUP_KEYS: tuple[str, ...] = tuple(
+    f"{split}/{dataset}" for split in _SPLITS for dataset in _DATASETS
 )
 
-
-def _as_number(value) -> float | None:
-    """Coerce a parsed metric cell to a float, or ``None`` when not numeric."""
-    if isinstance(value, bool):
-        return None
-    if isinstance(value, (int, float)):
-        return float(value)
-    return None
+# Alias: Aggregate heatmap columns = FISBe website leaderboard names.
+METRIC_SPECS: tuple[dict, ...] = FISBE_LEADERBOARD_SPECS
+PPP_INSTANCE_METRIC_SPECS: tuple[dict, ...] = FISBE_LEADERBOARD_SPECS
 
 
 def _extract(spec: dict, csv_data: dict | None, toml_data: dict | None,
@@ -116,23 +92,143 @@ def _column_summary(
     return {"mean": means, "median": medians, "n": counts}
 
 
+def _basename_stem(stem: str) -> str:
+    """Strip optional ``{dataset}/`` prefix from list-mode sample IDs."""
+    return stem.rsplit("/", 1)[-1]
+
+
+def _dataset_of(stem: str) -> str | None:
+    """Return dataset prefix when ``stem`` is ``{dataset}/{name}``."""
+    if "/" not in stem:
+        return None
+    dataset, _ = stem.split("/", 1)
+    return dataset if dataset in _DATASETS else None
+
+
+def _lookup_by_basename() -> dict[str, tuple[str, str]]:
+    """basename → (fisbe_split, dataset); first sample-list hit wins."""
+    out: dict[str, tuple[str, str]] = {}
+    for entry in parse_sample_list():
+        if entry.name not in out:
+            out[entry.name] = (entry.split, entry.dataset)
+    return out
+
+
+def _group_for_stem(
+    stem: str, by_basename: dict[str, tuple[str, str]]
+) -> tuple[str, str] | None:
+    """Return ``(group_key, row_label)`` or None to omit.
+
+    ``group_key`` is ``{fisbe_split}/{dataset}``; ``row_label`` is stem only.
+    """
+    base = _basename_stem(stem)
+    dataset = _dataset_of(stem)
+    listed = by_basename.get(base)
+
+    if dataset is None:
+        if listed is None:
+            # Unknown flat non-listed stem — omit.
+            if base.startswith("brain_"):
+                return "test/synthetic", base
+            return None
+        fisbe_split, dataset = listed
+    else:
+        if listed is not None:
+            fisbe_split = listed[0]
+        elif base.startswith("brain_") or dataset == "synthetic":
+            fisbe_split = "test"
+        else:
+            # Namespaced but not in sample list — omit from aggregate.
+            return None
+
+    if fisbe_split not in _SPLITS:
+        return None
+    if dataset not in _DATASETS:
+        return None
+    return f"{fisbe_split}/{dataset}", base
+
+
+def _empty_group(specs: tuple[dict, ...]) -> dict:
+    return {
+        "samples": [],
+        "values": {},
+        "summary": _column_summary([], {}, specs),
+    }
+
+
+def _partition_aggregate(
+    samples: list[str],
+    values: dict[str, dict[str, float | None]],
+    specs: tuple[dict, ...],
+    by_basename: dict[str, tuple[str, str]] | None = None,
+) -> dict[str, dict]:
+    """Split scored samples into split×dataset groups with summaries."""
+    by_basename = by_basename if by_basename is not None else _lookup_by_basename()
+    buckets: dict[str, list[str]] = {k: [] for k in GROUP_KEYS}
+    # row_label → original key in ``values`` (first wins).
+    value_key_for: dict[str, dict[str, str]] = {k: {} for k in GROUP_KEYS}
+
+    for stem in samples:
+        mapped = _group_for_stem(stem, by_basename)
+        if mapped is None:
+            continue
+        group_key, row = mapped
+        if row not in value_key_for[group_key]:
+            value_key_for[group_key][row] = stem
+            buckets[group_key].append(row)
+
+    groups: dict[str, dict] = {}
+    for key in GROUP_KEYS:
+        group_samples = buckets[key]
+        group_values = {
+            s: values[value_key_for[key][s]] for s in group_samples
+        }
+        groups[key] = {
+            "samples": group_samples,
+            "values": group_values,
+            "summary": _column_summary(group_samples, group_values, specs),
+        }
+    return groups
+
+
+def _metrics_meta(specs: tuple[dict, ...]) -> list[dict]:
+    return [
+        {
+            "key": s["key"],
+            "label": s["label"],
+            "source": s["source"],
+            "higherIsBetter": s["higher_is_better"],
+        }
+        for s in specs
+    ]
+
+
 def _empty_aggregate(set_id: str | None, threshold: str, specs: tuple[dict, ...]) -> dict:
     return {
         "prediction_set": set_id,
         "threshold": threshold,
         "thresholdChoices": list(THRESHOLD_CHOICES),
-        "metrics": [
-            {
-                "key": s["key"],
-                "label": s["label"],
-                "source": s["source"],
-                "higherIsBetter": s["higher_is_better"],
-            }
-            for s in specs
-        ],
-        "samples": [],
-        "values": {},
-        "summary": _column_summary([], {}, specs),
+        "metrics": _metrics_meta(specs),
+        "groups": {k: _empty_group(specs) for k in GROUP_KEYS},
+        "groupOrder": list(GROUP_KEYS),
+    }
+
+
+def _payload(
+    set_id: str | None,
+    threshold: str,
+    specs: tuple[dict, ...],
+    samples: list[str],
+    values: dict[str, dict[str, float | None]],
+    by_basename: dict[str, tuple[str, str]] | None = None,
+) -> dict:
+    return {
+        "prediction_set": set_id,
+        "threshold": threshold,
+        "thresholdChoices": list(THRESHOLD_CHOICES),
+        "metrics": _metrics_meta(specs),
+        "groups": _partition_aggregate(samples, values, specs, by_basename),
+        "groupOrder": list(GROUP_KEYS),
     }
 
 
@@ -142,41 +238,29 @@ def _aggregate_ppp_instances(set_id: str, threshold: str) -> dict:
     if not table:
         return _empty_aggregate(set_id, threshold, specs)
 
+    by_basename = _lookup_by_basename()
     samples: list[str] = []
     values: dict[str, dict[str, float | None]] = {}
     for stem, toml_data in table.items():
+        if _group_for_stem(stem, by_basename) is None:
+            continue
         values[stem] = {
             spec["key"]: _extract(spec, None, toml_data, threshold)
             for spec in specs
         }
         samples.append(stem)
 
-    return {
-        "prediction_set": set_id,
-        "threshold": threshold,
-        "thresholdChoices": list(THRESHOLD_CHOICES),
-        "metrics": [
-            {
-                "key": s["key"],
-                "label": s["label"],
-                "source": s["source"],
-                "higherIsBetter": s["higher_is_better"],
-            }
-            for s in specs
-        ],
-        "samples": samples,
-        "values": values,
-        "summary": _column_summary(samples, values, specs),
-    }
+    return _payload(set_id, threshold, specs, samples, values, by_basename)
 
 
 def get_aggregate_metrics(set_id: str | None = None,
                           threshold: str | None = None) -> dict:
-    """Build the samples x metrics matrix for the given prediction set.
+    """Build grouped samples x metrics matrices for the given prediction set.
 
-    Samples with no metric source at all (neither CSV row nor TOML) are omitted
-    so empty rows never clutter the heatmap. Individual missing cells come back
-    as ``None``.
+    Samples with no metric source at all (neither CSV row nor TOML) are omitted.
+    Individual missing cells come back as ``None``. Response ``groups`` always
+    includes every ``{test,val}/{completely,partly,synthetic}`` key; empty
+    tables have zero samples. ``groupOrder`` lists keys for the client.
     """
     threshold = threshold if threshold in THRESHOLD_CHOICES else DEFAULT_THRESHOLD
 
@@ -191,14 +275,9 @@ def get_aggregate_metrics(set_id: str | None = None,
     except (FileNotFoundError, ValueError):
         result_root = None
 
-    metrics_meta = [
-        {"key": s["key"], "label": s["label"], "source": s["source"],
-         "higherIsBetter": s["higher_is_better"]}
-        for s in METRIC_SPECS
-    ]
-
     samples: list[str] = []
     values: dict[str, dict[str, float | None]] = {}
+    by_basename = _lookup_by_basename()
 
     if result_root is not None:
         csv_table = load_csv_table(result_root)
@@ -211,19 +290,27 @@ def get_aggregate_metrics(set_id: str | None = None,
 
         seen: set[str] = set()
         for entry in parse_sample_list():
-            stem = entry.name
+            # BiaPy rows are flat stems; namespace for grouping.
+            stem = f"{entry.dataset}/{entry.name}"
             if stem in seen:
                 continue
             seen.add(stem)
+            if _group_for_stem(stem, by_basename) is None:
+                continue
 
             csv_data = next(
-                (csv_table[k] for k in _csv_row_keys(stem) if k in csv_table), None
+                (csv_table[k] for k in _csv_row_keys(entry.name) if k in csv_table),
+                None,
             )
-            has_toml = any(n.startswith(stem) and n.endswith(".toml") for n in toml_names)
+            has_toml = any(
+                n.startswith(entry.name) and n.endswith(".toml") for n in toml_names
+            )
             if csv_data is None and not has_toml:
                 continue
 
-            toml_data = _load_toml_metrics(result_root, stem) if has_toml else None
+            toml_data = (
+                _load_toml_metrics(result_root, entry.name) if has_toml else None
+            )
             if csv_data is None and toml_data is None:
                 continue
 
@@ -233,12 +320,4 @@ def get_aggregate_metrics(set_id: str | None = None,
             }
             samples.append(stem)
 
-    return {
-        "prediction_set": set_id,
-        "threshold": threshold,
-        "thresholdChoices": list(THRESHOLD_CHOICES),
-        "metrics": metrics_meta,
-        "samples": samples,
-        "values": values,
-        "summary": _column_summary(samples, values, METRIC_SPECS),
-    }
+    return _payload(set_id, threshold, METRIC_SPECS, samples, values, by_basename)

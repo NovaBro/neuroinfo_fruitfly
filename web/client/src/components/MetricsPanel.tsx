@@ -1,10 +1,16 @@
-import { CsvMetrics, MetricThresholds, TomlMetrics } from "../api/client";
+import {
+  CsvMetrics,
+  LeaderboardMetric,
+  MetricThresholds,
+  TomlMetrics,
+} from "../api/client";
 import "./MetricsPanel.css";
 
 interface MetricsPanelProps {
   sampleName: string | null;
   toml: TomlMetrics | null;
   csv: CsvMetrics | null;
+  leaderboard?: LeaderboardMetric[] | null;
   loading: boolean;
   error: string | null;
 }
@@ -78,10 +84,42 @@ function ThresholdTable({ thresholds }: { thresholds: MetricThresholds }) {
   );
 }
 
+function LeaderboardSection({
+  leaderboard,
+}: {
+  leaderboard: LeaderboardMetric[];
+}) {
+  const hasAny = leaderboard.some((m) => m.value !== null && m.value !== undefined);
+  return (
+    <section className="metrics-section">
+      <h3 className="metrics-section__title">FISBe leaderboard</h3>
+      <p className="metrics-section__source">
+        Website names S · avF1 · C · clDiceTP · tp · FS · FM (pipeline keys
+        unchanged in raw sections below)
+      </p>
+      {hasAny ? (
+        <dl className="metrics-kv">
+          {leaderboard.map((m) => (
+            <div className="metrics-kv__row" key={m.key}>
+              <dt className="metrics-kv__key">{m.label}</dt>
+              <dd className="metrics-kv__val">{fmt(m.value)}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <p className="metrics-panel__hint">
+          No instance leaderboard scores for this sample/set.
+        </p>
+      )}
+    </section>
+  );
+}
+
 export function MetricsPanel({
   sampleName,
   toml,
   csv,
+  leaderboard,
   loading,
   error,
 }: MetricsPanelProps) {
@@ -102,6 +140,10 @@ export function MetricsPanel({
 
       {sampleName && !loading && !error && (
         <>
+          {leaderboard && leaderboard.length > 0 && (
+            <LeaderboardSection leaderboard={leaderboard} />
+          )}
+
           <section className="metrics-section">
             <h3 className="metrics-section__title">tests/metrics</h3>
             {toml ? (

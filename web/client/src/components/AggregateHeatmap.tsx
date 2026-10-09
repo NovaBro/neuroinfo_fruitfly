@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  AggregateGroup,
+  AggregateGroupKey,
   AggregateMetrics,
   AggregateMetricSpec,
   getAggregateMetrics,
+  peekAggregateMetrics,
 } from "../api/client";
 import "./AggregateHeatmap.css";
 
@@ -34,19 +37,38 @@ const BLUE_RAMP = [
 /** Ramp index past which the fill is light enough to need dark ink. */
 const DARK_INK_FROM = 8;
 
+const DEFAULT_GROUP_ORDER: AggregateGroupKey[] = [
+  "test/completely",
+  "test/partly",
+  "test/synthetic",
+  "val/completely",
+  "val/partly",
+  "val/synthetic",
+];
+
+function groupTitle(key: string): string {
+  const [split, dataset] = key.split("/", 2);
+  const splitLabel =
+    split === "test" ? "Test" : split === "val" ? "Val" : split;
+  return dataset ? `${splitLabel} · ${dataset}` : splitLabel;
+}
+
 interface CellStats {
   min: number;
   max: number;
 }
 
-/** Per-metric min/max across samples — each column normalizes independently. */
-function computeStats(data: AggregateMetrics): Record<string, CellStats | null> {
+/** Per-metric min/max across samples in one group — column-normalized. */
+function computeStats(
+  metrics: AggregateMetricSpec[],
+  group: AggregateGroup,
+): Record<string, CellStats | null> {
   const stats: Record<string, CellStats | null> = {};
-  for (const metric of data.metrics) {
+  for (const metric of metrics) {
     let min = Infinity;
     let max = -Infinity;
-    for (const sample of data.samples) {
-      const v = data.values[sample]?.[metric.key];
+    for (const sample of group.samples) {
+      const v = group.values[sample]?.[metric.key];
       if (typeof v === "number" && Number.isFinite(v)) {
         if (v < min) min = v;
         if (v > max) max = v;
@@ -85,15 +107,177 @@ interface TooltipState {
   norm: number | null;
 }
 
+interface HeatmapTableProps {
+  title: string;
+  group: AggregateGroup;
+  metrics: AggregateMetricSpec[];
+  threshold: string;
+  onTooltip: (
+    event: React.MouseEvent | null,
+    sample: string,
+    metric: AggregateMetricSpec,
+    value: number | null,
+    stats: Record<string, CellStats | null>,
+  ) => void;
+}
+
+function HeatmapTable({
+  title,
+  group,
+  metrics,
+  threshold,
+  onTooltip,
+}: HeatmapTableProps) {
+  const stats = useMemo(
+    () => computeStats(metrics, group),
+    [metrics, group],
+  );
+
+  if (group.samples.length === 0) {
+    return (
+      <section className="agg__section">
+        <h3 className="agg__section-title">{title}</h3>
+        <p className="agg__hint">No samples scored.</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className="agg__section">
+      <h3 className="agg__section-title">
+        {title}
+        <span className="agg__section-count">
+          {group.samples.length} sample{group.samples.length === 1 ? "" : "s"}
+        </span>
+      </h3>
+      <div className="agg__table-wrap">
+        <table className="agg__table">
+          <caption className="agg__caption">
+            {title} scoring metrics; threshold-dependent columns at {threshold}.
+          </caption>
+          <thead>
+            <tr>
+              <th className="agg__corner" scope="col">
+                sample
+              </th>
+              {metrics.map((m) => (
+                <th key={m.key} scope="col" title={`${m.label} (${m.source})`}>
+                  {m.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {group.samples.map((sample) => (
+              <tr key={sample}>
+                <th scope="row" className="agg__rowhead" title={sample}>
+                  {sample}
+                </th>
+                {metrics.map((m) => {
+                  const value = group.values[sample]?.[m.key] ?? null;
+                  const st = stats[m.key];
+                  const hasValue =
+                    typeof value === "number" && Number.isFinite(value) && st;
+                  const idx = hasValue
+                    ? rampIndex(normalize(value as number, st as CellStats))
+                    : -1;
+                  return (
+                    <td
+                      key={m.key}
+                      className={
+                        hasValue ? "agg__cell" : "agg__cell agg__cell--empty"
+                      }
+                      style={
+                        hasValue
+                          ? {
+                              background: BLUE_RAMP[idx],
+                              color:
+                                idx >= DARK_INK_FROM ? "#0b0b0b" : "#ffffff",
+                            }
+                          : undefined
+                      }
+                      onMouseEnter={(e) =>
+                        onTooltip(
+                          e,
+                          sample,
+                          m,
+                          hasValue ? (value as number) : null,
+                          stats,
+                        )
+                      }
+                      onMouseMove={(e) =>
+                        onTooltip(
+                          e,
+                          sample,
+                          m,
+                          hasValue ? (value as number) : null,
+                          stats,
+                        )
+                      }
+                      onMouseLeave={() =>
+                        onTooltip(null, sample, m, null, stats)
+                      }
+                    >
+                      {hasValue ? fmtCell(value as number) : "–"}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+          <tfoot className="agg__foot">
+            {(["mean", "median"] as const).map((stat) => (
+              <tr key={stat}>
+                <th scope="row" className="agg__rowhead agg__rowhead--summary">
+                  {stat}
+                </th>
+                {metrics.map((m) => {
+                  const value = group.summary?.[stat]?.[m.key] ?? null;
+                  const n = group.summary?.n?.[m.key] ?? 0;
+                  return (
+                    <td
+                      key={m.key}
+                      className="agg__cell agg__cell--summary"
+                      title={
+                        value === null
+                          ? `No ${stat} — no samples scored for ${m.label}`
+                          : `${stat} of ${m.label} over ${n} sample${n === 1 ? "" : "s"}: ${value}`
+                      }
+                    >
+                      {value === null ? "–" : fmtCell(value)}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tfoot>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 export function AggregateHeatmap({ predictionSet }: AggregateHeatmapProps) {
-  const [data, setData] = useState<AggregateMetrics | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [threshold, setThreshold] = useState<string>("0.5");
+  const [data, setData] = useState<AggregateMetrics | null>(
+    () => peekAggregateMetrics(predictionSet, "0.5") ?? null,
+  );
+  const [loading, setLoading] = useState(
+    () => peekAggregateMetrics(predictionSet, "0.5") == null,
+  );
+  const [error, setError] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
   const wrapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    const hit = peekAggregateMetrics(predictionSet, threshold);
+    if (hit) {
+      setData(hit);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     let cancelled = false;
     setLoading(true);
     setError(null);
@@ -116,14 +300,34 @@ export function AggregateHeatmap({ predictionSet }: AggregateHeatmapProps) {
     };
   }, [predictionSet, threshold]);
 
-  const stats = useMemo(() => (data ? computeStats(data) : {}), [data]);
+  const groupKeys = useMemo(() => {
+    if (!data?.groups) return DEFAULT_GROUP_ORDER;
+    const order = data.groupOrder?.length
+      ? data.groupOrder
+      : DEFAULT_GROUP_ORDER;
+    // Include any extra keys the server sent, then drop empty tables from display
+    // only for scoring check — still render empty? Plan: emit all keys; show
+    // only non-empty tables to avoid six empty heatmaps.
+    const keys = [
+      ...order.filter((k) => k in data.groups),
+      ...Object.keys(data.groups).filter((k) => !order.includes(k)),
+    ];
+    return keys.filter((k) => (data.groups[k]?.samples.length ?? 0) > 0);
+  }, [data]);
+
+  const anyScored = groupKeys.length > 0;
 
   function showTooltip(
-    event: React.MouseEvent,
+    event: React.MouseEvent | null,
     sample: string,
     metric: AggregateMetricSpec,
     value: number | null,
+    stats: Record<string, CellStats | null>,
   ) {
+    if (event === null) {
+      setTooltip(null);
+      return;
+    }
     const bounds = wrapRef.current?.getBoundingClientRect();
     const st = stats[metric.key];
     setTooltip({
@@ -142,8 +346,8 @@ export function AggregateHeatmap({ predictionSet }: AggregateHeatmapProps) {
         <div>
           <h2 className="agg__title">Aggregate Metrics</h2>
           <p className="agg__subtitle">
-            Samples × metrics. Each column is colour-scaled independently to its
-            own min/max across samples.
+            One table per FISBe split × dataset (e.g. Test · completely).
+            Each column is colour-scaled independently within its table.
           </p>
         </div>
 
@@ -166,14 +370,13 @@ export function AggregateHeatmap({ predictionSet }: AggregateHeatmapProps) {
       {loading && <p className="agg__hint">Loading aggregate metrics…</p>}
       {error && <p className="agg__error">{error}</p>}
 
-      {!loading && !error && data && data.samples.length === 0 && (
+      {!loading && !error && data && !anyScored && (
         <p className="agg__hint">
-          No scoring metrics for this prediction set. Metrics are currently
-          BiaPy-only.
+          No scoring metrics for this prediction set.
         </p>
       )}
 
-      {!loading && !error && data && data.samples.length > 0 && (
+      {!loading && !error && data && anyScored && (
         <>
           <div className="agg__legend">
             <span className="agg__legend-label">low</span>
@@ -188,101 +391,21 @@ export function AggregateHeatmap({ predictionSet }: AggregateHeatmapProps) {
             </div>
             <span className="agg__legend-label">high</span>
             <span className="agg__legend-note">
-              per-column min → max · higher is better for every column shown
+              per-column min → max within each table · higher is better
             </span>
           </div>
 
-          <div className="agg__table-wrap">
-            <table className="agg__table">
-              <caption className="agg__caption">
-                Scoring metrics per sample for the selected prediction set;
-                threshold-dependent columns evaluated at {data.threshold}.
-              </caption>
-              <thead>
-                <tr>
-                  <th className="agg__corner" scope="col">
-                    sample
-                  </th>
-                  {data.metrics.map((m) => (
-                    <th key={m.key} scope="col" title={`${m.label} (${m.source})`}>
-                      {m.label}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {data.samples.map((sample) => (
-                  <tr key={sample}>
-                    <th scope="row" className="agg__rowhead" title={sample}>
-                      {sample}
-                    </th>
-                    {data.metrics.map((m) => {
-                      const value = data.values[sample]?.[m.key] ?? null;
-                      const st = stats[m.key];
-                      const hasValue =
-                        typeof value === "number" && Number.isFinite(value) && st;
-                      const idx = hasValue
-                        ? rampIndex(normalize(value as number, st as CellStats))
-                        : -1;
-                      return (
-                        <td
-                          key={m.key}
-                          className={
-                            hasValue ? "agg__cell" : "agg__cell agg__cell--empty"
-                          }
-                          style={
-                            hasValue
-                              ? {
-                                  background: BLUE_RAMP[idx],
-                                  color:
-                                    idx >= DARK_INK_FROM ? "#0b0b0b" : "#ffffff",
-                                }
-                              : undefined
-                          }
-                          onMouseEnter={(e) =>
-                            showTooltip(e, sample, m, hasValue ? (value as number) : null)
-                          }
-                          onMouseMove={(e) =>
-                            showTooltip(e, sample, m, hasValue ? (value as number) : null)
-                          }
-                          onMouseLeave={() => setTooltip(null)}
-                        >
-                          {hasValue ? fmtCell(value as number) : "–"}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-              {/* Derived column summaries, not samples: rendered as plain
-                  tabular numbers so they never read as another data row. */}
-              <tfoot className="agg__foot">
-                {(["mean", "median"] as const).map((stat) => (
-                  <tr key={stat}>
-                    <th scope="row" className="agg__rowhead agg__rowhead--summary">
-                      {stat}
-                    </th>
-                    {data.metrics.map((m) => {
-                      const value = data.summary?.[stat]?.[m.key] ?? null;
-                      const n = data.summary?.n?.[m.key] ?? 0;
-                      return (
-                        <td
-                          key={m.key}
-                          className="agg__cell agg__cell--summary"
-                          title={
-                            value === null
-                              ? `No ${stat} — no samples scored for ${m.label}`
-                              : `${stat} of ${m.label} over ${n} sample${n === 1 ? "" : "s"}: ${value}`
-                          }
-                        >
-                          {value === null ? "–" : fmtCell(value)}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tfoot>
-            </table>
+          <div className="agg__sections">
+            {groupKeys.map((key) => (
+              <HeatmapTable
+                key={key}
+                title={groupTitle(key)}
+                group={data.groups[key]}
+                metrics={data.metrics}
+                threshold={data.threshold}
+                onTooltip={showTooltip}
+              />
+            ))}
           </div>
 
           {tooltip && (

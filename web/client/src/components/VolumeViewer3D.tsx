@@ -77,8 +77,9 @@ export function VolumeViewer3D({
   const [contrast, setContrast] = useState(DEFAULT_CONTRAST);
   const [maxSize, setMaxSize] = useState(DEFAULT_VOLUME_MAX_SIZE);
   const debouncedMaxSize = useDebouncedValue(maxSize, 400);
-  const [showPredicted, setShowPredicted] = useState(true);
+  const [showPredicted, setShowPredicted] = useState(false);
   const [showGt, setShowGt] = useState(false);
+  const [showSubviews, setShowSubviews] = useState(false);
   const [predictedOpacity, setPredictedOpacity] = useState(100);
   const [gtOpacity, setGtOpacity] = useState(100);
   const [loading, setLoading] = useState(false);
@@ -452,45 +453,58 @@ export function VolumeViewer3D({
       {/* Standalone interactive 3D renders of the exact Zarr the main viewer
           loaded (volumes/raw as RGB, volumes/gt_instances merged/colored). They
           share the brightness/contrast/resolution controls above, and (when
-          linked) a synchronized camera with the main render. */}
+          linked) a synchronized camera with the main render. Mounted only when
+          enabled so they do not compete for volume.bin bandwidth on sample open. */}
       <label className="volume-viewer-3d__checkbox">
         <input
           type="checkbox"
-          checked={linkViews}
-          onChange={(e) => setLinkViews(e.target.checked)}
+          checked={showSubviews}
+          onChange={(e) => setShowSubviews(e.target.checked)}
         />
-        Link camera across all 3D views
+        Show Raw / GT comparison views
       </label>
-      <div className="volume-viewer-3d__subviews">
-        <Volume3DView
-          key={`${sampleName}-raw-3d`}
-          sampleName={sampleName}
-          label="Raw (Zarr)"
-          volume="raw"
-          channel="all"
-          mode="rgb"
-          maxSize={debouncedMaxSize}
-          brightness={brightness}
-          contrast={contrast}
-          channelGains={channelGains}
-          cameraSync={cameraSync}
-          syncId="sub-raw"
-        />
-        {hasGt && (
-          <Volume3DView
-            key={`${sampleName}-gt-3d`}
-            sampleName={sampleName}
-            label="GT instances (Zarr)"
-            volume="gt"
-            mode="instance_rgb"
-            maxSize={debouncedMaxSize}
-            brightness={brightness}
-            contrast={contrast}
-            cameraSync={cameraSync}
-            syncId="sub-gt"
-          />
-        )}
-      </div>
+      {showSubviews && (
+        <>
+          <label className="volume-viewer-3d__checkbox">
+            <input
+              type="checkbox"
+              checked={linkViews}
+              onChange={(e) => setLinkViews(e.target.checked)}
+            />
+            Link camera across all 3D views
+          </label>
+          <div className="volume-viewer-3d__subviews">
+            <Volume3DView
+              key={`${sampleName}-raw-3d`}
+              sampleName={sampleName}
+              label="Raw (Zarr)"
+              volume="raw"
+              channel="all"
+              mode="rgb"
+              maxSize={debouncedMaxSize}
+              brightness={brightness}
+              contrast={contrast}
+              channelGains={channelGains}
+              cameraSync={cameraSync}
+              syncId="sub-raw"
+            />
+            {hasGt && (
+              <Volume3DView
+                key={`${sampleName}-gt-3d`}
+                sampleName={sampleName}
+                label="GT instances (Zarr)"
+                volume="gt"
+                mode="instance_rgb"
+                maxSize={debouncedMaxSize}
+                brightness={brightness}
+                contrast={contrast}
+                cameraSync={cameraSync}
+                syncId="sub-gt"
+              />
+            )}
+          </div>
+        </>
+      )}
 
       <div className="volume-viewer-3d__mip">
         <span className="volume-viewer-3d__label">FISBe MIP</span>

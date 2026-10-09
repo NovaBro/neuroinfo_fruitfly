@@ -12,6 +12,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from config import REPO_ROOT
+from services.local_stage import ensure_local
 from services.volume_pipeline import VolumeBytesResult, volume_array_to_bytes
 
 _SCRIPTS_DIR = REPO_ROOT / "ipynb" / "scripts"
@@ -74,7 +75,8 @@ def predicted_instances_to_bytes(
 ) -> VolumeBytesResult:
     """Load and downsample a prediction set's per_image_instances for rendering."""
     root = biapy.resolve_prediction_set_root(set_id)
-    volume = biapy.load_biapy_per_image_instances(stem, result_root=root)
+    tiff = biapy.resolve_tiff_path(root / "per_image_instances", stem)
+    volume = biapy.load_zarr_tiff(ensure_local(tiff))
     return volume_array_to_bytes(
         volume, max_size=max_size, encoding="labels_rgb"
     )

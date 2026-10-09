@@ -12,7 +12,7 @@ from config import FISBE_ROOT, SAMPLE_LIST_PATH
 class SampleEntry:
     split: str
     name: str
-    dataset: str  # "completely" or "partly"
+    dataset: str  # "completely" | "partly" | "synthetic"
     path_exists: bool
 
 
@@ -20,7 +20,7 @@ def _resolve_zarr_path(split: str, name: str, dataset: str) -> Path:
     if dataset == "completely":
         root = FISBE_ROOT
     else:
-        root = FISBE_ROOT.parent / "partly"
+        root = FISBE_ROOT.parent / dataset
     return root / split / f"{name}.zarr"
 
 
@@ -43,6 +43,10 @@ def parse_sample_list(list_path: Path | None = None) -> list[SampleEntry]:
                 continue
             if "(2) samples for FlyLight partly:" in line:
                 current_dataset = "partly"
+                current_split = None
+                continue
+            if "(3) samples for FlyLight synthetic:" in line:
+                current_dataset = "synthetic"
                 current_split = None
                 continue
 

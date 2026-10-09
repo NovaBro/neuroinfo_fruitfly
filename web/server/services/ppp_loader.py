@@ -1,8 +1,9 @@
 """Load PatchPerPix prediction volumes for the web viewer.
 
 Each PatchPerPix experiment under ``PPP_EXPERIMENTS_BASE`` can expose two kinds
-of overlay, discovered independently as separate "prediction sets" under both
-the ``test/`` and ``val/`` split dirs:
+of overlay. Matching leaves under ``val/`` and ``test/`` are merged into one
+logical prediction set (same ckpt / VI params), so both FISBe splits appear on
+one viewer page:
 
 * **numinst** — the per-voxel overlap-count map written by ``predict``:
   ``{split}/processed/<ckpt>/<stem>.zarr`` → ``volumes/pred_numinst``, shape
@@ -15,9 +16,12 @@ the ``test/`` and ``val/`` split dirs:
   overlays. Requires ``h5py``; when it is missing, instances sets are omitted
   from discovery and loads raise a clear error.
 
-Set ids are source-prefixed (``ppp-numinst:`` / ``ppp-inst:``) so the dispatcher
-in ``services/predictions.py`` can route to the right loader without colliding
-with the (bare, relative-path) BiaPy ids.
+Set ids are source-prefixed (``ppp-numinst:`` / ``ppp-inst:``) and use a
+**logical** relative path without the on-disk split segment, e.g.
+``ppp-inst:ppp_basic_fmaps24/instanced/80000/…``. Legacy ids that still embed
+``val/`` or ``test/`` resolve to the same merged set. Routing is by that prefix
+so ``services/predictions.py`` can dispatch without colliding with bare BiaPy
+ids.
 """
 
 from __future__ import annotations
@@ -26,21 +30,25 @@ from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
-import zarr
 
 from config import PPP_EXPERIMENTS_BASE
+from services.local_stage import ensure_local
 from services.volume_pipeline import (
     VolumeBytesResult,
     compute_downsample_factor,
     volume_array_to_bytes,
 )
+from services.zarr_store import open_array as open_cached_array
 
 NUMINST_PREFIX = "ppp-numinst:"
 INST_PREFIX = "ppp-inst:"
 
 _NUMINST_KEY = "volumes/pred_numinst"
 _VOTE_DATASET = "vote_instances"
-_SPLITS = ("test", "val")
+# Prefer val then test when a stem exists under both leaves and FISBe split is unknown.
+_SPLITS = ("val", "test")
+# List-mode nests HDFs under {dataset}/; set roots / evaluated leaves omit this.
+_DATASET_DIRS = frozenset({"completely", "partly", "synthetic"})
 
 
 # --- discovery -------------------------------------------------------------
@@ -53,10 +61,16 @@ def _rel(root: Path) -> str:
     return str(root.resolve().relative_to(_base()))
 
 
+def _iter_sample_zarrs(processed_dir: Path):
+    """Yield sample zarr dirs: flat ``*.zarr`` and nested ``{dataset}/*.zarr``."""
+    yield from (p for p in processed_dir.glob("*.zarr") if p.is_dir())
+    yield from (p for p in processed_dir.glob("*/*.zarr") if p.is_dir())
+
+
 def _numinst_dir_has_data(processed_dir: Path) -> bool:
     return any(
         (p / "volumes" / "pred_numinst" / ".zarray").is_file()
-        for p in processed_dir.glob("*.zarr")
+        for p in _iter_sample_zarrs(processed_dir)
     )
 
 
@@ -85,7 +99,7 @@ def _format_numinst_name(exp: str, ckpt_dir: Path) -> str:
     """Human label for a processed/<ckpt> numinst set.
 
     Omits the on-disk PPP split (``test``/``val``) from the label; discovery
-    still indexes both dirs (new runs route FISBe val→``val/``, test→``test/``).
+    merges both dirs into one logical set.
     """
     return f"{exp} · ckpt {ckpt_dir.name} · numinst"
 
@@ -164,26 +178,153 @@ def _format_instances_name(
     return " · ".join(bits)
 
 
-def discover_prediction_sets() -> list[dict]:
-    """Discover every PatchPerPix numinst and instances set under the base.
+def _logical_rel(rel: str) -> str:
+    """Strip ``<exp>/(val|test)/…`` → ``<exp>/…``; leave already-logical paths."""
+    parts = Path(rel).parts
+    if len(parts) >= 2 and parts[1] in _SPLITS:
+        return str(Path(parts[0], *parts[2:]))
+    return rel
 
-    Each entry is ``{"id", "name", "path", "default", "source", "kind"}``.
+
+def _parse_set_id(set_id: str) -> tuple[str, str]:
+    """Return ``(kind, raw_rel)`` from a prefixed PatchPerPix set id."""
+    if set_id.startswith(NUMINST_PREFIX):
+        return "numinst", set_id[len(NUMINST_PREFIX) :]
+    if set_id.startswith(INST_PREFIX):
+        return "instances", set_id[len(INST_PREFIX) :]
+    raise ValueError(f"Not a PatchPerPix prediction set id: {set_id!r}")
+
+
+def _roots_for_logical(kind: str, logical: str) -> list[Path]:
+    """Existing on-disk leaves for a logical rel under both splits (val, test)."""
+    parts = Path(logical).parts
+    if len(parts) < 2:
+        raise ValueError(f"Invalid PatchPerPix logical path: {logical!r}")
+    exp, rest = parts[0], parts[1:]
+    expected_kind_dir = "processed" if kind == "numinst" else "instanced"
+    if rest[0] != expected_kind_dir:
+        raise ValueError(
+            f"Logical path {logical!r} does not match kind {kind!r} "
+            f"(expected …/{expected_kind_dir}/…)"
+        )
+    base = _base()
+    roots: list[Path] = []
+    for split in _SPLITS:
+        candidate = (base / exp / split / Path(*rest)).resolve()
+        if candidate != base and base not in candidate.parents:
+            raise ValueError(f"Prediction path {candidate} is outside {base}")
+        if candidate.is_dir():
+            roots.append(candidate)
+    return roots
+
+
+def _resolve_roots(set_id: str) -> tuple[str, list[Path]]:
+    """Map a PatchPerPix set id to ``(kind, [root_dirs…])`` spanning val/test.
+
+    Accepts logical ids (no split) and legacy ids that embed ``val/`` or
+    ``test/``; both resolve to the same merged root list.
+
+    Raises ``ValueError`` for non-PPP ids or paths that escape the base, and
+    ``FileNotFoundError`` when no matching leaf directory exists.
+    """
+    kind, raw_rel = _parse_set_id(set_id)
+    logical = _logical_rel(raw_rel)
+    roots = _roots_for_logical(kind, logical)
+    if not roots:
+        raise FileNotFoundError(f"No directory for prediction set {set_id!r}")
+    return kind, roots
+
+
+def _resolve_root(set_id: str) -> tuple[str, Path]:
+    """Map a PatchPerPix set id to ``(kind, first_root)``.
+
+    Prefer ``_resolve_roots`` / ``_root_for_stem`` for new code. Kept for
+    callers that only need any existing leaf (first is ``val`` then ``test``).
+    """
+    kind, roots = _resolve_roots(set_id)
+    return kind, roots[0]
+
+
+def _split_of_root(root: Path) -> str | None:
+    """Return ``val`` or ``test`` if ``root`` sits under that PPP split dir."""
+    try:
+        parts = root.resolve().relative_to(_base()).parts
+    except ValueError:
+        return None
+    if len(parts) >= 2 and parts[1] in _SPLITS:
+        return parts[1]
+    return None
+
+
+@lru_cache(maxsize=1)
+def _stem_to_fisbe_split() -> dict[str, str]:
+    """Map sample stem → FISBe split (first listing wins: completely then partly)."""
+    from services.sample_list import parse_sample_list
+
+    out: dict[str, str] = {}
+    for entry in parse_sample_list():
+        if entry.name not in out:
+            out[entry.name] = entry.split
+    return out
+
+
+def _stem_exists(kind: str, root: Path, stem: str) -> bool:
+    if kind == "numinst":
+        return (
+            _numinst_zarr(root, stem) / "volumes" / "pred_numinst" / ".zarray"
+        ).is_file()
+    return _inst_hdf(root, stem).is_file()
+
+
+def _root_for_stem(
+    kind: str,
+    roots: list[Path],
+    stem: str,
+    preferred_split: str | None = None,
+) -> Path | None:
+    """Pick the leaf that holds ``stem``, preferring ``preferred_split`` when set.
+
+    If ``preferred_split`` is omitted, look up the FISBe sample list. When the
+    stem exists under multiple leaves, prefer that split; otherwise walk roots
+    in ``val``, ``test`` order.
+    """
+    if preferred_split is None:
+        splits = _stem_to_fisbe_split()
+        preferred_split = splits.get(stem) or splits.get(stem.rsplit("/", 1)[-1])
+
+    hits = [r for r in roots if _stem_exists(kind, r, stem)]
+    if not hits:
+        return None
+    if preferred_split:
+        for r in hits:
+            if _split_of_root(r) == preferred_split:
+                return r
+    return hits[0]
+
+
+def discover_prediction_sets() -> list[dict]:
+    """Discover PatchPerPix numinst and instances sets under the base.
+
+    Matching ``val/`` and ``test/`` leaves (same ckpt / VI params) collapse into
+    one logical set. Each entry is
+    ``{"id", "name", "path", "default", "source", "kind"}``.
     ``default`` is always False — the viewer defaults to a BiaPy set and the
     user opts into a PatchPerPix overlay via the dropdown.
 
     Instances sets are omitted when ``h5py`` is not installable in the server
     env (the HDF loader would fail at request time otherwise).
 
-    Display ``name`` encodes ckpt and VI params (e.g.
-    ``… · ckpt 70000 · instances · th0.3 · mws=T · skel=T``); set ``id`` remains
-    the full relative path so selections stay stable across renames.
+    Display ``name`` encodes ckpt and VI params; set ``id`` is the logical
+    relative path (no split). Legacy split-embedded ids still resolve.
     """
     base = _base()
-    sets: list[dict] = []
     if not base.is_dir():
-        return sets
+        return []
 
     can_read_hdf = _h5py_available()
+
+    # key → (kind, exp, after_split, [roots], name_source_root, name_instanced_base)
+    groups: dict[tuple[str, str, str], dict] = {}
 
     for exp_dir in sorted(p for p in base.iterdir() if p.is_dir()):
         exp = exp_dir.name
@@ -197,62 +338,82 @@ def discover_prediction_sets() -> list[dict]:
                 ):
                     if not _numinst_dir_has_data(ckpt_dir):
                         continue
-                    sets.append(
-                        {
-                            "id": NUMINST_PREFIX + _rel(ckpt_dir),
-                            "name": _format_numinst_name(exp, ckpt_dir),
-                            "path": str(ckpt_dir),
-                            "default": False,
-                            "source": "ppp",
+                    after = str(Path("processed") / ckpt_dir.name)
+                    key = ("numinst", exp, after)
+                    g = groups.get(key)
+                    if g is None:
+                        groups[key] = {
                             "kind": "numinst",
+                            "exp": exp,
+                            "after": after,
+                            "roots": [ckpt_dir],
+                            "name_root": ckpt_dir,
                         }
-                    )
+                    else:
+                        g["roots"].append(ckpt_dir)
 
             # instances sets: one per leaf param dir containing *.hdf vote outputs.
             if not can_read_hdf:
                 continue
             instanced_base = exp_dir / split / "instanced"
             if instanced_base.is_dir():
-                param_dirs = sorted(
-                    {hdf.parent for hdf in instanced_base.glob("**/*.hdf")}
-                )
-                for param_dir in param_dirs:
-                    sets.append(
-                        {
-                            "id": INST_PREFIX + _rel(param_dir),
-                            "name": _format_instances_name(
-                                exp, param_dir, instanced_base
-                            ),
-                            "path": str(param_dir),
-                            "default": False,
-                            "source": "ppp",
+                param_dirs: set[Path] = set()
+                for hdf in instanced_base.glob("**/*.hdf"):
+                    parent = hdf.parent
+                    if parent.name in _DATASET_DIRS:
+                        parent = parent.parent
+                    param_dirs.add(parent)
+                for param_dir in sorted(param_dirs):
+                    try:
+                        rel_parts = param_dir.resolve().relative_to(
+                            instanced_base.resolve()
+                        ).parts
+                    except ValueError:
+                        continue
+                    after = str(Path("instanced", *rel_parts))
+                    key = ("instances", exp, after)
+                    g = groups.get(key)
+                    if g is None:
+                        groups[key] = {
                             "kind": "instances",
+                            "exp": exp,
+                            "after": after,
+                            "roots": [param_dir],
+                            "name_root": param_dir,
+                            "instanced_base": instanced_base,
                         }
-                    )
+                    else:
+                        g["roots"].append(param_dir)
+
+    sets: list[dict] = []
+    for key in sorted(groups.keys()):
+        g = groups[key]
+        kind = g["kind"]
+        exp = g["exp"]
+        after = g["after"]
+        roots: list[Path] = g["roots"]
+        # Stable val-then-test order (discovery already walks _SPLITS that way).
+        logical = f"{exp}/{after}"
+        if kind == "numinst":
+            name = _format_numinst_name(exp, g["name_root"])
+            prefix = NUMINST_PREFIX
+        else:
+            name = _format_instances_name(
+                exp, g["name_root"], g["instanced_base"]
+            )
+            prefix = INST_PREFIX
+        sets.append(
+            {
+                "id": prefix + logical,
+                "name": name,
+                "path": " | ".join(str(r) for r in roots),
+                "default": False,
+                "source": "ppp",
+                "kind": kind,
+            }
+        )
 
     return sets
-
-
-def _resolve_root(set_id: str) -> tuple[str, Path]:
-    """Map a PatchPerPix set id back to ``(kind, root_dir)``.
-
-    Raises ``ValueError`` for ids that are not PatchPerPix ids or that escape
-    the base, and ``FileNotFoundError`` when the directory is missing.
-    """
-    if set_id.startswith(NUMINST_PREFIX):
-        kind, rel = "numinst", set_id[len(NUMINST_PREFIX):]
-    elif set_id.startswith(INST_PREFIX):
-        kind, rel = "instances", set_id[len(INST_PREFIX):]
-    else:
-        raise ValueError(f"Not a PatchPerPix prediction set id: {set_id!r}")
-
-    base = _base()
-    root = (base / rel).resolve()
-    if root != base and base not in root.parents:
-        raise ValueError(f"Prediction set {set_id!r} is outside {base}")
-    if not root.is_dir():
-        raise FileNotFoundError(f"No directory for prediction set {set_id!r}")
-    return kind, root
 
 
 def is_ppp_set(set_id: str | None) -> bool:
@@ -264,11 +425,38 @@ def is_ppp_set(set_id: str | None) -> bool:
 # --- per-sample lookup -----------------------------------------------------
 
 def _numinst_zarr(root: Path, stem: str) -> Path:
-    return root / f"{stem}.zarr"
+    """Resolve flat or nested list-mode zarr for ``stem``.
+
+    Tries ``{stem}.zarr``, then ``* /{basename}.zarr`` (e.g. ``completely/``).
+    """
+    direct = root / f"{stem}.zarr"
+    if direct.is_dir():
+        return direct
+    base = stem.rsplit("/", 1)[-1]
+    if base != stem:
+        nested = root / f"{stem}.zarr"
+        if nested.is_dir():
+            return nested
+    matches = sorted(p for p in root.glob(f"*/{base}.zarr") if p.is_dir())
+    if matches:
+        return matches[0]
+    return direct
 
 
 def _inst_hdf(root: Path, stem: str) -> Path:
-    return root / f"{stem}.hdf"
+    """Resolve flat or nested list-mode hdf for ``stem``."""
+    direct = root / f"{stem}.hdf"
+    if direct.is_file():
+        return direct
+    base = stem.rsplit("/", 1)[-1]
+    if base != stem:
+        nested = root / f"{stem}.hdf"
+        if nested.is_file():
+            return nested
+    matches = sorted(p for p in root.glob(f"*/{base}.hdf") if p.is_file())
+    if matches:
+        return matches[0]
+    return direct
 
 
 def has_predicted_instances(stem: str, set_id: str | None = None) -> bool:
@@ -276,33 +464,45 @@ def has_predicted_instances(stem: str, set_id: str | None = None) -> bool:
     if not set_id:
         return False
     try:
-        kind, root = _resolve_root(set_id)
+        kind, roots = _resolve_roots(set_id)
     except (FileNotFoundError, ValueError):
         return False
-    if kind == "numinst":
-        return (_numinst_zarr(root, stem) / "volumes" / "pred_numinst" / ".zarray").is_file()
-    return _inst_hdf(root, stem).is_file()
+    return _root_for_stem(kind, roots, stem) is not None
 
 
 def _set_stems(kind: str, root: Path) -> set[str]:
+    """Return basenames (no dataset prefix) for viewer sample matching."""
     if kind == "numinst":
         return {
             p.name[: -len(".zarr")]
-            for p in root.glob("*.zarr")
+            for p in _iter_sample_zarrs(root)
             if (p / "volumes" / "pred_numinst" / ".zarray").is_file()
         }
-    return {p.stem for p in root.glob("*.hdf")}
+    stems: set[str] = set()
+    for p in root.glob("*.hdf"):
+        stems.add(p.stem)
+    for p in root.glob("*/*.hdf"):
+        stems.add(p.stem)
+    return stems
+
+
+def stems_for_set(set_id: str) -> set[str]:
+    """Union of stems with output across all roots of a logical PatchPerPix set."""
+    try:
+        kind, roots = _resolve_roots(set_id)
+    except (FileNotFoundError, ValueError):
+        return set()
+    stems: set[str] = set()
+    for root in roots:
+        stems |= _set_stems(kind, root)
+    return stems
 
 
 def stems_with_predictions_any() -> set[str]:
     """Stems with output in *any* PatchPerPix set (one scan per set)."""
     stems: set[str] = set()
     for s in discover_prediction_sets():
-        try:
-            kind, root = _resolve_root(s["id"])
-        except (FileNotFoundError, ValueError):
-            continue
-        stems |= _set_stems(kind, root)
+        stems |= stems_for_set(s["id"])
     return stems
 
 
@@ -313,15 +513,18 @@ def get_predicted_instances_meta(
     if not set_id:
         return None
     try:
-        kind, root = _resolve_root(set_id)
+        kind, roots = _resolve_roots(set_id)
     except (FileNotFoundError, ValueError):
+        return None
+    root = _root_for_stem(kind, roots, stem)
+    if root is None:
         return None
 
     if kind == "numinst":
         path = _numinst_zarr(root, stem)
         if not (path / "volumes" / "pred_numinst" / ".zarray").is_file():
             return None
-        arr = zarr.open(str(path), mode="r", path=_NUMINST_KEY)
+        arr = open_cached_array(path, _NUMINST_KEY)
         # (C, Z, Y, X) → report the spatial (Z, Y, X) shape the overlay renders.
         shape = [int(s) for s in arr.shape[1:]]
         return {"shape": shape, "dtype": str(arr.dtype)}
@@ -362,7 +565,7 @@ def _numinst_argmax_labels(zarr_path: Path, max_size: int) -> tuple[np.ndarray, 
     then ``argmax`` picks the dominant count → ``{0: background, 1: single,
     2: overlap}``.
     """
-    arr = zarr.open(str(zarr_path), mode="r", path=_NUMINST_KEY)
+    arr = open_cached_array(zarr_path, _NUMINST_KEY)
     c, z, y, x = arr.shape
     original_shape = (int(z), int(y), int(x))
     factor = compute_downsample_factor(original_shape, max_size)
@@ -390,13 +593,20 @@ def predicted_instances_to_bytes(
     """Load and downsample a PatchPerPix overlay for 3D rendering."""
     if not set_id:
         raise ValueError("PatchPerPix overlay requires a prediction_set id")
-    kind, root = _resolve_root(set_id)
+    kind, roots = _resolve_roots(set_id)
+    root = _root_for_stem(kind, roots, stem)
+    if root is None:
+        raise FileNotFoundError(
+            f"No PatchPerPix overlay for {stem!r} in set {set_id!r}"
+        )
 
     if kind == "numinst":
         zarr_path = _numinst_zarr(root, stem)
         if not (zarr_path / "volumes" / "pred_numinst" / ".zarray").is_file():
             raise FileNotFoundError(f"No pred_numinst for {stem!r} in {root}")
-        labels, original_shape, factor = _numinst_argmax_labels(zarr_path, max_size)
+        labels, original_shape, factor = _numinst_argmax_labels(
+            ensure_local(zarr_path), max_size
+        )
         rgb = _encode_numinst_rgb(labels)
         return VolumeBytesResult(
             data=rgb.tobytes(),
@@ -416,6 +626,6 @@ def predicted_instances_to_bytes(
         raise FileNotFoundError(f"No vote_instances hdf for {stem!r} in {root}")
     import h5py
 
-    with h5py.File(hdf, "r") as f:
+    with h5py.File(ensure_local(hdf), "r") as f:
         volume = np.asarray(f[_VOTE_DATASET])
     return volume_array_to_bytes(volume, max_size=max_size, encoding="labels_rgb")

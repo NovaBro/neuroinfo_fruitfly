@@ -14,6 +14,7 @@
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .agg__title {
@@ -74,6 +75,7 @@
   font-size: 0.68rem;
   color: #8b919c;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .agg__legend-label {
@@ -96,14 +98,47 @@
   color: #6f7682;
 }
 
+/* Grouped sections -------------------------------------------------------- */
+
+.agg__sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.agg__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.agg__section-title {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #cdd3dd;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.agg__section-count {
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: #6f7682;
+}
+
 /* Heatmap table ----------------------------------------------------------- */
 
 .agg__table-wrap {
   overflow: auto;
   border: 1px solid #2a2f3a;
   border-radius: 4px;
-  flex: 1;
-  min-height: 0;
+  max-height: min(42vh, 28rem);
 }
 
 .agg__table {
@@ -154,9 +189,6 @@
   font-weight: 500;
   padding: 0.3rem 0.5rem;
   white-space: nowrap;
-  max-width: 22ch;
-  overflow: hidden;
-  text-overflow: ellipsis;
   font-variant-numeric: normal;
 }
 
