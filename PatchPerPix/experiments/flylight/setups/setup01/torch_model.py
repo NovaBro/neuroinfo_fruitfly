@@ -299,6 +299,8 @@ class UnetModelWrapper(torch.nn.Module):
 
     def forward(self, raw, gt_affs=None, gt_fgbg_numinst=None, gt_labels=None):
 
+        # raw may arrive as float16 (training raw_transport_fp16); no-op for float32
+        raw = raw.float()
         if len(raw.size()) == len(self.patchshape_squeezed) + 1:
             raw = torch.unsqueeze(raw, dim=1)
         model_out = self.unet(raw)
@@ -346,11 +348,12 @@ class UnetModelWrapper(torch.nn.Module):
                     gt_fg_loc = torch.nonzero(gt_fg[b], as_tuple=False)
                     if gt_fg_loc.size(dim=0) == 0:
                         continue
-                    # list if random ints
+                    # list if random ints; fixed count (with replacement) keeps
+                    # decoder input shapes constant across iterations
                     rand_loc_ids = torch.randint(
                         low=0,
                         high=gt_fg_loc.size(dim=0),
-                        size=(min(sample_cnt, gt_fg_loc.size(dim=0)),),
+                        size=(sample_cnt,),
                         dtype=torch.long,
                         device=self.device)
 
@@ -392,11 +395,12 @@ class UnetModelWrapper(torch.nn.Module):
                     gt_fg_loc = torch.nonzero(gt_fg[b], as_tuple=False)
                     if gt_fg_loc.size(dim=0) == 0:
                         continue
-                    # list if random ints
+                    # list if random ints; fixed count (with replacement) keeps
+                    # decoder input shapes constant across iterations
                     rand_loc_ids = torch.randint(
                         low=0,
                         high=gt_fg_loc.size(dim=0),
-                        size=(min(sample_cnt, gt_fg_loc.size(dim=0)),),
+                        size=(sample_cnt,),
                         dtype=torch.long,
                         device=self.device)
 

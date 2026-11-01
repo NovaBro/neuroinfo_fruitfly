@@ -23,6 +23,35 @@ from PatchPerPix.util import (
 logger = logging.getLogger(__name__)
 
 
+def _resolve_predict_input(config, sample):
+    """Resolve absolute raw input path for a predict sample ID.
+
+    Nested IDs (``{dataset}/{stem}``) use ``fisbe_root`` + split inferred
+    from ``data_folder``. Flat IDs use ``data_folder`` with optional legacy
+    completely→partly fallback.
+    """
+    fmt = config['input_format']
+    data_folder = config['data_folder']
+    sample_parent = os.path.dirname(sample)
+    if sample_parent and config.get('fisbe_root'):
+        split = os.path.basename(os.path.normpath(str(data_folder)))
+        if split not in ('train', 'val', 'test'):
+            split = 'test'
+        stem = os.path.basename(sample)
+        return os.path.join(
+            config['fisbe_root'], sample_parent, split, stem + '.' + fmt)
+
+    fn = os.path.join(data_folder, sample + '.' + fmt)
+    if not os.path.exists(fn) and config.get('add_partly_val', False):
+        alt = os.path.join(
+            data_folder.replace('completely', 'partly').replace(
+                'complete', 'partly'),
+            sample + '.' + fmt)
+        if os.path.exists(alt):
+            return alt
+    return fn
+
+
 def predict(**config):
     """Predict function used by a prediction worker process
 
@@ -136,14 +165,7 @@ def predict(**config):
 
     for sample in config['samples']:
         logger.info("Sample: %s", sample)
-        fn = os.path.join(
-            config['data_folder'],
-            sample + "." + config['input_format'])
-        if not os.path.exists(fn) and config.get("add_partly_val", False):
-            fn = os.path.join(
-                config['data_folder'].replace(
-                    "completely", "partly").replace("complete", "partly"),
-                sample + "." + config['input_format'])
+        fn = _resolve_predict_input(config, sample)
 
         # if sample in samples_partly:
         #     data_folder = config["val_data_partly"]
@@ -260,6 +282,9 @@ def predict(**config):
 def create_zarr_outputs(config, sample, shape, chunksize, keys_channels):
     # open zarr file
     fn = os.path.join(config['output_folder'], sample + '.zarr')
+    parent = os.path.dirname(fn)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
     logger.info("Creating output file: %s", fn)
     compressor = Blosc(cname='zstd', clevel=3, shuffle=Blosc.BITSHUFFLE)
     zf = zarr.open(fn, mode='w')

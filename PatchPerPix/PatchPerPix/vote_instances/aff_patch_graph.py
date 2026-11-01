@@ -44,29 +44,21 @@ def computeAndStorePatchPairs(selected_patches_list, patchshape, **kwargs):
     logger.info("sorting patches")
     selected_patches_list.sort(key=lambda p: p[0][2])
     numPatches = len(selected_patches_list)
-    pts = np.zeros((numPatches, 3), dtype=np.uint32)
-    for idx, p in enumerate(selected_patches_list):
-        pts[idx, 0] = p[0][0]
-        pts[idx, 1] = p[0][1]
-        pts[idx, 2] = p[0][2]
+    pts = np.array([p[0] for p in selected_patches_list],
+                   dtype=np.uint32).reshape(numPatches, 3)
     logger.info("creating tree")
     tree = scipy.spatial.cKDTree(pts,
                                  leafsize=4)
 
     logger.info("query tree")
-    pairs = tree.query_pairs(2*np.sum(patchshape), p=1)
+    pairs = query_pairs_array(tree, 2*np.sum(patchshape), p=1)
     logger.info("num pairs %s", len(pairs))
-    to_delete = []
 
     max_ps_dist = kwargs.get("max_total_patch_distance_in_ps_multiples", 2)
-    for idx, p in enumerate(pairs):
-        if np.any(np.abs(
-            pts[p[0]].astype(np.float32) - pts[p[1]].astype(np.float32)
-        ) > max_ps_dist * patchshape):
-            to_delete.append(p)
-
-    for dlt in to_delete:
-        pairs.remove(dlt)
+    diff = np.abs(pts[pairs[:, 0]].astype(np.float32) -
+                  pts[pairs[:, 1]].astype(np.float32))
+    pairs = pairs[~np.any(diff > max_ps_dist * np.asarray(patchshape),
+                          axis=1)]
 
     numPairs = len(pairs)
     if kwargs['includeSinglePatchCCS']:
@@ -83,23 +75,13 @@ def computeAndStorePatchPairs(selected_patches_list, patchshape, **kwargs):
     else:
         arr = np.zeros((numPairs + numPatches, 6), dtype=np.uint32)
     logger.info("num pairs %s", len(pairs))
-    for idx, p in enumerate(pairs):
-        arr[idx, 0] = pts[p[0]][0]
-        arr[idx, 1] = pts[p[0]][1]
-        arr[idx, 2] = pts[p[0]][2]
-        arr[idx, 3] = pts[p[1]][0]
-        arr[idx, 4] = pts[p[1]][1]
-        arr[idx, 5] = pts[p[1]][2]
+    arr[:numPairs, :3] = pts[pairs[:, 0]]
+    arr[:numPairs, 3:] = pts[pairs[:, 1]]
     if kwargs['includeSinglePatchCCS']:
         logger.info("num pairs (incl single patch ccs) %s",
                     len(pairs) + len(selected_patches_list))
-        for idx, p in enumerate(selected_patches_list):
-            arr[idx + numPairs, 0] = p[0][0]
-            arr[idx + numPairs, 1] = p[0][1]
-            arr[idx + numPairs, 2] = p[0][2]
-            arr[idx + numPairs, 3] = p[0][0]
-            arr[idx + numPairs, 4] = p[0][1]
-            arr[idx + numPairs, 5] = p[0][2]
+        arr[numPairs:numPairs + numPatches, :3] = pts
+        arr[numPairs:numPairs + numPatches, 3:] = pts
     logger.info("storing pairs")
     if not kwargs['save_no_intermediates']:
         np.save(os.path.join(kwargs['result_folder'],
@@ -152,7 +134,8 @@ def computePatchGraph_cuda(pred_affs, consensus_vote_array,
                 (num_pairs_block + blockshape[0] - 1) // blockshape[0], 1, 1)
             offset = np.int32(i * bs)
             with kwargs['mutex']:
-                kernel(pred_affs, consensus_vote_array, affinity_graph_mat,
+                kernel(pred_affs, cuda_arg(consensus_vote_array),
+                       affinity_graph_mat,
                        selected_patch_pairsIDs, np.uint64(num_pairs_block),
                        offset, block=blockshape, grid=gridshape)
                 logger.info("syncing")
@@ -161,7 +144,8 @@ def computePatchGraph_cuda(pred_affs, consensus_vote_array,
         # create without manually splitting in blocks
         offset = np.int32(0)
         with kwargs['mutex']:
-            kernel(pred_affs, consensus_vote_array, affinity_graph_mat,
+            kernel(pred_affs, cuda_arg(consensus_vote_array),
+                   affinity_graph_mat,
                    selected_patch_pairsIDs, np.uint64(num_pairs),
                    offset, block=blockshape, grid=gridshape)
 

@@ -96,42 +96,33 @@ def create_consensus_array_cuda(pred_affs, overlap_mask,
     nsy = int(neighshape[1])
     nsx = int(neighshape[2])
 
+    # consensus arrays are ~|neighshape| x block volume (e.g. 2 x 10 GB for
+    # 98^3 blocks) and only read by kernels, so keep them in device memory
     if kwargs.get("flip_cons_arr_axes", False):
-        outCons = alloc_zero_array((datazsize, dataysize, dataxsize,
-                                    nsz, nsy, nsx),
-                                   np.float32)
+        cons_shape = (datazsize, dataysize, dataxsize, nsz, nsy, nsx)
     else:
-        outCons = alloc_zero_array((nsz, nsy, nsx,
-                                    datazsize, dataysize, dataxsize),
-                                   np.float32)
+        cons_shape = (nsz, nsy, nsx, datazsize, dataysize, dataxsize)
+    outCons = alloc_zero_device_array(cons_shape, np.float32)
 
     logger.info("consensus array shape %s", outCons.shape)
 
     if kwargs.get("consensus_norm_aff", True):
-        if kwargs.get("flip_cons_arr_axes", False):
-            outConsCnt = alloc_zero_array((datazsize, dataysize, dataxsize,
-                                           nsz, nsy, nsx),
-                                          np.float32)
-        else:
-            outConsCnt = alloc_zero_array((nsz, nsy, nsx,
-                                           datazsize, dataysize, dataxsize),
-                                          np.float32)
+        outConsCnt = alloc_zero_device_array(cons_shape, np.float32)
 
     if kwargs.get('overlapping_inst'):
-        overlap = alloc_zero_array(overlap_mask.shape, np.bool)
-        overlap[:] = overlap_mask
+        overlap = to_device_array(overlap_mask.astype(np.bool_))
 
     kernel = kernels.get_function("fillConsensusArray_allPatches")
     with kwargs['mutex']:
         logger.info("creating consensus array %s", kwargs.get('affinities'))
         fargs = [pred_affs]
         if kwargs.get('overlapping_inst'):
-            fargs.append(overlap)
-        fargs.append(outCons)
+            fargs.append(cuda_arg(overlap))
+        fargs.append(cuda_arg(outCons))
         if kwargs.get("consensus_interleaved_cnt", True):
             assert kwargs.get("consensus_norm_aff", True), \
                 "consensus aff not normalized so no computation required"
-            fargs.append(outConsCnt)
+            fargs.append(cuda_arg(outConsCnt))
         kernel(*fargs,
                block=get_block_shape(datazsize, dataysize, dataxsize),
                grid=get_grid_shape(datazsize, dataysize, dataxsize))
@@ -140,8 +131,8 @@ def create_consensus_array_cuda(pred_affs, overlap_mask,
 
     if logger.isEnabledFor(logging.DEBUG):
         logger.info("consensus_vote_array sum/min/max %s %s %s",
-                    "too slow", np.min(outCons),
-                    np.max(outCons))
+                    "too slow", np.min(to_host(outCons)),
+                    np.max(to_host(outCons)))
 
     if not kwargs.get("consensus_interleaved_cnt", True) and \
        kwargs.get("consensus_norm_aff", True):
@@ -155,8 +146,8 @@ def create_consensus_array_cuda(pred_affs, overlap_mask,
             logger.info("creating consensus array cnt %s", kwargs.get('affinities'))
             fargs = [pred_affs]
             if kwargs.get('overlapping_inst'):
-                fargs.append(overlap)
-            fargs.append(outConsCnt)
+                fargs.append(cuda_arg(overlap))
+            fargs.append(cuda_arg(outConsCnt))
             kernel(*fargs,
                    block=get_block_shape(datazsize, dataysize, dataxsize),
                    grid=get_grid_shape(datazsize, dataysize, dataxsize))
@@ -165,8 +156,8 @@ def create_consensus_array_cuda(pred_affs, overlap_mask,
 
         if logger.isEnabledFor(logging.DEBUG):
             logger.info("consensus_vote_array cnt sum/min/max %s %s %s",
-                        "too slow", np.min(outConsCnt),
-                        np.max(outConsCnt))
+                        "too slow", np.min(to_host(outConsCnt)),
+                        np.max(to_host(outConsCnt)))
 
     if kwargs.get("consensus_norm_aff", True):
         if kwargs.get("flip_cons_arr_axes", False):
@@ -181,27 +172,28 @@ def create_consensus_array_cuda(pred_affs, overlap_mask,
         kernel = kernels.get_function("normConsensusArray")
         with kwargs['mutex']:
             logger.info("normalizing consensus array %s", kwargs.get('affinities'))
-            kernel(pred_affs, outCons, outConsCnt,
+            kernel(pred_affs, cuda_arg(outCons), cuda_arg(outConsCnt),
                    block=get_block_shape(datazsize, dataysize, dataxsize),
                    grid=get_grid_shape(datazsize, dataysize, dataxsize))
             sync(kwargs['context'])
             logger.info("done")
 
-        logger.info("consensus_vote_array after norm sum/min/max %s %s %s",
-                    "too slow", np.min(outCons),
-                    np.max(outCons))
-        outConsCnt.base.free()
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.info("consensus_vote_array after norm sum/min/max %s %s %s",
+                        "too slow", np.min(to_host(outCons)),
+                        np.max(to_host(outCons)))
+        free_array(outConsCnt)
     else:
         logger.info("consensus affs not normalized")
 
     if kwargs.get('overlapping_inst'):
-        overlap.base.free()
+        free_array(overlap)
 
     if kwargs.get("save_consensus", False):
         fn = os.path.splitext(os.path.basename(kwargs['affinities']))[0]
         logger.info("saving consensus %s", fn)
         np.save(os.path.join(kwargs['result_folder'],
-                             fn + "_consensus.npy"), outCons)
+                             fn + "_consensus.npy"), to_host(outCons))
 
     return outCons
 

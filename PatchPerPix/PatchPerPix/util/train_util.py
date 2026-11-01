@@ -435,89 +435,37 @@ def seg_to_affgraph_2d_multi_torch_code_batch(seg, nhood, device, ps, psH, sampl
     return aff
 
 
+def _seg_to_aff_patches_vectorized(seg, nhood, psH, samples_loc):
+    # Only the centre voxel and the nhood voxels of each patch are needed, so
+    # gather those (N, 1+E, C) in one indexing op instead of copying whole
+    # patches in a Python loop (which synced the host once per sample).
+    # samples_loc: (N, 1+D) = batch index + patch corner; nhood: (E, D)
+    samples_loc = samples_loc.long()
+    nhood = nhood.long()
+    nD = nhood.shape[1]
+    center_off = torch.full((1, nD), psH, dtype=torch.long, device=nhood.device)
+    offs = torch.cat([center_off, nhood], dim=0)  # (1+E, D)
+    coords = samples_loc[:, None, 1:] + offs[None]  # (N, 1+E, D)
+    idx = (samples_loc[:, 0, None],) + tuple(coords[..., d] for d in range(nD))
+    # channels last so the advanced index yields (N, 1+E, C)
+    v = seg.movedim(1, -1)[idx]
+    center = v[:, :1]  # (N, 1, C)
+    off = v[:, 1:]  # (N, E, C)
+    same = ((center == off) & (center != 0)).any(dim=-1)  # (N, E)
+    fg = v.any(dim=-1)  # (N, 1+E)
+    return (same & fg[:, :1] & fg[:, 1:]).to(torch.float32)
+
+
 def seg_to_affgraph_3d_multi_torch_code(seg, nhood, device, ps, psH, samples_loc):
-    # based on:
-    # https://github.com/TuragaLab/malis/blob/572ef0420107eee3c721bdafb58775a8a0fc467a/malis/malis.pyx
-    # https://github.com/funkelab/gunpowder/blob/f202a6062dea65a4367a29816e8a2cc87d28b4b6/gunpowder/nodes/add_affinities.py
-    # constructs an affinity graph from a segmentation
-    # assume affinity graph is represented as:
-    # shape = (e, z, y, x)
-    # nhood.shape = (edges, 3)
-
-    shape = seg.shape[2:]
-    nEdge = nhood.shape[0]
-
-    aff = torch.zeros(
-        (len(samples_loc), nEdge),
-        dtype=torch.float32, device=device)
-
-    patches = torch.zeros(
-        (len(samples_loc), seg.shape[1],) + (ps, ps, ps),
-        dtype=seg.dtype, device=device)
-    for idx, sample_loc in enumerate(samples_loc):
-        patches[idx] = seg[
-            sample_loc[0], :,
-            sample_loc[1]:sample_loc[1]+ps,
-            sample_loc[2]:sample_loc[2]+ps,
-            sample_loc[3]:sample_loc[3]+ps]
-
-    fg_seg = torch.any(patches, dim=1).to(torch.int32)
-    for e in range(nEdge):
-
-        center = patches[:, :, psH, psH, psH]
-        offset = patches[:, :, nhood[e, 0], nhood[e, 1], nhood[e, 2]]
-        # first == second pixel?
-        t2 = fg_seg[:, psH, psH, psH]
-        t3 = fg_seg[:, nhood[e, 0], nhood[e, 1], nhood[e, 2]]
-        t1 = (center == offset).to(torch.int32)
-        t1[center == 0] = 0
-
-        partial_same = torch.any(t1, dim=1)
-        aff[:, e] = partial_same * t2 * t3
-
-    return aff
+    # constructs an affinity graph for the sampled patches of a segmentation
+    # seg: (B, C, z, y, x); nhood: (edges, 3); samples_loc: (N, 4)
+    # returns (N, edges)
+    return _seg_to_aff_patches_vectorized(seg, nhood, psH, samples_loc)
 
 
 def seg_to_affgraph_2d_multi_torch_code(seg, nhood, device, ps, psH, samples_loc):
-    # based on:
-    # https://github.com/TuragaLab/malis/blob/572ef0420107eee3c721bdafb58775a8a0fc467a/malis/malis.pyx
-    # https://github.com/funkelab/gunpowder/blob/f202a6062dea65a4367a29816e8a2cc87d28b4b6/gunpowder/nodes/add_affinities.py
-    # constructs an affinity graph from a segmentation
-    # assume affinity graph is represented as:
-    # shape = (e, y, x)
-    # nhood.shape = (edges, 2)
-
-    shape = seg.shape[2:]
-    nEdge = nhood.shape[0]
-
-    aff = torch.zeros(
-        (len(samples_loc), nEdge),
-        dtype=torch.float32, device=device)
-
-    patches = torch.zeros(
-        (len(samples_loc), seg.shape[1],) + (ps, ps),
-        dtype=seg.dtype, device=device)
-    for idx, sample_loc in enumerate(samples_loc):
-        patches[idx] = seg[
-            sample_loc[0], :,
-            sample_loc[1]:sample_loc[1]+ps,
-            sample_loc[2]:sample_loc[2]+ps]
-
-    fg_seg = torch.any(patches, dim=1).to(torch.int32)
-    for e in range(nEdge):
-
-        center = patches[:, :, psH, psH]
-        offset = patches[:, :, nhood[e, 0], nhood[e, 1]]
-        # first == second pixel?
-        t2 = fg_seg[:, psH, psH]
-        t3 = fg_seg[:, nhood[e, 0], nhood[e, 1]]
-        t1 = (center == offset).to(torch.int32)
-        t1[center == 0] = 0
-
-        partial_same = torch.any(t1, dim=1)
-        aff[:, e] = partial_same * t2 * t3
-
-    return aff
+    # seg: (B, C, y, x); nhood: (edges, 2); samples_loc: (N, 3)
+    return _seg_to_aff_patches_vectorized(seg, nhood, psH, samples_loc)
 
 
 def seg_to_affgraph_3d_multi_torch(seg, nhood, device):

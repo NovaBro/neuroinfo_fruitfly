@@ -20,6 +20,8 @@ import neurolight.gunpowder as nl
 
 from . import torch_model
 from . import torch_loss
+from .random_hue import RandomHue
+from .threaded_prefetch import ThreadedPrefetch
 from PatchPerPix.util import (
     get_latest_checkpoint,
     normalize)
@@ -96,6 +98,9 @@ def train_until(**config):
     logger.info("GPU: %s",
                 torch.cuda.get_device_name(torch.cuda.current_device()))
     torch.backends.cudnn.benchmark = True
+    # H100/H200 tensor cores: TF32 for any fp32 matmul/conv left outside autocast
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
 
     model = torch_model.UnetModelWrapper(config, device, trained_until)
     model.init_layers()
@@ -296,7 +301,7 @@ def train_until(**config):
             else gt_max_num_inst*2
         ) if overlapping_inst else gp.NoOp()) +
 
-        nl.RandomHue(
+        RandomHue(
             raw, config['hue_max_change'],
             config['probability_hue']
         ) +
@@ -332,12 +337,20 @@ def train_until(**config):
             dtype=np.float32)
          if add_affinities in ["cpu", "torch"] else gp.NoOp()) +
 
+        # halve the bytes pickled through PreCache's mp.Queue; model casts back to float32
+        (gp.Cast(raw, dtype=np.float16)
+         if config.get("raw_transport_fp16", False) else gp.NoOp()) +
+
         (gp.PreCache(
             cache_size=config["cache_size"],
             num_workers=config["num_workers"])
          if config["num_workers"] > 1 else gp.NoOp())
 
-        + gp.Stack(config["batch_size"])
+        + gp.Stack(config["batch_size"]) +
+
+        # unpickle + stack the next batch while the GPU trains on this one
+        (ThreadedPrefetch(num_batches=config.get("prefetch_batches", 2))
+         if config.get("prefetch_batches", 2) > 0 else gp.NoOp())
     )
 
     # set up optional validation path without augmentations
@@ -557,6 +570,10 @@ def train_until(**config):
     )
 
     # finalize pipeline and start training
+    # abort after this many consecutive non-finite losses (0 disables)
+    nan_patience = config.get("nan_patience", 10)
+    consecutive_nonfinite = 0
+
     with gp.build(pipeline):
 
         logger.info("Starting training...")
@@ -569,15 +586,32 @@ def train_until(**config):
                     i % config["val_log_step"] == 1):
                     # print("val", val_request)
                     with torch.no_grad():
-                        pipeline.request_batch(val_request)
+                        batch = pipeline.request_batch(val_request)
                 else:
                     # print("train", request)
-                    pipeline.request_batch(request)
+                    batch = pipeline.request_batch(request)
                 time_of_iteration = time.time() - start
 
                 logger.info(
                     "Batch: iteration=%d, time=%f",
                     i+1, time_of_iteration)
+
+                loss = getattr(batch, "loss", None)
+                if nan_patience and loss is not None:
+                    if np.isfinite(loss):
+                        consecutive_nonfinite = 0
+                    else:
+                        consecutive_nonfinite += 1
+                        logger.warning(
+                            "non-finite loss %s at iteration %d (%d/%d)",
+                            loss, i+1, consecutive_nonfinite, nan_patience)
+                        if consecutive_nonfinite >= nan_patience:
+                            raise RuntimeError(
+                                "loss non-finite for %d consecutive "
+                                "iterations (last: iteration %d); aborting "
+                                "training. Check lr, use_auto_mixed_precision "
+                                "and input data." % (
+                                    consecutive_nonfinite, i+1))
 
 
 def get_sources(config, arrays, voxel_size, data_files, val=False, graphs=None):
@@ -615,32 +649,50 @@ def get_sources(config, arrays, voxel_size, data_files, val=False, graphs=None):
         if os.path.exists(csv_fn):
             overlap_csvs[fn] = csv_fn
         if sample_fg_points:
-            fg_csvs[fn] = os.path.join(fg_csv_folder, basefn) 
+            # fg CSVs live in <fg_csv_folder>/<dataset>/; zarr path is
+            # <root>/<dataset>/<split>/<sample>.zarr
+            dataset = os.path.basename(os.path.dirname(os.path.dirname(fn)))
+            fg_csv = os.path.join(fg_csv_folder, dataset, basefn)
+            if not os.path.exists(fg_csv):
+                raise FileNotFoundError(
+                    f"missing fg points CSV {fg_csv} for {fn}; run "
+                    "sbatch/ppp/prep/prepare_fg_points_sbatch.sh")
+            fg_csvs[fn] = fg_csv
 
     if config.get("add_partly"):
-        data_files = data_files * config.get("oversample_complete", 1)
-        dt = config["train_data"] if not val else config["val_data"]
-        dt = dt.replace("completely", "partly").replace("complete", "partly")
-        overlap_folder_partly = overlap_folder.replace(
-            "completely", "partly").replace("complete", "partly")
-        if sample_fg_points:
-            fg_csv_folder_partly = fg_csv_folder.replace(
+        # List mode (train_datasets/val_datasets): data_files already includes
+        # every listed folder. Oversample non-partly paths, keep partly once.
+        list_mode = bool(
+            config.get("train_datasets") or config.get("val_datasets"))
+        if list_mode:
+            complete_files = [f for f in data_files if "partly" not in f]
+            partly_files = [f for f in data_files if "partly" in f]
+            data_files = (
+                complete_files * config.get("oversample_complete", 1)
+                + partly_files)
+        else:
+            data_files = data_files * config.get("oversample_complete", 1)
+            dt = config["train_data"] if not val else config["val_data"]
+            dt = dt.replace("completely", "partly").replace("complete", "partly")
+            overlap_folder_partly = overlap_folder.replace(
                 "completely", "partly").replace("complete", "partly")
-        # data_files = data_files[:1]
-        for fn in os.listdir(dt):
-            if ".zarr" not in fn:
-                continue
-            csv_fn = os.path.join(
-                overlap_folder_partly, fn.replace(".zarr", ".csv"))
-            fn = os.path.join(dt, fn)
-            data_files.append(fn)
-            if os.path.exists(csv_fn):
-                overlap_csvs[fn] = csv_fn
             if sample_fg_points:
-                fg_csvs[fn] = os.path.join(
-                        fg_csv_folder_partly,
-                        os.path.basename(fn).replace(".zarr", ".csv")
-                        )
+                fg_csv_folder_partly = os.path.join(fg_csv_folder, "partly")
+            # data_files = data_files[:1]
+            for fn in os.listdir(dt):
+                if ".zarr" not in fn:
+                    continue
+                csv_fn = os.path.join(
+                    overlap_folder_partly, fn.replace(".zarr", ".csv"))
+                fn = os.path.join(dt, fn)
+                data_files.append(fn)
+                if os.path.exists(csv_fn):
+                    overlap_csvs[fn] = csv_fn
+                if sample_fg_points:
+                    fg_csvs[fn] = os.path.join(
+                            fg_csv_folder_partly,
+                            os.path.basename(fn).replace(".zarr", ".csv")
+                            )
 
     sources = []
     sources_overlap = []

@@ -132,12 +132,32 @@ def _resolve_callable(module_name, qualname):
     return obj
 
 
-def _fork_worker(module_name, qualname, args, kwargs):
+def _parent_log_spec():
+    root = logging.getLogger()
+    files = [h.baseFilename for h in root.handlers
+             if isinstance(h, logging.FileHandler)]
+    return root.level, files
+
+
+def _configure_child_logging(log_spec):
+    # spawn children start with an unconfigured root logger
+    if log_spec is None:
+        return
+    level, files = log_spec
+    handlers = [logging.FileHandler(fn, mode='a') for fn in files]
+    handlers.append(logging.StreamHandler(sys.stdout))
+    logging.basicConfig(level=level, handlers=handlers, force=True)
+
+
+def _fork_worker(module_name, qualname, args, kwargs, log_spec=None):
+    _configure_child_logging(log_spec)
     func = _resolve_callable(module_name, qualname)
     func(*args, **kwargs)
 
 
-def _fork_return_worker(module_name, qualname, args, kwargs, result_queue):
+def _fork_return_worker(module_name, qualname, args, kwargs, result_queue,
+                        log_spec=None):
+    _configure_child_logging(log_spec)
     func = _resolve_callable(module_name, qualname)
     func(*(args + (result_queue,)), **kwargs)
 
@@ -152,7 +172,8 @@ def fork(func):
             ctx = _mp_spawn_context()
             p = ctx.Process(
                 target=_fork_worker,
-                args=(module_name, qualname, args, kwargs),
+                args=(module_name, qualname, args, kwargs,
+                      _parent_log_spec()),
             )
             p.start()
             p.join()
@@ -179,7 +200,8 @@ def fork_return(func):
             q = ctx.Queue()
             p = ctx.Process(
                 target=_fork_return_worker,
-                args=(module_name, qualname, args, kwargs, q),
+                args=(module_name, qualname, args, kwargs, q,
+                      _parent_log_spec()),
             )
             p.start()
             results = None
@@ -267,11 +289,22 @@ def get_arguments():
                         choices=['hdf', 'zarr', 'n5', 'tif'],
                         help='File format of dataset.')
     parser.add_argument('--train-data', dest='train_data', default=None,
-                        help='Train dataset to use.')
+                        help='Train dataset path override (train only).')
     parser.add_argument('--val-data', dest='val_data', default=None,
-                        help='Validation dataset to use.')
+                        help='Rejected for predict/label/evaluate (list mode).')
     parser.add_argument('--test-data', dest='test_data', default=None,
-                        help='Test dataset to use.')
+                        help='Rejected for predict/label/evaluate (list mode).')
+    parser.add_argument(
+        '--fisbe-root', dest='fisbe_root', default=None,
+        help=(
+            'Override data/fisbe_root (keeps list mode). Used by SLURM '
+            'STAGE_DATA to point at $SLURM_TMPDIR/ppp_data.'
+        ))
+    parser.add_argument(
+        '--split', dest='split', default=None, choices=['val', 'test'],
+        help=('Inference split for list-mode jobs. Retargets data/test_data to '
+              '{fisbe_root}/{val|test_datasets[0]}/{split} without disabling '
+              'list mode.'))
 
     # parameters for vote instances
     parser.add_argument('--vote-instances-cuda', dest='vote_instances_cuda',
@@ -294,8 +327,9 @@ def get_arguments():
                         help=('terminate after patch graph, to split into GPU and CPU parts'))
     parser.add_argument("--graph_to_inst", action="store_true",
                         help=('only do patch graph to inst part of vote_instances'))
-    parser.add_argument('--sample', default=None,
-                        help='Sample to process.')
+    parser.add_argument(
+        '--sample', default=None,
+        help='Sample to process as {dataset}/{stem} (flat stems rejected).')
     parser.add_argument("--skip_predict", action="store_true",
                         help=('skip prediction'
                               'e.g. during validate_checkpoints.'))
@@ -384,37 +418,305 @@ def create_folders(args, filebase):
 
 
 def update_config(args, config):
+    if getattr(args, 'fisbe_root', None) is not None:
+        config['data']['fisbe_root'] = args.fisbe_root
+
+    # Infer/eval must stay in list mode; CLI val/test paths disable it.
+    _infer_do = {
+        'predict', 'decode', 'label', 'evaluate', 'infer', 'cleanup',
+        'postprocess',
+    }
+    if args.do and (set(args.do) & _infer_do):
+        if args.test_data is not None or args.val_data is not None:
+            raise ValueError(
+                "--test-data/--val-data disable list mode; use --split "
+                "with data/fisbe_root + data/*_datasets for infer/eval")
+
     if args.train_data is not None:
         config['data']['train_data'] = args.train_data
+        config['data']['_cli_train_data'] = True
 
     if args.val_data is not None:
         config['data']['val_data'] = args.val_data
+        config['data']['_cli_val_data'] = True
 
     if args.test_data is not None:
         config['data']['test_data'] = args.test_data
+        config['data']['_cli_test_data'] = True
 
     if args.input_format is not None:
         config['data']['input_format'] = args.input_format
     if 'input_format' not in config['data']:
         raise ValueError("Please provide data/input_format in cl or config")
 
+    ensure_legacy_data_paths(config)
+    apply_infer_split(args, config)
+
     if args.validate_on_train:
         config['data']['validate_on_train'] = True
         config['data']['val_data'] = config['data']['train_data']
+        config['data']['_cli_val_data'] = True
     else:
         config['data']['validate_on_train'] = False
 
     if args.test_on_train:
         config['data']['test_on_train'] = True
         config['data']['test_data'] = config['data']['train_data']
+        config['data']['_cli_test_data'] = True
     else:
         config['data']['test_on_train'] = False
+
+    if args.add_partly_val:
+        config['data']['add_partly_val'] = True
 
     if args.vote_instances_cuda:
         config['vote_instances']['cuda'] = True
 
     if args.vote_instances_blockwise:
         config['vote_instances']['blockwise'] = True
+
+
+def _split_key(split):
+    """Map train/val/test → config key prefix."""
+    if split not in ('train', 'val', 'test'):
+        raise ValueError("split must be train, val, or test; got %r" % split)
+    return split
+
+
+def uses_dataset_lists(config, split=None):
+    """True when fisbe_root + train_datasets drive path resolution.
+
+    If ``split`` is given, also False when that split was overridden via CLI
+    (``--train-data`` / ``--val-data`` / ``--test-data``).
+    """
+    data = config['data'] if 'data' in config else config
+    if not data.get('train_datasets'):
+        return False
+    if not data.get('fisbe_root'):
+        return False
+    if split is not None:
+        if data.get('_cli_%s_data' % _split_key(split)):
+            return False
+    return True
+
+
+def dataset_lists(config, split):
+    """Return dataset folder names for a split, or None in legacy path mode."""
+    data = config['data'] if 'data' in config else config
+    if not uses_dataset_lists(config, split):
+        return None
+    key = '%s_datasets' % _split_key(split)
+    names = data.get(key)
+    if names:
+        return list(names)
+    # val/test default to train_datasets
+    return list(data['train_datasets'])
+
+
+def resolve_split_dirs(config, split):
+    """Return [(dataset_name, abs_dir), ...] for a train/val/test split."""
+    data = config['data'] if 'data' in config else config
+    names = dataset_lists(config, split)
+    if names is None:
+        path_key = '%s_data' % _split_key(split)
+        path = data.get(path_key)
+        if not path:
+            return []
+        # Infer dataset name from parent of .../<dataset>/<split>
+        dataset = os.path.basename(os.path.dirname(os.path.normpath(path)))
+        return [(dataset, path)]
+    fisbe_root = data['fisbe_root']
+    return [
+        (name, os.path.join(fisbe_root, name, split))
+        for name in names
+    ]
+
+
+def missing_dataset_dir(config, split, dataset, abs_dir):
+    """FileNotFoundError for a listed dataset whose split dir does not exist."""
+    data = config['data'] if 'data' in config else config
+    key = 'data/%s_datasets' % _split_key(split)
+    if split != 'train':
+        key += ' (defaults to train_datasets)'
+    return FileNotFoundError(
+        "dataset %r is listed for split %r via %s but %s does not exist "
+        "(fisbe_root=%s). With STAGE_DATA=1 check that ppp_job.sh staged it "
+        "(DATASETS / fisbe/%s/%s_ppp.tar)." % (
+            dataset, split, key, abs_dir, data.get('fisbe_root'),
+            dataset, split))
+
+
+def list_dataset_samples(config, split):
+    """Sample IDs for a split.
+
+    List mode: ``{dataset}/{stem}``. Legacy: flat ``stem`` from the single
+    ``*_data`` directory (and optional ``add_partly_val`` sibling).
+
+    When ``split == 'test'`` and ``data/max_test_samples`` is set, truncate to
+    that many (sorted order). Does not apply ``max_val_samples`` (train-time
+    val logging only).
+    """
+    data = config['data'] if 'data' in config else config
+    fmt = data['input_format']
+    if uses_dataset_lists(config, split):
+        samples = []
+        for dataset, abs_dir in resolve_split_dirs(config, split):
+            if not os.path.isdir(abs_dir):
+                raise missing_dataset_dir(config, split, dataset, abs_dir)
+            for fn in sorted(fnmatch.filter(os.listdir(abs_dir), '*.' + fmt)):
+                stem = os.path.splitext(fn)[0]
+                samples.append(os.path.join(dataset, stem))
+    else:
+        path_key = '%s_data' % _split_key(split)
+        path = data[path_key]
+        samples = get_list_samples(config, path, fmt)
+        if data.get('add_partly_val', False):
+            partly = path.replace('completely', 'partly').replace(
+                'complete', 'partly')
+            if os.path.isdir(partly) and partly != path:
+                samples = list(samples) + get_list_samples(
+                    config, partly, fmt)
+
+    if _split_key(split) == 'test':
+        max_samples = data.get('max_test_samples')
+        if max_samples is not None:
+            logger.info(
+                "limiting test samples to %s of %s",
+                max_samples,
+                len(samples),
+            )
+            samples = samples[:max_samples]
+    return samples
+
+
+def sample_input_path(config, sample_id, split):
+    """Absolute input zarr/hdf path for a sample ID and split."""
+    data = config['data'] if 'data' in config else config
+    fmt = data['input_format']
+    if uses_dataset_lists(config, split) and (
+            os.path.dirname(sample_id) or '/' in sample_id):
+        dataset = os.path.dirname(sample_id)
+        stem = os.path.basename(sample_id)
+        return os.path.join(
+            data['fisbe_root'], dataset, split, stem + '.' + fmt)
+
+    path_key = '%s_data' % _split_key(split)
+    base = data[path_key]
+    fn = os.path.join(base, sample_id + '.' + fmt)
+    if not os.path.exists(fn) and data.get('add_partly_val', False):
+        alt = os.path.join(
+            base.replace('completely', 'partly').replace('complete', 'partly'),
+            sample_id + '.' + fmt)
+        if os.path.exists(alt):
+            return alt
+    return fn
+
+
+def infer_split_from_data_path(data_path):
+    """Infer train/val/test from the basename of a data directory."""
+    if not data_path:
+        return 'test'
+    base = os.path.basename(os.path.normpath(str(data_path)))
+    if base in ('train', 'val', 'test'):
+        return base
+    return 'test'
+
+
+def ensure_legacy_data_paths(config):
+    """When train_datasets is set, fill train/val/test_data and partly flags."""
+    data = config['data']
+    if not data.get('train_datasets'):
+        return
+    fisbe_root = data.get('fisbe_root')
+    if not fisbe_root:
+        raise ValueError(
+            "data/fisbe_root is required when data/train_datasets is set")
+
+    for split in ('train', 'val', 'test'):
+        if data.get('_cli_%s_data' % split):
+            continue
+        names = data.get('%s_datasets' % split) or data['train_datasets']
+        data['%s_data' % split] = os.path.join(
+            fisbe_root, names[0], split)
+
+    train_names = list(data['train_datasets'])
+    val_names = list(data.get('val_datasets') or train_names)
+    test_names = list(data.get('test_datasets') or train_names)
+
+    # List mode with a "partly*" folder enables the same mix/mask flags as
+    # the legacy add_partly / add_partly_val toggles.
+    if any('partly' in n for n in train_names):
+        data['add_partly'] = True
+    if any('partly' in n for n in val_names + test_names):
+        data['add_partly_val'] = True
+
+
+# Dataset folder names under fisbe/ and under processed|instanced|evaluated.
+KNOWN_DATASETS = frozenset({
+    "completely", "partly", "synth_vh", "synth_vh_u8", "himanshu",
+    "1k_v1", "1k_v1_u8",
+})
+
+
+def require_namespaced_sample(sample):
+    """Require ``{dataset}/{stem}``; raise ValueError on flat or empty parts."""
+    if sample is None:
+        return
+    dataset = os.path.dirname(sample)
+    stem = os.path.basename(sample)
+    if not dataset or not stem or dataset == '.' or '/' not in sample:
+        raise ValueError(
+            "--sample must be '{dataset}/{stem}' (got %r); flat stems are "
+            "not supported" % sample)
+
+
+def filter_by_sample_arg(samples, sample_arg):
+    """Keep exact ``{dataset}/{stem}`` match; reject substring / flat filters."""
+    if sample_arg is None:
+        return samples
+    require_namespaced_sample(sample_arg)
+    matched = [s for s in samples if s == sample_arg]
+    if not matched:
+        raise ValueError(
+            "sample %r not in discovered list (%d samples)"
+            % (sample_arg, len(samples)))
+    return matched
+
+
+def require_list_mode(config, split, task):
+    """Infer/eval must use fisbe_root + train_datasets (no CLI path override)."""
+    if uses_dataset_lists(config, split):
+        return
+    raise RuntimeError(
+        "%s requires list mode (data/fisbe_root + data/train_datasets). "
+        "Do not pass --test-data/--val-data/--train-data that disables it "
+        "for this split (split=%r)." % (task, split))
+
+
+def apply_infer_split(args, config):
+    """Retarget data/test_data for --split without disabling list mode.
+
+    When ``--test-data`` was passed (``_cli_test_data``), leave paths alone.
+    Otherwise, with list mode (``train_datasets`` + ``fisbe_root``), point
+    ``test_data`` at ``{fisbe_root}/{val|test_datasets[0]}/{split}`` so
+    sample discovery and ``select_inference_output_folder`` use that split.
+    """
+    split = getattr(args, 'split', None)
+    if not split:
+        return
+    data = config['data']
+    if data.get('_cli_test_data'):
+        logger.info(
+            "--split %s ignored because --test-data was set", split)
+        return
+    if not data.get('train_datasets') or not data.get('fisbe_root'):
+        logger.warning(
+            "--split %s requires data/train_datasets and data/fisbe_root; "
+            "leaving test_data unchanged", split)
+        return
+    key = 'val_datasets' if split == 'val' else 'test_datasets'
+    names = list(data.get(key) or data['train_datasets'])
+    data['test_data'] = os.path.join(data['fisbe_root'], names[0], split)
 
 
 def setDebugValuesForConfig(config):
@@ -507,26 +809,39 @@ def train(args, config, train_folder):
 
 
 def get_list_train_files(config, val=False):
-    if val:
-        data = config['data']['val_data']
+    split = 'val' if val else 'train'
+    fmt = config['data']['input_format']
+    files = []
+
+    if uses_dataset_lists(config, split):
+        for dataset, data in resolve_split_dirs(config, split):
+            if not os.path.isdir(data):
+                raise missing_dataset_dir(config, split, dataset, data)
+            if 'folds' in config['training']:
+                files.extend(glob(os.path.join(
+                    data + "_folds" + config['training']['folds'],
+                    "*." + fmt)))
+            elif config['data'].get('sub_folders', False):
+                files.extend(glob(os.path.join(data, "*", "*." + fmt)))
+            else:
+                files.extend(glob(os.path.join(data, "*." + fmt)))
     else:
-        data = config['data']['train_data']
-    if os.path.isfile(data):
-        files = [data]
-    elif os.path.isdir(data):
-        if 'folds' in config['training']:
-            files = glob(os.path.join(
-                data + "_folds" + config['training']['folds'],
-                "*." + config['data']['input_format']))
-        elif config['data'].get('sub_folders', False):
-            files = glob(os.path.join(
-                data, "*", "*." + config['data']['input_format']))
+        data = config['data']['val_data' if val else 'train_data']
+        if os.path.isfile(data):
+            files = [data]
+        elif os.path.isdir(data):
+            if 'folds' in config['training']:
+                files = glob(os.path.join(
+                    data + "_folds" + config['training']['folds'],
+                    "*." + fmt))
+            elif config['data'].get('sub_folders', False):
+                files = glob(os.path.join(data, "*", "*." + fmt))
+            else:
+                files = glob(os.path.join(data, "*." + fmt))
         else:
-            files = glob(os.path.join(data,
-                                      "*." + config['data']['input_format']))
-    else:
-        raise ValueError(
-            "please provide file or directory for data/train_data", data)
+            raise ValueError(
+                "please provide file or directory for data/train_data", data)
+
     files = sorted(files)
     if val:
         max_samples = config['data'].get('max_val_samples')
@@ -543,9 +858,60 @@ def get_list_train_files(config, val=False):
     return files
 
 
-def get_list_samples(config, data, file_format, filter=None):
+def _list_dir_samples(data, file_format, allow_flat=True):
+    """List sample IDs under ``data``.
+
+    Prefer nested ``{dataset}/{stem}`` when a known dataset subdir exists.
+    Flat ``*.fmt`` siblings next to those dirs are an error (namespaced layout).
+    """
+    entries = os.listdir(data)
+    nested = []
+    for d in entries:
+        if d not in KNOWN_DATASETS:
+            continue
+        sub = os.path.join(data, d)
+        if not os.path.isdir(sub):
+            continue
+        for fn in fnmatch.filter(os.listdir(sub), '*.' + file_format):
+            nested.append(os.path.join(d, os.path.splitext(fn)[0]))
+    flat = [
+        os.path.splitext(s)[0]
+        for s in fnmatch.filter(entries, '*.' + file_format)
+    ]
+    if nested:
+        if flat:
+            raise RuntimeError(
+                "Flat %s files coexist with dataset dirs under %s "
+                "(e.g. %s). Purge flat outputs; namespaced layout only."
+                % (file_format, data, ', '.join(flat[:5])))
+        return nested
+    if flat:
+        if not allow_flat:
+            raise RuntimeError(
+                "Found only flat %s samples under %s; expected "
+                "{dataset}/{stem} under known dataset dirs %s"
+                % (file_format, data, sorted(KNOWN_DATASETS)))
+        return flat
+    # Unknown nested dirs (legacy sub_folders) when nothing else matched.
+    samples = []
+    for d in entries:
+        sub = os.path.join(data, d)
+        if not os.path.isdir(sub) or d in KNOWN_DATASETS:
+            continue
+        for fn in fnmatch.filter(os.listdir(sub), '*.' + file_format):
+            samples.append(os.path.join(d, os.path.splitext(fn)[0]))
+    return samples
+
+
+def get_list_samples(config, data, file_format, filter=None,
+                     require_namespaced=False):
+    """Discover sample IDs under ``data``.
+
+    When ``require_namespaced`` is True (list-mode output folders), only
+    ``{dataset}/{stem}`` under known dataset dirs is accepted; flat files error.
+    """
     logger.info("reading data from %s", data)
-    # read data
+    allow_flat = not require_namespaced
     if os.path.isfile(data):
         if file_format == ".hdf" or file_format == "hdf":
             with h5py.File(data, 'r') as f:
@@ -553,18 +919,12 @@ def get_list_samples(config, data, file_format, filter=None):
         else:
             NotImplementedError("Add reader for %s format",
                                 os.path.splitext(data)[1])
+            samples = []
     elif data.endswith('.zarr'):
         samples = [os.path.basename(data).split(".")[0]]
     elif os.path.isdir(data):
-        samples = fnmatch.filter(os.listdir(data),
-                                 '*.' + file_format)
-        samples = [os.path.splitext(s)[0] for s in samples]
-        if not samples:
-            for d in os.listdir(data):
-                tmp = fnmatch.filter(os.listdir(os.path.join(data, d)),
-                                     '*.' + file_format)
-                tmp = [os.path.join(d, os.path.splitext(s)[0]) for s in tmp]
-                samples += tmp
+        samples = _list_dir_samples(
+            data, file_format, allow_flat=allow_flat)
     else:
         logger.info("%s %s %s", data, file_format, filter)
         raise NotImplementedError("Data must be file or directory")
@@ -579,17 +939,18 @@ def get_list_samples(config, data, file_format, filter=None):
             else:
                 NotImplementedError("Add reader for %s format",
                                     os.path.splitext(data)[1])
+                filter_list = []
         elif filter.endswith('.zarr'):
             filter_list = [os.path.basename(filter).split(".")[0]]
         elif os.path.isdir(filter):
-            filter_list = fnmatch.filter(os.listdir(filter), '*')
-            filter_list = [os.path.splitext(s)[0] for s in filter_list]
+            filter_list = _list_dir_samples(
+                filter, file_format, allow_flat=True)
+            # Also allow bare stem names in a single-dataset FISBe folder.
             if not filter_list:
-                for d in os.listdir(filter):
-                    tmp = fnmatch.filter(os.listdir(os.path.join(filter, d)),
-                                         '*.' + file_format)
-                    tmp = [os.path.join(d, os.path.splitext(s)[0]) for s in tmp]
-                    filter_list += tmp
+                filter_list = [
+                    os.path.splitext(s)[0]
+                    for s in fnmatch.filter(os.listdir(filter), '*')
+                ]
         else:
             logger.info(
                 "%s %s %s %s %s %s %s", data, file_format, filter,
@@ -698,16 +1059,11 @@ def predict(args, config, name, data, checkpoint, test_folder, output_folder):
     if data.endswith("npy"):
         samples = [data]
     else:
-        samples = get_list_samples(config, data, config['data']['input_format'])
-        if config["data"].get("add_partly_val", False):
-            samples += get_list_samples(
-                    config, data.replace("completely", "partly").replace(
-                        "complete", "partly"),
-                    config["data"]["input_format"]
-                    )
+        split = infer_split_from_data_path(data)
+        require_list_mode(config, split, "predict")
+        samples = list_dataset_samples(config, split)
 
-    if args.sample is not None:
-        samples = [s for s in samples if args.sample in s]
+    samples = filter_by_sample_arg(samples, args.sample)
 
     samplesT = []
     for idx, sample in enumerate(samples):
@@ -755,11 +1111,13 @@ def predict(args, config, name, data, checkpoint, test_folder, output_folder):
 @time_func
 def decode(args, config, data, checkpoint, pred_folder, output_folder):
     in_format = config['prediction']['output_format']
-    # samples = get_list_samples(config, pred_folder, in_format, data)
-    samples = get_list_samples(config, pred_folder, in_format)
-
-    if args.sample is not None:
-        samples = [s for s in samples if args.sample in s]
+    split = infer_split_from_data_path(data)
+    require_list_mode(config, split, "decode")
+    samples = get_list_samples(
+        config, pred_folder, in_format, require_namespaced=True)
+    expected = set(list_dataset_samples(config, split))
+    samples = [s for s in samples if s in expected]
+    samples = filter_by_sample_arg(samples, args.sample)
 
     to_be_skipped = []
     for sample in samples:
@@ -855,12 +1213,29 @@ def select_inference_output_folder(config, val_folder, test_folder):
 
     Basename ``val`` → val_folder; ``test`` → test_folder; anything else
     (single file, odd paths) → test_folder.
+
+    With ``train_datasets`` / ``test_datasets``, the derived ``test_data``
+    path ends in ``train``/``val``/``test`` under the first listed dataset.
     """
     test_data = config['data'].get('test_data') or ''
     split = os.path.basename(os.path.normpath(str(test_data)))
     if split == 'val':
         return val_folder
     return test_folder
+
+
+def resolve_sample_input_from_data(config, data, sample):
+    """Resolve absolute GT/raw path for ``sample`` given the active data root."""
+    split = infer_split_from_data_path(data)
+    if uses_dataset_lists(config, split) and os.path.dirname(sample):
+        return sample_input_path(config, sample, split)
+    fmt = config['data']['input_format']
+    gt_path = os.path.join(data, sample + "." + fmt)
+    if not os.path.exists(gt_path) and config["data"].get("add_partly_val", False):
+        alt = gt_path.replace("completely", "partly").replace("complete", "partly")
+        if os.path.exists(alt):
+            return alt
+    return gt_path
 
 
 @time_func
@@ -1141,17 +1516,14 @@ def validate_checkpoints(args, config, data, checkpoints, train_folder,
 
 @time_func
 def vote_instances(args, config, data, pred_folder, output_folder):
-    samples = get_list_samples(config, pred_folder,
-                               config['prediction']['output_format'],
-                               data)
-    if config["data"].get("add_partly_val", False):
-        samples += get_list_samples(
-            config, pred_folder,
-            config["prediction"]["output_format"],
-            data.replace("completely", "partly").replace("complete", "partly"))
-
-    if args.sample is not None:
-        samples = [s for s in samples if args.sample in s]
+    split = infer_split_from_data_path(data)
+    require_list_mode(config, split, "label/vote_instances")
+    samples = get_list_samples(
+        config, pred_folder, config['prediction']['output_format'],
+        require_namespaced=True)
+    expected = set(list_dataset_samples(config, split))
+    samples = [s for s in samples if s in expected]
+    samples = filter_by_sample_arg(samples, args.sample)
 
     # set vote instance parameter
     config['vote_instances']['check_required'] = False
@@ -1178,9 +1550,14 @@ def vote_instances(args, config, data, pred_folder, output_folder):
 
 
 def cleanup(args, config, data, pred_folder, inst_folder):
-    samples = get_list_samples(config, inst_folder,
-                               config['vote_instances']['output_format'],
-                               data)
+    split = infer_split_from_data_path(data)
+    require_list_mode(config, split, "cleanup")
+    samples = get_list_samples(
+        config, inst_folder,
+        config['vote_instances']['output_format'],
+        require_namespaced=True)
+    expected = set(list_dataset_samples(config, split))
+    samples = [s for s in samples if s in expected]
     for sample in samples:
         vi_file = glob(os.path.join(
                 inst_folder,
@@ -1206,12 +1583,13 @@ def vote_instances_sample_seq(args, config, data, pred_folder, output_folder,
 
 def vote_instances_sample(args, config, data, pred_folder, output_folder,
                           sample):
-    if config['data'].get('sub_folders', False):
-        config['vote_instances']['result_folder'] = \
-            os.path.join(output_folder,
-                         os.path.basename(os.path.dirname(sample)))
-    else:
-        config['vote_instances']['result_folder'] = output_folder
+    # Namespaced IDs only: write under result_folder/{dataset}/ so
+    # vote_instances basename(aff) lands as {dataset}/{stem}.hdf.
+    require_namespaced_sample(sample)
+    sample_parent = os.path.dirname(sample)
+    config['vote_instances']['result_folder'] = os.path.join(
+        output_folder, sample_parent)
+    os.makedirs(config['vote_instances']['result_folder'], exist_ok=True)
 
     if args.term_after_patch_graph:
         config['vote_instances']['termAfterPatchGraph'] = True
@@ -1280,6 +1658,7 @@ def vote_instances_sample(args, config, data, pred_folder, output_folder,
 
 def evaluate_sample(config, args, data, sample, inst_folder, output_folder,
                     file_format):
+    require_namespaced_sample(sample)
     partly = False
     if os.path.isfile(data):
         gt_path = data
@@ -1288,20 +1667,17 @@ def evaluate_sample(config, args, data, sample, inst_folder, output_folder,
         gt_path = data
         gt_key = config['data']['gt_key']
     else:
-        gt_path = os.path.join(
-            data, sample + "." + config['data']['input_format'])
-
-        partly_gt_path = gt_path.replace(
-            "completely", "partly").replace("complete", "partly")
-        if config["data"].get("add_partly_val", False) and os.path.exists(
-                partly_gt_path):
-            gt_path = partly_gt_path
-            partly = True
+        gt_path = resolve_sample_input_from_data(config, data, sample)
+        partly = "partly" in gt_path
         gt_key = config['data']['gt_key']
 
     partly = "partly" in gt_path
 
     sample_path = os.path.join(inst_folder, sample + "." + file_format)
+    sample_parent = os.path.dirname(sample)
+    eval_out_dir = os.path.join(output_folder, sample_parent)
+    os.makedirs(eval_out_dir, exist_ok=True)
+
     if config['vote_instances'].get('one_instance_per_channel'):
         if config['data'].get('one_instance_per_channel_gt'):
             gt_key = config['data'].get('one_instance_per_channel_gt')
@@ -1316,7 +1692,7 @@ def evaluate_sample(config, args, data, sample, inst_folder, output_folder,
         return eval_skeleton_fn(sample_path,
                                 config['evaluation']['res_key'],
                                 gt_path,
-                                output_folder=output_folder,
+                                output_folder=eval_out_dir,
                                 remove_small_comps=config['evaluation'][
                                     'remove_small_comps'],
                                 show_tp=config['evaluation'].get('show_tp'),
@@ -1328,7 +1704,7 @@ def evaluate_sample(config, args, data, sample, inst_folder, output_folder,
     else:
         ndim = len(config['data']['voxel_size'])
         return evaluate_file(
-            sample_path, gt_path, ndim, output_folder,
+            sample_path, gt_path, ndim, eval_out_dir,
             res_key=config['evaluation']['res_key'],
             gt_key=gt_key, suffix="",
             foreground_only=config['evaluation'].get('foreground_only', False),
@@ -1397,7 +1773,7 @@ def evaluate_prediction_sample(args, config, sample, data, pred_folder,
         label_fn = data
         sample_gt_key = sample + '/' + config['data']['gt_key']
     else:
-        label_fn = os.path.join(data, sample + '.' + config['data']['input_format'])
+        label_fn = resolve_sample_input_from_data(config, data, sample)
         sample_gt_key = config['data']['gt_key']
     metric = {}
 
@@ -1461,10 +1837,13 @@ def evaluate_prediction_sample(args, config, sample, data, pred_folder,
 
 def evaluate_prediction(args, config, data, pred_folder, output_folder):
     file_format = config['prediction']['output_format']
-    samples = natsorted(get_list_samples(config, pred_folder, file_format, data))
-
-    if args.sample is not None:
-        samples = [s for s in samples if args.sample in s]
+    split = infer_split_from_data_path(data)
+    require_list_mode(config, split, "evaluate_prediction")
+    samples = natsorted(get_list_samples(
+        config, pred_folder, file_format, require_namespaced=True))
+    expected = set(list_dataset_samples(config, split))
+    samples = [s for s in samples if s in expected]
+    samples = filter_by_sample_arg(samples, args.sample)
 
     num_workers = config['evaluation'].get("num_workers", 1)
     if num_workers > 1:
@@ -1539,16 +1918,20 @@ def evaluate_prediction(args, config, data, pred_folder, output_folder):
 def evaluate(args, config, data, inst_folder, output_folder, return_avg=True):
     file_format = config['postprocessing']['watershed']['output_format']
     add_partly = config["data"].get("add_partly_val", False)
+    split = infer_split_from_data_path(data)
+    require_list_mode(config, split, "evaluate")
+    samples = natsorted(get_list_samples(
+        config, inst_folder, file_format, require_namespaced=True))
+    expected = set(list_dataset_samples(config, split))
+    samples = [s for s in samples if s in expected]
     if add_partly:
-        samples = natsorted(get_list_samples(config, inst_folder, file_format))
-        samples_complete = get_list_samples(config, data, config['data']['input_format'])
-        complete = np.isin(samples, samples_complete)
+        complete = np.array(
+            ["partly" not in s for s in samples], dtype=bool)
     else:
-        samples = natsorted(get_list_samples(config, inst_folder, file_format, data))
         complete = np.ones(len(samples), dtype=bool)
-
+    samples = filter_by_sample_arg(samples, args.sample)
     if args.sample is not None:
-        samples = [s for s in samples if args.sample in s]
+        complete = np.ones(len(samples), dtype=bool)
 
     if args.app == "conic":
         eval_fn = importlib.import_module(
@@ -2114,12 +2497,17 @@ def main():
     #         f.write(diff)
 
     # set logging level
-    prefix = "" if args.sample is None else args.sample
+    require_namespaced_sample(args.sample)
+    if args.sample is None:
+        log_path = os.path.join(base, "run.log")
+    else:
+        # Phase 3: keep per-sample logs under log/<dataset>/<stem>/
+        log_path = os.path.join(base, "log", args.sample, "run.log")
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
     logging.basicConfig(
         level=config['general']['logging'],
         handlers=[
-            logging.FileHandler(os.path.join(base,
-                                             prefix + "run.log"), mode='a'),
+            logging.FileHandler(log_path, mode='a'),
             logging.StreamHandler(sys.stdout)
         ])
     if args.comment is not None:
@@ -2325,10 +2713,16 @@ def main():
         # remove small components should go here?
         # what else?
         print('postprocess')
+        split = infer_split_from_data_path(config['data']['test_data'])
+        require_list_mode(config, split, "postprocess")
         if config['postprocessing'].get('process_fg_prediction', False):
             os.makedirs(inst_folder, exist_ok=True)
-            samples = get_list_samples(config, pred_folder,
-                                       config['prediction']['output_format'])
+            samples = get_list_samples(
+                config, pred_folder,
+                config['prediction']['output_format'],
+                require_namespaced=True)
+            expected = set(list_dataset_samples(config, split))
+            samples = [s for s in samples if s in expected]
             samples = [os.path.join(pred_folder, s + '.' + config['prediction'][
                 'output_format']) for s in samples]
             logger.info("postprocess checkpoint %d", checkpoint)
@@ -2341,8 +2735,9 @@ def main():
             samples = get_list_samples(
                 config, inst_folder,
                 config['vote_instances']['output_format'],
-                config['data']['test_data']
-            )
+                require_namespaced=True)
+            expected = set(list_dataset_samples(config, split))
+            samples = [s for s in samples if s in expected]
             samples = [os.path.join(inst_folder, s + '.' + config[
                 'vote_instances']['output_format']) for s in samples]
             util.postprocess_instances(

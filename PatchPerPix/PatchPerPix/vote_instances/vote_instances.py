@@ -18,7 +18,7 @@ from skimage.morphology import skeletonize_3d
 if __package__ is None or __package__ == '':
     from consensus_array import loadOrComputeConsensus
     from ranked_patches import loadOrComputePatchRanking
-    from utilVoteInstances import getResKey, loadAffinities, fillLookup
+    from utilVoteInstances import getResKey, loadAffinities, fillLookup, timed
     from foreground_cover import *
     from graph_to_labeling import affGraphToInstancesT, affGraphToInstances
     from aff_patch_graph import *
@@ -27,7 +27,7 @@ if __package__ is None or __package__ == '':
 else:
     from .consensus_array import loadOrComputeConsensus
     from .ranked_patches import loadOrComputePatchRanking
-    from .utilVoteInstances import getResKey, loadAffinities, fillLookup
+    from .utilVoteInstances import getResKey, loadAffinities, fillLookup, timed
     from .foreground_cover import *
     from .graph_to_labeling import affGraphToInstancesT, affGraphToInstances
     from .aff_patch_graph import *
@@ -191,13 +191,13 @@ def to_instance_seg(
 
 
     if kwargs['cuda']:
-        if pred_affs.dtype != np.float32:
-            pred_affs = pred_affs.astype(np.float32)
-        tmp = alloc_zero_array(pred_affs.shape, np.float32)
-        # tmp = pycuda.driver.managed_zeros_like(
-        #     pred_affs, mem_flags=pycuda.driver.mem_attach_flags.GLOBAL)
-        tmp[:] = pred_affs
-        pred_affs = tmp
+        with timed("copy_affs_to_managed"):
+            # assignment casts (e.g. fp16 predictions) to float32 in one pass
+            tmp = alloc_empty_array(pred_affs.shape, np.float32)
+            tmp[:] = pred_affs
+            pred_affs = tmp
+    elif pred_affs.dtype != np.float32:
+        pred_affs = pred_affs.astype(np.float32)
 
     if not kwargs['debug']:
         debug_output1 = None
@@ -283,8 +283,10 @@ def to_instance_seg(
     else:
         lookup = None
 
-    all_patches = [p for p in all_patches
-                   if np.all(p >= rad) and np.all(p < foreground.shape - rad)]
+    with timed("filter_patches"):
+        all_patches = [p for p in all_patches
+                       if np.all(p >= rad) and
+                       np.all(p < foreground.shape - rad)]
     logger.info("num foreground pixels excluding boundary region: %s",
                 len(all_patches))
 
@@ -303,11 +305,12 @@ def to_instance_seg(
     # count: positive votes, negative votes, total votes
     # mws on consensus votes?? --> same problems as before?
     if not kwargs['skipConsensus']:
-        consensus_vote_array, offsets_bases_ff, offsets_bases_fb = \
-            loadOrComputeConsensus(instances, patchshape,
-                                   neighshape, all_patches, pred_affs, rad,
-                                   foreground, lookup,
-                                   overlap_mask, **kwargs)
+        with timed("consensus"):
+            consensus_vote_array, offsets_bases_ff, offsets_bases_fb = \
+                loadOrComputeConsensus(instances, patchshape,
+                                       neighshape, all_patches, pred_affs,
+                                       rad, foreground, lookup,
+                                       overlap_mask, **kwargs)
     else:
         consensus_vote_array = None
         offsets_bases_ff = None
@@ -322,19 +325,20 @@ def to_instance_seg(
     # (weighted by strength of consensus?)
     # --> ranked list of patches
     if not kwargs['skipRanking']:
-        ranked_patches_list, scores_array = \
-            loadOrComputePatchRanking(
-                pred_affs=pred_affs,
-                consensus_vote_array=consensus_vote_array,
-                offsets_bases_ff=offsets_bases_ff,
-                offsets_bases_fb=offsets_bases_fb,
-                overlap_mask=overlap_mask,
-                all_patches=all_patches,
-                patchshape=patchshape,
-                neighshape=neighshape,
-                rad=rad,
-                **kwargs,
-            )
+        with timed("ranking"):
+            ranked_patches_list, scores_array = \
+                loadOrComputePatchRanking(
+                    pred_affs=pred_affs,
+                    consensus_vote_array=consensus_vote_array,
+                    offsets_bases_ff=offsets_bases_ff,
+                    offsets_bases_fb=offsets_bases_fb,
+                    overlap_mask=overlap_mask,
+                    all_patches=all_patches,
+                    patchshape=patchshape,
+                    neighshape=neighshape,
+                    rad=rad,
+                    **kwargs,
+                )
         logger.info("num ranked patches %s ", len(ranked_patches_list))
 
     # debug_output output for *all* patches:
@@ -379,23 +383,27 @@ def to_instance_seg(
             num_selected = len(all_patches)
         else:
             logger.info("compute foreground cover")
-            selected_patches_list, num_selected = \
-                computeForegroundCover(
-                    overlap_mask, mask_to_cover,
-                    patchshape, ranked_patches_list,
-                    radslice,
-                    pred_affs, rad, debug_output1, scores_array, **kwargs)
+            with timed("foreground_cover"):
+                selected_patches_list, num_selected = \
+                    computeForegroundCover(
+                        overlap_mask, mask_to_cover,
+                        patchshape, ranked_patches_list,
+                        radslice,
+                        pred_affs, rad, debug_output1, scores_array,
+                        **kwargs)
             logger.info("done compute foreground cover")
 
         # (4) thin out selection with greedy set cover algorithm:
         if not kwargs['skipThinCover'] and num_selected > 0:
             logger.info("compute thin out foreground cover")
-            selected_patches_list, num_selected = \
-                thinOutForegroundCover(mask_to_cover,
-                                       selected_patches_list,
-                                       radslice, pred_affs,
-                                       rad, patchshape, **kwargs)
+            with timed("thin_cover"):
+                selected_patches_list, num_selected = \
+                    thinOutForegroundCover(mask_to_cover,
+                                           selected_patches_list,
+                                           radslice, pred_affs,
+                                           rad, patchshape, **kwargs)
             logger.info("done thin out foreground cover")
+        logger.info("num selected patches: %s", num_selected)
 
         if kwargs.get('selected_patch_pairs') is not None:
             # already set by e.g. stitch_patch_graph
@@ -405,9 +413,10 @@ def to_instance_seg(
             tmp[:] = selected_patch_pairsIDs
             selected_patch_pairsIDs = tmp
         else:
-            selected_patch_pairsIDs = \
-                computeAndStorePatchPairs(selected_patches_list, patchshape,
-                                          **kwargs)
+            with timed("patch_pairs"):
+                selected_patch_pairsIDs = \
+                    computeAndStorePatchPairs(selected_patches_list,
+                                              patchshape, **kwargs)
 
         # no pairs selected after pruning
         if selected_patch_pairsIDs is None:
@@ -420,16 +429,18 @@ def to_instance_seg(
             exit(0)
 
         # (5) compute graph over patches
-        logger.info("compute patch graph")
-        affinity_graph = computePatchGraph(
-                selected_patches_list,
-                num_selected,
-                selected_patch_pairsIDs,
-                pred_affs, mask_to_cover,
-                patchshape, neighshape,
-                rad, overlap_mask, lookup,
-                consensus_vote_array, **kwargs
-            )
+        logger.info("compute patch graph (%s pairs)",
+                    len(selected_patch_pairsIDs))
+        with timed("patch_graph"):
+            affinity_graph = computePatchGraph(
+                    selected_patches_list,
+                    num_selected,
+                    selected_patch_pairsIDs,
+                    pred_affs, mask_to_cover,
+                    patchshape, neighshape,
+                    rad, overlap_mask, lookup,
+                    consensus_vote_array, **kwargs
+                )
         logger.info("done compute patch graph")
 
         if kwargs.get('return_intermediates'):

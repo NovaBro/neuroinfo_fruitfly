@@ -56,7 +56,7 @@ def rank_patches_cuda(pred_affs, consensus_vote_array, patchshape, neighshape,
 
     kernel = kernels.get_function("rankPatches")
     with kwargs['mutex']:
-        fargs = [pred_affs, consensus_vote_array]
+        fargs = [pred_affs, cuda_arg(consensus_vote_array)]
         if kwargs.get('overlapping_inst'):
             fargs.append(overlap)
         fargs.append(outScore)

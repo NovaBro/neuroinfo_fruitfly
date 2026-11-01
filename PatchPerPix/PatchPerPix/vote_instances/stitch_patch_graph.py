@@ -22,13 +22,14 @@ if __package__ is None or __package__ == '':
     from PatchPerPix.util import remove_small_components, relabel, color
     from io_hdflike import IoZarr
     from vote_instances import affGraphToInstances
-    from utilVoteInstances import loadFg, returnFg
+    from utilVoteInstances import loadFg, returnFg, timed, query_pairs_array
 else:
     from .vote_instances import do_block
     from ..util import remove_small_components, relabel, color
     from .io_hdflike import IoZarr
     from .graph_to_labeling import affGraphToInstances
-    from .utilVoteInstances import loadFg, returnFg
+    from .utilVoteInstances import (
+        loadFg, returnFg, timed, query_pairs_array)
 
 logger = logging.getLogger(__name__)
 
@@ -72,39 +73,40 @@ def get_offset_str(offset):
     return "_".join(str(off) for off in offset)
 
 
+def block_cache_complete(zf, key):
+    """True when a block or inter-block cache has both written arrays.
+
+    patch_pairs is created before aff_graph_mat. A kill between those writes
+    leaves a group that must be recomputed, not treated as done.
+    """
+    return (key + '/patch_pairs' in zf) and (key + '/aff_graph_mat' in zf)
+
+
+def coord_keys(points):
+    # coordinates must be < 2**21 per axis
+    points = np.asarray(points, dtype=np.int64)
+    return (points[:, 0] << 42) | (points[:, 1] << 21) | points[:, 2]
+
+
 def remove_pairs(pairs, points, patchshape):
-    to_delete = []
-
-    for idx, p in enumerate(pairs):
-        if np.any(np.abs(
-            points[p[0]].astype(np.float32) - points[p[1]].astype(
-                np.float32)
-        ) > patchshape + 1):
-            to_delete.append(p)
-
-    for dlt in to_delete:
-        pairs.remove(dlt)
-
-    return pairs
+    """Drop pairs (N, 2 index array) whose points differ by more than
+    patchshape + 1 along any axis."""
+    diff = np.abs(points[pairs[:, 0]].astype(np.float32) -
+                  points[pairs[:, 1]].astype(np.float32))
+    keep = ~np.any(diff > np.asarray(patchshape) + 1, axis=1)
+    return pairs[keep]
 
 
 def remove_intra_block_pairs(pairs, points, blocks):
-    to_delete = []
-
-    for idx, p in enumerate(pairs):
-        in_block = []
-        for block in blocks:
-            in_block.append(
-                np.any(np.all(block == points[p[0]], axis=1)) and
-                np.any(np.all(block == points[p[1]], axis=1))
-            )
-        if np.any(np.array(in_block)):
-            to_delete.append(p)
-
-    for dlt in to_delete:
-        pairs.remove(dlt)
-
-    return pairs
+    """Drop pairs (N, 2 index array) with both points in the same block."""
+    keys = coord_keys(points)
+    keys0 = keys[pairs[:, 0]]
+    keys1 = keys[pairs[:, 1]]
+    intra = np.zeros(len(pairs), dtype=bool)
+    for block in blocks:
+        block_keys = coord_keys(block)
+        intra |= np.isin(keys0, block_keys) & np.isin(keys1, block_keys)
+    return pairs[~intra]
 
 
 def stitch_vote_instances(out_path, in_key, out_key, output_shape,
@@ -117,6 +119,14 @@ def stitch_vote_instances(out_path, in_key, out_key, output_shape,
     logger.info('chunksize / bb_offset: %s %s', chunksize, bb_offset)
 
     zf = zarr.open(out_path, mode='a')
+    # split label: CPU graphToInst phase needs a complete GPU graph phase,
+    # otherwise missing blocks would silently be treated as empty
+    if kwargs.get('graphToInst') and \
+       (in_key not in zf or not zf[in_key].attrs.get('stitch_graph_done')):
+        raise RuntimeError(
+            "graphToInst: patch graph in {}/{} missing or incomplete, run "
+            "the GPU phase (termAfterStitchGraph) first".format(
+                out_path, in_key))
     result = np.zeros(output_shape, np.uint32)
     affgraph = None
     global_patches = []
@@ -143,6 +153,11 @@ def stitch_vote_instances(out_path, in_key, out_key, output_shape,
     block_offsets = get_offsets(bb_shape, chunksize)
     block_offsets = [off + bb_offset for off in block_offsets]
 
+    # GPU phase only caches pairs/affinities; the CPU phase rebuilds the graph
+    build_graph = not kwargs.get('termAfterStitchGraph')
+    seen_nonempty_block = False
+    t_stitch = datetime.now()
+
     # iterate through blocks
     for block_id, offset in enumerate(block_offsets):
         t0 = datetime.now()
@@ -154,6 +169,10 @@ def stitch_vote_instances(out_path, in_key, out_key, output_shape,
             global_patch_pairs.append(None)
             global_patch_affs.append(None)
             continue
+        if not block_cache_complete(zf, block_key):
+            raise RuntimeError(
+                "incomplete block cache {} (patch_pairs without "
+                "aff_graph_mat); recompute the GPU phase".format(block_key))
 
         # read patch pairs and patch affinities from block
         # add global offset to patch pairs
@@ -175,13 +194,15 @@ def stitch_vote_instances(out_path, in_key, out_key, output_shape,
         global_patch_pairs.append(patch_pairs)
         global_patch_affs.append(aff_graph_mat)
 
-        if affgraph is None:
-            # create global patch affinity graph
-            affgraph = nx.Graph()
+        if build_graph:
+            if affgraph is None:
+                # create global patch affinity graph
+                affgraph = nx.Graph()
             affgraph = update_graph(affgraph, aff_graph_mat, patch_pairs)
+
+        if not seen_nonempty_block:
+            seen_nonempty_block = True
         else:
-            # update graph with existing pairs
-            affgraph = update_graph(affgraph, aff_graph_mat, patch_pairs)
 
             # iterate through neighboring blocks
             # call vote instances for adjacent region
@@ -192,13 +213,19 @@ def stitch_vote_instances(out_path, in_key, out_key, output_shape,
                 for neighbor_id in range(0, block_id):
                     if np.all(block_offsets[neighbor_id] == neighbor_offset):
                         inter_block_key = in_key + '/' + get_offset_str(offset) + "/" + get_offset_str(neighbor_offset)
-                        if inter_block_key in zf:
-                            patch_pairs = np.array(
-                                zf[inter_block_key + '/patch_pairs'])
-                            aff_graph_mat = np.array(
-                                zf[inter_block_key + '/aff_graph_mat'])
-                            affgraph = update_graph(affgraph, aff_graph_mat, patch_pairs)
+                        if block_cache_complete(zf, inter_block_key):
+                            if build_graph:
+                                patch_pairs = np.array(
+                                    zf[inter_block_key + '/patch_pairs'])
+                                aff_graph_mat = np.array(
+                                    zf[inter_block_key + '/aff_graph_mat'])
+                                affgraph = update_graph(
+                                    affgraph, aff_graph_mat, patch_pairs)
                             continue
+                        if inter_block_key in zf:
+                            logger.info(
+                                "incomplete inter-block cache %s, recomputing",
+                                inter_block_key)
 
                         logger.debug("neighbor: {}, {}, {}".format(
                             neighbor, offset, neighbor_offset))
@@ -236,26 +263,26 @@ def stitch_vote_instances(out_path, in_key, out_key, output_shape,
                         candidates = np.concatenate(
                             [current_candidates, neighbor_candidates]
                         )
-                        tree = spatial.cKDTree(candidates, leafsize=4)
-                        pairs = tree.query_pairs(1 * np.sum(patchshape + 1),
-                                                 p=1)
-                        pairs = remove_pairs(pairs, candidates, patchshape)
+                        with timed("inter_block_pairs"):
+                            tree = spatial.cKDTree(candidates, leafsize=4)
+                            pairs = query_pairs_array(
+                                tree, 1 * np.sum(patchshape + 1), p=1)
+                            pairs = remove_pairs(pairs, candidates,
+                                                 patchshape)
 
-                        # remove intra-block pairs
-                        pairs = remove_intra_block_pairs(
-                            pairs, candidates,
-                            [current_candidates, neighbor_candidates]
-                        )
+                            # remove intra-block pairs
+                            pairs = remove_intra_block_pairs(
+                                pairs, candidates,
+                                [current_candidates, neighbor_candidates]
+                            )
+                        logger.info("inter-block %s: %s candidates, %s pairs",
+                                    inter_block_key, len(candidates),
+                                    len(pairs))
                         if len(pairs) == 0:
                             continue
 
                         # remove non-used candidates
-                        candidate_idx = []
-                        for p in pairs:
-                            candidate_idx.append(p[0])
-                            candidate_idx.append(p[1])
-                        candidates_cleaned = candidates[np.unique(
-                            candidate_idx)]
+                        candidates_cleaned = candidates[np.unique(pairs)]
 
                         # get overlapping area
                         bb_start = np.maximum(
@@ -273,10 +300,10 @@ def stitch_vote_instances(out_path, in_key, out_key, output_shape,
                         margin = list(np.array(patchshape) // 2)
                         overlap = [0, 0, 0]
                         bb_size = np.maximum(bb_stop - bb_start, [1, 1, 1])
-                        block, _ = load_input(
-                            io_in, pred_keys[0], bb_start, margin, overlap,
-                            bb_size, padding=False)
-                        block = block.astype(np.float32)
+                        with timed("inter_block_load_affs"):
+                            block, _ = load_input(
+                                io_in, pred_keys[0], bb_start, margin,
+                                overlap, bb_size, padding=False)
 
                         if kwargs.get("numinst_key") is not None:
                             numinst_prob, _ = load_input(
@@ -309,31 +336,32 @@ def stitch_vote_instances(out_path, in_key, out_key, output_shape,
 
                         # call vote instances, pass selected patches and
                         # patch pairs
-                        overlapping_pairs = np.zeros((len(pairs), 6),
-                                                     dtype=np.uint32)
-                        for i, p in enumerate(pairs):
-                            overlapping_pairs[i, :3] = candidates[p[0]]
-                            overlapping_pairs[i, 3:] = candidates[p[1]]
+                        overlapping_pairs = np.concatenate(
+                            [candidates[pairs[:, 0]],
+                             candidates[pairs[:, 1]]],
+                            axis=1).astype(np.uint32)
                         candidates_relative = np.copy(candidates_cleaned)
                         candidates_relative -= (bb_start - margin)
                         pairs_relative = np.copy(overlapping_pairs)
                         pairs_relative -= np.array(list(bb_start - margin)*2,
                                                    dtype=np.uint32)
 
-                        _, aff_graph_mat = do_block(
-                            block, foreground, mask, numinst,
-                            selected_patches=candidates_relative,
-                            selected_patch_pairs=pairs_relative,
-                            **kwargs
-                        )
+                        with timed("inter_block_do_block"):
+                            _, aff_graph_mat = do_block(
+                                block, foreground, mask, numinst,
+                                selected_patches=candidates_relative,
+                                selected_patch_pairs=pairs_relative,
+                                **kwargs
+                            )
                         logger.debug("patch affinities: {}".format(
                             aff_graph_mat))
                         logger.debug("min / max aff graph mat: {}, {}".format(
                             np.min(aff_graph_mat), np.max(aff_graph_mat)))
 
                         # update global patch graph
-                        affgraph = update_graph(affgraph, aff_graph_mat,
-                                                overlapping_pairs)
+                        if build_graph:
+                            affgraph = update_graph(affgraph, aff_graph_mat,
+                                                    overlapping_pairs)
                         # save patch pairs and patch affinities
                         ds_name = inter_block_key + '/patch_pairs'
                         zf.create_dataset(
@@ -356,6 +384,15 @@ def stitch_vote_instances(out_path, in_key, out_key, output_shape,
                             overwrite=True,
                         )
         logger.info('time %s: %s', "block-stitching", str(datetime.now() - t0))
+    logger.info('time %s: %s', "all-block-stitching",
+                str(datetime.now() - t_stitch))
+
+    # split label: GPU phase stops here, all intra- and inter-block patch
+    # pairs/affinities are cached in zf; CPU phase continues via graphToInst
+    if kwargs.get('termAfterStitchGraph'):
+        zf.require_group(in_key).attrs['stitch_graph_done'] = True
+        logger.info("patch graph done, terminating (termAfterStitchGraph)")
+        return None, None
 
     # partition patch affinity graph by connected components analysis
     in_f = zarr.open(pred_file, mode='r')
@@ -581,10 +618,14 @@ def blockwise_vote_instances(
     if patchshape[0] == 1:
         overlap[0] = 0
 
-    ds_name = res_key + '/' + get_offset_str(in_offset) + '/patch_pairs'
-    if ds_name in io_out:
-        logger.info("{} already processed.".format(ds_name))
+    cache_key = res_key + '/' + get_offset_str(in_offset)
+    ds_name = cache_key + '/patch_pairs'
+    if block_cache_complete(io_out, cache_key):
+        logger.info("{} already processed.".format(cache_key))
         return
+    if (cache_key + '/patch_pairs' in io_out or
+            cache_key + '/aff_graph_mat' in io_out):
+        logger.info("{} incomplete, recomputing.".format(cache_key))
 
     # if small comps should be ignored, load mask
     if kwargs.get('ignore_small_comps', 0) > 0 and len(pred_keys) > 2:
@@ -601,10 +642,11 @@ def blockwise_vote_instances(
         mask = None
 
     # load affinities
-    block, padded = load_input(
-        io_in, pred_keys[0], in_offset, margin, overlap, chunksize,
-        padding=False
-    )
+    with timed("load_affs"):
+        block, padded = load_input(
+            io_in, pred_keys[0], in_offset, margin, overlap, chunksize,
+            padding=False
+        )
     block_shape = block.shape[1:]
 
     # load numinst
@@ -635,18 +677,23 @@ def blockwise_vote_instances(
         numinst = np.copy(foreground)
     if mask is None:
         mask = np.copy(foreground)
+    logger.info("block %s: shape %s, fg voxels %s", offset, block_shape,
+                np.count_nonzero(foreground))
 
     # call vote instances
-    patch_pairs, aff_graph_mat = do_block(
-        block.astype(np.float32),
-        foreground,
-        mask,
-        numinst,
-        **kwargs
-    )
+    with timed("do_block"):
+        patch_pairs, aff_graph_mat = do_block(
+            block,
+            foreground,
+            mask,
+            numinst,
+            **kwargs
+        )
+    del block
 
     # save patch pairs and patch affinities
     if patch_pairs is not None:
+        logger.info("block %s: %s patch pairs", offset, len(patch_pairs))
         patch_pairs -= np.array(list(padded) * 2, dtype=np.uint32)
         io_out.create_dataset(
             ds_name,
@@ -751,12 +798,14 @@ def main(pred_file, result_folder='.', **kwargs):
             return
         # remove small components
         if kwargs.get('ignore_small_comps', 0) > 0:
-            mask = clean_mask(mask, np.ones([3] * mask.ndim),
-                              kwargs.get('ignore_small_comps'))
+            with timed("clean_mask"):
+                mask = clean_mask(mask, np.ones([3] * mask.ndim),
+                                  kwargs.get('ignore_small_comps'))
             mask = mask.astype(np.uint8)
         # skeletonize mask (flylight specific)
         if kwargs.get('skeletonize_foreground'):
-            mask = skeletonize_3d(mask) > 0
+            with timed("skeletonize_bb"):
+                mask = skeletonize_3d(mask) > 0
             mask = mask.astype(np.uint8)
         min = np.min(np.transpose(np.nonzero(mask)), axis=0)
         max = np.max(np.transpose(np.nonzero(mask)), axis=0)
@@ -816,10 +865,13 @@ def main(pred_file, result_folder='.', **kwargs):
     #child_pid = os.fork()
     #if child_pid == 0:
     # child process
-    instances, foreground = stitch_vote_instances(
-        result_file, tmp_key, res_key, input_shape,
-        bb_offset, shape, pred_file, pred_keys, channel_order, **kwargs
-    )
+    with timed("stitch_vote_instances"):
+        instances, foreground = stitch_vote_instances(
+            result_file, tmp_key, res_key, input_shape,
+            bb_offset, shape, pred_file, pred_keys, channel_order, **kwargs
+        )
+    if kwargs.get('termAfterStitchGraph'):
+        return
     # save mip
     if kwargs.get('save_mip', False):
         colored = color(np.max(instances, axis=0))
@@ -930,6 +982,7 @@ if __name__ == '__main__':
                  'skipRanking': False,
                  'skipThinCover': False,
                  'termAfterThinCover': False,
+                 'termAfterStitchGraph': False,
                  'check_required': False,
                  'train_net_name': 'train_net',
                  'test_net_name': 'test_net',

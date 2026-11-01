@@ -1,7 +1,9 @@
+import contextlib
 import pickle
 import os
 import logging
 import re
+import time
 
 import h5py
 import numpy as np
@@ -15,6 +17,25 @@ else:
 
 
 logger = logging.getLogger(__name__)
+
+
+@contextlib.contextmanager
+def timed(name):
+    t0 = time.perf_counter()
+    try:
+        yield
+    finally:
+        logger.info("time %s: %.2fs", name, time.perf_counter() - t0)
+
+
+def query_pairs_array(tree, r, p=1):
+    """cKDTree.query_pairs as an (N, 2) index array."""
+    try:
+        return tree.query_pairs(r, p=p, output_type='ndarray')
+    except TypeError:
+        pairs = tree.query_pairs(r, p=p)
+        return np.array(sorted(pairs), dtype=np.intp).reshape(-1, 2)
+
 
 def fillLookup(foreground, patchshape, neighshape, all_patches):
     print("fill lookup")

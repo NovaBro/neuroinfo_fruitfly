@@ -517,7 +517,7 @@ PatchPerPix/
 
 Understanding the config keys clarifies how scripts receive parameters.
 **Per-key reference** for `default_train_code_l40s.toml`:
-[`md_guides/ppp_config_defaults.md`](../md_guides/ppp_config_defaults.md).
+[`md_guides/ppp/historical/ppp_config_defaults.md`](../md_guides/ppp/historical/ppp_config_defaults.md).
 
 | Section | Consumed by |
 |---------|-------------|
