@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Remove volumes/pred_affs from PPP processed zarrs, keeping pred_numinst.
+"""Remove large prediction arrays from PPP processed zarrs, keeping pred_numinst.
 
-Keeps full pred_affs on samples listed in --keep-name (comma-separated).
-Default keeps one FISBe-val and one FISBe-test stem when present:
-  R22C03-20180918_66_J2.zarr,JRC_SS04989-20160318_24_A2.zarr
-If none of the keep names exist in a ckpt dir, falls back to the first *.zarr.
+By default strips volumes/pred_affs and volumes/pred_code on every sample.
+Pass --keep-name to retain those arrays on listed samples (comma-separated).
+An empty keep list retains nothing. Unmatched names do not fall back to the
+first *.zarr.
 
 Examples:
   # Dry-run entire metrics/ppp tree
@@ -13,10 +13,13 @@ Examples:
   # One-time cleanup
   python3 sbatch/ppp/strip_pred_affs.py --root metrics/ppp
 
-  # Post-evaluate job hook (one sample, unless it is a keep-sample)
+  # Affs only (legacy)
+  python3 sbatch/ppp/strip_pred_affs.py --arrays volumes/pred_affs
+
+  # Post-evaluate job hook (strips every sample unless --keep-name is set)
   python3 sbatch/ppp/strip_pred_affs.py \\
     --root metrics/ppp --exp ppp_basic_fmaps24 --split test \\
-    --ckpt 80000 --sample R14A02-20180905_65_A6
+    --ckpt 80000 --keep-name ""
 """
 from __future__ import annotations
 
@@ -26,10 +29,8 @@ import shutil
 import sys
 from pathlib import Path
 
-DEFAULT_KEEP = (
-    "R22C03-20180918_66_J2.zarr,JRC_SS04989-20160318_24_A2.zarr"
-)
-AFF_REL = Path("volumes") / "pred_affs"
+DEFAULT_KEEP = ""
+DEFAULT_ARRAYS = ("volumes/pred_affs", "volumes/pred_code")
 SPLITS = ("test", "val")
 
 
@@ -56,7 +57,16 @@ def fmt_bytes(n: int) -> str:
 
 
 def list_sample_zarrs(ckpt_dir: Path) -> list[Path]:
-    return sorted(p for p in ckpt_dir.iterdir() if p.is_dir() and p.name.endswith(".zarr"))
+    """Flat ``*.zarr`` at ckpt root plus nested ``{dataset}/*.zarr`` (list mode)."""
+    flat = [
+        p for p in ckpt_dir.iterdir()
+        if p.is_dir() and p.name.endswith(".zarr")
+    ]
+    nested = [
+        p for p in ckpt_dir.glob("*/*.zarr")
+        if p.is_dir()
+    ]
+    return sorted(set(flat) | set(nested))
 
 
 def normalize_keep_names(keep_name: str) -> list[str]:
@@ -72,15 +82,41 @@ def normalize_keep_names(keep_name: str) -> list[str]:
     return names
 
 
+def parse_arrays(raw: str) -> list[Path]:
+    """Parse comma-separated relative array paths (e.g. volumes/pred_affs)."""
+    arrays: list[Path] = []
+    for part in raw.split(","):
+        part = part.strip().strip("/")
+        if not part:
+            continue
+        arrays.append(Path(part))
+    if not arrays:
+        raise ValueError("--arrays must list at least one path")
+    return arrays
+
+
 def resolve_keep_set(samples: list[Path], keep_name: str) -> set[Path]:
-    """Samples to retain. Prefer matching keep names; else first sample."""
-    if not samples:
+    """Samples to retain. Empty or unmatched keep names retain nothing.
+
+    Keep names may be bare ``stem.zarr`` or namespaced ``dataset/stem.zarr``.
+    """
+    if not samples or not keep_name.strip():
         return set()
     want = set(normalize_keep_names(keep_name))
-    kept = {s for s in samples if s.name in want}
-    if kept:
-        return kept
-    return {samples[0]}
+    if not want:
+        return set()
+    kept = set()
+    for s in samples:
+        if s.name in want:
+            kept.add(s)
+            continue
+        # Nested list-mode: match ``completely/stem.zarr`` or bare stem.
+        rel = s.as_posix()
+        for w in want:
+            if rel.endswith("/" + w) or rel.endswith(w):
+                kept.add(s)
+                break
+    return kept
 
 
 def iter_ckpt_dirs(root: Path, exp: str | None, split: str | None, ckpt: str | None):
@@ -104,15 +140,19 @@ def iter_ckpt_dirs(root: Path, exp: str | None, split: str | None, ckpt: str | N
                     yield exp_dir.name, sp, d
 
 
-def strip_affs(aff_path: Path, dry_run: bool) -> int:
-    """Remove pred_affs dir. Returns bytes freed (pre-delete size)."""
-    size = dir_size_bytes(aff_path)
+def strip_array(arr_path: Path, dry_run: bool) -> int:
+    """Remove one array dir. Returns bytes freed (pre-delete size)."""
+    size = dir_size_bytes(arr_path)
     if dry_run:
-        print(f"DRY_RUN rm -rf {aff_path}  ({fmt_bytes(size)})")
+        print(f"DRY_RUN rm -rf {arr_path}  ({fmt_bytes(size)})")
         return size
-    print(f"rm -rf {aff_path}  ({fmt_bytes(size)})")
-    shutil.rmtree(aff_path)
+    print(f"rm -rf {arr_path}  ({fmt_bytes(size)})")
+    shutil.rmtree(arr_path)
     return size
+
+
+def array_label(rel: Path) -> str:
+    return rel.name
 
 
 def process_ckpt_dir(
@@ -121,6 +161,7 @@ def process_ckpt_dir(
     ckpt_dir: Path,
     keep_name: str,
     sample_filter: str | None,
+    arrays: list[Path],
     dry_run: bool,
 ) -> tuple[int, int]:
     """Returns (n_stripped, bytes_freed)."""
@@ -135,25 +176,33 @@ def process_ckpt_dir(
     freed = 0
     for sample in samples:
         stem = sample.name
+        rel_stem = sample.relative_to(ckpt_dir).as_posix().removesuffix(".zarr")
         if sample_filter:
-            # Accept with or without .zarr suffix.
-            want = sample_filter if sample_filter.endswith(".zarr") else f"{sample_filter}.zarr"
-            if stem != want:
+            want = sample_filter.removesuffix(".zarr")
+            if want not in (rel_stem, stem.removesuffix(".zarr"), Path(want).name):
                 continue
-        aff = sample / AFF_REL
-        if not aff.exists():
-            print(f"  skip {stem}: no pred_affs")
-            continue
-        if sample in keep:
-            print(f"  keep  {stem}: pred_affs retained ({fmt_bytes(dir_size_bytes(aff))})")
-            continue
-        freed += strip_affs(aff, dry_run=dry_run)
-        n_stripped += 1
+        for rel in arrays:
+            label = array_label(rel)
+            arr = sample / rel
+            if not arr.exists():
+                print(f"  skip {stem}: no {label}")
+                continue
+            if sample in keep:
+                print(
+                    f"  keep  {stem}: {label} retained "
+                    f"({fmt_bytes(dir_size_bytes(arr))})"
+                )
+                continue
+            freed += strip_array(arr, dry_run=dry_run)
+            n_stripped += 1
     return n_stripped, freed
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    default_arrays = ",".join(DEFAULT_ARRAYS)
+    p = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     p.add_argument("--root", default="metrics/ppp", help="PPP metrics root (default: metrics/ppp)")
     p.add_argument("--exp", default=None, help="Limit to one experiment id")
     p.add_argument("--split", choices=["test", "val"], default=None, help="Limit to one split")
@@ -166,10 +215,28 @@ def main() -> int:
     p.add_argument(
         "--keep-name",
         default=DEFAULT_KEEP,
-        help=f"Comma-separated keep samples (default: {DEFAULT_KEEP})",
+        help=(
+            "Comma-separated samples to retain. "
+            "Default is empty: strip every sample. "
+            "Unmatched names retain nothing."
+        ),
+    )
+    p.add_argument(
+        "--arrays",
+        default=default_arrays,
+        help=(
+            "Comma-separated relative array paths to strip "
+            f"(default: {default_arrays})"
+        ),
     )
     p.add_argument("--dry-run", action="store_true", help="Print actions without deleting")
     args = p.parse_args()
+
+    try:
+        arrays = parse_arrays(args.arrays)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
 
     root = Path(args.root)
     if not root.is_dir():
@@ -180,13 +247,17 @@ def main() -> int:
     total_bytes = 0
     for exp, split, ckpt_dir in iter_ckpt_dirs(root, args.exp, args.split, args.ckpt):
         n, b = process_ckpt_dir(
-            exp, split, ckpt_dir, args.keep_name, args.sample, args.dry_run
+            exp, split, ckpt_dir, args.keep_name, args.sample, arrays, args.dry_run
         )
         total_n += n
         total_bytes += b
 
+    labels = ", ".join(array_label(a) for a in arrays)
     action = "would free" if args.dry_run else "freed"
-    print(f"Done: stripped {total_n} pred_affs dirs, {action} {fmt_bytes(total_bytes)}")
+    print(
+        f"Done: stripped {total_n} dirs ({labels}), "
+        f"{action} {fmt_bytes(total_bytes)}"
+    )
     return 0
 
 
