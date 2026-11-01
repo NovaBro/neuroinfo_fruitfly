@@ -1,3 +1,5 @@
-# Force vote_instances onto CPU (no CUDA). Use for cpu_short label/evaluate jobs.
+# Force vote_instances onto CPU (no CUDA).
+# NOTE: does NOT work with blockwise = true (stitch_patch_graph asserts cuda);
+# for blockwise label use the split overlays vi_split_gpu.toml + vi_split_cpu.toml.
 [vote_instances]
 cuda = false

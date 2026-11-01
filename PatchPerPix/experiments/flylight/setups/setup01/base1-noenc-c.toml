@@ -1,0 +1,101 @@
+# Overlay on original_default.toml + fmaps24 + 400k, soft augs (no elastic/overlay/hue).
+# Train on completely + partly + synth_vh (vh2308 synth_MCFO; grow with flylight/update_synth_vh.py). Requires prepared volumes,
+# stage tars and fg point CSVs for each dataset:
+#   DATASETS=completely sbatch sbatch/ppp/prep/prepare_fisbe_for_ppp_sbatch.sh
+#   SPLITS=completely/train,completely/val,completely/test sbatch sbatch/ppp/prep/prepare_fg_points_sbatch.sh
+#   DATASETS=completely sbatch sbatch/ppp/prep/prepare_ppp_stage_tars_sbatch.sh
+# Train: ./sbatch/ppp/ppp_submit_train.sh base1-noenc-c --base original_default.toml --id base1-noenc-c --time 24:00:00
+# Exp id: --id base1-noenc-c
+# --account torch_pr_61_tandon_priority or torch_pr_61_tandon_advanced 
+# Test: ./sbatch/ppp/ppp_submit_test.sh array base1-noenc-c --ckpt 36000 --split test --base original_default.toml
+
+[data]
+# FISBe zarr volumes (run prepare_fisbe_for_ppp.py once before training)
+fisbe_root = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe"
+# Preferred: name folders under fisbe_root (each must contain train/val/test).
+# When set, train_data/val_data/test_data are derived as
+# {fisbe_root}/{first_dataset}/{split}. Inference outputs use {dataset}/{sample}.
+# Including a name with "partly" auto-enables add_partly / add_partly_val.
+train_datasets = ["completely"]
+val_datasets = ["completely"]
+test_datasets = ["completely"]
+overlap_csv_folder = ""
+fg_csv_folder = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe/fg_points"
+numinst_key = "volumes/gt_numinst"
+sample_mask_key = "volumes/gt_fg_rm_5"
+add_partly = false
+sample_fg_points = true
+max_train_samples = 1000
+max_val_samples = 1000
+
+[model]
+num_fmaps = 24
+train_input_shape_valid = [ 140, 140, 140,]
+test_input_shape_valid = [ 156, 156, 156,]
+upsampling = "transposed_conv"
+train_code = false
+
+[training]
+val_log_step = 2000
+# l40s
+batch_size = 18
+num_workers = 28
+# h200
+# batch_size = 63
+# num_workers = 32
+# max_iterations = 400000
+checkpoints = 1000
+snapshots = 2000
+profiling = 500
+probability_hue = 0
+cache_size = 400
+# Fisbe dataset incomplete I think. Missing file that tells which voxels are instances or not, outside of original fisbe label
+use_gt_extra = false
+oversample_complete = 3
+mask_bg_weight = 0.01
+
+
+[prediction]
+batch_size = 36
+num_workers = 32
+cache_size = 300
+mask_folder = ""
+# predict_no_gp runs under inference_mode+autocast, so large tiles fit.
+# wall time scales with the number of forward passes, i.e. with
+# (volume / (test_input_shape_valid - 92)^3) / batch_size -- keep 
+
+[validation]
+checkpoints = [400000]
+
+[testing]
+num_workers = 32
+
+[vote_instances]
+num_workers = 32
+
+[evaluation]
+num_workers = 32
+from_scratch = true
+add_general_metrics = ["avg_gt_skel_coverage", "avg_f1_cov_score", "false_merge", "false_split"]
+summary = [ "general.Num GT", "general.Num Pred", "general.avg_f1_cov_score", "confusion_matrix.avFscore", "confusion_matrix.avFscore19", "general.avg_gt_skel_coverage", "general.TP_05_rel", "general.avg_TP_05_cldice", "general.FM", "general.FS", "confusion_matrix.th_0_5.avg_tp_skel_coverage",
+"confusion_matrix.th_0_1.fscore", "confusion_matrix.th_0_2.fscore", "confusion_matrix.th_0_3.fscore", "confusion_matrix.th_0_4.fscore", "confusion_matrix.th_0_5.fscore", "confusion_matrix.th_0_6.fscore", "confusion_matrix.th_0_7.fscore", "confusion_matrix.th_0_8.fscore", "confusion_matrix.th_0_9.fscore",
+"confusion_matrix.th_0_5.AP_TP", "confusion_matrix.th_0_5.AP_FP",
+"confusion_matrix.th_0_5.AP_FN", "confusion_matrix.th_0_5.false_split",
+"confusion_matrix.th_0_5.false_merge"
+]
+
+[optimizer.optimizer]
+optimizer = "Adam"
+lr = 0.0002
+
+[training.sampling]
+min_masked = 0.0001
+probability_random = 0.20
+probability_fg = 0.80
+probability_overlap = 0.0
+# No overlap_csv_folder, so probability_overlap = 0.0
+point_balance_radius_overlap = 3
+
+[training.augmentation]
+elastic = false
+overlay = false

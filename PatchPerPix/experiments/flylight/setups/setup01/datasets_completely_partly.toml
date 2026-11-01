@@ -1,0 +1,17 @@
+# Opt-in multi-dataset overlay (Phase 2). Defaults stay completely-only.
+# Use with matching --datasets on submit:
+#   ./sbatch/ppp/ppp_submit_train.sh <preset> --datasets completely,partly \
+#     --config datasets_completely_partly.toml
+#
+# Requires PPP-prepared partly volumes and stage tars:
+#   DATASETS=partly sbatch sbatch/ppp/prep/prepare_fisbe_for_ppp_sbatch.sh
+#   DATASETS=completely,partly sbatch sbatch/ppp/prep/prepare_ppp_stage_tars_sbatch.sh
+#
+# Naming "partly" auto-enables add_partly / add_partly_val in run_ppp.
+
+[data]
+train_datasets = ["completely", "partly"]
+val_datasets = ["completely", "partly"]
+test_datasets = ["completely", "partly"]
+max_train_samples = 40
+max_val_samples = 20

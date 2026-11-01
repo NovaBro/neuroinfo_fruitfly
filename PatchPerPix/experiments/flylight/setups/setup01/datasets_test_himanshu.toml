@@ -1,0 +1,11 @@
+# Himanshu Gen1 MCFO — test-only inference (no GT / no evaluate).
+# Use with matching --datasets on array:
+#   ./sbatch/ppp/ppp_submit_test.sh array <preset> --split test --ckpt N \
+#     --datasets himanshu --config datasets_test_himanshu.toml \
+#     --stage legacy   # predict[+decode]+label; omit --agg
+#
+# Requires fisbe/himanshu/test/ (prepare_himanshu_for_ppp*). No train/val.
+
+[data]
+test_datasets = ["himanshu"]
+max_test_samples = 5

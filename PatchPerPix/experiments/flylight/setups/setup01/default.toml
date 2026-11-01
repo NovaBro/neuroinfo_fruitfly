@@ -178,10 +178,10 @@ assignment_strategy = "greedy"
 remove_small_components = 500
 keep_gt_shape = true
 evaluate_false_labels = true
-add_general_metrics = ["avg_gt_skel_coverage", "avg_f1_cov_score"]
+add_general_metrics = ["avg_gt_skel_coverage", "avg_f1_cov_score", "false_merge", "false_split"]
 add_multi_thresh_metrics = ["avg_tp_skel_coverage"]
 average_over_samples = false
-summary = [ "general.Num GT", "general.Num Pred", "general.avg_f1_cov_score", "confusion_matrix.avFscore", "general.avg_gt_skel_coverage", "confusion_matrix.th_0_5.avg_tp_skel_coverage",
+summary = [ "general.Num GT", "general.Num Pred", "general.avg_f1_cov_score", "confusion_matrix.avFscore", "confusion_matrix.avFscore19", "general.avg_gt_skel_coverage", "general.TP_05_rel", "general.avg_TP_05_cldice", "general.FM", "general.FS", "confusion_matrix.th_0_5.avg_tp_skel_coverage",
 "confusion_matrix.th_0_1.fscore", "confusion_matrix.th_0_2.fscore", "confusion_matrix.th_0_3.fscore", "confusion_matrix.th_0_4.fscore", "confusion_matrix.th_0_5.fscore", "confusion_matrix.th_0_6.fscore", "confusion_matrix.th_0_7.fscore", "confusion_matrix.th_0_8.fscore", "confusion_matrix.th_0_9.fscore",
 "confusion_matrix.th_0_5.AP_TP", "confusion_matrix.th_0_5.AP_FP",
 "confusion_matrix.th_0_5.AP_FN", "confusion_matrix.th_0_5.false_split",

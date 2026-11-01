@@ -1,0 +1,11 @@
+# H200 overlay for our-noenc-cs (16-CPU cap). Use with:
+#   ./sbatch/ppp/ppp_submit_train.sh our-noenc-cs --base original_default.toml \
+#     --config our-noenc-cs-h200.toml --partition h200_public --cpus 16 --mem 500g --id <id>
+# Not CPU-bound: the limit is handoff bytes through PreCache's mp.Queue + 16 workers oversubscribing
+# 16 CPUs. Bench (jobs 20488811-13, bs 63): fp32/w16 6.6 samples/s, fp16/w16 11.1, fp16/w12 29.2
+# (GPU eats ~17.5/s). See our-noenc-cs.toml comments.
+[training]
+batch_size = 63
+num_workers = 12
+cache_size = 128
+raw_transport_fp16 = true

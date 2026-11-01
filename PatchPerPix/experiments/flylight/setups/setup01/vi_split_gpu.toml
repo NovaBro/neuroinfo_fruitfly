@@ -1,0 +1,6 @@
+# Split label, GPU phase: per-block + inter-block patch graph (CUDA), cached in
+# <instanced>/<sample>.zarr volumes/blocks; stops before affGraphToInstances (CPU).
+# Follow with vi_split_cpu.toml. Submitted by ppp_submit_test.sh array --stage label|all.
+[vote_instances]
+cuda = true
+termAfterStitchGraph = true

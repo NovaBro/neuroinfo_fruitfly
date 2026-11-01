@@ -1,0 +1,17 @@
+# One-shot evaluate overlay: reload existing completely tomls and add 1k_v1.
+# Pass only on `ppp_submit_test.sh evaluate`, after eval_rm200.toml, so these
+# keys win. Do not pass on decode or label: max_test_samples would expand the
+# array to every completely volume plus all of 1k_v1.
+#
+#   ./sbatch/ppp/ppp_submit_test.sh evaluate our-decoder-c1k_v1 \
+#     --split test --ckpt 16000 \
+#     --base original_default_train_code.toml \
+#     --config datasets_test_1k_v1_keep_completely.toml \
+#     --keep-pred-affs --keep-pred-code
+
+[data]
+test_datasets = ["completely", "1k_v1"]
+max_test_samples = 10000
+
+[evaluation]
+from_scratch = false

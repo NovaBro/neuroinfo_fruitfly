@@ -1,0 +1,12 @@
+# Smoke overlay — stack last via --config smoke.toml
+# Example:
+#   ./sbatch/ppp/ppp_submit_train.sh basic-ppp-noenc \
+#     --base default_l40s.toml --id basic-ppp-noenc-smoke \
+#     --config smoke.toml --time 00:30:00
+
+[training]
+max_iterations = 150
+checkpoints = 50
+snapshots = 50
+val_log_step = 10
+profiling = 10

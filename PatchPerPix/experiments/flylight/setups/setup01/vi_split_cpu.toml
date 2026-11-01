@@ -1,0 +1,6 @@
+# Split label, CPU phase: reads the cached patch graph from the vi_split_gpu.toml
+# phase and runs affGraphToInstances without CUDA. Fails fast if the GPU phase
+# did not finish (stitch_graph_done attr missing).
+[vote_instances]
+cuda = false
+graphToInst = true

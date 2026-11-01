@@ -1,0 +1,3 @@
+# Stack after smoke.toml so s/iter timing is not interleaved with validation.
+[training]
+val_log_step = 2000
