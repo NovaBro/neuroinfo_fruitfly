@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 
@@ -46,12 +48,123 @@ def gen_biapy_mip_4panel(raw, probs, instances, analysis_output_paths: AnalysisO
     logger.info(f"Saving to: {analysis_output_paths.output_images / f'mip_{title_prefix}.png'}")
     plt.savefig(analysis_output_paths.output_images / f"mip_{title_prefix}.png")
 
+
+def _zcyx_to_zyx_mip(vol: np.ndarray, axis: int = 0) -> np.ndarray:
+    """MIP a (Z, C, Y, X) or (Z, Y, X) volume to 2D (Y, X)."""
+    vol = np.asarray(vol, dtype=np.float32)
+    if vol.ndim == 4:
+        # collapse channels first (argmax already applied by caller if needed)
+        if vol.shape[1] == 1:
+            vol = vol[:, 0]
+        else:
+            vol = vol.max(axis=1)
+    if vol.ndim != 3:
+        raise ValueError(f"Expected 3D ZYX after channel collapse, got {vol.shape}")
+    return vol.max(axis=axis)
+
+
+def gen_ppp_snapshot_mip(
+    raw: np.ndarray | None,
+    pred_numinst: np.ndarray | None,
+    gt_numinst: np.ndarray | None,
+    pred_affs: np.ndarray | None,
+    gt_affs: np.ndarray | None,
+    analysis_output_paths: AnalysisOutputPaths,
+    title_prefix: str = "",
+    axis: int = 0,
+    output_path: Path | None = None,
+) -> None:
+    """4-panel MIP QA for a PPP training snapshot HDF.
+
+    Arrays are (Z, C, Y, X) as returned by load_any_volume(..., reduce_wide_channels=False).
+    Panels: raw RGB | pred_numinst argmax | gt_numinst | mean |pred_affs-gt_affs| L1.
+    Missing arrays leave a blank panel with a warning.
+    """
+    fig, axes = plt.subplots(1, 4, figsize=(16, 4))
+
+    # 0: raw RGB MIP
+    if raw is not None:
+        axes[0].imshow(gen_mip(raw, axis=axis))
+        axes[0].set_title(f"{title_prefix}raw RGB MIP")
+    else:
+        logger.warning("volumes/raw missing; leaving panel blank")
+        axes[0].set_title("raw (missing)")
+    axes[0].axis("off")
+
+    # 1: pred_numinst argmax then MIP
+    if pred_numinst is not None:
+        # (Z, C, Y, X) -> argmax over C -> (Z, Y, X)
+        labels = np.argmax(pred_numinst, axis=1)
+        mip = labels.max(axis=axis)
+        axes[1].imshow(mip, cmap="nipy_spectral")
+        axes[1].set_title("pred_numinst argmax MIP")
+    else:
+        logger.warning("volumes/pred_numinst missing; leaving panel blank")
+        axes[1].set_title("pred_numinst (missing)")
+    axes[1].axis("off")
+
+    # 2: gt_numinst MIP
+    if gt_numinst is not None:
+        mip = _zcyx_to_zyx_mip(gt_numinst, axis=axis)
+        axes[2].imshow(mip, cmap="nipy_spectral")
+        axes[2].set_title("gt_numinst MIP")
+    else:
+        logger.warning("volumes/gt_numinst missing; leaving panel blank")
+        axes[2].set_title("gt_numinst (missing)")
+    axes[2].axis("off")
+
+    # 3: affinity L1 error MIP
+    if pred_affs is not None and gt_affs is not None:
+        if pred_affs.shape != gt_affs.shape:
+            logger.warning(
+                "pred_affs %s vs gt_affs %s shape mismatch; blanking aff panel",
+                pred_affs.shape,
+                gt_affs.shape,
+            )
+            axes[3].set_title("aff L1 (shape mismatch)")
+        else:
+            # mean over channels of |pred - gt|, then MIP over Z
+            err = np.mean(
+                np.abs(
+                    pred_affs.astype(np.float32) - gt_affs.astype(np.float32)
+                ),
+                axis=1,
+            )
+            err_mip = err.max(axis=axis)
+            im = axes[3].imshow(err_mip, cmap="magma")
+            axes[3].set_title("aff L1 error MIP")
+            fig.colorbar(im, ax=axes[3], fraction=0.046, pad=0.04)
+    else:
+        logger.warning(
+            "volumes/pred_affs and/or volumes/gt_affs missing; leaving panel blank"
+        )
+        axes[3].set_title("aff L1 (missing)")
+    axes[3].axis("off")
+
+    depth = raw.shape[axis] if raw is not None else "?"
+    plt.suptitle(
+        f"PPP snapshot MIP (axis={axis}, depth={depth})",
+        y=1.02,
+    )
+    plt.tight_layout()
+    if output_path is None:
+        out_name = f"ppp_snapshot_{title_prefix}".rstrip("_") + ".png"
+        out_path = analysis_output_paths.output_images / out_name
+    else:
+        out_path = Path(output_path)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+    logger.info("Saving to: %s", out_path)
+    plt.savefig(out_path)
+    plt.close(fig)
+
+
 def gen_basic_mip(
         input_np:np.ndarray, 
         output_file_name:str, 
         analysis_output_paths: AnalysisOutputPaths,
         axis:int=1,
         output_path: Path | None = None,
+        dpi: int = 800,
 ):
     logger.info(f"gen_basic_mip:")
     logger.info(f"\toutput_file_name: {output_file_name}")
@@ -63,7 +176,7 @@ def gen_basic_mip(
     rgb = gen_mip(input_np, axis=axis) # For matplotlib plotting
     logger.info(f"\tGEN MIP - After Shape: {rgb.shape}")
 
-    fig, axes = plt.subplots(1, 1, figsize=(8, 8), dpi=800)
+    fig, axes = plt.subplots(1, 1, figsize=(8, 8), dpi=dpi)
     axes.imshow(rgb)
     axes.set_title(f"MIP of Zarr Image {output_file_name}")
     axes.axis("off")
@@ -157,6 +270,7 @@ def gen_instance_projection(
     analysis_output_paths: AnalysisOutputPaths,
     axis: int = 1,
     output_path: Path | None = None,
+    dpi: int = 800,
 ):
     """
     Colorized MIP of FISBe gt_instances (CZYX overlapping instance channels).
@@ -185,7 +299,7 @@ def gen_instance_projection(
     logger.debug(f"\trgb Shape: {rgb.shape}")
 
     # Plotting
-    fig, axes = plt.subplots(1, 1, figsize=(8, 8), dpi=800)
+    fig, axes = plt.subplots(1, 1, figsize=(8, 8), dpi=dpi)
     axes.imshow(rgb)
     logger.debug(f"\toutput_file_name: {output_file_name}")
     output_file_name = output_file_name.replace('.zarr.tif', '')
@@ -200,6 +314,37 @@ def gen_instance_projection(
     logger.info(f"\tSaving to: {out_path}")
     plt.savefig(out_path)
     plt.close(fig)
+
+
+def gen_scalar_mip(
+    input_np: np.ndarray,
+    output_file_name: str,
+    analysis_output_paths: AnalysisOutputPaths,
+    axis: int = 0,
+    output_path: Path | None = None,
+    dpi: int = 800,
+) -> None:
+    """Grayscale MIP of a ZYX volume along ``axis`` (default Z)."""
+    vol = np.asarray(input_np)
+    if vol.ndim != 3:
+        raise ValueError(f"Expected 3D ZYX volume, got shape {vol.shape}")
+    logger.info("gen_scalar_mip: %s shape %s axis %s", output_file_name, vol.shape, axis)
+    mip = vol.max(axis=axis).astype(np.float32)
+    mip = (mip - mip.min()) / (np.ptp(mip) + 1e-8)
+
+    fig, axes = plt.subplots(1, 1, figsize=(8, 8), dpi=dpi)
+    axes.imshow(mip, cmap="gray", vmin=0, vmax=1)
+    axes.set_title(f"MIP {output_file_name}")
+    axes.axis("off")
+    if output_path is None:
+        out_path = analysis_output_paths.output_images / f"{output_file_name}.png"
+    else:
+        out_path = Path(output_path)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(out_path)
+    logger.info("Saving to: %s", out_path)
+    plt.close(fig)
+
 
 def gen_rotations_and_projections(
     input_np: np.ndarray,
@@ -218,11 +363,10 @@ def gen_rotations_and_projections(
     #         gen_gt_projection(input_np, f"base_rotated_{output_file_name}", analysis_output_paths, axis)
     rotated_image = axis_rotation(input_np, rand_axis_int, k_rotations)
 
-    match volume:
-        case 'raw':
-            gen_basic_mip(rotated_image, f"rotated_{output_file_name}", analysis_output_paths)
-        case 'gt_instance':
-            gen_instance_projection(rotated_image, f"rotated_{output_file_name}", analysis_output_paths, axis)
+    if volume == "raw":
+        gen_basic_mip(rotated_image, f"rotated_{output_file_name}", analysis_output_paths)
+    elif volume == "gt_instance":
+        gen_instance_projection(rotated_image, f"rotated_{output_file_name}", analysis_output_paths, axis)
 
 def gen_basic_image():
     pass

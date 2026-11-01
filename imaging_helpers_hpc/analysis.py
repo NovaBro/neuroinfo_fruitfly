@@ -23,17 +23,16 @@ def get_stats_in_one_image(img_path:Path):
     logger.info(f'get_stats_in_one_image:')
     logger.debug(f'\tInput Image Path {img_path}')
     logger.debug(f'\tInput Image Suffix {img_path.suffix}')
-    match img_path.suffix:
-        case '.zarr':
-            loaded_image = zarr.open_group(img_path)
-            logger.error('ZARR processing not implemented!!')
-            raise ValueError('ZARR processing not implemented!!')
-        case '.tif':
-            loaded_image = tifffile.imread(img_path)
-        case _:
-            error_msg = 'Extension of image path given is not valid, must be .tif (.zarr not implemented yet) image path given'
-            logger.error(error_msg)
-            raise ValueError(error_msg)
+    if img_path.suffix == '.zarr':
+        loaded_image = zarr.open_group(img_path)
+        logger.error('ZARR processing not implemented!!')
+        raise ValueError('ZARR processing not implemented!!')
+    elif img_path.suffix == '.tif':
+        loaded_image = tifffile.imread(img_path)
+    else:
+        error_msg = 'Extension of image path given is not valid, must be .tif (.zarr not implemented yet) image path given'
+        logger.error(error_msg)
+        raise ValueError(error_msg)
     unique_values = np.unique(loaded_image)
 
     logger.info(f"\tloaded_image.shape: {loaded_image.shape}")

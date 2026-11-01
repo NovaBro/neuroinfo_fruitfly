@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import re
 import logging
@@ -66,12 +68,121 @@ def _load_npy(full_path: Path) -> np.ndarray:
     )
 
 
-def load_any_volume(full_path) -> np.ndarray:
-    """Load a TIFF, NRRD, or NPY volume for any-MIP.
+def list_hdf_volume_datasets(path: Path) -> list[str]:
+    """Return dataset paths under /volumes/ in an HDF5 file."""
+    try:
+        import h5py
+    except ImportError as exc:
+        raise ImportError(
+            "Reading HDF5 requires h5py. Install it or run inside the ppp overlay."
+        ) from exc
+
+    keys: list[str] = []
+    with h5py.File(path, "r") as f:
+        if "volumes" not in f:
+            return keys
+        vol = f["volumes"]
+        for name in vol.keys():
+            if isinstance(vol[name], h5py.Dataset):
+                keys.append(f"volumes/{name}")
+    return keys
+
+
+def _squeeze_leading_batch(arr: np.ndarray) -> np.ndarray:
+    """Drop a leading size-1 batch axis (PPP snapshots are (1, ...))."""
+    if arr.ndim >= 1 and arr.shape[0] == 1:
+        return arr[0]
+    return arr
+
+
+def _normalize_hdf_volume(
+    arr: np.ndarray,
+    *,
+    reduce_wide_channels: bool = True,
+) -> np.ndarray:
+    """Normalize PPP/gunpowder HDF arrays to (Z, C, Y, X) for gen_basic_mip.
+
+    After squeezing a leading batch dim, 4D arrays are treated as (C, Z, Y, X)
+    and transposed to (Z, C, Y, X). 3D arrays become (Z, 1, Y, X).
+    When C > 3 and reduce_wide_channels is True (affinity stacks), channels
+    are reduced with max so imshow stays valid.
+    """
+    arr = np.asarray(arr)
+    arr = _squeeze_leading_batch(arr)
+
+    if arr.ndim == 3:
+        return arr[:, np.newaxis, :, :]
+
+    if arr.ndim == 4:
+        # PPP snapshots store (C, Z, Y, X)
+        zcyx = np.transpose(arr, (1, 0, 2, 3))
+        n_chan = zcyx.shape[1]
+        if reduce_wide_channels and n_chan > 3:
+            logger.info(
+                "HDF volume has C=%d (>3); reducing channels with max for MIP",
+                n_chan,
+            )
+            zcyx = zcyx.max(axis=1, keepdims=True)
+        return zcyx
+
+    raise ValueError(
+        f"Expected 3D or 4D HDF volume after batch squeeze, got shape {arr.shape}"
+    )
+
+
+def _resolve_hdf_dataset(path: Path, dataset: str | None) -> str:
+    keys = list_hdf_volume_datasets(path)
+    if dataset is not None:
+        return dataset
+    if len(keys) == 1:
+        return keys[0]
+    listed = ", ".join(keys) if keys else "(none under /volumes/)"
+    raise ValueError(
+        f"HDF file {path} needs --dataset; available: {listed}"
+    )
+
+
+def _load_hdf(
+    path: Path,
+    dataset: str | None = None,
+    *,
+    reduce_wide_channels: bool = True,
+) -> np.ndarray:
+    """Load one HDF5 dataset and normalize to (Z, C, Y, X)."""
+    try:
+        import h5py
+    except ImportError as exc:
+        raise ImportError(
+            "Reading HDF5 requires h5py. Install it or run inside the ppp overlay."
+        ) from exc
+
+    key = _resolve_hdf_dataset(path, dataset)
+    with h5py.File(path, "r") as f:
+        if key not in f:
+            available = list_hdf_volume_datasets(path)
+            raise KeyError(
+                f"Dataset {key!r} not in {path}; available: "
+                f"{', '.join(available) if available else '(none)'}"
+            )
+        arr = np.asarray(f[key])
+    logger.info("Loaded HDF %s [%s] shape=%s dtype=%s", path, key, arr.shape, arr.dtype)
+    return _normalize_hdf_volume(arr, reduce_wide_channels=reduce_wide_channels)
+
+
+def load_any_volume(
+    full_path,
+    dataset: str | None = None,
+    *,
+    reduce_wide_channels: bool = True,
+) -> np.ndarray:
+    """Load a TIFF, NRRD, NPY, or HDF5 volume for any-MIP.
 
     TIFF: returned as tifffile reads it (typically Z, C, Y, X).
     NRRD / 3D NPY: XYZ normalized to (Z, 1, Y, X).
     4D NPY: returned as-is (Z, C, Y, X).
+    HDF (.hdf/.h5/.hdf5): requires dataset (e.g. volumes/raw) unless the file
+    has exactly one dataset under /volumes/. Normalized to (Z, C, Y, X);
+    affinity stacks with C>3 are max-reduced unless reduce_wide_channels=False.
     """
     path = Path(full_path)
     suffix = path.suffix.lower()
@@ -81,15 +192,19 @@ def load_any_volume(full_path) -> np.ndarray:
         return _load_nrrd(path)
     if suffix == ".npy":
         return _load_npy(path)
+    if suffix in (".hdf", ".h5", ".hdf5"):
+        return _load_hdf(
+            path, dataset, reduce_wide_channels=reduce_wide_channels
+        )
     raise ValueError(
         f"Unsupported input type {suffix!r} for {path}; "
-        f"expected .tif/.tiff/.nrrd/.nhdr/.npy"
+        f"expected .tif/.tiff/.nrrd/.nhdr/.npy/.hdf/.h5/.hdf5"
     )
 
 
-def load_any_tif(full_path):
-    """Alias for load_any_volume (TIFF, NRRD, and NPY)."""
-    return load_any_volume(full_path)
+def load_any_tif(full_path, dataset: str | None = None):
+    """Alias for load_any_volume (TIFF, NRRD, NPY, and HDF)."""
+    return load_any_volume(full_path, dataset=dataset)
 
 def load_biapy_test_sample(sample: str, biapy_paths:BiapyDataPaths):
     """Load raw test volume plus matching BiaPy per_image and instance outputs."""
@@ -134,4 +249,88 @@ def load_fisbe_completely(sample: str, fisbe_data_paths:FisbeDataPaths, split:st
     logger.info(f"\t\tlabel-idx-value 1: {np.unique(gt_instances[1])}")
 
     return raw, gt_instances
+
+
+SYNTH_MCFO_ROOT = Path("/scratch/vh2308/data/synth_MCFO")
+SYNTH_MOUNT_ROOT = Path("/synth_MCFO")
+
+
+class SynthMountMissing(RuntimeError):
+    """Source SquashFS is not mounted at /synth_MCFO/<dataset>/samples."""
+
+
+def synth_samples_dir(dataset: str) -> Path:
+    return SYNTH_MOUNT_ROOT / dataset / "samples"
+
+
+def require_synth_mount(dataset: str) -> None:
+    """Raise when raw/gt symlinks into this dataset cannot resolve.
+
+    The mount command is the sbatch that overlays the matching .sqf.
+    """
+    samples = synth_samples_dir(dataset)
+    if samples.is_dir():
+        return
+    sqf = SYNTH_MCFO_ROOT / f"{dataset}.sqf"
+    raise SynthMountMissing(
+        f"missing {samples} (sqf did not mount at the expected path). "
+        f"Mount {sqf} read-only. Example: "
+        f"DATASETS={dataset} sbatch sbatch/ppp/prep/synth/inspect_sqf_dataset_sbatch.sh"
+    )
+
+
+def ppp_mount_dir(dataset: str) -> Path:
+    return SYNTH_MOUNT_ROOT / f"{dataset}_ppp"
+
+
+def require_ppp_mount(dataset: str) -> None:
+    """Raise when prepared-array symlinks into the packed PPP image cannot resolve."""
+    mount = ppp_mount_dir(dataset)
+    if mount.is_dir():
+        return
+    raise SynthMountMissing(
+        f"missing {mount} (packed PPP sqf did not mount). "
+        f"DATASETS={dataset} sbatch sbatch/ppp/prep/pack_ppp_sqf_sbatch.sh"
+    )
+
+
+def zarr_array_metadata(zarr_path: Path, array: str) -> dict:
+    """Header-only metadata for volumes/<array>. Does not read voxels.
+
+    An unreadable array is returned with status set to the error so one
+    dangling symlink does not abort a dataset scan.
+    """
+    vol = Path(zarr_path) / "volumes" / array
+    row = {
+        "shape": "",
+        "dtype": "",
+        "chunks": "",
+        "symlink_target": "",
+        "status": "ok",
+    }
+    try:
+        if vol.is_symlink():
+            row["symlink_target"] = os.readlink(vol)
+    except OSError as exc:
+        row["status"] = f"{type(exc).__name__}: {exc}"
+        return row
+
+    try:
+        group = zarr.open_group(str(zarr_path), mode="r")
+        arr = group[f"volumes/{array}"]
+        chunks = getattr(arr, "chunks", None)
+        row["shape"] = "x".join(str(int(x)) for x in arr.shape)
+        row["dtype"] = str(arr.dtype)
+        row["chunks"] = (
+            "x".join(str(int(x)) for x in chunks) if chunks else ""
+        )
+    except Exception as exc:
+        row["status"] = f"{type(exc).__name__}: {exc}"
+    return row
+
+
+def load_zarr_volume(zarr_path: Path, array: str) -> np.ndarray:
+    """Load volumes/<array> fully into memory (CZYX for FISBe / synth)."""
+    group = zarr.open_group(str(zarr_path), mode="r")
+    return np.asarray(group[f"volumes/{array}"])
 

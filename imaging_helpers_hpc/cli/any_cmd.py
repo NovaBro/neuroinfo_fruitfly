@@ -10,7 +10,14 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
         "-i",
         "--input-file",
         required=True,
-        help="Path to a TIFF, NRRD, or NPY file to project",
+        help="Path to a TIFF, NRRD, NPY, or HDF (.hdf/.h5/.hdf5) file to project",
+    )
+    parser.add_argument(
+        "-d",
+        "--dataset",
+        default=None,
+        help="HDF internal dataset path (e.g. volumes/raw). Required when the "
+        "HDF has multiple datasets under /volumes/",
     )
     parser.set_defaults(func=run)
 
@@ -21,4 +28,4 @@ def run(
     metric_paths: MetricPaths,
 ) -> None:
     del metric_paths
-    run_any_mip(args.input_file, analysis_output_paths)
+    run_any_mip(args.input_file, analysis_output_paths, dataset=args.dataset)

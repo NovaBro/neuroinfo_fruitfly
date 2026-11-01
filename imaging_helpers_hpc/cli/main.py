@@ -1,8 +1,17 @@
+from __future__ import annotations
+
 import argparse
 import logging
 import sys
 
-from imaging_helpers_hpc.cli import any_cmd, biapy_cmd, fisbe_cmd, stats_cmd
+from imaging_helpers_hpc.cli import (
+    any_cmd,
+    biapy_cmd,
+    dataset_cmd,
+    fisbe_cmd,
+    ppp_cmd,
+    stats_cmd,
+)
 from imaging_helpers_hpc.paths import AnalysisOutputPaths, MetricPaths
 
 
@@ -27,7 +36,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     any_cmd.add_parser(subparsers)
     biapy_cmd.add_parser(subparsers)
+    dataset_cmd.add_parser(subparsers)
     fisbe_cmd.add_parser(subparsers)
+    ppp_cmd.add_parser(subparsers)
     stats_cmd.add_parser(subparsers)
     return parser
 
