@@ -1,3 +1,7 @@
+> **Historical / archived.** Current PatchPerPix ops and canonical presets: [`ppp_overview.md`](../ppp_overview.md). Keep this file for background only; do not treat recipes here as the live path.
+>
+> ---
+
 # Layer B — VI merge
 
 Reduce over-fragmentation on `ppp_basic_long8h` by changing vote-instances merge

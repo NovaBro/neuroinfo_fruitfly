@@ -1,3 +1,7 @@
+> **Historical / archived.** Current PatchPerPix ops and canonical presets: [`ppp_overview.md`](../ppp_overview.md). Keep this file for background only; do not treat recipes here as the live path.
+>
+> ---
+
 # Layer A — Prediction quality
 
 Diagnose whether weak `pred_affs` / `pred_numinst` explain over-fragmentation on
@@ -24,7 +28,7 @@ Primary sample: `R22C03-20180918_66_J2`. Exp: `metrics/ppp/ppp_basic_long8h`.
 
 ### Pred metrics (fg / numinst / patch)
 
-Overlay: [`PatchPerPix/experiments/flylight/setups/setup01/eval_pred.toml`](../PatchPerPix/experiments/flylight/setups/setup01/eval_pred.toml)
+Overlay: [`PatchPerPix/experiments/flylight/setups/setup01/eval_pred.toml`](../../../PatchPerPix/experiments/flylight/setups/setup01/eval_pred.toml)
 (`prediction_only_test=true`).
 
 ```bash
@@ -43,7 +47,7 @@ Output: `metrics/ppp/ppp_basic_long8h/test/evaluated/30000/summary_prediction.cs
 ### Instance / size / aff activity
 
 ```bash
-sbatch sbatch/ppp/diagnose_ppp_basic_long8h_sbatch.sh
+sbatch sbatch/ppp/tools/diagnose_ppp_basic_long8h_sbatch.sh
 ```
 
 Defaults (th=0.3 VI): HDF under `instanced/30000/patch_threshold_0_3/...`,
@@ -88,7 +92,7 @@ Scripts:
 | Pred eval (optional; `eval_pred.toml`) | `sbatch/ppp/ppp_basic_long8h_pred_eval_sbatch.sh` |
 | Label+eval (runs `diagnose_ppp_pred_metrics.py` then VI) | `sbatch/ppp/ppp_basic_long8h_ckpt_label_eval_sbatch.sh` |
 
-Fast metrics helper: `sbatch/ppp/diagnose_ppp_pred_metrics.py` (mid-aff FG + numinst; no full patch load).
+Fast metrics helper: `sbatch/ppp/tools/diagnose_ppp_pred_metrics.py` (mid-aff FG + numinst; no full patch load).
 
 ### Completed chain (2026-09-18)
 

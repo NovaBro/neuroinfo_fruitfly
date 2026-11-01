@@ -378,7 +378,7 @@ nested GPU train jobs.
 
 ### Implementation
 
-**Script:** [`sbatch/biapy/raytune_controller_sbatch.sh`](../sbatch/biapy/raytune_controller_sbatch.sh)
+**Script:** [`sbatch/biapy/raytune_controller_sbatch.sh`](../../sbatch/biapy/raytune_controller_sbatch.sh)
 
 - Account `torch_pr_61_general`, 4 CPUs, 16G, walltime `7-00:00:00`
 - **No `--gres=gpu` / no `--nv`** — controller must not sit idle on a GPU partition
@@ -448,7 +448,7 @@ overlay Stage 4’s controller already uses. No separate Ray-only overlay.
 
 ### Install script
 
-**Script:** [`sbatch/biapy/raytune_env_install_sbatch.sh`](../sbatch/biapy/raytune_env_install_sbatch.sh)
+**Script:** [`sbatch/biapy/raytune_env_install_sbatch.sh`](../../sbatch/biapy/raytune_env_install_sbatch.sh)
 
 CPU-only job (`cpu_short`, no GPU): `singularity exec --fakeroot --overlay env/BiaPy_env.ext3:rw`
 then `pip install -U "ray[tune]" optuna` and verify imports. Uses the same
@@ -506,7 +506,7 @@ retrain automation is **Stage 7** (no `--resume` here yet).
 
 ### Module
 
-[`biapy_work_folder/raytune/search_space.py`](../biapy_work_folder/raytune/search_space.py)
+[`biapy_work_folder/raytune/search_space.py`](../../biapy_work_folder/raytune/search_space.py)
 
 - `constraint_for_gpu(gpu)` → SLURM constraint (`h200` / `l40s`)
 - `build_search_space(gpu=..., include_skel_weight=...)` → Tune samplers:

@@ -1,8 +1,12 @@
+> **Historical / archived.** Current PatchPerPix ops and canonical presets: [`ppp_overview.md`](../ppp_overview.md). Keep this file for background only; do not treat recipes here as the live path.
+>
+> ---
+
 # PatchPerPix defaults config — parameter reference
 
 Documents every key in the active defaults file:
 
-[`PatchPerPix/experiments/flylight/setups/setup01/default_train_code_l40s.toml`](../PatchPerPix/experiments/flylight/setups/setup01/default_train_code_l40s.toml)
+[`PatchPerPix/experiments/flylight/setups/setup01/default_train_code_l40s.toml`](../../../PatchPerPix/experiments/flylight/setups/setup01/default_train_code_l40s.toml)
 
 That file is the **ppp+dec** (`train_code=true`) L40s config cited in `CLAUDE.md` / `CODEBASE.md`. Sibling TOMLs share most keys:
 
@@ -12,7 +16,7 @@ That file is the **ppp+dec** (`train_code=true`) L40s config cited in `CLAUDE.md
 | `default_l40s.toml` | `train_code=false` (no autoencoder / code keys); longer train |
 | `default.toml` | Original Janelia/direct-affinity setup; no FISBe-specific keys |
 
-Architecture context: [`PatchPerPix/CODEBASE.md`](../PatchPerPix/CODEBASE.md).
+Architecture context: [`PatchPerPix/CODEBASE.md`](../../../PatchPerPix/CODEBASE.md).
 
 ---
 
@@ -69,7 +73,7 @@ High-impact semantics:
 |-----|---------|---------|-------------|
 | `logging` | `"INFO"` | Python log level | `run_ppp.main` → `logging.basicConfig` |
 | `debug` | `false` | Extra VI debug volumes; fail early on bad metrics | `mknet`, `evaluate_sample`, VI kwargs |
-| `overwrite` | `false` | If false, skip existing predict/decode/label outputs. HPC stack uses `default_l40s.toml` (`overwrite = true`), so `ppp_submit.sh array` **rewrites** finished samples; incomplete `pred_affs` are discarded first (`DISCARD_PARTIAL` + `check_prediction_complete.py`). See [ppp_sbatch_consolidation.md](ppp_sbatch_consolidation.md) § “Array / re-run”. | `predict`, `decode`, `vote_instances_sample` |
+| `overwrite` | `false` | If false, skip existing predict/decode/label outputs. HPC stack uses `default_l40s.toml` (`overwrite = true`), so `ppp_submit.sh array --stage predict|legacy` **rewrites** finished samples; incomplete `pred_affs` are discarded first (`DISCARD_PARTIAL` + `check_prediction_complete.py`). See [ppp_sbatch_consolidation.md](ppp_sbatch_consolidation.md) § “Array / re-run”. | `predict`, `decode`, `vote_instances_sample` |
 
 ---
 
@@ -77,10 +81,13 @@ High-impact semantics:
 
 | Key | Default | Meaning | Consumed by |
 |-----|---------|---------|-------------|
-| `fisbe_root` | scratch `…/fisbe` | Dataset root | **Not read by `run_ppp`**. Prep script CLI `--fisbe-root` only |
-| `train_data` | `…/completely/train` | Training volume directory | `get_list_train_files`, train sources |
-| `val_data` | `…/completely/val` | Validation volumes | `select_validation_data`, validate/predict |
-| `test_data` | `…/completely/test` | Test volumes | predict / evaluate / cross-val |
+| `fisbe_root` | scratch `…/fisbe` | Dataset root holding named folders (`completely/`, `partly/`, …) | `run_ppp.ensure_legacy_data_paths`, sample path resolution; also prep CLI `--fisbe-root` |
+| `train_datasets` | unset | Folder names under `fisbe_root` for training (each must contain `train/`). When set, enables list mode | `get_list_train_files`, `list_dataset_samples` |
+| `val_datasets` | defaults to `train_datasets` | Folder names for validation (`…/val/`) | same |
+| `test_datasets` | defaults to `train_datasets` | Folder names for test/predict (`…/test/`) | predict / evaluate |
+| `train_data` | `…/completely/train` | Absolute train dir (legacy, or derived from first `train_datasets` entry) | `get_list_train_files`, train sources |
+| `val_data` | `…/completely/val` | Absolute val dir (legacy or derived) | `select_validation_data`, validate/predict |
+| `test_data` | `…/completely/test` | Absolute test dir (legacy or derived) | predict / evaluate / cross-val |
 | `overlap_csv_folder` | `""` | Point CSVs for overlap sampling | `train.py:get_sources` (if `sample_fg_points`) |
 | `fg_csv_folder` | `""` | Point CSVs for fg sampling | same |
 | `voxel_size` | `[1,1,1]` | Voxel resolution (ZYX) | gunpowder, model, predict, decode, eval ndim |
@@ -92,19 +99,110 @@ High-impact semantics:
 | `sample_mask_key` | `volumes/gt_fg_rm_5` | FG mask for `RandomLocation` | train sampling |
 | `validate_on_train` | `false` | Use train set as validation | `update_config`, `select_validation_data` |
 | `shift_intensity` | `false` | Map raw to `[-1,1]` via `IntensityScaleShift` | train, predict |
-| `add_partly` | `false` | Mix partly-labeled volumes + loss mask | `train.py` |
+| `add_partly` | `false` | Mix partly-labeled volumes + loss mask. Auto-set `true` when any `train_datasets` name contains `"partly"` | `train.py` |
+| `add_partly_val` | unset | Include partly volumes in val/test discovery (legacy string-replace). Auto-set when any val/test dataset name contains `"partly"` | predict / evaluate |
 | `sample_fg_points` | `false` | Sample via point graphs instead of fg mask | `get_sources` |
 | `max_train_samples` | `18` | Cap number of train volumes | `get_list_train_files` |
-| `max_val_samples` | `10` | Cap number of val volumes | `select_validation_data` |
+| `max_val_samples` | `10` | Cap number of val volumes (train-time only; does **not** cap infer/array) | `select_validation_data` / `get_list_train_files` |
+| `max_test_samples` | unset | Cap number of **test** volumes for infer (`list_dataset_samples`) and sbatch array sizing (`ppp_datasets.py --count`) | `list_dataset_samples`, `ppp_datasets.py` |
 | `cross_val_folders` | `["val_data","test_data"]` | Fold keys for `cross_validate` | `run_ppp.cross_validate` |
 
-Prep once before training:
+### Multi-folder list mode
+
+When `train_datasets` and `fisbe_root` are set, paths resolve as
+`{fisbe_root}/{dataset}/{train|val|test}/`. Sample IDs and inference outputs
+are namespaced as `{dataset}/{stem}` (e.g. `completely/VFB_…`). CLI
+`--train-data` / `--val-data` / `--test-data` still override a split to a
+single absolute path (disables list mode for that split). Prefer
+`run_ppp --split val|test` for list-mode infer (retargets `test_data` without
+disabling list mode); sbatch passes this for both val and test. Train staging
+uses `--fisbe-root $SLURM_TMPDIR/ppp_data` (keeps list mode; do not pass
+`--train-data` / `--val-data`). New folders under
+`fisbe_root` must be prepared the same way as `completely/` / `partly/`.
+
+#### Multi-dataset opt-in (Phase 2)
+
+Defaults stay `completely` only. Overlays:
+
+| Overlay | Use |
+|---------|-----|
+| `datasets_completely_partly.toml` | train/val/test on completely+partly |
+| `datasets_test_himanshu.toml` | himanshu **test** only (`max_test_samples=5`; no GT / no evaluate) |
 
 ```bash
-python PatchPerPix/experiments/flylight/prepare_fisbe_for_ppp.py --fisbe-root fisbe --opening-radius 1
+# Prep partly, then build tars
+DATASETS=partly sbatch --partition=cs sbatch/ppp/prep/prepare_fisbe_for_ppp_sbatch.sh
+DATASETS=completely,partly sbatch --partition=cs sbatch/ppp/prep/prepare_ppp_stage_tars_sbatch.sh
+
+./sbatch/ppp/ppp_submit.sh train basic_8h --datasets completely,partly \
+  --config datasets_completely_partly.toml
+```
+
+`--datasets` on submit must match the TOML `*_datasets` for that job.
+
+#### Synthetic VH volumes (`fisbe/synth_vh/`, `fisbe/synth_vh_u8/`)
+
+VesselFM-style synthetic brains under `fisbe/synth_vh/{train,val,test}/` and
+`fisbe/synth_vh_u8/...` (full splits). Include via `--datasets` / TOML
+`*_datasets` (e.g. `synth_vh`). The old `fisbe/synthetic/` tree and
+`datasets_*_synthetic.toml` overlays are removed.
+
+Array jobs must pass the same list via `--datasets` (sbatch does not parse TOML):
+
+```bash
+# Official FISBe test only (default)
+./sbatch/ppp/ppp_submit.sh array basic_8h --split test --ckpt 8000
+
+# Include synth_vh test (TOML must set test_datasets accordingly)
+./sbatch/ppp/ppp_submit.sh array basic_8h --split test --ckpt 8000 \
+  --datasets completely,synth_vh
+```
+
+Val and test infer/array jobs share one recipe: omit `--test-data` (list mode
+stays on), pass `run_ppp --split val|test`, and use namespaced
+`--sample {dataset}/{stem}` (flat stems are rejected).
+
+Prep once before training (all listed datasets' existing splits):
+
+```bash
+python PatchPerPix/experiments/flylight/prepare_fisbe_for_ppp.py \
+  --fisbe-root fisbe --opening-radius 1 --datasets completely,partly,synth_vh
+# or: sbatch sbatch/ppp/prep/prepare_fisbe_for_ppp_sbatch.sh
 ```
 
 That writes `raw_normalized`, `gt_instances_rm_5`, `gt_numinst`, `gt_fg_rm_5` into each `.zarr`.
+
+#### Himanshu test volumes (`fisbe/himanshu/`)
+
+Gen1 MCFO stacks prepared by
+[`prepare_himanshu_for_ppp.py`](../../../data_download_methods/prepare_himanshu_for_ppp.py)
+(sbatch: `sbatch/ppp/prep/himanshu/prepare_himanshu_for_ppp_sbatch.sh`) live under
+`fisbe/himanshu/test/*.zarr` with `volumes/raw` + `volumes/raw_normalized`
+only (**no GT** — skip evaluate / `--agg`).
+
+Opt-in overlay [`datasets_test_himanshu.toml`](../../../PatchPerPix/experiments/flylight/setups/setup01/datasets_test_himanshu.toml):
+
+```toml
+test_datasets = ["himanshu"]
+max_test_samples = 5
+```
+
+`max_test_samples` truncates sorted test discovery in `run_ppp.list_dataset_samples`
+and the matching sbatch array count/list (`ppp_datasets.py --count` /
+`--list-samples`). Pass the same folder list via `--datasets`:
+
+```bash
+./sbatch/ppp/ppp_submit.sh array <preset> \
+  --id <trained_exp> \
+  --split test \
+  --ckpt <N> \
+  --datasets himanshu \
+  --config datasets_test_himanshu.toml \
+  --stage legacy
+```
+
+Use `--stage all` (or include decode) when the preset has `train_code=true`.
+Do not pass `--agg`.
 
 ---
 
@@ -112,32 +210,32 @@ That writes `raw_normalized`, `gt_instances_rm_5`, `gt_numinst`, `gt_fg_rm_5` in
 
 | Key | Default | Meaning | Consumed by |
 |-----|---------|---------|-------------|
-| `train_net_name` | `"train_net"` | Train checkpoint / net basename | checkpoint paths, `mknet` |
-| `test_net_name` | `"test_net"` | Inference net name | predict |
-| `train_input_shape_valid` | `[140,140,140]` | Train crop when `train_padding=valid` | train, `torch_model` |
-| `test_input_shape_valid` | `[156,156,156]` | Infer ROI when `val_padding=valid` | predict |
-| `train_input_shape_same` | `[104,104,104]` | Train crop when `train_padding=same` | train |
-| `test_input_shape_same` | `[104,104,104]` | Infer ROI when `val_padding=same` | predict |
-| `patchshape` | `[7,7,7]` | Local patch descriptor size (ZYX) | affinities neighborhood, model, VI, decode |
-| `patchstride` | `[1,1,1]` | Patch sampling stride | same |
-| `max_num_inst` | `2` | Max instances/voxel; numinst classes = N+1 | model, loss, overlay aug |
-| `fmap_inc_factors` | `[3,3,3]` | U-Net encoder fmap growth per level | `UnetModelWrapper` → funlib `UNet` |
-| `fmap_dec_factors` | `[1.2,1.2,1.2]` | Decoder fmap shrink factors | same |
-| `downsample_factors` | three `[2,2,2]` | Pooling factors per level | same |
-| `activation` | `"relu"` | Intended U-Net activation | **Unused for main U-Net** (funlib default). AE uses `model.autoencoder.activation` |
-| `val_padding` | `"valid"` | Padding mode for infer shapes | selects `*_valid` vs `*_same` |
-| `train_padding` | `"valid"` | Padding mode for train shapes | same + `model.set_padding` |
-| `kernel_size` | `3` | Conv kernel size | `torch_model` |
-| `num_repetitions` | `2` | Conv repetitions per U-Net level | `torch_model` |
-| `upsampling` | `"transposed_conv"` | U-Net upsample mode | `UNet(..., upsampling=)` |
-| `overlapping_inst` | `true` | Numinst head vs binary fg | train / model / loss / predict / VI |
-| `train_code` | `true` | Code head + decoder path (ppp+dec) | model/loss; gates `decode` in `run_ppp` |
-| `patch_activation` | `"sigmoid"` | Affinity/code head activation | `torch_model` |
-| `code_units` | `176` | Code vector length | model, predict channels, decode |
-| `autoencoder_chkpt` | `"this"` | `"this"` → reuse train checkpoint for decode | validate / decode paths |
-| `network_style` | `"unet"` | `"unet"` or `"SwinUNETR"` | model, train, predict |
-| `num_fmaps` | `20` | Base feature-map count | `UnetModelWrapper` |
-| `decode_batch_size` | `800` | FG voxels per decode batch | `decode.py` |
+| `train_net_name` | `"train_net"` | Basename used for training checkpoints and the train network. | checkpoint paths, `mknet` |
+| `test_net_name` | `"test_net"` | Name of the network used at inference time. | predict |
+| `train_input_shape_valid` | `[140,140,140]` | Training crop size (ZYX) when `train_padding=valid`. | train, `torch_model` |
+| `test_input_shape_valid` | `[156,156,156]` | Inference ROI size when `val_padding=valid`. | predict |
+| `train_input_shape_same` | `[104,104,104]` | Training crop size when `train_padding=same`. | train |
+| `test_input_shape_same` | `[104,104,104]` | Inference ROI size when `val_padding=same`. | predict |
+| `patchshape` | `[7,7,7]` | Local patch descriptor size in ZYX voxels. | affinities neighborhood, model, VI, decode |
+| `patchstride` | `[1,1,1]` | Stride used when sampling local patches. | same |
+| `max_num_inst` | `2` | Maximum instances allowed per voxel; the numinst head has `N+1` classes. | model, loss, overlay aug |
+| `fmap_inc_factors` | `[3,3,3]` | Per-level feature-map growth factors in the U-Net encoder. | `UnetModelWrapper` → funlib `UNet` |
+| `fmap_dec_factors` | `[1.2,1.2,1.2]` | Per-level feature-map shrink factors in the U-Net decoder. | same |
+| `downsample_factors` | three `[2,2,2]` | Pooling / downsample factors at each U-Net level. | same |
+| `activation` | `"relu"` | Intended U-Net activation; unused by the main U-Net (funlib default). The autoencoder uses `model.autoencoder.activation` instead. | **Unused for main U-Net** |
+| `val_padding` | `"valid"` | Padding mode that selects validation/infer shapes (`*_valid` vs `*_same`). | selects `*_valid` vs `*_same` |
+| `train_padding` | `"valid"` | Padding mode that selects training shapes and is passed to `model.set_padding`. | same + `model.set_padding` |
+| `kernel_size` | `3` | Convolution kernel size in the U-Net. | `torch_model` |
+| `num_repetitions` | `2` | Number of convolutions repeated at each U-Net level. | `torch_model` |
+| `upsampling` | `"transposed_conv"` | Upsampling mode passed to the U-Net constructor. | `UNet(..., upsampling=)` |
+| `overlapping_inst` | `true` | If true, predict a numinst head (instance count per voxel) instead of binary foreground/background; required for crossing FlyLight neurons. | train / model / loss / predict / VI |
+| `train_code` | `true` | If true, use the code head plus decoder path (ppp+dec); gates whether `decode` runs in `run_ppp`. | model/loss; gates `decode` in `run_ppp` |
+| `patch_activation` | `"sigmoid"` | Activation applied to the affinity or code head output. | `torch_model` |
+| `code_units` | `176` | Length of the predicted code vector per foreground voxel. | model, predict channels, decode |
+| `autoencoder_chkpt` | `"this"` | Checkpoint for the decoder; `"this"` reuses the train checkpoint. | validate / decode paths |
+| `network_style` | `"unet"` | Backbone architecture: `"unet"` or `"SwinUNETR"`. | model, train, predict |
+| `num_fmaps` | `20` | Base number of feature maps at the first U-Net level. | `UnetModelWrapper` |
+| `decode_batch_size` | `800` | Number of foreground voxels decoded per batch. | `decode.py` |
 
 ---
 
@@ -431,6 +529,6 @@ Keys present in this TOML but **not read** by the current `run_ppp` + torch pred
 
 ## Related
 
-- Architecture / call graph: [`PatchPerPix/CODEBASE.md`](../PatchPerPix/CODEBASE.md)
+- Architecture / call graph: [`PatchPerPix/CODEBASE.md`](../../../PatchPerPix/CODEBASE.md)
 - Tuning / next steps: [`ppp_recommendations.md`](ppp_recommendations.md), [`ppp_performance_plan.md`](ppp_performance_plan.md)
 - Layer A/B runbooks: [`ppp_layer_a_prediction.md`](ppp_layer_a_prediction.md), [`ppp_layer_b_merge.md`](ppp_layer_b_merge.md)

@@ -1,3 +1,7 @@
+> **Historical / archived.** Current PatchPerPix ops and canonical presets: [`ppp_overview.md`](../ppp_overview.md). Keep this file for background only; do not treat recipes here as the live path.
+>
+> ---
+
 # PatchPerPix performance improvement plan
 
 Actionable plan to raise **instance quality** (F1 / skeleton coverage / fewer false
@@ -5,7 +9,7 @@ splits) and **train GPU utilization** for the FISBe PPP runs under
 `metrics/ppp/ppp_basic_long8h`.
 
 Companion post-mortem / job plumbing: [`ppp_recommendations.md`](ppp_recommendations.md).
-Architecture: [`PatchPerPix/CODEBASE.md`](../PatchPerPix/CODEBASE.md).
+Architecture: [`PatchPerPix/CODEBASE.md`](../../../PatchPerPix/CODEBASE.md).
 
 Primary debug sample: `R22C03-20180918_66_J2` (GT = 2 neurons under
 `gt_instances_rm_5`).
@@ -87,7 +91,7 @@ eval_patch_prediction = true
 Also:
 
 - Instance / FG MIP under `test/instanced/.../*.png`
-- `sbatch/ppp/diagnose_ppp_basic_instances.py` on the HDF (size histogram)
+- `sbatch/ppp/tools/diagnose_ppp_basic_instances.py` on the HDF (size histogram)
 - Spot-check `volumes/pred_affs` / `pred_numinst` on a **compute node** (login OOM risk)
 
 | Signal | Branch |
@@ -153,6 +157,10 @@ healthy tail of labels ≥200 (and preferably ≥500). Then set VI
 ---
 
 ## 6. GPU utilization (train throughput / idle-kill)
+
+> **Update 2026-10-13:** root cause was the main-process batch handoff (~27% idle
+> per step), not augmentation. Fixed with `ThreadedPrefetch` — see
+> [`ppp_gpu_util_prefetch.md`](ppp_gpu_util_prefetch.md).
 
 Latest train log: `gpu_usage_log_ppp_basic_long8h_train.csv` — mean util **~44%**,
 VRAM **~42 / 46 GB**, `training.batch_size = 1`.
@@ -239,10 +247,10 @@ When one setting wins on the pilot sample:
 
 | Item | Path |
 |------|------|
-| This plan | `md_guides/ppp_performance_plan.md` |
-| Job post-mortem | `md_guides/ppp_recommendations.md` |
-| Layer A runbook | `md_guides/ppp_layer_a_prediction.md` |
-| Layer B runbook (closed) | `md_guides/ppp_layer_b_merge.md` |
+| This plan | `md_guides/ppp/historical/ppp_performance_plan.md` |
+| Job post-mortem | `md_guides/ppp/historical/ppp_recommendations.md` |
+| Layer A runbook | `md_guides/ppp/historical/ppp_layer_a_prediction.md` |
+| Layer B runbook (closed) | `md_guides/ppp/historical/ppp_layer_b_merge.md` |
 | **Next** | `bash sbatch/ppp/ppp_basic_fmaps24_full_array_chain.sh` |
 | **New train 400k** | `sbatch sbatch/ppp/ppp_basic_fmaps24_400k_train_sbatch.sh` |
 | fmaps24 ckpt sweep (done) | `CKPTS="50000 60000 70000 80000" bash sbatch/ppp/ppp_basic_fmaps24_ckpt_sweep_chain.sh` |
@@ -252,7 +260,7 @@ When one setting wins on the pilot sample:
 | fmaps24 chain | `bash sbatch/ppp/ppp_basic_fmaps24_chain.sh` |
 | Soft eval overlay | `PatchPerPix/experiments/flylight/setups/setup01/eval_rm0.toml` |
 | Long overlay (closed) | `…/setup01/basic_long8h.toml` |
-| Diagnose script | `sbatch/ppp/diagnose_ppp_basic_instances.py` |
+| Diagnose script | `sbatch/ppp/tools/diagnose_ppp_basic_instances.py` |
 | Exp outputs (closed) | `metrics/ppp/ppp_basic_long8h/` |
 | Exp outputs (next) | `metrics/ppp/ppp_basic_fmaps24/` |
 | GPU util log | `gpu_usage_log_ppp_basic_fmaps24_train.csv` |

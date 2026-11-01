@@ -1,3 +1,7 @@
+> **Historical / archived.** Current PatchPerPix ops and canonical presets: [`ppp_overview.md`](../ppp_overview.md). Keep this file for background only; do not treat recipes here as the live path.
+>
+> ---
+
 # PatchPerPix (`ppp_basic`) — Recommendations
 
 Post-mortem and next steps after the **`ppp_basic_8h`** smoke run and the
@@ -25,20 +29,23 @@ Use this as a checklist before the next PatchPerPix train/infer cycle.
 | Infer job | Smoke `ppp_basic_infer` (17917066) COMPLETED; predict → VI → evaluate |
 | Job split | Train and infer as **separate sbatches** with `afterok` freed GPU VRAM |
 | `@fork` on train | Must stay **disabled** (spawn + gunpowder `PreCache` after CUDA hung the GPU) |
-| One-shot sbatch | `ppp_basic_8h_sbatch.sh` deprecated; use chain scripts |
+| One-shot sbatch | `ppp_basic_8h_sbatch.sh` deprecated; use `./sbatch/ppp/ppp_submit.sh chain …` |
 | Eval filter (smoke) | `remove_small_components=500` wiped all preds; re-eval with `0` → Num Pred = 170 |
 | Longer train | `ppp_basic_long8h` resumed to **30000** (jobs 17928977 train + 17928978 infer COMPLETED) |
 | GPU feed | Stage to `$SLURM_TMPDIR`; `num_workers=16`, `cache_size=48`; nvidia-smi logger |
 
-**Submit patterns:**
+**Submit patterns** (canonical CLI — see [`ppp_sbatch_consolidation.md`](ppp_sbatch_consolidation.md)):
 
 ```bash
 cd /scratch/wmz2007/neuroinfo_fruitfly
-bash sbatch/ppp/ppp_basic_8h_chain.sh        # smoke (~8.7k)
-bash sbatch/ppp/ppp_basic_long8h_chain.sh    # longer (resume-friendly; currently 30k / 5h wall)
+./sbatch/ppp/ppp_submit.sh chain basic_8h train run          # smoke (~8.7k)
+./sbatch/ppp/ppp_submit.sh chain basic_long8h train run      # longer (resume-friendly)
+./sbatch/ppp/ppp_submit.sh run basic_long8h --ckpt 30000     # one sample predict+label+evaluate
 ```
 
-Stable roots: `--root ../../metrics/ppp` with `-id ppp_basic_8h` or `-id ppp_basic_long8h`.
+Stable roots: `--root ../../metrics/ppp` with `-id ppp_basic_8h` or `-id ppp_basic_long8h`
+(preset defaults set `--id`). Old per-experiment clones under `sbatch/ppp/archive/` are
+historical only.
 
 ---
 
@@ -178,7 +185,7 @@ at 50/60/70/80k). Unlike long8h, last is best.
 
 ```bash
 cd /scratch/wmz2007/neuroinfo_fruitfly
-bash sbatch/ppp/ppp_basic_fmaps24_full_array_chain.sh
+./sbatch/ppp/ppp_submit.sh array basic_fmaps24 --ckpt 80000 --pct 2   # --stage all; both splits
 ```
 
 On-disk: val=5, test=7 volumes. Outputs under `evaluated/80000/...`.
@@ -187,7 +194,7 @@ On-disk: val=5, test=7 volumes. Outputs under `evaluated/80000/...`.
 ckpt every 5k, `probability_hue=0`. Overlay `basic_fmaps24_400k.toml`.
 
 ```bash
-sbatch sbatch/ppp/ppp_basic_fmaps24_400k_train_sbatch.sh
+./sbatch/ppp/ppp_submit.sh train basic_fmaps24_400k
 ```
 
 ---
@@ -222,25 +229,27 @@ weak/noisy affs → longer train / capacity. **Current branch:** fmaps24 locked 
 
 ## 5. Pointers
 
-| Item | Path |
-|------|------|
-| Smoke chain | `sbatch/ppp/ppp_basic_8h_chain.sh` |
-| Layer A runbook (A2 done; pick 70000) | `md_guides/ppp_layer_a_prediction.md` |
-| Layer B runbook (closed) | `md_guides/ppp_layer_b_merge.md` |
-| **Next** | `bash sbatch/ppp/ppp_basic_fmaps24_full_array_chain.sh` |
-| **New train** | `sbatch sbatch/ppp/ppp_basic_fmaps24_400k_train_sbatch.sh` (`-id ppp_basic_fmaps24_400k`, 400k iters, hue off) |
-| fmaps24 array / agg | `sbatch/ppp/ppp_basic_fmaps24_{array,eval_agg}_sbatch.sh` |
-| Full val @ 70000 | `sbatch sbatch/ppp/ppp_basic_long8h_full_val_sbatch.sh` |
-| Full test @ 70000 | `sbatch sbatch/ppp/ppp_basic_long8h_full_test_sbatch.sh` |
+| Item | Path / command |
+|------|----------------|
+| Submitter | `./sbatch/ppp/ppp_submit.sh` (+ [`ppp_sbatch_consolidation.md`](ppp_sbatch_consolidation.md)) |
+| Smoke chain | `./sbatch/ppp/ppp_submit.sh chain basic_8h train run` |
+| Layer A runbook (A2 done; pick 70000) | `md_guides/ppp/historical/ppp_layer_a_prediction.md` |
+| Layer B runbook (closed) | `md_guides/ppp/historical/ppp_layer_b_merge.md` |
+| **Next** | `./sbatch/ppp/ppp_submit.sh array basic_fmaps24 --ckpt 80000 --pct 2` |
+| **New train** | `./sbatch/ppp/ppp_submit.sh train basic_fmaps24_400k` |
+| Array stages | `array --stage all\|predict\|label\|legacy` |
+| Full val @ 70000 | `./sbatch/ppp/ppp_submit.sh array basic_long8h --stage all --split val --ckpt 70000` |
+| Full test @ 70000 | `./sbatch/ppp/ppp_submit.sh array basic_long8h --stage all --split test --ckpt 70000` |
 | fmaps24 overlay | `PatchPerPix/.../setup01/basic_fmaps24.toml` |
-| fmaps24 infer / chain | `sbatch/ppp/ppp_basic_fmaps24_{infer_sbatch,chain}.sh` |
+| One-sample run | `./sbatch/ppp/ppp_submit.sh run basic_fmaps24 --ckpt 80000` |
 | Longer overlay (closed) | `PatchPerPix/experiments/flylight/setups/setup01/basic_long8h.toml` |
-| Soft re-eval (long8h) | `sbatch/ppp/ppp_basic_long8h_eval_rm0_sbatch.sh` |
-| VI sweep chain | `sbatch/ppp/ppp_basic_long8h_vi_sweep_chain.sh` |
+| Soft re-eval | `./sbatch/ppp/ppp_submit.sh evaluate basic_long8h --split val --ckpt 30000` (+ `eval_rm0` default) |
+| VI sweep | `./sbatch/ppp/ppp_submit.sh vi-sweep basic_long8h --ckpt 30000` |
 | VI threshold overlays | `PatchPerPix/.../setup01/vi_th_0_{3..7}.toml` |
-| Infer uses best VI | `vi_th_0_3.toml` + `eval_rm0.toml` on fmaps24 / long8h infer |
+| Default VI + eval | `vi_th_0_3.toml` + `eval_rm0.toml` on `run` / array label |
 | Eval rm0 overlay | `PatchPerPix/experiments/flylight/setups/setup01/eval_rm0.toml` |
-| Instance diagnose | `sbatch/ppp/diagnose_ppp_basic_instances.py` |
+| Instance diagnose | `sbatch/ppp/tools/diagnose_ppp_basic_instances.py` |
+| Historical clones | `sbatch/ppp/archive/` (do not use for new jobs) |
 | Smoke exp | `metrics/ppp/ppp_basic_8h/` |
 | Longer exp (closed) | `metrics/ppp/ppp_basic_long8h/` |
 | **fmaps24 exp** | `metrics/ppp/ppp_basic_fmaps24/` |

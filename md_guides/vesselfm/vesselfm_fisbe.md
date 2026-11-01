@@ -60,11 +60,11 @@ flowchart LR
 | Patch builder | `vesselFM/prepare_fisbe_finetune_patches.py` |
 | Ckpt wrap | `vesselFM/wrap_vesselfm_ckpt.py` |
 | Data config | `vesselFM/vesselfm/seg/configs/data/eval_fisbe.yaml` |
-| Stage 2 detail | `md_guides/vesselfm_stage2_masks.md` |
-| Stage 3 detail | `md_guides/vesselfm_stage3_zeroshot.md` |
-| Stage 4 detail | `md_guides/vesselfm_stage4_patches.md` |
-| Stage 5 detail | `md_guides/vesselfm_stage5_config_ckpt.md` |
-| Stage 6 detail | `md_guides/vesselfm_stage6_finetune.md` |
+| Stage 2 detail | `md_guides/vesselfm/vesselfm_stage2_masks.md` |
+| Stage 3 detail | `md_guides/vesselfm/vesselfm_stage3_zeroshot.md` |
+| Stage 4 detail | `md_guides/vesselfm/vesselfm_stage4_patches.md` |
+| Stage 5 detail | `md_guides/vesselfm/vesselfm_stage5_config_ckpt.md` |
+| Stage 6 detail | `md_guides/vesselfm/vesselfm_stage6_finetune.md` |
 | Infer sbatch | `sbatch/vesselfm/vesselfm_inference_sbatch.sh` |
 | Infer entry | `vesselFM/vesselfm/seg/inference.py` |
 | Train entry | `vesselFM/vesselfm/seg/finetune.py` |

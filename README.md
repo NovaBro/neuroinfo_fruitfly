@@ -18,7 +18,7 @@ share the FISBe data and the HPC environment.
 | [`biapy_work_folder/`](biapy_work_folder/) | BiaPy 3D instance-seg configs, prep, Ray Tune, watershed tools |
 | [`web/`](web/) | FastAPI + React viewer for FISBe Zarrs and prediction overlays |
 | [`sbatch/`](sbatch/) | SLURM job scripts (`ppp/`, `biapy/`, `evalinstseg/`, `web/`, `vesselfm/`) |
-| [`md_guides/`](md_guides/) | Experiment notes (PPP layers, Ray Tune, VesselFM, losses) |
+| [`md_guides/`](md_guides/) | Experiment notes (`ppp/`, `biapy/`, `vesselfm/`, `web/`) |
 | [`ipynb/`](ipynb/) | Exploratory notebooks (EDA, augmentation review, metrics) |
 | [`evaluate-instance-segmentation/`](evaluate-instance-segmentation/) | Upstream eval tooling (`evalinstseg`) |
 | `metrics/` | Run outputs (gitignored): `metrics/ppp/`, `metrics/biapy/` |
@@ -80,7 +80,8 @@ echo "PID: $!"
 ## PatchPerPix
 
 Architecture reference: [`PatchPerPix/CODEBASE.md`](PatchPerPix/CODEBASE.md).
-Experiment notes: [`md_guides/ppp_*.md`](md_guides/).
+Current ops: [`md_guides/ppp/ppp_overview.md`](md_guides/ppp/ppp_overview.md)
+(archives: [`md_guides/ppp/historical/`](md_guides/ppp/historical/)).
 
 ### One-time setup
 
@@ -118,7 +119,7 @@ Prefer **separate jobs** for train vs predict/label (do not `@fork` train with P
 
 Training writes TensorBoard event files under the experiment root, e.g.
 `metrics/ppp/ppp_basic_fmaps24_400k_bs5_aug/{train,validate}/`.
-Install once with `sbatch sbatch/ppp/ppp_env_install_tensorboard_sbatch.sh` (exclusive `:rw` on `env/ppp.ext3`).
+Install once with `sbatch sbatch/ppp/env/ppp_env_install_tensorboard_sbatch.sh` (exclusive `:rw` on `env/ppp.ext3`).
 
 From the repo root on a Greene node:
 
@@ -168,7 +169,7 @@ Outputs: `metrics/biapy/` (preferred); legacy under `biapy_work_folder/results/`
 
 - Hyperparameter search: [`biapy_work_folder/raytune/`](biapy_work_folder/raytune/) + `sbatch/biapy/raytune_*_sbatch.sh`
 - Instance watershed probes: [`biapy_work_folder/watershed_tune/`](biapy_work_folder/watershed_tune/) + `sbatch/biapy/watershed_tune_*.sh`
-- Notes: [`md_guides/raytune_*.md`](md_guides/), [`md_guides/biapy_watershed_param_tune.md`](md_guides/biapy_watershed_param_tune.md)
+- Notes: [`md_guides/biapy/`](md_guides/biapy/)
 
 ## Evaluation
 
