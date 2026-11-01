@@ -102,6 +102,23 @@ def _base_label(base: Path) -> str:
 
 # --- prediction sets -------------------------------------------------------
 
+def _find_dirs_named(base: Path, name: str) -> list[Path]:
+    """Recursively find dirs called ``name`` under ``base``, skipping ``*.zarr``.
+
+    Run dirs hold thousands of zarr chunk files (``per_image/*.zarr``); a plain
+    ``glob("**/...")`` walks all of them, which takes minutes on NFS scratch.
+    Matched dirs are not descended into either.
+    """
+    found: list[Path] = []
+    for dirpath, dirnames, _ in os.walk(base):
+        if name in dirnames:
+            found.append(Path(dirpath) / name)
+        dirnames[:] = [
+            d for d in dirnames if d != name and not d.endswith(".zarr")
+        ]
+    return sorted(found)
+
+
 def discover_prediction_sets() -> list[dict]:
     """List every prediction set (run dir with a ``per_image_instances`` folder).
 
@@ -117,7 +134,7 @@ def discover_prediction_sets() -> list[dict]:
         if not base.is_dir():
             continue
         label = _base_label(base)
-        for inst_dir in sorted(base.glob("**/per_image_instances")):
+        for inst_dir in _find_dirs_named(base, "per_image_instances"):
             if not inst_dir.is_dir():
                 continue
             run_dir = inst_dir.parent.resolve()
