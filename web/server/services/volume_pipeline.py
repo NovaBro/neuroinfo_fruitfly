@@ -83,6 +83,25 @@ def _label_color(label_id: int) -> tuple[int, int, int]:
     return tuple(int(v) for v in rng.integers(72, 256, size=3))
 
 
+def zero_small_labels(volume: np.ndarray, min_voxels: int) -> np.ndarray:
+    """Return a copy of ``volume`` with labels smaller than ``min_voxels`` zeroed.
+
+    Label ``0`` (background) is never removed. When ``min_voxels <= 0`` the
+    input is returned unchanged (no copy). Display-only filter — does not write
+    back to disk.
+    """
+    if min_voxels <= 0:
+        return volume
+    labels = np.asarray(volume)
+    ids, counts = np.unique(labels, return_counts=True)
+    drop = {int(i) for i, c in zip(ids, counts) if i != 0 and int(c) < min_voxels}
+    if not drop:
+        return labels
+    out = labels.copy()
+    out[np.isin(out, list(drop))] = 0
+    return out
+
+
 def encode_label_volume_rgb(volume: np.ndarray) -> np.ndarray:
     """Map instance label IDs to Z,Y,X,3 RGB (background black)."""
     labels = volume.astype(np.int32)

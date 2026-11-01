@@ -12,6 +12,7 @@
 # which co-locates the server and client on ONE node so Vite's /api proxy works.
 # If you run this separately, point the client at this node with VITE_API_TARGET
 # (see sbatch/web/client.sh) since it will land on a different host.
+# Downsample thread pool size follows SLURM_CPUS_PER_TASK (this --cpus-per-task).
 #
 # Submit from the repo root:  sbatch sbatch/web/server.sh
 set -uo pipefail
@@ -19,6 +20,7 @@ set -uo pipefail
 SIF=/share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif
 OVERLAY=env/webdev.ext3
 API_PORT=8000
+STAGE_DIR="${SLURM_TMPDIR}/fisbe_web_stage"
 
 echo "API server node: $(hostname -s)  (port ${API_PORT})"
 
@@ -28,5 +30,6 @@ singularity exec --overlay "${OVERLAY}:ro" "${SIF}" /bin/bash -c "
   cd web/server
   export FISBE_ROOT=../../fisbe/completely
   export PPP_EXPERIMENTS_BASE=../../metrics/ppp
+  export WEB_STAGE_DIR=${STAGE_DIR}
   exec uvicorn main:app --host 0.0.0.0 --port ${API_PORT}
 "

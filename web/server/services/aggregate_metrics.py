@@ -6,7 +6,7 @@ sets have no aggregate matrix (voxel-level CSV only) and return empty groups.
 
 Scored samples are partitioned into one table per ``(fisbe_split × dataset)``:
 
-* Keys like ``test/completely``, ``val/completely``, ``test/synthetic``.
+* Keys like ``test/completely``, ``val/completely``, ``test/synth_vh``.
 * Sample row labels inside a table are **stem only** (dataset is in the key).
 * Sample IDs on disk / in PPP metrics are namespaced ``{dataset}/{stem}``.
 """
@@ -20,13 +20,13 @@ from services.biapy_loader import biapy
 from services import ppp_loader
 from services.fisbe_metrics import FISBE_LEADERBOARD_SPECS, _as_number
 from services.ppp_metrics import load_ppp_instances_summary_table
-from services.sample_list import parse_sample_list
+from services.sample_list import KNOWN_DATASETS, parse_sample_list
 
 # Detection thresholds the CSV carries a full column group for.
 THRESHOLD_CHOICES = ("0.3", "0.5", "0.75")
 DEFAULT_THRESHOLD = "0.5"
 
-_DATASETS = ("completely", "partly", "synthetic")
+_DATASETS = KNOWN_DATASETS
 _SPLITS = ("test", "val")
 # Stable table order: test×datasets then val×datasets.
 GROUP_KEYS: tuple[str, ...] = tuple(
@@ -105,17 +105,28 @@ def _dataset_of(stem: str) -> str | None:
     return dataset if dataset in _DATASETS else None
 
 
-def _lookup_by_basename() -> dict[str, tuple[str, str]]:
-    """basename → (fisbe_split, dataset); first sample-list hit wins."""
+def _lookup_by_namespaced() -> dict[str, tuple[str, str]]:
+    """``{dataset}/{name}`` → (fisbe_split, dataset)."""
     out: dict[str, tuple[str, str]] = {}
     for entry in parse_sample_list():
-        if entry.name not in out:
-            out[entry.name] = (entry.split, entry.dataset)
+        out[f"{entry.dataset}/{entry.name}"] = (entry.split, entry.dataset)
     return out
 
 
+def _lookup_unique_basename() -> dict[str, tuple[str, str]]:
+    """basename → (fisbe_split, dataset) only when the basename is unique."""
+    counts: dict[str, int] = {}
+    first: dict[str, tuple[str, str]] = {}
+    for entry in parse_sample_list():
+        counts[entry.name] = counts.get(entry.name, 0) + 1
+        first.setdefault(entry.name, (entry.split, entry.dataset))
+    return {name: first[name] for name, n in counts.items() if n == 1}
+
+
 def _group_for_stem(
-    stem: str, by_basename: dict[str, tuple[str, str]]
+    stem: str,
+    by_namespaced: dict[str, tuple[str, str]],
+    by_unique_basename: dict[str, tuple[str, str]] | None = None,
 ) -> tuple[str, str] | None:
     """Return ``(group_key, row_label)`` or None to omit.
 
@@ -123,23 +134,18 @@ def _group_for_stem(
     """
     base = _basename_stem(stem)
     dataset = _dataset_of(stem)
-    listed = by_basename.get(base)
+    by_unique_basename = by_unique_basename or {}
 
-    if dataset is None:
+    if dataset is not None:
+        listed = by_namespaced.get(f"{dataset}/{base}")
         if listed is None:
-            # Unknown flat non-listed stem — omit.
-            if base.startswith("brain_"):
-                return "test/synthetic", base
             return None
         fisbe_split, dataset = listed
     else:
-        if listed is not None:
-            fisbe_split = listed[0]
-        elif base.startswith("brain_") or dataset == "synthetic":
-            fisbe_split = "test"
-        else:
-            # Namespaced but not in sample list — omit from aggregate.
+        listed = by_unique_basename.get(base)
+        if listed is None:
             return None
+        fisbe_split, dataset = listed
 
     if fisbe_split not in _SPLITS:
         return None
@@ -160,16 +166,24 @@ def _partition_aggregate(
     samples: list[str],
     values: dict[str, dict[str, float | None]],
     specs: tuple[dict, ...],
-    by_basename: dict[str, tuple[str, str]] | None = None,
+    by_namespaced: dict[str, tuple[str, str]] | None = None,
+    by_unique_basename: dict[str, tuple[str, str]] | None = None,
 ) -> dict[str, dict]:
     """Split scored samples into split×dataset groups with summaries."""
-    by_basename = by_basename if by_basename is not None else _lookup_by_basename()
+    by_namespaced = (
+        by_namespaced if by_namespaced is not None else _lookup_by_namespaced()
+    )
+    by_unique_basename = (
+        by_unique_basename
+        if by_unique_basename is not None
+        else _lookup_unique_basename()
+    )
     buckets: dict[str, list[str]] = {k: [] for k in GROUP_KEYS}
     # row_label → original key in ``values`` (first wins).
     value_key_for: dict[str, dict[str, str]] = {k: {} for k in GROUP_KEYS}
 
     for stem in samples:
-        mapped = _group_for_stem(stem, by_basename)
+        mapped = _group_for_stem(stem, by_namespaced, by_unique_basename)
         if mapped is None:
             continue
         group_key, row = mapped
@@ -198,6 +212,7 @@ def _metrics_meta(specs: tuple[dict, ...]) -> list[dict]:
             "label": s["label"],
             "source": s["source"],
             "higherIsBetter": s["higher_is_better"],
+            "colorScale": s.get("color_scale", True),
         }
         for s in specs
     ]
@@ -220,14 +235,17 @@ def _payload(
     specs: tuple[dict, ...],
     samples: list[str],
     values: dict[str, dict[str, float | None]],
-    by_basename: dict[str, tuple[str, str]] | None = None,
+    by_namespaced: dict[str, tuple[str, str]] | None = None,
+    by_unique_basename: dict[str, tuple[str, str]] | None = None,
 ) -> dict:
     return {
         "prediction_set": set_id,
         "threshold": threshold,
         "thresholdChoices": list(THRESHOLD_CHOICES),
         "metrics": _metrics_meta(specs),
-        "groups": _partition_aggregate(samples, values, specs, by_basename),
+        "groups": _partition_aggregate(
+            samples, values, specs, by_namespaced, by_unique_basename
+        ),
         "groupOrder": list(GROUP_KEYS),
     }
 
@@ -238,11 +256,12 @@ def _aggregate_ppp_instances(set_id: str, threshold: str) -> dict:
     if not table:
         return _empty_aggregate(set_id, threshold, specs)
 
-    by_basename = _lookup_by_basename()
+    by_namespaced = _lookup_by_namespaced()
+    by_unique = _lookup_unique_basename()
     samples: list[str] = []
     values: dict[str, dict[str, float | None]] = {}
     for stem, toml_data in table.items():
-        if _group_for_stem(stem, by_basename) is None:
+        if _group_for_stem(stem, by_namespaced, by_unique) is None:
             continue
         values[stem] = {
             spec["key"]: _extract(spec, None, toml_data, threshold)
@@ -250,7 +269,9 @@ def _aggregate_ppp_instances(set_id: str, threshold: str) -> dict:
         }
         samples.append(stem)
 
-    return _payload(set_id, threshold, specs, samples, values, by_basename)
+    return _payload(
+        set_id, threshold, specs, samples, values, by_namespaced, by_unique
+    )
 
 
 def get_aggregate_metrics(set_id: str | None = None,
@@ -259,7 +280,7 @@ def get_aggregate_metrics(set_id: str | None = None,
 
     Samples with no metric source at all (neither CSV row nor TOML) are omitted.
     Individual missing cells come back as ``None``. Response ``groups`` always
-    includes every ``{test,val}/{completely,partly,synthetic}`` key; empty
+    includes every ``{test,val}/{completely,partly,synth_vh,…}`` key; empty
     tables have zero samples. ``groupOrder`` lists keys for the client.
     """
     threshold = threshold if threshold in THRESHOLD_CHOICES else DEFAULT_THRESHOLD
@@ -277,7 +298,8 @@ def get_aggregate_metrics(set_id: str | None = None,
 
     samples: list[str] = []
     values: dict[str, dict[str, float | None]] = {}
-    by_basename = _lookup_by_basename()
+    by_namespaced = _lookup_by_namespaced()
+    by_unique = _lookup_unique_basename()
 
     if result_root is not None:
         csv_table = load_csv_table(result_root)
@@ -295,7 +317,7 @@ def get_aggregate_metrics(set_id: str | None = None,
             if stem in seen:
                 continue
             seen.add(stem)
-            if _group_for_stem(stem, by_basename) is None:
+            if _group_for_stem(stem, by_namespaced, by_unique) is None:
                 continue
 
             csv_data = next(
@@ -320,4 +342,6 @@ def get_aggregate_metrics(set_id: str | None = None,
             }
             samples.append(stem)
 
-    return _payload(set_id, threshold, METRIC_SPECS, samples, values, by_basename)
+    return _payload(
+        set_id, threshold, METRIC_SPECS, samples, values, by_namespaced, by_unique
+    )

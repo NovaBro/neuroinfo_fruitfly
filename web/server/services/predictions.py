@@ -20,7 +20,12 @@ the individual endpoints stay source-agnostic.
 from __future__ import annotations
 
 from services import biapy_loader, ppp_loader
+from services.ttl_cache import ttl_cache
 from services.volume_pipeline import VolumeBytesResult
+
+
+def _bare_stem(stem: str) -> str:
+    return stem.rsplit("/", 1)[-1]
 
 
 def list_prediction_sets() -> list[dict]:
@@ -40,8 +45,13 @@ def stems_with_predictions_any() -> set[str]:
     )
 
 
+@ttl_cache(60)
 def stems_with_predictions(set_id: str | None = None) -> set[str]:
-    """Stems that have predicted output in ``set_id``, or any set if unset."""
+    """Stems that have predicted output in ``set_id``, or any set if unset.
+
+    PatchPerPix list-mode stems are namespaced ``{dataset}/{name}``; BiaPy and
+    flat PPP dumps use bare names.
+    """
     if not set_id:
         return stems_with_predictions_any()
     if ppp_loader.is_ppp_set(set_id):
@@ -56,8 +66,37 @@ def stems_with_predictions(set_id: str | None = None) -> set[str]:
     return {biapy_loader.biapy.sample_stem(p) for p in inst_dir.glob("*.tif*")}
 
 
+def sample_has_prediction(
+    name: str,
+    dataset: str,
+    set_id: str | None = None,
+) -> bool:
+    """True when ``(dataset, name)`` has predicted output in the given set.
+
+    Prefers namespaced ``dataset/name``. A bare-stem hit counts only when no
+    other dataset's namespaced form for the same basename is present (avoids
+    synth_vh vs synth_vh_u8 collisions).
+    """
+    predicted = stems_with_predictions(set_id)
+    namespaced = f"{dataset}/{name}"
+    if namespaced in predicted:
+        return True
+    if name not in predicted:
+        return False
+    for stem in predicted:
+        if "/" not in stem:
+            continue
+        other_ds, other_name = stem.split("/", 1)
+        if other_name == name and other_ds != dataset:
+            return False
+    return True
+
+
 def has_predicted_instances(stem: str, set_id: str | None = None) -> bool:
     """True when ``stem`` has predicted output in the given set (or any set)."""
+    if "/" in stem:
+        dataset, name = stem.split("/", 1)
+        return sample_has_prediction(name, dataset, set_id)
     if not set_id:
         return stem in stems_with_predictions_any()
     if ppp_loader.is_ppp_set(set_id):
@@ -71,13 +110,20 @@ def get_predicted_instances_meta(
     """Predicted-instances metadata for ``stem`` in the given set."""
     if ppp_loader.is_ppp_set(set_id):
         return ppp_loader.get_predicted_instances_meta(stem, set_id)
-    return biapy_loader.get_predicted_instances_meta(stem, set_id)
+    return biapy_loader.get_predicted_instances_meta(_bare_stem(stem), set_id)
 
 
 def predicted_instances_to_bytes(
-    stem: str, max_size: int, set_id: str | None = None
+    stem: str,
+    max_size: int,
+    set_id: str | None = None,
+    min_size: int = 0,
 ) -> VolumeBytesResult:
     """Load and downsample the selected set's predicted overlay for ``stem``."""
     if ppp_loader.is_ppp_set(set_id):
-        return ppp_loader.predicted_instances_to_bytes(stem, max_size, set_id)
-    return biapy_loader.predicted_instances_to_bytes(stem, max_size, set_id)
+        return ppp_loader.predicted_instances_to_bytes(
+            stem, max_size, set_id, min_size
+        )
+    return biapy_loader.predicted_instances_to_bytes(
+        _bare_stem(stem), max_size, set_id, min_size
+    )

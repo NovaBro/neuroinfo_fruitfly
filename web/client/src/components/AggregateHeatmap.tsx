@@ -40,10 +40,18 @@ const DARK_INK_FROM = 8;
 const DEFAULT_GROUP_ORDER: AggregateGroupKey[] = [
   "test/completely",
   "test/partly",
-  "test/synthetic",
+  "test/synth_vh",
+  "test/synth_vh_u8",
+  "test/1k_v1",
+  "test/1k_v1_u8",
+  "test/himanshu",
   "val/completely",
   "val/partly",
-  "val/synthetic",
+  "val/synth_vh",
+  "val/synth_vh_u8",
+  "val/1k_v1",
+  "val/1k_v1_u8",
+  "val/himanshu",
 ];
 
 function groupTitle(key: string): string {
@@ -65,6 +73,10 @@ function computeStats(
 ): Record<string, CellStats | null> {
   const stats: Record<string, CellStats | null> = {};
   for (const metric of metrics) {
+    if (metric.colorScale === false) {
+      stats[metric.key] = null;
+      continue;
+    }
     let min = Infinity;
     let max = -Infinity;
     for (const sample of group.samples) {
@@ -175,20 +187,28 @@ function HeatmapTable({
                 </th>
                 {metrics.map((m) => {
                   const value = group.values[sample]?.[m.key] ?? null;
+                  const numeric =
+                    typeof value === "number" && Number.isFinite(value);
+                  const useRamp = m.colorScale !== false;
                   const st = stats[m.key];
-                  const hasValue =
-                    typeof value === "number" && Number.isFinite(value) && st;
-                  const idx = hasValue
+                  const hasRamp =
+                    numeric && useRamp && st != null;
+                  const idx = hasRamp
                     ? rampIndex(normalize(value as number, st as CellStats))
                     : -1;
+                  const tooltipValue = numeric ? (value as number) : null;
                   return (
                     <td
                       key={m.key}
                       className={
-                        hasValue ? "agg__cell" : "agg__cell agg__cell--empty"
+                        hasRamp
+                          ? "agg__cell"
+                          : numeric
+                            ? "agg__cell agg__cell--summary"
+                            : "agg__cell agg__cell--empty"
                       }
                       style={
-                        hasValue
+                        hasRamp
                           ? {
                               background: BLUE_RAMP[idx],
                               color:
@@ -197,28 +217,16 @@ function HeatmapTable({
                           : undefined
                       }
                       onMouseEnter={(e) =>
-                        onTooltip(
-                          e,
-                          sample,
-                          m,
-                          hasValue ? (value as number) : null,
-                          stats,
-                        )
+                        onTooltip(e, sample, m, tooltipValue, stats)
                       }
                       onMouseMove={(e) =>
-                        onTooltip(
-                          e,
-                          sample,
-                          m,
-                          hasValue ? (value as number) : null,
-                          stats,
-                        )
+                        onTooltip(e, sample, m, tooltipValue, stats)
                       }
                       onMouseLeave={() =>
                         onTooltip(null, sample, m, null, stats)
                       }
                     >
-                      {hasValue ? fmtCell(value as number) : "–"}
+                      {numeric ? fmtCell(value as number) : "–"}
                     </td>
                   );
                 })}

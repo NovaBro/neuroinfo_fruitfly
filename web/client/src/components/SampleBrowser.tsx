@@ -1,14 +1,22 @@
-import { useMemo, useState } from "react";
-import { SampleInfo, Split } from "../api/client";
+import { useEffect, useMemo, useState } from "react";
+import { Dataset, SampleInfo, SampleRef, Split } from "../api/client";
 import "./SampleBrowser.css";
 
 const SPLITS: Split[] = ["train", "val", "test"];
-type Dataset = "completely" | "partly" | "synthetic";
+const DATASET_ORDER: Dataset[] = [
+  "completely",
+  "partly",
+  "synth_vh",
+  "synth_vh_u8",
+  "1k_v1",
+  "1k_v1_u8",
+  "himanshu",
+];
 
 interface SampleBrowserProps {
   samples: SampleInfo[];
-  selected: string | null;
-  onSelect: (name: string) => void;
+  selected: SampleRef | null;
+  onSelect: (ref: SampleRef) => void;
   loading?: boolean;
 }
 
@@ -25,10 +33,15 @@ export function SampleBrowser({
   // Only offer a dataset toggle for datasets that are actually present.
   const datasets = useMemo<Dataset[]>(() => {
     const present = new Set(samples.map((s) => s.dataset));
-    return (["completely", "partly", "synthetic"] as Dataset[]).filter((d) =>
-      present.has(d),
-    );
+    return DATASET_ORDER.filter((d) => present.has(d));
   }, [samples]);
+
+  // Keep activeDataset on a tab that exists once samples load.
+  useEffect(() => {
+    if (datasets.length > 0 && !datasets.includes(activeDataset)) {
+      setActiveDataset(datasets[0]);
+    }
+  }, [datasets, activeDataset]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -97,21 +110,26 @@ export function SampleBrowser({
         <ul className="sample-browser__list">
           {filtered.map((sample) => {
             const hasPred = Boolean(sample.has_predicted);
+            const isSelected =
+              selected?.name === sample.name &&
+              selected?.dataset === sample.dataset;
             const titleParts = [
               sample.name,
               hasPred ? "Prediction available" : "No prediction",
               !sample.path_exists ? "Data not on disk" : null,
             ].filter(Boolean);
             return (
-              <li key={sample.name}>
+              <li key={`${sample.dataset}/${sample.name}`}>
                 <button
                   type="button"
                   className={
-                    selected === sample.name
+                    isSelected
                       ? "sample-browser__item sample-browser__item--selected"
                       : "sample-browser__item"
                   }
-                  onClick={() => onSelect(sample.name)}
+                  onClick={() =>
+                    onSelect({ dataset: sample.dataset, name: sample.name })
+                  }
                   title={titleParts.join(" · ")}
                 >
                   <span

@@ -15,7 +15,13 @@ For how a voxel becomes a pixel end-to-end — the server downsample/contrast pi
 
 - Node.js 18+ (on Greene this is the `nvm` install at `/scratch/wmz2007/nvm`, loaded by the web SLURM scripts)
 - Python 3.10+ (on Greene this is the base conda env inside the `webdev.ext3` overlay). PatchPerPix **instances** overlays also need `h5py` in that env.
-- FISBe data extracted locally under `fisbe/completely/` (see root README for download instructions)
+- FISBe data under `fisbe/` with sibling dataset folders: `completely/`, `partly/`,
+  `synth_vh/`, `synth_vh_u8/`, `1k_v1/`, `1k_v1_u8/`, `himanshu/` (see root README
+  for download instructions). The sample list at
+  `evaluate-instance-segmentation/assets/sample_list_per_split.txt` enumerates all
+  seven. `himanshu` is raw-only (no `gt_instances`). `1k_v1` and `1k_v1_u8` keep
+  `volumes/raw` and `volumes/gt_instances` as symlinks into SquashFS images; the
+  web job mounts those images read-only.
 
 ## Running on NYU Greene (compute node — recommended)
 
@@ -47,6 +53,11 @@ ssh -S none -N -L 9000:cs123:5173 wmz2007@login.torch.hpc.nyu.edu
 Browse `http://localhost:9000`. Vite (port 5173 on the compute node) is forwarded to
 local port `9000`; only that client port is tunneled — Vite proxies `/api` to the
 server on the same node.
+
+The SLURM scripts `npm run build` and serve the bundle with `vite preview` (same
+`/api` proxy) — far faster over the tunnel than the unbundled dev server. Submit
+with `WEB_DEV=1 sbatch sbatch/web/web.sh` (or `client.sh`) to get the
+hot-reloading dev server instead.
 
 **Tunnel gotchas (learned the hard way):**
 
@@ -102,8 +113,8 @@ npm run dev
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `FISBE_ROOT` | `../../fisbe/completely` | Root directory containing `train/`, `val/`, `test/` Zarr folders |
-| `SAMPLE_LIST_PATH` | `../../evaluate-instance-segmentation/assets/sample_list_per_split.txt` | Train/val/test sample list |
+| `FISBE_ROOT` | `../../fisbe/completely` | Root for the `completely` dataset (`train/`/`val/`/`test/`). Other datasets resolve as `FISBE_ROOT.parent / <dataset> / …`. |
+| `SAMPLE_LIST_PATH` | `../../evaluate-instance-segmentation/assets/sample_list_per_split.txt` | Train/val/test sample list (completely, partly, synth_vh, synth_vh_u8, 1k_v1, 1k_v1_u8, himanshu) |
 | `BIAPY_RESULTS_BASE` | `../../biapy_work_folder/results` | Primary BiaPy results base (also used for legacy bare prediction-set ids) |
 | `BIAPY_RESULTS_BASES` | `biapy_work_folder/results:metrics/biapy` | Colon-separated list of bases scanned for BiaPy prediction sets (any run dir containing a `per_image_instances` folder). Default includes train-eval runs under `metrics/biapy` alongside `biapy_work_folder/results`. |
 | `BIAPY_RESULT_ROOT` | `../../biapy_work_folder/results/train_3d_instance_segmentation/results/train_3d_instance_segmentation_1` | Default prediction set (used when the client doesn't pick one) |
@@ -118,43 +129,67 @@ npm run dev
 |--------|------|-------------|
 | `GET` | `/api/health` | Liveness check |
 | `GET` | `/api/prediction-sets` | List available prediction sets across models. Each carries a `source` (`biapy` \| `ppp`) and `kind`; BiaPy run dirs plus PatchPerPix `numinst`/`instances` overlays. |
-| `GET` | `/api/samples` | List samples with split and path status (`has_predicted` is true if *any* set has output) |
-| `GET` | `/api/samples/{name}/meta` | Volume shapes and dtypes (`prediction_set` query param selects which set's predicted shape to report) |
-| `GET` | `/api/samples/{name}/metrics` | Scoring metrics for the sample (`prediction_set` selects the run): curated **FISBe leaderboard** (`leaderboard`: S · avF1 · C · clDiceTP · tp · FS · FM), plus raw `tests/metrics` TOML and CSV. Shown in the right-hand **Scoring Metrics** column. |
-| `GET` | `/api/aggregate-metrics` | Samples × metrics matrices for one prediction set (`prediction_set`, `threshold`), partitioned into `groups["{split}/{dataset}"]` (e.g. `test/completely`, `val/completely`, `test/synthetic`) plus `groupOrder`. Backs the **Aggregate** tab. Columns match the FISBe website names (same mapping as `leaderboard`). |
-| `GET` | `/api/samples/{name}/slice.png` | 2D slice (`volume`, `channel`, `axis`, `index` query params) |
-| `GET` | `/api/samples/{name}/mip.png` | Maximum-intensity projection (`volume`, `channel` query params). `volume=raw&channel=all` → RGB raw MIP; `volume=gt&channel=all` → merged colored MIP of all `gt_instances` channels (matches the 3D GT overlay). The 3D tab shows both as live reference panels beneath the render. |
-| `GET` | `/api/samples/{name}/volume.bin` | Downsampled 3D volume for MIP rendering (`volume=raw|gt|predicted`, `channel=0|1|2|all`, `max_size` 64–512, `prediction_set` selects which set for `volume=predicted`) |
+| `GET` | `/api/samples` | List samples with `split`, `dataset`, path status; `has_predicted` is scoped to `prediction_set` when set (dataset-aware for colliding stems) |
+| `GET` | `/api/samples/{name}/meta` | Volume shapes, dtypes, and `voxel_size_um` `[vx,vy,vz]` µm (X,Y,Z). **Required** `dataset` query param. Optional `prediction_set`. `gt_instances` is `null` when absent (himanshu). |
+| `GET` | `/api/samples/{name}/metrics` | Scoring metrics (`dataset` required; `prediction_set` selects the run): curated **FISBe leaderboard** (`leaderboard`: S · avF1 · C · clDiceTP · tp · FS · FM · nPred · nGT), plus raw `tests/metrics` TOML and CSV. |
+| `GET` | `/api/aggregate-metrics` | Samples × metrics matrices for one prediction set (`prediction_set`, `threshold`), partitioned into `groups["{split}/{dataset}"]` (e.g. `test/completely`, `test/synth_vh`, `test/himanshu`) plus `groupOrder`. |
+| `GET` | `/api/samples/{name}/slice.png` | 2D slice (`dataset` required; `volume`, `channel`, `axis`, `index`) |
+| `GET` | `/api/samples/{name}/mip.png` | Maximum-intensity projection (`dataset` required; `volume`, `channel`). `volume=raw&channel=all` → RGB raw MIP; `volume=gt&channel=all` → merged colored GT MIP when GT exists. |
+| `GET` | `/api/samples/{name}/volume.bin` | Downsampled 3D volume (`dataset` required; `volume=raw\|gt\|predicted`, `channel`, `max_size`, `prediction_set` for predicted). Headers include `X-Voxel-Size-Um` (original voxel µm; client multiplies by downsample factor for VTK spacing). |
+
+### Physical voxel size (µm)
+
+3D VTK spacing and 2D ortho/MIP CSS aspect ratios use physical voxel size so
+volumes match biological shape (including Gen1 Z anisotropy).
+
+| Source | `voxel_size_um` `[vx, vy, vz]` |
+|--------|-------------------------------|
+| Zarr root attrs | Used when present (`synth_*` writes them; himanshu prep writes from h5j) |
+| `completely` / `partly` / synth fallback | `[0.44, 0.44, 0.44]` |
+| `himanshu` fallback | `[0.461122, 0.461122, 0.7]` (Gen1 default) |
+
+Himanshu regenerate (delete then first 10 stacks):
+
+```bash
+DEL_JID=$(sbatch --parsable sbatch/ppp/prep/himanshu/delete_himanshu_zarrs_sbatch.sh)
+LIMIT=10 sbatch --dependency=afterok:${DEL_JID} \
+  sbatch/ppp/prep/himanshu/prepare_himanshu_for_ppp_sbatch.sh
+```
 
 The **3D Viewer** tab loads downsampled raw data from FISBe Zarr and, when available, overlays predicted instances (`volume=predicted`) from the selected prediction set. BiaPy sets are loaded via [`ipynb/scripts/biapy.py`](../ipynb/scripts/biapy.py); PatchPerPix sets via [`server/services/ppp_loader.py`](server/services/ppp_loader.py). A dispatcher ([`server/services/predictions.py`](server/services/predictions.py)) routes each request to the right loader by the set's `source`. Drag or use arrow keys to rotate the view.
 
 ### Aggregate tab
 
 The **Aggregate** tab renders **one heatmap per FISBe split × dataset** for the
-selected prediction set (e.g. **Test · completely**, **Val · completely**,
-**Test · synthetic**). It ignores the sidebar selection (and hides the
+selected prediction set (e.g. **Test · completely**, **Val · synth_vh**,
+**Test · himanshu**). It ignores the sidebar selection (and hides the
 per-sample **Scoring Metrics** column, which would be redundant). Empty
-tables are omitted in the UI.
+tables are omitted in the UI. The sidebar dataset tabs cover
+`completely` / `partly` / `synth_vh` / `synth_vh_u8` / `1k_v1` / `1k_v1_u8` /
+`himanshu`; GT overlays are hidden when `gt_instances` is missing.
 
 Grouping uses namespaced PPP sample IDs `{dataset}/{stem}` plus the FISBe
 sample list for split membership. Row labels are **stem only** (dataset is in
 the table title). On disk, evaluated tomls live under
 `evaluated/.../<dataset>/<stem>_vote_instances*.toml`.
 
-Columns are the **FISBe website leaderboard** set (S · avF1 · C · clDiceTP · tp · FS · FM),
+Columns are the **FISBe website leaderboard** set
+(S · avF1 · C · clDiceTP · tp · FS · FM · nPred · nGT),
 defined once in [`server/services/fisbe_metrics.py`](server/services/fisbe_metrics.py) and
 shared with the Scoring Metrics panel. Pipeline keys on disk differ — see the conversion
-table in [`md_guides/web_fisbe_metrics.md`](../md_guides/web_fisbe_metrics.md) and
+table in [`md_guides/web/web_fisbe_metrics.md`](../md_guides/web/web_fisbe_metrics.md) and
 [`evaluate-instance-segmentation/docs/METRICS.md`](../evaluate-instance-segmentation/docs/METRICS.md).
 Add or drop a column by editing `FISBE_LEADERBOARD_SPECS`; the client renders whatever
-the endpoint lists.
+the endpoint lists. Specs may set `color_scale: false` (API field `colorScale`) so a
+column is shown as plain numbers; **nPred** / **nGT** use that.
 
-**Each column is colour-scaled to its own min/max within that table**, since the metrics
+**Each colour-scaled column uses its own min/max within that table**, since the metrics
 span different ranges — a shared 0–1 scale would flatten some columns. Cell colour is
 therefore only comparable *within* a column of one table, never across columns or
 tables; the tooltip carries the exact value. A column whose samples are all equal
-renders mid-ramp. PPP **numinst** sets produce empty groups (voxel CSV only); BiaPy and
-PPP **instances** sets populate the heatmaps when eval TOMLs / summary rows are present.
+renders mid-ramp. Count columns with `colorScale: false` skip the ramp. PPP **numinst**
+sets produce empty groups (voxel CSV only); BiaPy and PPP **instances** sets populate
+the heatmaps when eval TOMLs / summary rows are present.
 
 Each table closes with its own **mean / median** rows (endpoint field
 `groups.<name>.summary`, with `summary.n` giving how many samples each statistic was
@@ -176,5 +211,5 @@ When a stem exists under both leaves (e.g. older mixed dumps under `test/` plus 
 
 - h5j / MCFO raw stack support via PyImageJ pipeline
 - Full-resolution in-browser 3D volume rendering (tile streaming)
-- PatchPerPix instance scores: FISBe leaderboard names via `leaderboard`; raw TOML/`summary.csv` keys remain in the lower Scoring Metrics sections (see `md_guides/web_fisbe_metrics.md`)
+- PatchPerPix instance scores: FISBe leaderboard names via `leaderboard`; raw TOML/`summary.csv` keys remain in the lower Scoring Metrics sections (see `md_guides/web/web_fisbe_metrics.md`)
 - Authentication and production deployment

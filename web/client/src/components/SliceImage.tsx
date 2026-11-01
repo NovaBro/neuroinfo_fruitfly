@@ -14,6 +14,12 @@ interface SliceImageProps {
   opacity?: number;
   /** When set, remaps RGB via canvas (gains + brightness/contrast); no CSS filter. */
   channelGains?: ChannelGains;
+  /**
+   * Physical plane aspect ratio (width/height in µm). When set, the image box
+   * uses this ratio and ``object-fit: fill`` so index-space PNGs stretch to
+   * biological shape.
+   */
+  aspectRatio?: number;
 }
 
 function remapBlobToObjectUrl(
@@ -69,7 +75,18 @@ export function SliceImage({
   contrast = 100,
   opacity = 1,
   channelGains,
+  aspectRatio,
 }: SliceImageProps) {
+  const aspectStyle =
+    aspectRatio != null && Number.isFinite(aspectRatio) && aspectRatio > 0
+      ? ({
+          aspectRatio: String(aspectRatio),
+          objectFit: "fill" as const,
+          width: "100%",
+          height: "auto",
+          maxHeight: "70vh",
+        } as const)
+      : undefined;
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [displayUrl, setDisplayUrl] = useState<string | null>(null);
   const sourceBlobRef = useRef<Blob | null>(null);
@@ -176,7 +193,7 @@ export function SliceImage({
         className={className}
         src={displayUrl}
         alt={alt}
-        style={{ opacity }}
+        style={{ opacity, ...aspectStyle }}
       />
     );
   }
@@ -190,7 +207,11 @@ export function SliceImage({
       className={className}
       src={blobUrl}
       alt={alt}
-      style={{ filter: cssBrightnessContrast(brightness, contrast), opacity }}
+      style={{
+        filter: cssBrightnessContrast(brightness, contrast),
+        opacity,
+        ...aspectStyle,
+      }}
     />
   );
 }

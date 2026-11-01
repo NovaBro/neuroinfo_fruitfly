@@ -13,7 +13,12 @@ from pathlib import Path
 
 from config import REPO_ROOT
 from services.local_stage import ensure_local
-from services.volume_pipeline import VolumeBytesResult, volume_array_to_bytes
+from services.ttl_cache import ttl_cache
+from services.volume_pipeline import (
+    VolumeBytesResult,
+    volume_array_to_bytes,
+    zero_small_labels,
+)
 
 _SCRIPTS_DIR = REPO_ROOT / "ipynb" / "scripts"
 if str(_SCRIPTS_DIR) not in sys.path:
@@ -22,6 +27,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
 import biapy  # noqa: E402
 
 
+@ttl_cache(60)
 def list_prediction_sets() -> list[dict]:
     """List available prediction sets discovered under the BiaPy results base."""
     return biapy.discover_prediction_sets()
@@ -41,6 +47,7 @@ def has_predicted_instances_any(stem: str) -> bool:
     return stem in stems_with_predictions_any()
 
 
+@ttl_cache(60)
 def stems_with_predictions_any() -> set[str]:
     """Stems with predicted instances in *any* prediction set.
 
@@ -49,7 +56,7 @@ def stems_with_predictions_any() -> set[str]:
     ``biapy_work_folder/results`` tree grows.
     """
     stems: set[str] = set()
-    for s in biapy.discover_prediction_sets():
+    for s in list_prediction_sets():
         inst_dir = Path(s["path"]) / "per_image_instances"
         if not inst_dir.is_dir():
             continue
@@ -71,12 +78,16 @@ def get_predicted_instances_meta(
 
 @lru_cache(maxsize=16)
 def predicted_instances_to_bytes(
-    stem: str, max_size: int, set_id: str | None = None
+    stem: str,
+    max_size: int,
+    set_id: str | None = None,
+    min_size: int = 0,
 ) -> VolumeBytesResult:
     """Load and downsample a prediction set's per_image_instances for rendering."""
     root = biapy.resolve_prediction_set_root(set_id)
     tiff = biapy.resolve_tiff_path(root / "per_image_instances", stem)
     volume = biapy.load_zarr_tiff(ensure_local(tiff))
+    volume = zero_small_labels(volume, min_size)
     return volume_array_to_bytes(
         volume, max_size=max_size, encoding="labels_rgb"
     )

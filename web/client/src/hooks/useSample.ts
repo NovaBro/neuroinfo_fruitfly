@@ -1,8 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
-import { getMeta, getMetrics, SampleMeta, SampleMetrics } from "../api/client";
+import {
+  Dataset,
+  getMeta,
+  getMetrics,
+  SampleMeta,
+  SampleMetrics,
+  SampleRef,
+} from "../api/client";
 
 export function useSampleMeta(
-  sampleName: string | null,
+  sample: SampleRef | null,
   predictionSet?: string | null,
 ) {
   const [meta, setMeta] = useState<SampleMeta | null>(null);
@@ -10,7 +17,7 @@ export function useSampleMeta(
   const [error, setError] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
-    if (!sampleName) {
+    if (!sample) {
       setMeta(null);
       return;
     }
@@ -18,7 +25,7 @@ export function useSampleMeta(
     setError(null);
     setMeta(null);
     try {
-      const data = await getMeta(sampleName, predictionSet);
+      const data = await getMeta(sample.name, sample.dataset, predictionSet);
       setMeta(data);
     } catch (err) {
       setMeta(null);
@@ -26,7 +33,7 @@ export function useSampleMeta(
     } finally {
       setLoading(false);
     }
-  }, [sampleName, predictionSet]);
+  }, [sample?.name, sample?.dataset, predictionSet]);
 
   useEffect(() => {
     reload();
@@ -36,7 +43,7 @@ export function useSampleMeta(
 }
 
 export function useSampleMetrics(
-  sampleName: string | null,
+  sample: SampleRef | null,
   predictionSet?: string | null,
 ) {
   const [metrics, setMetrics] = useState<SampleMetrics | null>(null);
@@ -44,7 +51,7 @@ export function useSampleMetrics(
   const [error, setError] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
-    if (!sampleName) {
+    if (!sample) {
       setMetrics(null);
       return;
     }
@@ -52,7 +59,7 @@ export function useSampleMetrics(
     setError(null);
     setMetrics(null);
     try {
-      const data = await getMetrics(sampleName, predictionSet);
+      const data = await getMetrics(sample.name, sample.dataset, predictionSet);
       setMetrics(data);
     } catch (err) {
       setMetrics(null);
@@ -60,11 +67,16 @@ export function useSampleMetrics(
     } finally {
       setLoading(false);
     }
-  }, [sampleName, predictionSet]);
+  }, [sample?.name, sample?.dataset, predictionSet]);
 
   useEffect(() => {
     reload();
   }, [reload]);
 
   return { metrics, loading, error, reload };
+}
+
+/** Convenience: build a SampleRef from dataset + name. */
+export function sampleRef(dataset: Dataset, name: string): SampleRef {
+  return { dataset, name };
 }

@@ -134,7 +134,7 @@ OOM-ing the host on gigabyte channels.
 
 For the 3D viewer the server must send an actual volume — just a small one. It
 computes an integer downsample factor from a client-supplied `max_size` (the
-longest edge, 64–512) and **block max-pools** the Zarr array down to that size:
+longest edge, 64–1500) and **block max-pools** the Zarr array down to that size:
 
 ```
 compute_downsample_factor(shape, max_size) = ceil(max(z,y,x) / max_size)
@@ -154,9 +154,10 @@ returned as **HTTP headers** (not JSON), so the body stays a tight binary blob:
 | Header | Meaning |
 |--------|---------|
 | `X-Volume-Shape` | downsampled `z,y,x` |
-| `X-Original-Shape` | full-res `z,y,x` (for aspect ratio) |
+| `X-Original-Shape` | full-res `z,y,x` (status line / UI) |
 | `X-Downsample-Factor` | integer pooling factor |
 | `X-Volume-Components` | `1` = grayscale, `3` = RGB |
+| `X-Voxel-Size-Um` | original voxel size `vx,vy,vz` µm (X,Y,Z); VTK spacing = these × factor |
 
 Three encodings are produced depending on `volume` / `channel`:
 
@@ -253,7 +254,7 @@ fetchVolumeData ──► Uint8Array + shape/components
         ▼
 vtkImageData                      (the 3D grid)
   ├─ setDimensions([x, y, z])
-  ├─ setSpacing([1, oy/ox, oz/ox]) ← restores true aspect ratio from originalShape
+  ├─ setSpacing([vx, vy, vz] × downsampleFactor) ← physical µm from X-Voxel-Size-Um
   └─ pointData.setScalars(vtkDataArray, numberOfComponents = 1 or 3)
         │
         ▼
@@ -374,7 +375,7 @@ bytes + X-Volume-Shape / X-Original-Shape / X-Downsample-Factor / X-Volume-Compo
         │
         ▼
 Client: build vtkImageData per layer
-        │  spacing from originalShape → correct anisotropic aspect ratio
+        │  spacing = voxel_size_um × downsampleFactor (physical µm)
         │  brightness/contrast remap (remapVolumeUint8)
         ▼
 vtkVolumeMapper (MaximumIntensity blend) → WebGL

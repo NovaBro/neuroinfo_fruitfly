@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   AxisKind,
   ChannelParam,
+  Dataset,
   mipUrl,
   RAW_CHANNEL_CHOICES,
   SampleMeta,
@@ -25,6 +26,7 @@ const AXES: AxisKind[] = ["z", "y", "x"];
 
 interface OrthoSliceViewerProps {
   sampleName: string;
+  dataset: Dataset;
   meta: SampleMeta;
 }
 
@@ -35,7 +37,33 @@ function axisSize(meta: SampleMeta, axis: AxisKind): number {
   return x;
 }
 
-export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
+/**
+ * CSS aspect-ratio (width/height) for a 2D plane in physical µm.
+ * Slice PNGs are index-space; the browser stretches them into this box.
+ * - XY (axis z) / Z-MIP: image is Y×X → (Nx·vx) / (Ny·vy)
+ * - XZ (axis y): image is Z×X → (Nx·vx) / (Nz·vz)
+ * - YZ (axis x): image is Z×Y → (Ny·vy) / (Nz·vz)
+ */
+function physicalPlaneAspect(
+  meta: SampleMeta,
+  axis: AxisKind,
+): number {
+  const [, nz, ny, nx] = meta.raw.shape;
+  const [vx, vy, vz] = meta.voxel_size_um ?? [0.44, 0.44, 0.44];
+  if (axis === "z") {
+    return (nx * vx) / (ny * vy);
+  }
+  if (axis === "y") {
+    return (nx * vx) / (nz * vz);
+  }
+  return (ny * vy) / (nz * vz);
+}
+
+export function OrthoSliceViewer({
+  sampleName,
+  dataset,
+  meta,
+}: OrthoSliceViewerProps) {
   const [channel, setChannel] = useState<ChannelParam>(0);
   const [channelGains, setChannelGains] = useState<ChannelGains>(
     DEFAULT_CHANNEL_GAINS,
@@ -51,10 +79,17 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
   const [gtChannel, setGtChannel] = useState<number | "all">(0);
   const [gtOpacity, setGtOpacity] = useState(55);
   const [viewMode, setViewMode] = useState<"slice" | "mip">("slice");
+  const hasGt = meta.gt_instances != null;
 
   const maxIndex = useMemo(
     () => Math.max(0, axisSize(meta, axis) - 1),
     [meta, axis],
+  );
+
+  // MIP is a Z-projection (XY plane); slices use the selected axis.
+  const planeAspect = useMemo(
+    () => physicalPlaneAspect(meta, viewMode === "mip" ? "z" : axis),
+    [meta, viewMode, axis],
   );
 
   const debouncedIndex = useDebouncedValue(index, 200);
@@ -70,39 +105,51 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
     setChannelGains(DEFAULT_CHANNEL_GAINS);
     setBrightness(DEFAULT_BRIGHTNESS);
     setContrast(DEFAULT_CONTRAST);
-  }, [sampleName]);
+    setShowGt(false);
+  }, [sampleName, dataset]);
 
-  const gtChannelCount = meta.gt_instances.shape[0];
+  const gtChannelCount = meta.gt_instances?.shape[0] ?? 0;
 
   const channelCount = meta.raw.shape[0];
 
   const rawImageUrl = useMemo(() => {
     if (channel === "off") return null;
     if (viewMode === "mip") {
-      return mipUrl(sampleName, { volume: "raw", channel });
+      return mipUrl(sampleName, { dataset, volume: "raw", channel });
     }
     return sliceUrl(sampleName, {
+      dataset,
       volume: "raw",
       channel,
       axis,
       index: debouncedIndex,
     });
-  }, [sampleName, channel, axis, debouncedIndex, viewMode]);
+  }, [sampleName, dataset, channel, axis, debouncedIndex, viewMode]);
 
   const gtImageUrl = useMemo(() => {
-    if (!showGt) return null;
+    if (!hasGt || !showGt) return null;
     if (viewMode === "mip") {
-      return mipUrl(sampleName, { volume: "gt", channel: gtChannel });
+      return mipUrl(sampleName, { dataset, volume: "gt", channel: gtChannel });
     }
     // Slices are per-channel; "all" has no slice equivalent, fall back to ch 0.
     const sliceChannel = gtChannel === "all" ? 0 : gtChannel;
     return sliceUrl(sampleName, {
+      dataset,
       volume: "gt",
       channel: sliceChannel,
       axis,
       index: debouncedIndex,
     });
-  }, [sampleName, showGt, gtChannel, axis, debouncedIndex, viewMode]);
+  }, [
+    sampleName,
+    dataset,
+    hasGt,
+    showGt,
+    gtChannel,
+    axis,
+    debouncedIndex,
+    viewMode,
+  ]);
 
   // "all" is MIP-only; drop back to a single channel when switching to slices.
   useEffect(() => {
@@ -280,61 +327,63 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
           </div>
         )}
 
-        <div className="ortho-viewer__group">
-          <label className="ortho-viewer__checkbox">
-            <input
-              type="checkbox"
-              checked={showGt}
-              onChange={(e) => setShowGt(e.target.checked)}
-            />
-            Show GT overlay
-          </label>
-          {showGt && (
-            <div className="ortho-viewer__btn-row">
-              {viewMode === "mip" && (
-                <button
-                  type="button"
-                  className={
-                    gtChannel === "all"
-                      ? "ortho-viewer__btn ortho-viewer__btn--active"
-                      : "ortho-viewer__btn"
-                  }
-                  onClick={() => setGtChannel("all")}
-                >
-                  All
-                </button>
-              )}
-              {Array.from({ length: gtChannelCount }, (_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  className={
-                    gtChannel === i
-                      ? "ortho-viewer__btn ortho-viewer__btn--active"
-                      : "ortho-viewer__btn"
-                  }
-                  onClick={() => setGtChannel(i)}
-                >
-                  GT {i}
-                </button>
-              ))}
-            </div>
-          )}
-          {showGt && (
-            <div className="ortho-viewer__group ortho-viewer__group--slider">
-              <span className="ortho-viewer__label">
-                GT opacity ({gtOpacity}%)
-              </span>
+        {hasGt && (
+          <div className="ortho-viewer__group">
+            <label className="ortho-viewer__checkbox">
               <input
-                type="range"
-                min={0}
-                max={100}
-                value={gtOpacity}
-                onChange={(e) => setGtOpacity(Number(e.target.value))}
+                type="checkbox"
+                checked={showGt}
+                onChange={(e) => setShowGt(e.target.checked)}
               />
-            </div>
-          )}
-        </div>
+              Show GT overlay
+            </label>
+            {showGt && (
+              <div className="ortho-viewer__btn-row">
+                {viewMode === "mip" && (
+                  <button
+                    type="button"
+                    className={
+                      gtChannel === "all"
+                        ? "ortho-viewer__btn ortho-viewer__btn--active"
+                        : "ortho-viewer__btn"
+                    }
+                    onClick={() => setGtChannel("all")}
+                  >
+                    All
+                  </button>
+                )}
+                {Array.from({ length: gtChannelCount }, (_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    className={
+                      gtChannel === i
+                        ? "ortho-viewer__btn ortho-viewer__btn--active"
+                        : "ortho-viewer__btn"
+                    }
+                    onClick={() => setGtChannel(i)}
+                  >
+                    GT {i}
+                  </button>
+                ))}
+              </div>
+            )}
+            {showGt && (
+              <div className="ortho-viewer__group ortho-viewer__group--slider">
+                <span className="ortho-viewer__label">
+                  GT opacity ({gtOpacity}%)
+                </span>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={gtOpacity}
+                  onChange={(e) => setGtOpacity(Number(e.target.value))}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="ortho-viewer__canvas">
@@ -347,6 +396,7 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
             brightness={brightness}
             contrast={contrast}
             channelGains={channel === "all" ? channelGains : undefined}
+            aspectRatio={planeAspect}
           />
         ) : (
           <p className="ortho-viewer__placeholder">Raw channel off</p>
@@ -360,14 +410,23 @@ export function OrthoSliceViewer({ sampleName, meta }: OrthoSliceViewerProps) {
             brightness={brightness}
             contrast={contrast}
             opacity={gtOpacity / 100}
+            aspectRatio={planeAspect}
           />
         )}
       </div>
 
       <p className="ortho-viewer__meta">
-        Raw shape (C,Z,Y,X): {meta.raw.shape.join(" × ")} · GT instances:{" "}
-        {meta.gt_instances.shape[0]} channel
-        {meta.gt_instances.shape[0] !== 1 ? "s" : ""}
+        Raw shape (C,Z,Y,X): {meta.raw.shape.join(" × ")}
+        {meta.voxel_size_um
+          ? ` · voxel µm (X,Y,Z): ${meta.voxel_size_um
+              .map((v) => v.toFixed(3))
+              .join(" × ")}`
+          : ""}
+        {hasGt && meta.gt_instances
+          ? ` · GT instances: ${meta.gt_instances.shape[0]} channel${
+              meta.gt_instances.shape[0] !== 1 ? "s" : ""
+            }`
+          : " · no GT"}
       </p>
     </div>
   );

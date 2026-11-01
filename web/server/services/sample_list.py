@@ -7,12 +7,34 @@ from pathlib import Path
 
 from config import FISBE_ROOT, SAMPLE_LIST_PATH
 
+# Folder names under fisbe/ (and nested PPP prediction dirs).
+KNOWN_DATASETS = (
+    "completely",
+    "partly",
+    "synth_vh",
+    "synth_vh_u8",
+    "1k_v1",
+    "1k_v1_u8",
+    "himanshu",
+)
+
+# sample_list section headers → dataset folder name.
+_SECTION_HEADERS = (
+    ("(1) samples for FlyLight completely:", "completely"),
+    ("(2) samples for FlyLight partly:", "partly"),
+    ("(3) samples for synth_vh:", "synth_vh"),
+    ("(4) samples for synth_vh_u8:", "synth_vh_u8"),
+    ("(5) samples for himanshu:", "himanshu"),
+    ("(6) samples for 1k_v1:", "1k_v1"),
+    ("(7) samples for 1k_v1_u8:", "1k_v1_u8"),
+)
+
 
 @dataclass(frozen=True)
 class SampleEntry:
     split: str
     name: str
-    dataset: str  # "completely" | "partly" | "synthetic"
+    dataset: str
     path_exists: bool
 
 
@@ -37,17 +59,14 @@ def parse_sample_list(list_path: Path | None = None) -> list[SampleEntry]:
             if not line:
                 continue
 
-            if "(1) samples for FlyLight completely:" in line:
-                current_dataset = "completely"
-                current_split = None
-                continue
-            if "(2) samples for FlyLight partly:" in line:
-                current_dataset = "partly"
-                current_split = None
-                continue
-            if "(3) samples for FlyLight synthetic:" in line:
-                current_dataset = "synthetic"
-                current_split = None
+            matched_header = False
+            for header, dataset in _SECTION_HEADERS:
+                if header in line:
+                    current_dataset = dataset
+                    current_split = None
+                    matched_header = True
+                    break
+            if matched_header:
                 continue
 
             if line in ("train:", "val:", "test:"):
@@ -70,9 +89,19 @@ def parse_sample_list(list_path: Path | None = None) -> list[SampleEntry]:
     return entries
 
 
-def find_sample(name: str, entries: list[SampleEntry] | None = None) -> SampleEntry | None:
-    """Return the first matching sample entry by name."""
+def find_sample(
+    name: str,
+    entries: list[SampleEntry] | None = None,
+    *,
+    dataset: str | None = None,
+) -> SampleEntry | None:
+    """Return the matching sample entry by ``(dataset, name)`` when dataset is set."""
     entries = entries if entries is not None else parse_sample_list()
+    if dataset is not None:
+        for entry in entries:
+            if entry.name == name and entry.dataset == dataset:
+                return entry
+        return None
     for entry in entries:
         if entry.name == name:
             return entry
@@ -81,3 +110,8 @@ def find_sample(name: str, entries: list[SampleEntry] | None = None) -> SampleEn
 
 def sample_zarr_path(entry: SampleEntry) -> Path:
     return _resolve_zarr_path(entry.split, entry.name, entry.dataset)
+
+
+def namespaced_stem(entry: SampleEntry) -> str:
+    """``{dataset}/{name}`` for prediction / metrics matching."""
+    return f"{entry.dataset}/{entry.name}"

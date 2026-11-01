@@ -191,10 +191,13 @@ function applyVolumeData(
   configureVolumeProperty(layer, mode, opacity);
 
   const [z, y, x] = vol.shape;
-  const [oz, oy, ox] = vol.originalShape;
+  const [vx, vy, vz] = vol.voxelSizeUm ?? [0.44, 0.44, 0.44];
+  const f = Math.max(1, vol.downsampleFactor || 1);
 
+  // Physical spacing: each downsampled voxel spans ``factor`` original voxels.
+  // voxelSizeUm is [vx, vy, vz] µm (X, Y, Z); VTK axes are X, Y, Z.
   layer.imageData.setDimensions([x, y, z]);
-  layer.imageData.setSpacing([1, oy / ox, oz / ox]);
+  layer.imageData.setSpacing([vx * f, vy * f, vz * f]);
   layer.imageData.setOrigin([0, 0, 0]);
 
   setLayerScalars(

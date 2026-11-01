@@ -172,6 +172,7 @@ def get_sample_metrics(stem: str, set_id: str | None = None) -> dict:
 
     if ppp_loader.is_ppp_set(set_id):
         return get_ppp_sample_metrics(stem, set_id)
+    bare = stem.rsplit("/", 1)[-1]
     try:
         result_root = biapy.resolve_prediction_set_root(set_id)
     except (FileNotFoundError, ValueError):
@@ -180,9 +181,9 @@ def get_sample_metrics(stem: str, set_id: str | None = None) -> dict:
             "csv": None,
             "leaderboard": leaderboard_from_toml(None),
         }
-    toml = _load_toml_metrics(result_root, stem)
+    toml = _load_toml_metrics(result_root, bare)
     return {
         "toml": toml,
-        "csv": _load_csv_metrics(result_root, stem),
+        "csv": _load_csv_metrics(result_root, bare),
         "leaderboard": leaderboard_from_toml(toml),
     }

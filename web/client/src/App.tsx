@@ -5,23 +5,34 @@ import {
   listSamples,
   PredictionSet,
   SampleInfo,
+  SampleRef,
 } from "./api/client";
 import { AggregateHeatmap } from "./components/AggregateHeatmap";
 import { Layout } from "./components/Layout";
 import { MetricsPanel } from "./components/MetricsPanel";
 import { OrthoSliceViewer } from "./components/OrthoSliceViewer";
 import { SampleBrowser } from "./components/SampleBrowser";
+import { SizeHistograms } from "./components/SizeHistograms";
 import { VolumeViewer3D } from "./components/VolumeViewer3D";
 import { useSampleMeta, useSampleMetrics } from "./hooks/useSample";
 import "./App.css";
 
-type Tab = "slices" | "3d" | "aggregate";
+type Tab = "slices" | "3d" | "aggregate" | "sizes";
+
+function sameSample(a: SampleRef | null, b: SampleInfo): boolean {
+  return a != null && a.name === b.name && a.dataset === b.dataset;
+}
 
 function App() {
   const [samples, setSamples] = useState<SampleInfo[]>([]);
   const [samplesLoading, setSamplesLoading] = useState(true);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<SampleRef | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>("3d");
+  // Cross-sample tabs mount on first visit only: their requests scan every
+  // sample in the set and would otherwise compete with the 3D view on load.
+  const [visitedTabs, setVisitedTabs] = useState<ReadonlySet<Tab>>(
+    () => new Set([activeTab]),
+  );
   const [apiOk, setApiOk] = useState<boolean | null>(null);
   const [fisbeRootExists, setFisbeRootExists] = useState(false);
   const [predictionSets, setPredictionSets] = useState<PredictionSet[]>([]);
@@ -68,19 +79,25 @@ function App() {
         setSamples(data);
         const stillOk =
           selected != null &&
-          data.some((s) => s.name === selected && s.path_exists);
+          data.some((s) => sameSample(selected, s) && s.path_exists);
         const stillHasPred =
           stillOk &&
-          data.some((s) => s.name === selected && s.has_predicted);
+          data.some((s) => sameSample(selected, s) && s.has_predicted);
         if (stillHasPred) return;
         const firstWithPredicted = data.find(
           (s) => s.path_exists && s.has_predicted,
         );
+        const stillEntry =
+          stillOk && selected
+            ? data.find((s) => sameSample(selected, s))
+            : null;
         const firstAvailable = data.find((s) => s.path_exists);
-        const next =
-          (firstWithPredicted ?? (stillOk ? data.find((s) => s.name === selected) : null) ?? firstAvailable)
-            ?.name ?? null;
-        setSelected(next);
+        const nextEntry = firstWithPredicted ?? stillEntry ?? firstAvailable;
+        setSelected(
+          nextEntry
+            ? { dataset: nextEntry.dataset, name: nextEntry.name }
+            : null,
+        );
       })
       .catch(() => {
         if (!cancelled) setSamples([]);
@@ -95,6 +112,18 @@ function App() {
     // only prediction-set changes (and the initial null) drive this effect.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [predictionSet]);
+
+  useEffect(() => {
+    setVisitedTabs((prev) =>
+      prev.has(activeTab) ? prev : new Set(prev).add(activeTab),
+    );
+  }, [activeTab]);
+
+  const metaMatches =
+    selected != null &&
+    meta != null &&
+    meta.name === selected.name &&
+    meta.dataset === selected.dataset;
 
   const header = (
     <div className="app-header">
@@ -159,6 +188,17 @@ function App() {
           >
             Aggregate
           </button>
+          <button
+            type="button"
+            className={
+              activeTab === "sizes"
+                ? "app-main__tab app-main__tab--active"
+                : "app-main__tab"
+            }
+            onClick={() => setActiveTab("sizes")}
+          >
+            Instance sizes
+          </button>
         </div>
 
         {predictionSets.length > 0 && (
@@ -200,14 +240,20 @@ function App() {
         )}
       </div>
 
-      {/* The aggregate tab spans all samples, so it never waits on a
-          per-sample selection or its volume metadata. Keep it mounted (hidden
-          on other tabs) so a prediction's cached matrix survives sample and
-          tab switches without remounting. */}
-      <div hidden={activeTab !== "aggregate"}>
-        <AggregateHeatmap predictionSet={predictionSet} />
-      </div>
-      {activeTab !== "aggregate" && (
+      {/* Aggregate / Instance sizes span all samples — mounted on first visit,
+          then kept mounted (hidden on other tabs) so per-prediction caches
+          survive tab switches. */}
+      {visitedTabs.has("aggregate") && (
+        <div hidden={activeTab !== "aggregate"}>
+          <AggregateHeatmap predictionSet={predictionSet} />
+        </div>
+      )}
+      {visitedTabs.has("sizes") && (
+        <div hidden={activeTab !== "sizes"}>
+          <SizeHistograms predictionSet={predictionSet} />
+        </div>
+      )}
+      {activeTab !== "aggregate" && activeTab !== "sizes" && (
         <>
           {!selected && (
             <p className="app-main__placeholder">
@@ -223,13 +269,18 @@ function App() {
             <p className="app-main__error">{metaError}</p>
           )}
 
-          {selected && meta && meta.name === selected && activeTab === "slices" && (
-            <OrthoSliceViewer sampleName={selected} meta={meta} />
+          {selected && metaMatches && activeTab === "slices" && meta && (
+            <OrthoSliceViewer
+              sampleName={selected.name}
+              dataset={selected.dataset}
+              meta={meta}
+            />
           )}
 
-          {selected && meta && meta.name === selected && activeTab === "3d" && (
+          {selected && metaMatches && activeTab === "3d" && meta && (
             <VolumeViewer3D
-              sampleName={selected}
+              sampleName={selected.name}
+              dataset={selected.dataset}
               meta={meta}
               predictionSet={predictionSet}
               predictedLabel={
@@ -240,6 +291,14 @@ function App() {
                   if (set.source === "ppp") return "Predicted instances (PatchPerPix)";
                   return "Predicted instances";
                 })()
+              }
+              bodyFilterEnabled={
+                !!predictionSet &&
+                !(
+                  predictionSets.find((s) => s.id === predictionSet)?.kind ===
+                    "numinst" ||
+                  predictionSet.startsWith("ppp-numinst:")
+                )
               }
             />
           )}
@@ -261,11 +320,13 @@ function App() {
       }
       main={main}
       rightPanel={
-        // The aggregate heatmap already shows every sample's scores, so the
-        // per-sample metrics column would be redundant beside it.
-        activeTab === "aggregate" ? undefined : (
+        // Aggregate / Instance sizes already cover all samples; hide the
+        // per-sample metrics column beside those tabs.
+        activeTab === "aggregate" || activeTab === "sizes" ? undefined : (
           <MetricsPanel
-            sampleName={selected}
+            sampleName={
+              selected ? `${selected.dataset}/${selected.name}` : null
+            }
             toml={metrics?.toml ?? null}
             csv={metrics?.csv ?? null}
             leaderboard={metrics?.leaderboard ?? null}

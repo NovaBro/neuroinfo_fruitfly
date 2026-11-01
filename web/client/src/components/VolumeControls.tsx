@@ -37,6 +37,10 @@ interface VolumeControlsProps {
   onPredictedOpacityChange: (value: number) => void;
   /** Overlay checkbox label (e.g. "Predicted instances" / "Predicted numinst"). */
   predictedLabel?: string;
+  /** Show the small-body size filter (instance overlays only, not numinst). */
+  bodyFilterEnabled: boolean;
+  minBodySize: number;
+  onMinBodySizeChange: (value: number) => void;
 }
 
 /** Display/overlay control panel for {@link VolumeViewer3D} (presentational). */
@@ -63,6 +67,9 @@ export function VolumeControls({
   predictedOpacity,
   onPredictedOpacityChange,
   predictedLabel = "Predicted instances",
+  bodyFilterEnabled,
+  minBodySize,
+  onMinBodySizeChange,
 }: VolumeControlsProps) {
   const maxSizeIndex = VOLUME_MAX_SIZE_OPTIONS.indexOf(
     maxSize as (typeof VOLUME_MAX_SIZE_OPTIONS)[number],
@@ -186,6 +193,16 @@ export function VolumeControls({
               max={100}
               value={predictedOpacity}
               onChange={onPredictedOpacityChange}
+            />
+          )}
+          {hasPredicted && showPredicted && bodyFilterEnabled && (
+            <RangeSlider
+              label={`Hide bodies < ${minBodySize} vx`}
+              min={0}
+              max={3000}
+              value={minBodySize}
+              onChange={onMinBodySizeChange}
+              hint="Display only · predicted instances"
             />
           )}
         </div>

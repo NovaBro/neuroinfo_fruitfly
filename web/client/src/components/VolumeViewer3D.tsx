@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ChannelParam,
+  Dataset,
   DEFAULT_VOLUME_MAX_SIZE,
   fetchVolumeData,
   FisbeMipHalf,
@@ -37,10 +38,13 @@ const STALE = Symbol("stale");
 
 interface VolumeViewer3DProps {
   sampleName: string;
+  dataset: Dataset;
   meta: SampleMeta;
   predictionSet?: string | null;
   /** Overlay checkbox label from the selected prediction set. */
   predictedLabel?: string;
+  /** Enable small-body filter for instance prediction sets (not numinst). */
+  bodyFilterEnabled?: boolean;
 }
 
 type VtkContext = {
@@ -52,9 +56,11 @@ type VtkContext = {
 
 export function VolumeViewer3D({
   sampleName,
+  dataset,
   meta,
   predictionSet,
   predictedLabel = "Predicted instances",
+  bodyFilterEnabled = false,
 }: VolumeViewer3DProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const vtkRef = useRef<VtkContext | null>(null);
@@ -77,6 +83,8 @@ export function VolumeViewer3D({
   const [contrast, setContrast] = useState(DEFAULT_CONTRAST);
   const [maxSize, setMaxSize] = useState(DEFAULT_VOLUME_MAX_SIZE);
   const debouncedMaxSize = useDebouncedValue(maxSize, 400);
+  const [minBodySize, setMinBodySize] = useState(0);
+  const debouncedMinBodySize = useDebouncedValue(minBodySize, 400);
   const [showPredicted, setShowPredicted] = useState(false);
   const [showGt, setShowGt] = useState(false);
   const [showSubviews, setShowSubviews] = useState(false);
@@ -187,7 +195,7 @@ export function VolumeViewer3D({
       vtk.predicted.source = null;
       vtk.gt.source = null;
     }
-  }, [sampleName, hasPredicted]);
+  }, [sampleName, dataset, hasPredicted]);
 
   useEffect(() => {
     if (!vtkReady) return;
@@ -222,7 +230,7 @@ export function VolumeViewer3D({
 
     // Fit the camera only when the sample or resolution changes; a plain
     // channel/overlay toggle re-renders in place so the viewpoint is kept.
-    const fitKey = `${sampleName}:${debouncedMaxSize}`;
+    const fitKey = `${dataset}/${sampleName}:${debouncedMaxSize}`;
     const shouldFit = fittedKeyRef.current !== fitKey;
 
     // If everything the current view needs is already cached, we can apply it
@@ -231,6 +239,7 @@ export function VolumeViewer3D({
     const rawCached =
       !showRaw ||
       peekVolumeCache(sampleName, {
+        dataset,
         volume: "raw",
         channel,
         maxSize: debouncedMaxSize,
@@ -238,14 +247,19 @@ export function VolumeViewer3D({
     const predictedCached =
       !(hasPredicted && showPredicted) ||
       peekVolumeCache(sampleName, {
+        dataset,
         volume: "predicted",
         maxSize: debouncedMaxSize,
         predictionSet,
+        minSize: bodyFilterEnabled ? debouncedMinBodySize : undefined,
       }) !== undefined;
     const gtCached =
       !(hasGt && showGt) ||
-      peekVolumeCache(sampleName, { volume: "gt", maxSize: debouncedMaxSize }) !==
-        undefined;
+      peekVolumeCache(sampleName, {
+        dataset,
+        volume: "gt",
+        maxSize: debouncedMaxSize,
+      }) !== undefined;
     const allCached = rawCached && predictedCached && gtCached;
 
     if (!allCached) setLoading(true);
@@ -270,6 +284,7 @@ export function VolumeViewer3D({
         opacity: number;
         label: string;
         predictionSet?: string | null;
+        minSize?: number;
       },
     ): Promise<string | null | typeof STALE> {
       if (!opts.enabled) {
@@ -278,9 +293,11 @@ export function VolumeViewer3D({
       }
       try {
         const vol = await fetchVolumeData(sampleName, {
+          dataset,
           volume: opts.volume,
           maxSize: debouncedMaxSize,
           predictionSet: opts.predictionSet,
+          minSize: opts.minSize,
           signal: controller.signal,
         });
         if (cancelled || vtkGenerationRef.current !== generation) return STALE;
@@ -298,13 +315,36 @@ export function VolumeViewer3D({
       try {
         const infoParts: string[] = [];
 
-        if (showRaw) {
-          const rawVol = await fetchVolumeData(sampleName, {
-            volume: "raw",
-            channel,
-            maxSize: debouncedMaxSize,
-            signal: controller.signal,
-          });
+        // Start raw + overlay requests together; each overlay is applied as it
+        // arrives (loadOverlay never rejects), raw is applied when it lands.
+        const rawPromise = showRaw
+          ? fetchVolumeData(sampleName, {
+              dataset,
+              volume: "raw",
+              channel,
+              maxSize: debouncedMaxSize,
+              signal: controller.signal,
+            })
+          : null;
+        const overlaysPromise = Promise.all([
+          loadOverlay(vtk!.predicted, {
+            enabled: hasPredicted && showPredicted,
+            volume: "predicted",
+            predictionSet,
+            minSize: bodyFilterEnabled ? debouncedMinBodySize : undefined,
+            opacity: predictedOpacity / 100,
+            label: "predicted overlay",
+          }),
+          loadOverlay(vtk!.gt, {
+            enabled: hasGt && showGt,
+            volume: "gt",
+            opacity: gtOpacity / 100,
+            label: "ground-truth overlay",
+          }),
+        ]);
+
+        if (rawPromise) {
+          const rawVol = await rawPromise;
           if (cancelled || vtkGenerationRef.current !== generation) return;
 
           vtk!.raw.applyData(
@@ -329,22 +369,10 @@ export function VolumeViewer3D({
           infoParts.push("Raw off");
         }
 
-        const predictedInfo = await loadOverlay(vtk!.predicted, {
-          enabled: hasPredicted && showPredicted,
-          volume: "predicted",
-          predictionSet,
-          opacity: predictedOpacity / 100,
-          label: "predicted overlay",
-        });
+        const [predictedInfo, gtInfo] = await overlaysPromise;
         if (predictedInfo === STALE) return;
         if (predictedInfo) infoParts.push(predictedInfo);
 
-        const gtInfo = await loadOverlay(vtk!.gt, {
-          enabled: hasGt && showGt,
-          volume: "gt",
-          opacity: gtOpacity / 100,
-          label: "ground-truth overlay",
-        });
         if (gtInfo === STALE) return;
         if (gtInfo) infoParts.push(gtInfo);
 
@@ -381,6 +409,7 @@ export function VolumeViewer3D({
   }, [
     vtkReady,
     sampleName,
+    dataset,
     channel,
     rawMode,
     showRaw,
@@ -390,6 +419,8 @@ export function VolumeViewer3D({
     hasGt,
     showGt,
     debouncedMaxSize,
+    bodyFilterEnabled,
+    debouncedMinBodySize,
     renderScene,
     fitCameraAndRender,
   ]);
@@ -427,6 +458,9 @@ export function VolumeViewer3D({
         predictedOpacity={predictedOpacity}
         onPredictedOpacityChange={setPredictedOpacity}
         predictedLabel={predictedLabel}
+        bodyFilterEnabled={bodyFilterEnabled}
+        minBodySize={minBodySize}
+        onMinBodySizeChange={setMinBodySize}
       />
 
       <div
@@ -461,7 +495,7 @@ export function VolumeViewer3D({
           checked={showSubviews}
           onChange={(e) => setShowSubviews(e.target.checked)}
         />
-        Show Raw / GT comparison views
+        {hasGt ? "Show Raw / GT comparison views" : "Show Raw comparison view"}
       </label>
       {showSubviews && (
         <>
@@ -475,8 +509,9 @@ export function VolumeViewer3D({
           </label>
           <div className="volume-viewer-3d__subviews">
             <Volume3DView
-              key={`${sampleName}-raw-3d`}
+              key={`${dataset}/${sampleName}-raw-3d`}
               sampleName={sampleName}
+              dataset={dataset}
               label="Raw (Zarr)"
               volume="raw"
               channel="all"
@@ -490,8 +525,9 @@ export function VolumeViewer3D({
             />
             {hasGt && (
               <Volume3DView
-                key={`${sampleName}-gt-3d`}
+                key={`${dataset}/${sampleName}-gt-3d`}
                 sampleName={sampleName}
+                dataset={dataset}
                 label="GT instances (Zarr)"
                 volume="gt"
                 mode="instance_rgb"
@@ -510,11 +546,18 @@ export function VolumeViewer3D({
         <span className="volume-viewer-3d__label">FISBe MIP</span>
         <div className="volume-viewer-3d__btn-row">
           {(
-            [
-              ["full", "Both"],
-              ["raw", "Original"],
-              ["gt", "GT segmentation"],
-            ] as [FisbeMipHalf, string][]
+            (
+              hasGt
+                ? [
+                    ["full", "Both"],
+                    ["raw", "Original"],
+                    ["gt", "GT segmentation"],
+                  ]
+                : [
+                    ["full", "Both"],
+                    ["raw", "Original"],
+                  ]
+            ) as [FisbeMipHalf, string][]
           ).map(([value, label]) => (
             <button
               key={value}
@@ -531,8 +574,8 @@ export function VolumeViewer3D({
           ))}
         </div>
         <SliceImage
-          key={`${sampleName}-${mipHalf}`}
-          url={fisbeMipUrl(sampleName, { half: mipHalf })}
+          key={`${dataset}/${sampleName}-${mipHalf}`}
+          url={fisbeMipUrl(sampleName, { dataset, half: mipHalf })}
           alt={`FISBe maximum-intensity projection of ${sampleName} (${mipHalf})`}
           className="volume-viewer-3d__mip-img"
           brightness={brightness}
@@ -546,7 +589,7 @@ export function VolumeViewer3D({
           {hasPredicted && meta.predicted_instances
             ? ` · Predicted (Z,Y,X): ${meta.predicted_instances.shape.join(" × ")}`
             : ""}
-          {showGt && hasGt
+          {showGt && hasGt && meta.gt_instances
             ? ` · GT (C,Z,Y,X): ${meta.gt_instances.shape.join(" × ")}`
             : ""}
           {" · "}Raw shape (C,Z,Y,X): {meta.raw.shape.join(" × ")}

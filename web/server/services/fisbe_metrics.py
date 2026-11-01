@@ -11,10 +11,11 @@ eval package writes ``general.avg_f1_cov_score`` (same formula
 
 from __future__ import annotations
 
-# Ordered FISBe website columns: S · avF1 · C · clDiceTP · tp · FS · FM
+# Ordered FISBe website columns: S · avF1 · C · clDiceTP · tp · FS · FM · nPred · nGT
 #   source="toml-summary" -> toml["summary"][field]   (confusion_matrix avg)
 #   source="toml-general" -> toml["general"][field]
 # ``higher_is_better`` documents metric orientation for the client legend.
+# ``color_scale`` (default True) — Aggregate heatmap blue ramp; False = plain counts.
 FISBE_LEADERBOARD_SPECS: tuple[dict, ...] = (
     {
         "key": "S",
@@ -64,6 +65,22 @@ FISBE_LEADERBOARD_SPECS: tuple[dict, ...] = (
         "source": "toml-general",
         "field": "FM",
         "higher_is_better": False,
+    },
+    {
+        "key": "nPred",
+        "label": "nPred",
+        "source": "toml-general",
+        "field": "Num Pred",
+        "higher_is_better": True,
+        "color_scale": False,
+    },
+    {
+        "key": "nGT",
+        "label": "nGT",
+        "source": "toml-general",
+        "field": "Num GT",
+        "higher_is_better": True,
+        "color_scale": False,
     },
 )
 

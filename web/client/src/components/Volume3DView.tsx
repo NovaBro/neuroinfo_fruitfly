@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChannelParam, fetchVolumeData, VolumeKind } from "../api/client";
+import {
+  ChannelParam,
+  Dataset,
+  fetchVolumeData,
+  VolumeKind,
+} from "../api/client";
 import { CameraSync } from "../utils/cameraSync";
 import { ChannelGains } from "../utils/displayAdjust";
 import {
@@ -16,6 +21,7 @@ const ROTATE_STEP = 5;
 
 interface Volume3DViewProps {
   sampleName: string;
+  dataset: Dataset;
   /** Panel title shown above the render. */
   label: string;
   /** Which server `volume.bin` encoding to fetch and render. */
@@ -48,6 +54,7 @@ type Ctx = {
  */
 export function Volume3DView({
   sampleName,
+  dataset,
   label,
   volume,
   channel,
@@ -134,6 +141,7 @@ export function Volume3DView({
     async function load() {
       try {
         const vol = await fetchVolumeData(sampleName, {
+          dataset,
           volume,
           channel,
           maxSize,
@@ -174,7 +182,17 @@ export function Volume3DView({
     // brightness/contrast/channelGains are intentionally excluded: the effect
     // below re-maps them without a re-fetch (matches VolumeViewer3D's split).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, sampleName, volume, channel, mode, maxSize, fitAndRender, renderScene]);
+  }, [
+    ready,
+    sampleName,
+    dataset,
+    volume,
+    channel,
+    mode,
+    maxSize,
+    fitAndRender,
+    renderScene,
+  ]);
 
   useEffect(() => {
     if (!ready) return;

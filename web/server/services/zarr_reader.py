@@ -32,6 +32,20 @@ ChannelParam = int | Literal["all"]
 RAW_KEY = "volumes/raw"
 GT_KEY = "volumes/gt_instances"
 
+# Default voxel size [vx, vy, vz] µm (X, Y, Z) when zarr root attrs lack
+# ``voxel_size_um``. FISBe / synth are 0.44 µm isotropic; Gen1 MCFO (himanshu)
+# defaults match read_h5j when the h5j attr is missing.
+_DEFAULT_VOXEL_SIZE_UM: dict[str, tuple[float, float, float]] = {
+    "completely": (0.44, 0.44, 0.44),
+    "partly": (0.44, 0.44, 0.44),
+    "synth_vh": (0.44, 0.44, 0.44),
+    "synth_vh_u8": (0.44, 0.44, 0.44),
+    "1k_v1": (0.44, 0.44, 0.44),
+    "1k_v1_u8": (0.44, 0.44, 0.44),
+    "himanshu": (0.461122, 0.461122, 0.7),
+}
+_FALLBACK_VOXEL_SIZE_UM = (0.44, 0.44, 0.44)
+
 # gt_instances stores each neuron mask in a separate channel (CZYX, uint8 labels).
 # When building the 3D overlay we merge all channels into one colored volume; this
 # stride keeps per-channel label ids in disjoint ranges so distinct neurons across
@@ -91,15 +105,53 @@ def _open_array(zarr_path: Path, volume: VolumeKind) -> zarr.Array:
     return open_cached_array(zarr_path, key)
 
 
-def get_volume_meta(zarr_path: Path) -> dict:
-    """Return shapes and dtypes for raw and gt_instances arrays."""
-    meta: dict = {}
-    for vol, key in (("raw", RAW_KEY), ("gt_instances", GT_KEY)):
-        arr = open_cached_array(zarr_path, key)
-        meta[vol] = {
-            "shape": list(arr.shape),
-            "dtype": str(arr.dtype),
+def resolve_voxel_size_um(
+    zarr_path: Path | str,
+    dataset: str,
+) -> tuple[float, float, float]:
+    """Return (vx, vy, vz) microns from zarr root attrs or dataset default.
+
+    Attr key is ``voxel_size_um`` with X, Y, Z order (matches Gen1 h5j /
+    synth_vh). Falls back to dataset defaults when missing or invalid.
+    """
+    path = Path(zarr_path)
+    try:
+        root = zarr.open(str(path), mode="r")
+        raw = root.attrs.get("voxel_size_um")
+        if raw is not None:
+            vals = [float(v) for v in list(raw)[:3]]
+            if len(vals) == 3 and all(v > 0 and np.isfinite(v) for v in vals):
+                return (vals[0], vals[1], vals[2])
+    except Exception:
+        _logger.debug("voxel_size_um unread for %s", path, exc_info=True)
+
+    return _DEFAULT_VOXEL_SIZE_UM.get(dataset, _FALLBACK_VOXEL_SIZE_UM)
+
+
+def get_volume_meta(zarr_path: Path, dataset: str = "completely") -> dict:
+    """Return shapes, dtypes, and voxel size for raw and gt_instances arrays.
+
+    ``gt_instances`` is ``None`` when the array is absent (e.g. himanshu raw-only).
+    ``voxel_size_um`` is always ``[vx, vy, vz]`` in microns (X, Y, Z).
+    """
+    raw = open_cached_array(zarr_path, RAW_KEY)
+    vx, vy, vz = resolve_voxel_size_um(zarr_path, dataset)
+    meta: dict = {
+        "raw": {
+            "shape": list(raw.shape),
+            "dtype": str(raw.dtype),
+        },
+        "gt_instances": None,
+        "voxel_size_um": [vx, vy, vz],
+    }
+    try:
+        gt = open_cached_array(zarr_path, GT_KEY)
+        meta["gt_instances"] = {
+            "shape": list(gt.shape),
+            "dtype": str(gt.dtype),
         }
+    except Exception:
+        pass
     return meta
 
 

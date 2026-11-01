@@ -26,6 +26,7 @@ ids.
 
 from __future__ import annotations
 
+import os
 from functools import lru_cache
 from pathlib import Path
 
@@ -33,10 +34,12 @@ import numpy as np
 
 from config import PPP_EXPERIMENTS_BASE
 from services.local_stage import ensure_local
+from services.ttl_cache import ttl_cache
 from services.volume_pipeline import (
     VolumeBytesResult,
     compute_downsample_factor,
     volume_array_to_bytes,
+    zero_small_labels,
 )
 from services.zarr_store import open_array as open_cached_array
 
@@ -48,7 +51,15 @@ _VOTE_DATASET = "vote_instances"
 # Prefer val then test when a stem exists under both leaves and FISBe split is unknown.
 _SPLITS = ("val", "test")
 # List-mode nests HDFs under {dataset}/; set roots / evaluated leaves omit this.
-_DATASET_DIRS = frozenset({"completely", "partly", "synthetic"})
+_DATASET_DIRS = frozenset({
+    "completely",
+    "partly",
+    "synth_vh",
+    "synth_vh_u8",
+    "1k_v1",
+    "1k_v1_u8",
+    "himanshu",
+})
 
 
 # --- discovery -------------------------------------------------------------
@@ -65,6 +76,21 @@ def _iter_sample_zarrs(processed_dir: Path):
     """Yield sample zarr dirs: flat ``*.zarr`` and nested ``{dataset}/*.zarr``."""
     yield from (p for p in processed_dir.glob("*.zarr") if p.is_dir())
     yield from (p for p in processed_dir.glob("*/*.zarr") if p.is_dir())
+
+
+def _find_hdf_parents(base: Path) -> set[Path]:
+    """Dirs under ``base`` that directly contain ``*.hdf``, skipping ``*.zarr``.
+
+    Each vote-instances ``.hdf`` sits beside a same-named ``.zarr`` with
+    thousands of chunk files; ``glob("**/*.hdf")`` would walk all of them
+    (tens of seconds on NFS scratch).
+    """
+    parents: set[Path] = set()
+    for dirpath, dirnames, filenames in os.walk(base):
+        if any(f.endswith(".hdf") for f in filenames):
+            parents.add(Path(dirpath))
+        dirnames[:] = [d for d in dirnames if not d.endswith(".zarr")]
+    return parents
 
 
 def _numinst_dir_has_data(processed_dir: Path) -> bool:
@@ -258,12 +284,16 @@ def _split_of_root(root: Path) -> str | None:
 
 @lru_cache(maxsize=1)
 def _stem_to_fisbe_split() -> dict[str, str]:
-    """Map sample stem → FISBe split (first listing wins: completely then partly)."""
+    """Map ``{dataset}/{name}`` (and bare name when unique) → FISBe split."""
     from services.sample_list import parse_sample_list
 
     out: dict[str, str] = {}
+    bare_counts: dict[str, int] = {}
     for entry in parse_sample_list():
-        if entry.name not in out:
+        out[f"{entry.dataset}/{entry.name}"] = entry.split
+        bare_counts[entry.name] = bare_counts.get(entry.name, 0) + 1
+    for entry in parse_sample_list():
+        if bare_counts.get(entry.name, 0) == 1 and entry.name not in out:
             out[entry.name] = entry.split
     return out
 
@@ -302,6 +332,7 @@ def _root_for_stem(
     return hits[0]
 
 
+@ttl_cache(60)
 def discover_prediction_sets() -> list[dict]:
     """Discover PatchPerPix numinst and instances sets under the base.
 
@@ -358,8 +389,7 @@ def discover_prediction_sets() -> list[dict]:
             instanced_base = exp_dir / split / "instanced"
             if instanced_base.is_dir():
                 param_dirs: set[Path] = set()
-                for hdf in instanced_base.glob("**/*.hdf"):
-                    parent = hdf.parent
+                for parent in _find_hdf_parents(instanced_base):
                     if parent.name in _DATASET_DIRS:
                         parent = parent.parent
                     param_dirs.add(parent)
@@ -427,34 +457,46 @@ def is_ppp_set(set_id: str | None) -> bool:
 def _numinst_zarr(root: Path, stem: str) -> Path:
     """Resolve flat or nested list-mode zarr for ``stem``.
 
-    Tries ``{stem}.zarr``, then ``* /{basename}.zarr`` (e.g. ``completely/``).
+    Prefers namespaced ``{dataset}/{name}.zarr`` when ``stem`` contains ``/``.
+    Otherwise tries flat ``{stem}.zarr``, then a single nested match.
     """
-    direct = root / f"{stem}.zarr"
-    if direct.is_dir():
-        return direct
     base = stem.rsplit("/", 1)[-1]
-    if base != stem:
+    if "/" in stem:
         nested = root / f"{stem}.zarr"
         if nested.is_dir():
             return nested
+        # Fall through to basename only under the declared dataset dir.
+        dataset, _ = stem.split("/", 1)
+        under = root / dataset / f"{base}.zarr"
+        if under.is_dir():
+            return under
+        return nested
+    direct = root / f"{stem}.zarr"
+    if direct.is_dir():
+        return direct
     matches = sorted(p for p in root.glob(f"*/{base}.zarr") if p.is_dir())
-    if matches:
+    if len(matches) == 1:
         return matches[0]
     return direct
 
 
 def _inst_hdf(root: Path, stem: str) -> Path:
     """Resolve flat or nested list-mode hdf for ``stem``."""
-    direct = root / f"{stem}.hdf"
-    if direct.is_file():
-        return direct
     base = stem.rsplit("/", 1)[-1]
-    if base != stem:
+    if "/" in stem:
         nested = root / f"{stem}.hdf"
         if nested.is_file():
             return nested
+        dataset, _ = stem.split("/", 1)
+        under = root / dataset / f"{base}.hdf"
+        if under.is_file():
+            return under
+        return nested
+    direct = root / f"{stem}.hdf"
+    if direct.is_file():
+        return direct
     matches = sorted(p for p in root.glob(f"*/{base}.hdf") if p.is_file())
-    if matches:
+    if len(matches) == 1:
         return matches[0]
     return direct
 
@@ -471,18 +513,33 @@ def has_predicted_instances(stem: str, set_id: str | None = None) -> bool:
 
 
 def _set_stems(kind: str, root: Path) -> set[str]:
-    """Return basenames (no dataset prefix) for viewer sample matching."""
+    """Return stems for viewer matching.
+
+    Nested ``{dataset}/{stem}`` when under a known dataset dir; bare stem when
+    flat at the set root. Always include the namespaced form for nested files
+    so colliding basenames across datasets stay distinct.
+    """
+    stems: set[str] = set()
     if kind == "numinst":
-        return {
-            p.name[: -len(".zarr")]
+        paths = [
+            p
             for p in _iter_sample_zarrs(root)
             if (p / "volumes" / "pred_numinst" / ".zarray").is_file()
-        }
-    stems: set[str] = set()
+        ]
+        for p in paths:
+            bare = p.name[: -len(".zarr")]
+            if p.parent != root and p.parent.name in _DATASET_DIRS:
+                stems.add(f"{p.parent.name}/{bare}")
+            else:
+                stems.add(bare)
+        return stems
     for p in root.glob("*.hdf"):
         stems.add(p.stem)
     for p in root.glob("*/*.hdf"):
-        stems.add(p.stem)
+        if p.parent.name in _DATASET_DIRS:
+            stems.add(f"{p.parent.name}/{p.stem}")
+        else:
+            stems.add(p.stem)
     return stems
 
 
@@ -498,6 +555,7 @@ def stems_for_set(set_id: str) -> set[str]:
     return stems
 
 
+@ttl_cache(60)
 def stems_with_predictions_any() -> set[str]:
     """Stems with output in *any* PatchPerPix set (one scan per set)."""
     stems: set[str] = set()
@@ -588,9 +646,16 @@ def _numinst_argmax_labels(zarr_path: Path, max_size: int) -> tuple[np.ndarray, 
 
 @lru_cache(maxsize=16)
 def predicted_instances_to_bytes(
-    stem: str, max_size: int, set_id: str | None = None
+    stem: str,
+    max_size: int,
+    set_id: str | None = None,
+    min_size: int = 0,
 ) -> VolumeBytesResult:
-    """Load and downsample a PatchPerPix overlay for 3D rendering."""
+    """Load and downsample a PatchPerPix overlay for 3D rendering.
+
+    ``min_size`` drops instance labels with fewer than that many voxels
+    (display-only). Ignored for ``numinst`` overlays (not per-body IDs).
+    """
     if not set_id:
         raise ValueError("PatchPerPix overlay requires a prediction_set id")
     kind, roots = _resolve_roots(set_id)
@@ -628,4 +693,5 @@ def predicted_instances_to_bytes(
 
     with h5py.File(ensure_local(hdf), "r") as f:
         volume = np.asarray(f[_VOTE_DATASET])
+    volume = zero_small_labels(volume, min_size)
     return volume_array_to_bytes(volume, max_size=max_size, encoding="labels_rgb")

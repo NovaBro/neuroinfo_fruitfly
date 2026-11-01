@@ -10,6 +10,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import Response
 
 from config import CORS_ORIGINS, FISBE_ROOT
@@ -19,17 +20,25 @@ from services.predictions import (
     get_predicted_instances_meta,
     list_prediction_sets,
     predicted_instances_to_bytes,
-    stems_with_predictions,
+    sample_has_prediction,
 )
 from services.aggregate_metrics import get_aggregate_metrics
 from services.fisbe_mip import fisbe_mip_png
+from services.instance_sizes import get_instance_size_histograms
 from services.metrics import get_sample_metrics
-from services.sample_list import SampleEntry, find_sample, parse_sample_list, sample_zarr_path
+from services.sample_list import (
+    SampleEntry,
+    find_sample,
+    namespaced_stem,
+    parse_sample_list,
+    sample_zarr_path,
+)
 from services.zarr_reader import (
     AxisKind,
     VolumeKind,
     get_volume_meta,
     mip_to_png,
+    resolve_voxel_size_um,
     slice_to_png,
     volume_to_bytes,
 )
@@ -51,8 +60,12 @@ app.add_middleware(
         "X-Volume-Components",
         "X-Volume-Compute-Ms",
         "X-Volume-Cache",
+        "X-Voxel-Size-Um",
     ],
 )
+# volume.bin payloads (esp. RGB label overlays) are mostly zeros and compress
+# many-fold; level 1 keeps encode time small relative to the SSH-tunnel transfer.
+app.add_middleware(GZipMiddleware, minimum_size=1024, compresslevel=1)
 
 
 @lru_cache(maxsize=1)
@@ -79,25 +92,37 @@ def prediction_sets():
 def list_samples(prediction_set: str | None = Query(None)):
     """List samples; ``has_predicted`` is scoped to ``prediction_set`` when set."""
     entries = _cached_samples()
-    predicted = stems_with_predictions(prediction_set)
     return [
         {
             "split": e.split,
             "name": e.name,
             "dataset": e.dataset,
             "path_exists": e.path_exists,
-            "has_predicted": e.name in predicted,
+            "has_predicted": sample_has_prediction(
+                e.name, e.dataset, prediction_set
+            ),
         }
         for e in entries
     ]
 
 
-@app.get("/api/samples/{name}/meta")
-def sample_meta(name: str, prediction_set: str | None = Query(None)):
-    entry = find_sample(name, list(_cached_samples()))
+def _require_sample(name: str, dataset: str) -> SampleEntry:
+    entry = find_sample(name, list(_cached_samples()), dataset=dataset)
     if entry is None:
-        raise HTTPException(status_code=404, detail=f"Sample not found: {name}")
+        raise HTTPException(
+            status_code=404,
+            detail=f"Sample not found: {dataset}/{name}",
+        )
+    return entry
 
+
+@app.get("/api/samples/{name}/meta")
+def sample_meta(
+    name: str,
+    dataset: str = Query(...),
+    prediction_set: str | None = Query(None),
+):
+    entry = _require_sample(name, dataset)
     zarr_path = sample_zarr_path(entry)
     if not zarr_path.is_dir():
         raise HTTPException(
@@ -105,8 +130,9 @@ def sample_meta(name: str, prediction_set: str | None = Query(None)):
             detail=f"Zarr data not found on disk: {zarr_path}",
         )
 
-    meta = get_volume_meta(zarr_path)
-    predicted = get_predicted_instances_meta(name, prediction_set)
+    meta = get_volume_meta(zarr_path, dataset=entry.dataset)
+    pred_stem = namespaced_stem(entry)
+    predicted = get_predicted_instances_meta(pred_stem, prediction_set)
     return {
         "name": name,
         "split": entry.split,
@@ -119,20 +145,23 @@ def sample_meta(name: str, prediction_set: str | None = Query(None)):
 
 
 @app.get("/api/samples/{name}/metrics")
-def sample_metrics(name: str, prediction_set: str | None = Query(None)):
+def sample_metrics(
+    name: str,
+    dataset: str = Query(...),
+    prediction_set: str | None = Query(None),
+):
     """Scoring metrics for ``name`` from the given prediction set.
 
     Returns raw ``toml`` / ``csv`` plus a curated ``leaderboard`` list using
     FISBe website names (S · avF1 · C · clDiceTP · tp · FS · FM). Either raw
     source may be ``null`` when absent for the sample/set.
     """
-    entry = find_sample(name, list(_cached_samples()))
-    if entry is None:
-        raise HTTPException(status_code=404, detail=f"Sample not found: {name}")
+    entry = _require_sample(name, dataset)
     return {
         "name": name,
+        "dataset": entry.dataset,
         "prediction_set": prediction_set,
-        **get_sample_metrics(name, prediction_set),
+        **get_sample_metrics(namespaced_stem(entry), prediction_set),
     }
 
 
@@ -150,10 +179,21 @@ def aggregate_metrics(
     return get_aggregate_metrics(prediction_set, threshold)
 
 
-def _resolve_zarr_or_404(name: str) -> tuple[SampleEntry, Path]:
-    entry = find_sample(name, list(_cached_samples()))
-    if entry is None:
-        raise HTTPException(status_code=404, detail=f"Sample not found: {name}")
+@app.get("/api/instance-size-histograms")
+async def instance_size_histograms(
+    prediction_set: str | None = Query(None),
+):
+    """Per-sample predicted-instance size histograms (log bins), by split×dataset.
+
+    Scans full-resolution label volumes for the selected set. First call per
+    set may be slow; results are cached in-process. Numinst sets return
+    ``applicable: false``.
+    """
+    return await asyncio.to_thread(get_instance_size_histograms, prediction_set)
+
+
+def _resolve_zarr_or_404(name: str, dataset: str) -> tuple[SampleEntry, Path]:
+    entry = _require_sample(name, dataset)
     zarr_path = sample_zarr_path(entry)
     if not zarr_path.is_dir():
         raise HTTPException(
@@ -175,12 +215,13 @@ def _validate_channel_param(channel: str) -> str:
 @app.get("/api/samples/{name}/slice.png")
 def sample_slice(
     name: str,
+    dataset: str = Query(...),
     volume: VolumeKind = Query("raw"),
     channel: str = Query("0"),
     axis: AxisKind = Query("z"),
     index: int = Query(0, ge=0),
 ):
-    _, zarr_path = _resolve_zarr_or_404(name)
+    _, zarr_path = _resolve_zarr_or_404(name, dataset)
     try:
         png = slice_to_png(
             str(zarr_path),
@@ -198,10 +239,11 @@ def sample_slice(
 @app.get("/api/samples/{name}/mip.png")
 def sample_mip(
     name: str,
+    dataset: str = Query(...),
     volume: VolumeKind = Query("raw"),
     channel: str = Query("0"),
 ):
-    _, zarr_path = _resolve_zarr_or_404(name)
+    _, zarr_path = _resolve_zarr_or_404(name, dataset)
     try:
         png = mip_to_png(
             str(zarr_path),
@@ -217,12 +259,11 @@ def sample_mip(
 @app.get("/api/samples/{name}/fisbe_mip.png")
 def sample_fisbe_mip(
     name: str,
+    dataset: str = Query(...),
     half: str = Query("full", pattern="^(full|raw|gt)$"),
 ):
     """Serve the pre-generated FISBe MIP PNG (raw half, GT half, or both)."""
-    entry = find_sample(name, list(_cached_samples()))
-    if entry is None:
-        raise HTTPException(status_code=404, detail=f"Sample not found: {name}")
+    entry = _require_sample(name, dataset)
     try:
         png = fisbe_mip_png(entry, half=half)  # type: ignore[arg-type]
     except FileNotFoundError as exc:
@@ -234,12 +275,16 @@ def sample_fisbe_mip(
 @app.get("/api/samples/{name}/volume.bin")
 async def sample_volume(
     name: str,
+    dataset: str = Query(...),
     volume: VolumeKind = Query("raw"),
     channel: str = Query("0"),
-    max_size: int = Query(256, ge=64, le=512),
+    max_size: int = Query(256, ge=64, le=1500),
     prediction_set: str | None = Query(None),
+    min_size: int = Query(0, ge=0, le=3000),
 ):
     channel_param = channel
+    entry = _require_sample(name, dataset)
+    pred_stem = namespaced_stem(entry)
     try:
         if volume == "predicted":
             cached_fn = (
@@ -251,13 +296,18 @@ async def sample_volume(
             t0 = time.perf_counter()
             result = await asyncio.to_thread(
                 predicted_instances_to_bytes,
-                name,
+                pred_stem,
                 max_size,
                 prediction_set,
+                min_size,
             )
         else:
             channel_param = _validate_channel_param(channel)
-            _, zarr_path = _resolve_zarr_or_404(name)
+            # First open may copytree the sample onto $SLURM_TMPDIR; keep that
+            # off the event loop so other requests are not stalled.
+            _, zarr_path = await asyncio.to_thread(
+                _resolve_zarr_or_404, name, dataset
+            )
             cached_fn = volume_to_bytes
             hits_before = cached_fn.cache_info().hits
             t0 = time.perf_counter()
@@ -279,10 +329,14 @@ async def sample_volume(
     z, y, x = result.shape
     oz, oy, ox = result.original_shape
     nbytes = len(result.data)
+    # Voxel size from the sample zarr (predictions share the raw grid).
+    sample_zarr = sample_zarr_path(entry)
+    vx, vy, vz = resolve_voxel_size_um(sample_zarr, entry.dataset)
     logger.info(
-        "volume.bin name=%s volume=%s channel=%s max_size=%s "
-        "cache=%s compute_ms=%s shape=%s,%s,%s bytes=%s",
+        "volume.bin name=%s dataset=%s volume=%s channel=%s max_size=%s "
+        "cache=%s compute_ms=%s shape=%s,%s,%s bytes=%s voxel_um=%s,%s,%s",
         name,
+        dataset,
         volume,
         channel_param if volume != "predicted" else "-",
         max_size,
@@ -292,6 +346,9 @@ async def sample_volume(
         y,
         x,
         nbytes,
+        vx,
+        vy,
+        vz,
     )
     headers = {
         "X-Volume-Shape": f"{z},{y},{x}",
@@ -300,6 +357,7 @@ async def sample_volume(
         "X-Volume-Components": str(result.components),
         "X-Volume-Compute-Ms": str(compute_ms),
         "X-Volume-Cache": cache,
+        "X-Voxel-Size-Um": f"{vx},{vy},{vz}",
     }
     return Response(
         content=result.data,
