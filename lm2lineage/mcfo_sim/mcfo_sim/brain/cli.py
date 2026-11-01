@@ -5,6 +5,7 @@
   stats     neuron-count / overlap / reuse statistics (+ rendered counts)
   render    render manifest rows (resumable, shardable across machines)
   validate  integrity | calibrate | compare | c2st
+  install   symlink rendered zarrs into fisbe/<dataset>/{train,val,test}/
 """
 from __future__ import annotations
 
@@ -55,6 +56,18 @@ def main():
     e.add_argument("--fisbe", help="directory of FISBe .zarr samples")
     e.add_argument("--out", default="validation")
     e.add_argument("--limit", type=int)
+
+    f = sub.add_parser("install", help="symlink rendered zarrs into fisbe/<dataset>/{train,val,test}")
+    f.add_argument("--manifest", default="manifest")
+    f.add_argument("--rendered", default="rendered")
+    f.add_argument("--fisbe-root", default="fisbe",
+                   help="FISBe root containing <dataset>/{train,val,test}")
+    f.add_argument("--dataset", default="synthetic")
+    f.add_argument("--force", action="store_true",
+                   help="replace existing symlinks that point elsewhere")
+    f.add_argument("--dry-run", action="store_true")
+    f.add_argument("--update-sample-list",
+                   help="rewrite the FlyLight <dataset> section in this sample_list file")
 
     args = ap.parse_args()
 
@@ -107,6 +120,13 @@ def main():
             r = V.c2st(args.fisbe, args.rendered, limit=args.limit)
             json.dump(r, open(os.path.join(args.out, "c2st.json"), "w"), indent=1)
             print(r)
+    elif args.cmd == "install":
+        from .install_fisbe import install_fisbe
+        install_fisbe(
+            args.manifest, args.rendered, args.fisbe_root,
+            dataset=args.dataset, force=args.force, dry_run=args.dry_run,
+            update_sample_list=args.update_sample_list,
+        )
 
 
 if __name__ == "__main__":
