@@ -2,7 +2,7 @@
 # Resources (job-name, cpus, time, mem, GPU) are set by biapy-py_sbatch_chain.sh
 # or must be passed on the sbatch CLI for direct submits.
 
-#SBATCH --account=torch_pr_61_tandon_priority
+#SBATCH --account=torch_pr_61_tandon_advanced
 #SBATCH --output=sbatch/biapy/%x-%j.out
 #SBATCH --error=sbatch/biapy/%x-%j.err
 
@@ -64,7 +64,7 @@ if [[ "$mode" == "train" ]]; then
     exit 1
   fi
 
-  SRC_ROOT="fisbe/biapy-no-aug-zarr"
+  SRC_ROOT="${SRC_ROOT:-fisbe/biapy-no-aug-zarr}"
   CONFIG_PATH="biapy_work_folder/configs/${config_file}"
   if [[ ! -f "$CONFIG_PATH" ]]; then
     echo "Error: config not found: ${CONFIG_PATH}" >&2

@@ -123,6 +123,12 @@ def get_args():
         help="If set, then sets the maximum number of samples selected selected / processed. integer",
     )
     parser.add_argument(
+        "--unique-ids",
+        action="store_true",
+        help="Label channel i as i+1 when merging (for binary per-neuron masks, "
+        "e.g. synth 1k_v1_u8). Default keeps the masks' own voxel values.",
+    )
+    parser.add_argument(
         "-c",
         "--clean",
         action="store_true",
@@ -248,21 +254,23 @@ def setup_logging(verbose_level: str, log_output: str) -> None:
     )
 
 
-def merge_instance_masks(stacked: np.ndarray) -> np.ndarray:
+def merge_instance_masks(stacked: np.ndarray, unique_ids: bool = False) -> np.ndarray:
     """Merge per-instance binary masks (I, Z, Y, X) into one label volume (Z, Y, X).
 
-    I is number of instances, not number of samples.
+    I is number of instances, not number of samples. With unique_ids, channel i
+    is written as i + 1 (for binary 0/1 masks, e.g. the synth MCFO set); later
+    channels win on overlap.
     """
     logger.debug("merge_instance_masks")
     logger.debug(f"\tbefore array.ndim: {stacked.ndim}")
     logger.debug(f"\tbefore array.shape: {stacked.shape}")
 
     merged = np.zeros(stacked.shape[1:], dtype=np.uint16)
-    for mask in stacked:
+    for i, mask in enumerate(stacked):
         instance_ids = mask > 0
         if not np.any(instance_ids):
             continue
-        merged[instance_ids] = mask[instance_ids]
+        merged[instance_ids] = i + 1 if unique_ids else mask[instance_ids]
     logger.debug(f"\tnew merged.ndim: {merged.ndim}")
     logger.debug(f"\tnew merged.shape: {merged.shape}")
     return merged

@@ -11,7 +11,7 @@ Presets
     dimensions.
 
 ``wc_nopat``
-    Dice-vs-skel plan (``md_guides/raytune_dice_vs_skel_fdb.md``): fixed
+    Dice-vs-skel plan (``md_guides/biapy/raytune_dice_vs_skel_fdb.md``): fixed
     ``warmupcosine``, no ``batch_size`` search, ``warmup_cosine_epochs`` capped
     by ``search_epochs``, plus ``skel_weight`` and/or ``f_weight``.
 """

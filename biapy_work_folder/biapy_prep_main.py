@@ -72,7 +72,7 @@ def convert_split(input_dir: Path, output_dir: Path, args: argparse.Namespace) -
                 zarr.open(in_path.__str__(), mode="r", path="volumes/gt_instances")
             )
 
-            labels_merged = merge_instance_masks(labels)
+            labels_merged = merge_instance_masks(labels, unique_ids=args.unique_ids)
 
             if do_augment:
                 assert ex is not None

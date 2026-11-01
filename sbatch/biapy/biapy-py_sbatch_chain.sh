@@ -2,16 +2,18 @@
 # Submit BiaPy preprocessing/train/test sbatch jobs, chaining with afterok in order.
 #
 # Usage (from repo root):
-#   ./sbatch/biapy/biapy-py_sbatch_chain.sh [-j JOB_NAME] [-r RUN_ID] <stem> preprocessing
-#   ./sbatch/biapy/biapy-py_sbatch_chain.sh [-j JOB_NAME] [-r RUN_ID] <stem> train
-#   ./sbatch/biapy/biapy-py_sbatch_chain.sh [-j JOB_NAME] [-r RUN_ID] <stem> test
-#   ./sbatch/biapy/biapy-py_sbatch_chain.sh [-j JOB_NAME] [-r RUN_ID] <stem> train test
-#   ./sbatch/biapy/biapy-py_sbatch_chain.sh [-j JOB_NAME] [-r RUN_ID] <stem> preprocessing train test
+#   ./sbatch/biapy/biapy-py_sbatch_chain.sh [-j JOB_NAME] [-r RUN_ID] [--dependency SPEC] <stem> preprocessing
+#   ./sbatch/biapy/biapy-py_sbatch_chain.sh [-j JOB_NAME] [-r RUN_ID] [--dependency SPEC] <stem> train
+#   ./sbatch/biapy/biapy-py_sbatch_chain.sh [-j JOB_NAME] [-r RUN_ID] [--dependency SPEC] <stem> test
+#   ./sbatch/biapy/biapy-py_sbatch_chain.sh [-j JOB_NAME] [-r RUN_ID] [--dependency SPEC] <stem> train test
+#   ./sbatch/biapy/biapy-py_sbatch_chain.sh [-j JOB_NAME] [-r RUN_ID] [--dependency SPEC] <stem> preprocessing train test
 #
 # Stem is the YAML basename under biapy_work_folder/configs/ (e.g. biapy-v1-channel-rot).
 # Resolves to ${stem}.yaml for all modes (mode is passed separately to the job).
 # -j/--job-name overrides BiaPy --job-name and the SLURM job-name base (default: stem).
 # -r/--run-id overrides BiaPy --run-id (default: 0).
+# --dependency SPEC is sbatch --dependency for the first job only (bare job id → afterok:ID;
+# a value containing ':' is passed through). Later modes still chain afterok on the previous job.
 # Chain order when multiple modes: preprocessing → train → test (each afterok on previous).
 # Per-mode SLURM resources are set here (job-name, cpus, time, mem; GPU for train/test only).
 # Preprocessing: 8 cpus, 5h, 128g, no GPU. Train/test: 8 cpus, 20h, 512g, GPU h100|h200.
@@ -21,13 +23,14 @@ set -euo pipefail
 
 # Print help to stderr and exit with failure.
 usage() {
-  echo "Usage: $0 [-j JOB_NAME] [-r RUN_ID] <stem> <preprocessing|train|test> [preprocessing|train|test]..." >&2
+  echo "Usage: $0 [-j JOB_NAME] [-r RUN_ID] [--dependency SPEC] <stem> <preprocessing|train|test> [preprocessing|train|test]..." >&2
   echo "  Stem is the YAML basename under biapy_work_folder/configs/ (e.g. biapy-v1-channel-rot)." >&2
   echo "  Resolves to biapy_work_folder/configs/\${stem}.yaml for all modes." >&2
   echo "  Modes (1–3, no duplicates): preprocessing, train, test." >&2
   echo "  Chain order: preprocessing → train → test (afterok)." >&2
   echo "  -j, --job-name   BiaPy/SLURM job-name override (default: stem)" >&2
   echo "  -r, --run-id     BiaPy --run-id (default: 0)" >&2
+  echo "  --dependency SPEC  sbatch --dependency for the first job (job id → afterok:ID; or full SPEC)" >&2
   echo "  Examples:" >&2
   echo "    $0 biapy-v1-channel-rot preprocessing" >&2
   echo "    $0 biapy-v1-channel-rot train" >&2
@@ -35,12 +38,15 @@ usage() {
   echo "    $0 biapy-v1-channel-rot train test" >&2
   echo "    $0 biapy-v1-channel-rot preprocessing train test" >&2
   echo "    $0 -j v1-something -r run-0 biapy-v1-channel-rot train test" >&2
+  echo "    $0 biapy-v1-channel-rot train test --dependency afterok:12345" >&2
   exit 1
 }
 
 # Optional overrides; empty job_name means derive from config stem in sbatch script.
 job_name=""
 run_id="0"
+# sbatch --dependency for the first job in this invocation. Empty means none.
+dependency=""
 
 # Parse flags; remaining args are stem + modes.
 positionals=()
@@ -61,6 +67,31 @@ while [[ $# -gt 0 ]]; do
       fi
       run_id="$2"
       shift 2
+      ;;
+    --dependency)
+      if [[ $# -lt 2 ]]; then
+        echo "Error: $1 requires an argument" >&2
+        usage
+      fi
+      if [[ "$2" == *:* ]]; then
+        dependency="$2"
+      else
+        dependency="afterok:$2"
+      fi
+      shift 2
+      ;;
+    --dependency=*)
+      spec="${1#*=}"
+      if [[ -z "$spec" ]]; then
+        echo "Error: --dependency requires an argument" >&2
+        usage
+      fi
+      if [[ "$spec" == *:* ]]; then
+        dependency="$spec"
+      else
+        dependency="afterok:$spec"
+      fi
+      shift
       ;;
     -h|--help)
       usage
@@ -148,11 +179,23 @@ if [[ "$do_preprocessing" -eq 1 ]]; then
     --job-name="${slurm_name_base}-r${run_id}-preprocessing"
     --cpus-per-task=8
     --time=14:00:00
-    --mem=256g
+    --mem=250g
   )
+  if [[ -n "$prev_id" ]]; then
+    sbatch_args+=(--dependency="afterok:${prev_id}")
+  elif [[ -n "$dependency" ]]; then
+    sbatch_args+=(--dependency="${dependency}")
+  fi
+
   job_id=$(sbatch "${sbatch_args[@]}" "$SBATCH_SCRIPT" "$config_file" "preprocessing" "$job_name" "$run_id")
+  if [[ -n "$prev_id" ]]; then
+    echo "Submitted preprocessing job ${job_id} (config=${config_file}, job-name=${slurm_name_base}, run-id=${run_id}, dependency=afterok:${prev_id})"
+  elif [[ -n "$dependency" ]]; then
+    echo "Submitted preprocessing job ${job_id} (config=${config_file}, job-name=${slurm_name_base}, run-id=${run_id}, dependency=${dependency})"
+  else
+    echo "Submitted preprocessing job ${job_id} (config=${config_file}, job-name=${slurm_name_base}, run-id=${run_id})"
+  fi
   prev_id="$job_id"
-  echo "Submitted preprocessing job ${job_id} (config=${config_file}, job-name=${slurm_name_base}, run-id=${run_id})"
 fi
 
 # Submit train (optional); depends on prev_id when set.
@@ -171,11 +214,15 @@ if [[ "$do_train" -eq 1 ]]; then
   )
   if [[ -n "$prev_id" ]]; then
     sbatch_args+=(--dependency="afterok:${prev_id}")
+  elif [[ -n "$dependency" ]]; then
+    sbatch_args+=(--dependency="${dependency}")
   fi
 
   job_id=$(sbatch "${sbatch_args[@]}" "$SBATCH_SCRIPT" "$config_file" "train" "$job_name" "$run_id")
   if [[ -n "$prev_id" ]]; then
     echo "Submitted train job ${job_id} (config=${config_file}, job-name=${slurm_name_base}, run-id=${run_id}, dependency=afterok:${prev_id})"
+  elif [[ -n "$dependency" ]]; then
+    echo "Submitted train job ${job_id} (config=${config_file}, job-name=${slurm_name_base}, run-id=${run_id}, dependency=${dependency})"
   else
     echo "Submitted train job ${job_id} (config=${config_file}, job-name=${slurm_name_base}, run-id=${run_id})"
   fi
@@ -196,11 +243,15 @@ if [[ "$do_test" -eq 1 ]]; then
   )
   if [[ -n "$prev_id" ]]; then
     sbatch_args+=(--dependency="afterok:${prev_id}")
+  elif [[ -n "$dependency" ]]; then
+    sbatch_args+=(--dependency="${dependency}")
   fi
 
   job_id=$(sbatch "${sbatch_args[@]}" "$SBATCH_SCRIPT" "$config_file" "test" "$job_name" "$run_id")
   if [[ -n "$prev_id" ]]; then
     echo "Submitted test job ${job_id} (config=${config_file}, job-name=${slurm_name_base}, run-id=${run_id}, dependency=afterok:${prev_id})"
+  elif [[ -n "$dependency" ]]; then
+    echo "Submitted test job ${job_id} (config=${config_file}, job-name=${slurm_name_base}, run-id=${run_id}, dependency=${dependency})"
   else
     echo "Submitted test job ${job_id} (config=${config_file}, job-name=${slurm_name_base}, run-id=${run_id})"
   fi
