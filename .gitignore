@@ -2,7 +2,7 @@
 .env
 .vscode/
 /.vscode
-env/
+/env/
 pyrightconfig.json
 
 # Data
@@ -11,6 +11,8 @@ fisbe/
 *.h5j
 *.tif
 metrics/
+*.swc
+lm2lineage/runs/brain_smoke/r_small
 
 /data
 /skeletons
@@ -31,6 +33,9 @@ gpu_usage_log_*.csv
 gpu_log/ppp/
 gpu_log/biapy/
 gpu_log/vesselfm/
+sbatch/biapy
+sbatch/**/*.err
+sbatch/**/*.out
 
 # BiaPy
 biapy_work_folder/results
