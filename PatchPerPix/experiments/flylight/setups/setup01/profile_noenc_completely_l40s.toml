@@ -1,0 +1,15 @@
+# Short profiling overlay for the stage-2 (finetune) data: train on `completely`.
+# Same as profile_noenc_l40s.toml (300 it, no val/ckpt/snapshot noise) but swaps the
+# training dataset, so per-node gunpowder stats compare 1k_v1 vs completely.
+# ./sbatch/ppp/ppp_submit_train.sh our-noenc-c1k_v1 --base original_default.toml \
+#   --id prof-noenc-completely-l40s --config profile_noenc_completely_l40s.toml --time 01:00:00
+[data]
+train_datasets = ["completely"]
+val_datasets = ["completely"]
+
+[training]
+max_iterations = 300
+checkpoints = 100000
+snapshots = 100000
+val_log_step = 100000
+profiling = 20

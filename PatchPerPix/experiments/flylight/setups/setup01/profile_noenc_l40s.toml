@@ -1,0 +1,9 @@
+# Short profiling overlay (stack last). Real data pipeline, no val/ckpt/snapshot noise in step timing.
+# ./sbatch/ppp/ppp_submit_train.sh our-noenc-c1k_v1 --base original_default.toml \
+#   --id prof-noenc-c1k_v1-l40s --config profile_noenc_l40s.toml --time 01:00:00
+[training]
+max_iterations = 300
+checkpoints = 100000
+snapshots = 100000
+val_log_step = 100000
+profiling = 20

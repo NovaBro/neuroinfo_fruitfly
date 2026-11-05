@@ -81,8 +81,17 @@ def time_hook(sec, name):
     return pre, post
 
 
+AMP_DTYPE = torch.float16
+
+
 def build(config, device, args, sec):
     config = copy.deepcopy(config)
+    if args.conv_first:
+        config["autoencoder"]["upsample_conv_first"] = True
+    # variant flags are authoritative (the TOML may already set these, e.g.
+    # our-noenc-c1k_v1.toml has fast_affinities = true; "base" must stay the reference)
+    config["fast_affinities"] = bool(args.fast_affinities)
+    config["channels_last"] = bool(args.channels_last)
     config["output_folder"] = tempfile.mkdtemp()
     if args.batch_size:
         config["batch_size"] = args.batch_size
@@ -104,8 +113,8 @@ def build(config, device, args, sec):
     in_shape, out_shape = model.inout_shapes(in_shape, "train_net", training=True)
     model.train()
     loss = torch_loss.LossWrapper(config, current_step=0).to(device)
-    if args.channels_last:
-        model = model.to(memory_format=torch.channels_last_3d)
+    # same code path as train.py (weights here, raw converted in forward())
+    model = model.use_channels_last()
 
     for name, mod in [("unet", model.unet), ("head_code_affs", model.out_code_affs),
                       ("head_numinst", model.out_fgbg_numinst)] + (
@@ -151,11 +160,11 @@ def make_inputs(config, in_shape, out_shape, device, fp16):
 def train_step(model, loss, opt, scaler, inputs, amp, sec):
     opt.zero_grad()
     with sec("fwd_total"):
-        with torch.cuda.amp.autocast(enabled=amp):
+        with torch.autocast("cuda", dtype=AMP_DTYPE, enabled=amp):
             out = model(**inputs)
     # outputs: 0 pred_affs, 1 pred_numinst, 2 gt_affs_samples, 3 gt_fgbg, (4 pred_code)
     with sec("loss"):
-        with torch.cuda.amp.autocast(enabled=amp):
+        with torch.autocast("cuda", dtype=AMP_DTYPE, enabled=amp):
             lo = loss(pred_logits_affs=out[0], pred_logits_fg=out[1],
                       gt_affs_samples=out[2], gt_fgbg_loss=out[3])["loss"]
     with sec("backward"):
@@ -177,8 +186,6 @@ def run_variant(name, config, args, device, profile=False):
         if amp else None
     inputs = make_inputs(cfg, in_shape, out_shape, device,
                          cfg.get("raw_transport_fp16", False))
-    if args.channels_last:
-        inputs["raw"] = inputs["raw"].contiguous(memory_format=torch.channels_last_3d)
     torch.cuda.reset_peak_memory_stats()
 
     sec.enabled = False
@@ -208,10 +215,10 @@ def run_variant(name, config, args, device, profile=False):
             for _ in range(2):
                 train_step(model, loss, opt, scaler, inputs, amp, sec)
             torch.cuda.synchronize()
-        trace = os.path.join(args.trace_dir, "ppp_step_trace.json")
+        trace = os.path.join(args.trace_dir, f"ppp_step_trace_{name}.json")
         prof.export_chrome_trace(trace)
-        print(f"\n== top 15 CUDA kernels/ops ({name}); chrome trace: {trace}")
-        print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=15,
+        print(f"\n== top 25 CUDA kernels/ops ({name}); chrome trace: {trace}")
+        print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=25,
                                         max_name_column_width=60))
 
     peak = torch.cuda.max_memory_allocated() / 2**20
@@ -231,12 +238,20 @@ def main():
     ap.add_argument("--variants", nargs="*", default=[
         "base", "no_cudnn_benchmark", "channels_last", "bs16", "in112", "no_amp"])
     ap.add_argument("--no-profiler", action="store_true")
+    ap.add_argument("--profile-variants", nargs="*", default=None,
+                    help="variants that also get a torch.profiler kernel table + "
+                         "chrome trace (default: the first variant and fast_aff)")
     # per-variant overrides (set internally)
     ap.add_argument("--batch-size", type=int, default=None)
     ap.add_argument("--input-shape", type=int, default=None)
     ap.add_argument("--no-cudnn-benchmark", action="store_true")
     ap.add_argument("--no-amp", action="store_true")
     ap.add_argument("--channels-last", action="store_true")
+    ap.add_argument("--conv-first", action="store_true",
+                    help="autoencoder.upsample_conv_first (1x1 conv before trilinear)")
+    ap.add_argument("--bf16", action="store_true")
+    ap.add_argument("--fast-affinities", action="store_true",
+                    help="training.fast_affinities (noenc gt affs pre-cropped, no host syncs)")
     args = ap.parse_args()
 
     device = torch.device("cuda")
@@ -249,33 +264,69 @@ def main():
         "no_amp": {"no_amp": True},
         "channels_last": {"channels_last": True},
         "bs16": {"batch_size": 16},
+        "bs12": {"batch_size": 12},
+        "bs24": {"batch_size": 24},
+        "bf16": {"bf16": True},
+        "fast_aff": {"fast_affinities": True},
+        "fast_aff_bf16": {"fast_affinities": True, "bf16": True},
+        "fast_aff_bs24": {"fast_affinities": True, "batch_size": 24},
         "in112": {"input_shape": 112},
+        "convfirst": {"conv_first": True},
+        "convfirst_bf16": {"conv_first": True, "bf16": True},
+        "convfirst_nocudnnbench": {"conv_first": True, "no_cudnn_benchmark": True},
     }
+    # Composable variants: tokens joined by "+", e.g. "fast_aff+cl+bs63".
+    # Each token is a name above, "cl" (= channels_last), "bsN" or "inN".
+    def parse_variant(v):
+        if v in overrides:
+            return dict(overrides[v])
+        out = {}
+        for tok in v.split("+"):
+            if tok == "cl":
+                out["channels_last"] = True
+            elif tok.startswith("bs") and tok[2:].isdigit():
+                out["batch_size"] = int(tok[2:])
+            elif tok.startswith("in") and tok[2:].isdigit():
+                out["input_shape"] = int(tok[2:])
+            elif tok in overrides:
+                out.update(overrides[tok])
+            else:
+                raise SystemExit(f"unknown variant token {tok!r} in {v!r}")
+        return out
+
+    variant_overrides = {v: parse_variant(v) for v in args.variants}  # fail fast
+    profiled = (set(args.profile_variants) if args.profile_variants is not None
+                else {args.variants[0], "fast_aff"} if args.variants else set())
     base_args = vars(args).copy()
     results = []
     for v in args.variants:
         a = argparse.Namespace(**{**base_args, "batch_size": None,
                                   "input_shape": None, "no_cudnn_benchmark": False,
                                   "no_amp": False, "channels_last": False,
-                                  **overrides[v]})
+                                  "conv_first": False, "bf16": False,
+                                  "fast_affinities": False,
+                                  **variant_overrides[v]})
         print(f"\n#### variant {v}", flush=True)
+        global AMP_DTYPE
+        AMP_DTYPE = torch.bfloat16 if a.bf16 else torch.float16
         try:
             results.append(run_variant(v, config, a, device,
-                                       profile=(v == "base" and not args.no_profiler)))
+                                       profile=(v in profiled
+                                                and not args.no_profiler)))
         except Exception as e:  # keep going: a variant may OOM / be unsupported
             print(f"variant {v} failed: {type(e).__name__}: {e}")
             torch.cuda.empty_cache()
 
     print("\n== summary (s per step; sections measured with cuda syncs)")
-    print(f"{'variant':20s} {'bs':>3s} {'in':>4s} {'step':>7s} {'sum_sec':>8s} "
-          f"{'peakMiB':>8s}  sections")
+    print(f"{'variant':24s} {'bs':>3s} {'in':>4s} {'step':>7s} {'sum_sec':>8s} "
+          f"{'peakMiB':>8s} {'ms/smp':>7s}  sections")
     for r in results:
         secs = r["sections"]
         tot = sum(v for k, v in secs.items() if k in
                   ("fwd_total", "loss", "backward", "opt_step"))
         detail = " ".join(f"{k}={v:.3f}" for k, v in sorted(secs.items()))
-        print(f"{r['name']:20s} {r['bs']:3d} {r['in'][0]:4d} {r['step']:7.3f} "
-              f"{tot:8.3f} {r['peak_mib']:8.0f}  {detail}")
+        print(f"{r['name']:24s} {r['bs']:3d} {r['in'][0]:4d} {r['step']:7.3f} "
+              f"{tot:8.3f} {r['peak_mib']:8.0f} {1000*r['step']/r['bs']:7.1f}  {detail}")
     if results:
         b = results[0]
         print("\nbase section share of timed step:")

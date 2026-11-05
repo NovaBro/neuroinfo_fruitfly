@@ -31,6 +31,44 @@ from PatchPerPix.util import (
 logger = logging.getLogger(__name__)
 
 
+def seg_to_affgraph_3d_multi_torch_cropped(seg, nhood, device):
+    """Same result as
+        seg_to_affgraph_3d_multi_torch(seg, nhood_tensor, device)[
+            :, :, p:-p, p:-p, p:-p]
+    (the crop the noenc branch applies), computed only on the cropped region.
+
+    nhood: list of (dz, dy, dx) python ints, symmetric per dim (min == -max), so
+    every offset of a cropped voxel lies inside seg and no border masking is
+    needed. Slicing with python ints avoids the ~12 device->host syncs per edge
+    that indexing the CUDA nhood tensor costs in the original loop, and skips the
+    zeros-init + crop of the (out+2p)^3 volume.
+    Lives here (not PatchPerPix.util) so it is picked up from this checkout.
+    """
+    nD = 3
+    pad = [max(0, max(int(a[d]) for a in nhood)) for d in range(nD)]
+    for d in range(nD):
+        assert min(int(a[d]) for a in nhood) == -pad[d], \
+            "seg_to_affgraph_3d_multi_torch_cropped needs a symmetric nhood"
+    shape = seg.shape[2:]
+    out = [shape[d] - 2 * pad[d] for d in range(nD)]
+    sl_c = tuple(slice(pad[d], pad[d] + out[d]) for d in range(nD))
+
+    fg = torch.any(seg, dim=1)  # (B, z, y, x) bool
+    center = seg[(slice(None), slice(None)) + sl_c]
+    center_nz = center != 0
+    fg_c = fg[(slice(None),) + sl_c]
+
+    aff = torch.empty((seg.shape[0], len(nhood)) + tuple(out),
+                      dtype=torch.float32, device=seg.device)
+    for e, off in enumerate(nhood):
+        sl_o = tuple(slice(pad[d] + int(off[d]), pad[d] + int(off[d]) + out[d])
+                     for d in range(nD))
+        offset = seg[(slice(None), slice(None)) + sl_o]
+        same = ((center == offset) & center_nz).any(dim=1)
+        aff[:, e] = same & fg_c & fg[(slice(None),) + sl_o]
+    return aff
+
+
 class UnetModelWrapper(torch.nn.Module):
     """Wraps a torch U-Net implementation and extends it
 
@@ -189,8 +227,23 @@ class UnetModelWrapper(torch.nn.Module):
                 max([0] + [a[d] for a in neighborhood])
                 for d in range(len(config["voxel_size"])))
             print(self.padding_neg, self.padding_pos)
+        self.neighborhood_list = [list(map(int, a)) for a in neighborhood]
         self.neighborhood = torch.as_tensor(neighborhood, device=self.device)
         print(self.neighborhood)
+        # training.fast_affinities: noenc + overlapping 3d only; exact same gt_affs
+        # (see seg_to_affgraph_3d_multi_torch_cropped), computed pre-cropped
+        # without per-edge host syncs.
+        self.fast_affinities = bool(
+            config.get("fast_affinities", False)
+            and not self.train_code
+            and self.overlapping_inst
+            and len(config["voxel_size"]) == 3
+            and config.get("add_affinities", "cpu") == "loss")
+        # training.channels_last: 3d only. Weights are converted by
+        # use_channels_last() (call after .to(device)); forward() converts raw.
+        self.channels_last = bool(
+            config.get("channels_last", False)
+            and len(config["voxel_size"]) == 3)
 
         if self.train_code:
             self.b_columns = []
@@ -223,6 +276,18 @@ class UnetModelWrapper(torch.nn.Module):
                         self.compute_affinities = seg_to_affgraph_2d_torch_code
                     else:
                         self.compute_affinities = seg_to_affgraph_2d_torch
+        if self.fast_affinities:
+            self.compute_affinities = seg_to_affgraph_3d_multi_torch_cropped
+
+    def use_channels_last(self):
+        """Store 5d conv weights as channels_last_3d (NDHWC) when
+        training.channels_last is set, so cuDNN's NHWC kernels run without the
+        nchw<->nhwc transpose kernels (~17% of CUDA time in the noenc L40S
+        profile). Same parameters/state_dict values; only strides change.
+        Returns self (like Module.to)."""
+        if self.channels_last:
+            self.to(memory_format=torch.channels_last_3d)
+        return self
 
     def init_layers(self):
         # the default init in pytorch is a bit strange
@@ -303,6 +368,8 @@ class UnetModelWrapper(torch.nn.Module):
         raw = raw.float()
         if len(raw.size()) == len(self.patchshape_squeezed) + 1:
             raw = torch.unsqueeze(raw, dim=1)
+        if self.channels_last and raw.dim() == 5:
+            raw = raw.contiguous(memory_format=torch.channels_last_3d)
         model_out = self.unet(raw)
 
         pred_code_affs_logits = self.out_code_affs(model_out)
@@ -431,7 +498,10 @@ class UnetModelWrapper(torch.nn.Module):
                         device=self.device)
         else:
             pred_affs_logits = pred_code_affs_logits
-            if self.config.get("add_affinities", "cpu") == "loss":
+            if self.fast_affinities:
+                gt_affs = self.compute_affinities(
+                    gt_labels, self.neighborhood_list, self.device)
+            elif self.config.get("add_affinities", "cpu") == "loss":
                 gt_affs = self.compute_affinities(
                     gt_labels, self.neighborhood, self.device)
                 if len(self.config["voxel_size"]) == 3:

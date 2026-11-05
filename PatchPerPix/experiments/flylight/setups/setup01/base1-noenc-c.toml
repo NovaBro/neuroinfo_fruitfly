@@ -36,6 +36,9 @@ upsampling = "transposed_conv"
 train_code = false
 
 [training]
+# exact same gt_affs as the default path, computed pre-cropped without per-edge host
+# syncs (~0.17 s/step saved at bs18 L40S; verified by sbatch/ppp/tools/test_fast_affinities.py)
+fast_affinities = true
 val_log_step = 2000
 # l40s
 batch_size = 18

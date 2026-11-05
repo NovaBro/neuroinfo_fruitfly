@@ -1,0 +1,9 @@
+# Overlay: run the UNet in channels_last_3d (NDHWC) during training (UnetModelWrapper.use_channels_last).
+# Same weights/checkpoints (state_dict is format-agnostic); removes cuDNN's nchw<->nhwc
+# transpose kernels (~17% of CUDA time in the noenc bs18 L40S profile, job 21787759).
+# Only turn on once profile_ppp_step_noenc_sbatch.sh shows the "cl" variants are faster on that GPU
+# and test_channels_last.py passes. Real-data smoke (300 it, no val/ckpt noise):
+#   ./sbatch/ppp/ppp_submit_train.sh our-noenc-c1k_v1 --base original_default.toml \
+#     --id prof-noenc-c1k_v1-cl-l40s --config profile_noenc_l40s.toml --config channels_last.toml --time 01:00:00
+[training]
+channels_last = true

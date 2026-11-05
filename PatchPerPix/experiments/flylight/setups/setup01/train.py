@@ -112,6 +112,10 @@ def train_until(**config):
             "to run your model, maybe you already initialized CUDA by sending "
             "your model to device in the main process."
         ) from e
+    # training.channels_last (before the optimizer is built below)
+    model = model.use_channels_last()
+    if model.channels_last:
+        logger.info("training.channels_last: model weights in channels_last_3d")
 
     if config.get("network_style", "unet").lower() == "unet":
         model.set_padding(config['val_padding'])

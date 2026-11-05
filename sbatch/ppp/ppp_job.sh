@@ -66,7 +66,12 @@
 set -euo pipefail
 module purge
 
+# Default: main checkout. Submitted from a worktree/copy (submitters cd to their own
+# repo root before sbatch), run that tree's code instead.
 REPO_ROOT="/scratch/wmz2007/neuroinfo_fruitfly"
+if [[ -n "${SLURM_SUBMIT_DIR:-}" && -f "${SLURM_SUBMIT_DIR}/sbatch/ppp/ppp_job.sh" ]]; then
+  REPO_ROOT="${SLURM_SUBMIT_DIR}"
+fi
 cd "${REPO_ROOT}"
 
 # ---- env / defaults ----
