@@ -38,6 +38,30 @@ example.
 SWC2IMG options: `--voxel` (µm, default 0.44), `--background` (10), `--correlation` (noise blur σ in µm, 0.5),
 `--snr` (10). `--radius-scale 0.75` matches the radius scaling v1 used.
 
+### FISBe zarr output (for PatchPerPix, evalinstseg and mcfo_sim's validator)
+Add `--zarr` to a `v1` render, or convert renders that already exist:
+
+```bash
+python -m swc2img_py v1 brain_00049 --rgb --zarr --bundle D:/1k_v1_neuron_sets/1k_v1_neuron_sets --out renders/
+python -m swc2img_py zarr brain_00049 --rgb --bundle D:/1k_v1_neuron_sets/1k_v1_neuron_sets --out renders/   # existing
+```
+
+Writes `<name>[_rgb].zarr` in the v1 layout:
+- `volumes/raw`: uint16 12-bit, CZYX.
+- `volumes/gt_instances`: one mask per neuron, rasterised from the SWCs with mcfo_sim's rule.
+
+Also writes `<name>_gt_channels.csv`, which maps each mask channel to its bodyId and tags.
+
+### Visibility (how much of each neuron stands out from background)
+```bash
+python -m swc2img_py visibility brain_00091 brain_00049 brain_00381 \
+    --bundle D:/1k_v1_neuron_sets/1k_v1_neuron_sets --out renders/ --csv visibility.csv
+```
+
+For each neuron, it gives the fraction of its voxels with SNR ≥ 2 (local background) in the greyscale SWC2IMG render
+and in the v1 example render. Needs the greyscale renders and the bundle's `examples/`. Method and results:
+[NOTES.md §3.1](NOTES.md).
+
 ## How it works / gotchas
 - SWC2IMG's dialog breaks Fiji `--headless` (`HeadlessException`). We run `ij.ImageJ -batch` with batch mode on
   instead. That still needs a display, so on Greene wrap the call in `xvfb-run -a`.

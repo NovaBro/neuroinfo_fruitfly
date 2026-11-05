@@ -46,11 +46,22 @@ images.csv ─► pick the image's neurons ─► merge their SWCs ─► clip t
   would crop away.
 - **Anchors** (`swc.with_anchors`): SWC2IMG sizes the image to the data extent plus a border and shifts coordinates.
   Two tiny nodes (radius 0.001 µm) at the box corners fix the extent. Their positions in SWC2IMG's "corrected SWC"
-  output give the exact crop offset, so the result lines up voxel for voxel with the v1 render (same shape, e.g.
-  394 × 687 × 688 at 0.44 µm).
+  output give the exact crop offset, so the result covers exactly the v1 field of view with the same shape (e.g.
+  394 × 687 × 688 at 0.44 µm). Neuron positions match v1 to within a few µm, **not voxel for voxel**: v1 jittered each
+  placement (±3° rotation, ±3 % scale, ~2 µm warp), which we don't reproduce.
 - **Render** (`fiji.run_swc2img`): Python writes an ImageJ macro and runs Fiji's bundled Java:
   `run("SWC2IMG", "file=[...] lateral=0.44 axial=0.44 background=10 correlation=0.5 snr=10 save correct log")`.
   The rendering itself is done by ImageJ, not Python.
+- **Ground-truth masks** (`masks.rasterize`): SWC2IMG only returns an image, so we draw each neuron's tubes into the
+  same grid. We use the same rule as mcfo_sim's `rasterize_mask`: each centreline sample's voxel is grown by a ball of
+  integer radius k = round(max(r / voxel, 0.5)). Check against v1's `gt_instances` for brain_00091: our masks are
+  1.00–1.18 × the size of v1's.
+- **FISBe zarr** (`fisbe_zarr.write_fisbe_zarr`): same layout as v1.
+  - `volumes/raw`: uint16, 12-bit, chunks (1, 64, 64, 64), Blosc zstd + bit-shuffle, zarr format 2.
+  - `volumes/gt_instances`: one uint8 mask per neuron.
+  - Float renders are scaled linearly so the brightest voxel = 4095 (scale stored in attrs).
+
+  mcfo_sim's own validator (`validate.image_features`) reads these zarrs unchanged.
 
 ### 2.3 What SWC2IMG does inside (theory)
 SWC2IMG (Radojević & Meijering, Erasmus MC) synthesises a fluorescence-like image from an SWC:
@@ -106,12 +117,13 @@ More: [brain_00049 greyscale](docs/images/brain_00049_grey_compare.jpg),
 [brain_00381 greyscale](docs/images/brain_00381_grey_compare.jpg).
 
 Observations:
-1. **Alignment works.** Neurons sit in the same places as in v1, so the two renders can be compared voxel for voxel.
+1. **Same neurons, same field of view.** Neurons sit in the same places as in v1, to within v1's small placement
+   jitter, so the renders compare well by eye. Voxel-level measurements must use each render's own masks (§3.1).
 2. **Thin neurites fade or break up in SWC2IMG.** With 0.44 µm voxels and radii ~0.25 µm, a thin neurite fills only
    a small part of each voxel, so it falls near the noise. Example: the long thin axon of the yellow neuron in
    brain_00091 is almost invisible. v1 keeps such processes visible.
-3. **Thick processes and cell bodies saturate in SWC2IMG** (full voxel occupancy), giving a high-contrast,
-   "blobby" look.
+3. **Thick processes and cell bodies are the brightest parts in SWC2IMG** (full voxel occupancy), so projections
+   look "blobby".
 4. **Every neuron is equally bright in SWC2IMG.** In v1 some neurons are much dimmer (per-neuron expression), so
    SWC2IMG shows more neurons and more cell bodies than v1 for the same image.
 5. **No tissue background in SWC2IMG.** v1's haze, texture and speckles (e.g. the green haze in brain_00049) are
@@ -119,12 +131,58 @@ Observations:
 6. MCFO colour mixing behaves as expected: two-tag neurons show mixed colours, and colours match v1 when using v1
    tags.
 
-Caveats: the comparison is visual only, with no numbers yet. The SWC2IMG settings (background 10, SNR 10,
-correlation 0.5 µm) are my choice, not tuned. We used radius × 1.0 (v1 used 0.75) and no placement jitter.
+Caveats: the SWC2IMG settings (background 10, SNR 10, correlation 0.5 µm) are my choice, not tuned. We used
+radius × 1.0 (v1 used 0.75) and no placement jitter.
+
+### 3.1 Quantitative: how much of each neuron is visible
+
+**Method** (`visibility.py`, `python -m swc2img_py visibility ...`):
+- A neuron voxel counts as **visible** if it is ≥ 2 noise levels above the local background in any channel the neuron
+  is expressed in. This is the SNR ≥ 2 rule mcfo_sim uses for `gt_instances_visible`.
+- Local background is the median and robust sd (1.4826 × MAD) of non-neuron voxels in 32³ blocks, which handles v1's
+  uneven haze.
+- Each render is scored against its own masks: v1's `gt_instances` for v1, and our rasterised masks for SWC2IMG.
+- Sanity check: on v1 this rule agrees with v1's own `gt_instances_visible` (mean 0.97 vs 0.93 over 21 neurons).
+
+**Results** (3 example images, 21 neurons; SWC2IMG greyscale at default settings):
+
+| Image | Mode | Neurons | Visible: SWC2IMG | Visible: v1 | Median SNR: SWC2IMG | Median SNR: v1 |
+|---|---|---|---|---|---|---|
+| brain_00091 | isolated | 4 | 0.58 | 1.00 | 2.5 | 65 |
+| brain_00049 | natural | 9 | 0.56 | 0.87 | 2.1 | 9.6 |
+| brain_00381 | crowded | 8 | 0.61 | 1.00 | 2.5 | 99 |
+| **All** (mean per neuron) | | 21 | **0.54** | **0.97** | | |
+
+Visible fractions are voxel-weighted per image. Per-neuron values: `docs/visibility_3examples.csv`.
+
+- **SWC2IMG at these settings shows only about half of each neuron**, against ~97 % for v1.
+- **The thinnest neurons are hit hardest:** e.g. CL355 and DNge176 (6–9k voxels) are 34–46 % visible, while thick
+  neurons like GNG701m and DNa16 are ~60–68 %. This puts numbers on observation 2.
+- v1's visibility is lower only in the natural-mode image (0.87). That is by design: some neurons are rendered dim
+  (per-neuron expression), e.g. GNG701m 0.76 and WEDPN17_b 0.79.
+
+**mcfo_sim validator features** (`validate.image_features`) on brain_00049, MCFO colour, v1 tags:
+
+| Feature | SWC2IMG | v1 |
+|---|---|---|
+| contrast (fg − bg, in dark-noise units) | 3.0 | 234 |
+| bg_to_fg | 0.64 | 0.05 |
+| texture_rel | 1.2 | 34 |
+| fg_p99_rel | 0.34 | 0.35 |
+| neurite diameter (median, voxels) | 2.8 | 2.0 |
+| colour channels on per neuron (mean) | 1.33 | 1.44 |
+
+- SWC2IMG has ~80 × lower contrast and a background nearly as bright as the neurons. Its raw float output is
+  background ≈ 10, brightest neuron voxel ≈ 16: thin cable fills little of each voxel, and the 0.5 µm correlation blur
+  spreads the signal further.
+- It has almost no background texture.
+- contrast and bg_to_fg don't depend on our 12-bit scaling (it is linear), so this is a property of SWC2IMG at these
+  settings.
 
 ## 4. Cost (laptop, 7.7 GB RAM)
 - Greyscale image at 0.44 µm: ~70 s, ~0.75 GB TIFF.
 - RGB image: ~3–6 min, ~2.2 GB TIFF. Memory is the limit.
+- TIFF → FISBe zarr with masks: ~20–45 s per image. Visibility scoring: ~40 s per image.
 - Whole 1k_v1 in RGB: ~50 h single-threaded, ~2.2 TB uncompressed. Needs Greene, compressed Zarr output, and many
   parallel jobs.
 
@@ -137,13 +195,13 @@ correlation 0.5 µm) are my choice, not tuned. We used radius × 1.0 (v1 used 0.
 - **Install:** `SWC2IMG_-1.1.0.jar` goes in `Fiji/plugins/`; `ImageScience-3.1.0.jar` goes in `Fiji/jars/`.
 
 ## 6. Next steps
-1. **Batch job (task 5):** SLURM array over `images.csv` on Greene with `xvfb-run`, writing FISBe-layout Zarr
-   (`volumes/raw` 3×Z×Y×X, plus per-neuron masks from per-neuron renders) so PatchPerPix / BiaPy / `evalinstseg` can
-   use it unchanged.
-2. **Numbers, not just pictures:** intensity and SNR statistics, and the fraction of each v1 `gt_instances` mask that
-   is visible in SWC2IMG.
-3. **Realism vs real data:** run `mcfo_sim`'s `validate compare` / `c2st` on SWC2IMG renders and v1 renders against
-   FISBe train.
+1. **Batch job (task 5):** SLURM array over `images.csv` on Greene with `xvfb-run`, using `v1 --rgb --zarr`. The
+   zarr output and masks are done (§2.2), so PatchPerPix / BiaPy / `evalinstseg` can use the result unchanged. Delete
+   each TIFF after conversion to save space.
+2. **More numbers:** run `visibility` over the batch output, not just the 3 examples. Add brightness vs. neurite radius,
+   to show where SWC2IMG loses thin cable.
+3. **Realism vs real data:** run `mcfo_sim`'s `validate compare` / `c2st` on SWC2IMG zarrs and v1 zarrs against
+   FISBe train. The zarrs are already compatible; this needs FISBe train locally or on Greene.
 4. **The decisive test:** train a segmenter on SWC2IMG data vs v1 data and score both on FISBe test with
    `evalinstseg`.
 5. **Tune SWC2IMG** (SNR, background, radius scale) to see how close it can get to v1.

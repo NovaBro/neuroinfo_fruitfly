@@ -240,7 +240,8 @@ def render_v1_image_rgb(
                      metadata={"spacing": voxel_um, "unit": "micron", "axes": "ZCYX", "mode": "composite"})
     for t in channel_tifs:  # replaced by the combined TIFF
         t.unlink()
-    meta = {"image_id": image_id, "tags_source": tags, "seed": seed if tags == "random" else None,
+    meta = {"image_id": image_id, "body_ids": body_ids, "overlap_mode": row["overlap_mode"], "crop": True,
+            "tags_source": tags, "seed": seed if tags == "random" else None,
             "channels": list(TAGS), "tags": tag_of, "voxel_um": voxel_um, "radius_scale": radius_scale,
             "crop_lo_um_xyz": lo.tolist(), "crop_hi_um_xyz": hi.tolist(), "shape_czyx": list(rgb.shape),
             "swc2img": {k: v for k, v in swc2img_kw.items() if k != "fiji_dir"}}
