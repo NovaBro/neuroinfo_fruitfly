@@ -1,0 +1,10 @@
+# experiment_v1 (md_guides/experiments/experiment_v1.md): H200 training settings for noenc.
+# From md_guides/ppp/ppp_noenc_train_speedup.md: bs18 (from preset), 14 workers (h200_public caps 16 CPUs/GPU),
+# fp16 raw transport, fast_affinities (from preset). 50k iterations, checkpoint every 2k.
+# Snapshots are ~6 GB each, so keep them sparse (/scratch is near quota).
+[training]
+max_iterations = 50000
+checkpoints = 2000
+snapshots = 25000
+num_workers = 14
+raw_transport_fp16 = true

@@ -1,0 +1,3 @@
+# experiment_v1 EXP 2: train on the first 500 (sorted) train volumes of the synthetic dataset.
+[data]
+max_train_samples = 500
