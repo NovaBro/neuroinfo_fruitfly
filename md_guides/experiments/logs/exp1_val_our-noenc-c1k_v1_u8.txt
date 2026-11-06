@@ -1,0 +1,6 @@
+ckpt=50000 evaluate=21975180
+ckpt=40000 evaluate=21975185
+ckpt=30000 evaluate=21975203
+ckpt=20000 evaluate=21975211
+ckpt=10000 evaluate=21975229
+chain_last=21975229

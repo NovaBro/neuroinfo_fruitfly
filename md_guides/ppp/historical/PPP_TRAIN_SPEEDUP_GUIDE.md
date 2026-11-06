@@ -1,3 +1,5 @@
+> **Archived 2026-11-06.** Superseded by [`../ppp_train_performance.md`](../ppp_train_performance.md). Kept verbatim; relative links below point to the file's old location in `md_guides/ppp/`.
+
 # PPP training step speed-up (affinity vectorization)
 
 Guide for the `our-decoder-c1k_v1` slowdown on H200 (observed 2026-10-26, job 20945953).
@@ -60,7 +62,7 @@ allocator, varying shapes cause re-tuning workspace spikes and fragmentation.
 | `PatchPerPix/PatchPerPix/util/train_util.py` | New `_seg_to_aff_patches_vectorized(seg, nhood, psH, samples_loc)`; `seg_to_affgraph_3d_multi_torch_code` and `seg_to_affgraph_2d_multi_torch_code` now delegate to it (signatures unchanged). Other affinity variants (`seg_to_affgraph_*_torch`, `*_batch`) are untouched. |
 | `PatchPerPix/experiments/flylight/setups/setup01/torch_model.py` | Both `rand_loc_ids = torch.randint(...)` calls use `size=(sample_cnt,)` instead of `min(sample_cnt, n_fg)`. Elements with zero foreground are still skipped. |
 | `PatchPerPix/experiments/flylight/setups/setup01/train.py` | `torch.backends.cuda.matmul.allow_tf32 = True`, `torch.backends.cudnn.allow_tf32 = True` after `cudnn.benchmark = True`. |
-| `PatchPerPix/experiments/flylight/setups/setup01/smoke_noval.toml` (new) | `[training] val_log_step = 2000`; stack after `smoke.toml` so validation does not distort s/iter timing. |
+| `PatchPerPix/experiments/flylight/setups/setup01/configs/train/smoke_noval.toml` (new) | `[training] val_log_step = 2000`; stack after `smoke.toml` so validation does not distort s/iter timing. |
 | `sbatch/ppp/tools/test_affgraph_vectorized.py` (new) | Randomized equivalence test, vectorized vs the original loop implementation (3D and 2D, includes zero background, multi-channel, corner locations). |
 
 Behavioral note: the only semantic change is (2). For batch elements with fewer than 1024 foreground voxels the

@@ -1,3 +1,5 @@
+> **Archived 2026-11-06.** Superseded by [`../ppp_train_performance.md`](../ppp_train_performance.md). Kept verbatim; relative links below point to the file's old location in `md_guides/ppp/`.
+
 # PPP on H200: fixing low GPU utilization (`our-noenc-cs`)
 
 Written 2026-10-21. Companion to [`ppp_overview.md`](ppp_overview.md) §7 and the archived
@@ -59,7 +61,7 @@ workers" would not have fixed it.
 | `PatchPerPix/experiments/flylight/setups/setup01/train.py` | New `[training] raw_transport_fp16` (default false): `gp.Cast(raw, np.float16)` just before `gp.PreCache` |
 | `.../setup01/torch_model.py` | `forward` starts with `raw = raw.float()` (no-op for float32) |
 | `.../setup01/our-noenc-cs-h200.toml` (new) | H200 overlay: `batch_size = 63`, `num_workers = 12`, `cache_size = 128`, `raw_transport_fp16 = true` |
-| `.../setup01/our-noenc-cs.toml` | H200 comment block rewritten with the measured numbers; active settings stay L40S |
+| `.../setup01/configs/presets/our-noenc-cs.toml` | H200 comment block rewritten with the measured numbers; active settings stay L40S |
 | `sbatch/ppp/tools/bench_ppp_dataloader.py` | New `--raw-fp16` flag for the throughput test |
 | `md_guides/ppp/ppp_overview.md` | One-line H200 note in §7 |
 

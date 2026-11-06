@@ -1,7 +1,9 @@
+> **Archived 2026-11-06.** Superseded by [`../ppp_train_performance.md`](../ppp_train_performance.md). Kept verbatim; relative links below point to the file's old location in `md_guides/ppp/`.
+
 # PPP noenc training speed-up (`our-noenc-c1k_v1`, L40S → H200)
 
-Written 2026-11-05. Work lives in the worktree `.claude/worktrees/ppp-noenc-speed`
-(branch `worktree-ppp-noenc-speed`, uncommitted at time of writing).
+Written 2026-11-05. Developed in the worktree `.claude/worktrees/ppp-noenc-speed` (branch
+`worktree-ppp-noenc-speed`) and merged into `main` as **`01c946a`** (fast-forward, 2026-11-05).
 Related: [`PPP_TRAIN_SPEEDUP_GUIDE.md`](PPP_TRAIN_SPEEDUP_GUIDE.md) (decoder affinity vectorization),
 [`ppp_h200_gpu_util.md`](ppp_h200_gpu_util.md) (H200 16-CPU cap, fp16 raw transport),
 [`historical/ppp_gpu_util_prefetch.md`](historical/ppp_gpu_util_prefetch.md) (ThreadedPrefetch).
@@ -48,7 +50,10 @@ At 2.18 s/iter on L40S this is about 10 days of training, so the training step h
 | 21902285 | H200 | Real-data 300-iteration smoke run (`profile_noenc_h200.toml`) | **0.658 s/iter**, util ~89% |
 
 Logs: `sbatch/ppp/logs/ppp_profile_noenc-<job>.out` (profiles), `sbatch/ppp/logs/ppp_our-noenc-c1k_v1_train-<job>.out`
-(training). Profile outputs and traces: `metrics/ppp/profile_noenc/<job>/` (in the worktree for 21787759 onward).
+(training). Profile outputs and chrome traces: `metrics/ppp/profile_noenc/<job>/`. H200 smoke-run GPU log:
+`gpu_log/ppp/gpu_usage_log_prof-noenc-c1k_v1-h200_21902285.csv`. These jobs ran from the worktree; their logs
+and outputs were copied into the main checkout (gitignored). The smoke run's experiment dir
+(`metrics/ppp/prof-noenc-c1k_v1-h200`, 7 GB of checkpoints) is still only in the worktree.
 
 ## Analysis
 
@@ -108,7 +113,7 @@ It only activates for noenc + overlapping instances + 3D + `add_affinities = "lo
 - `UnetModelWrapper.use_channels_last()` stores 5D weights in `channels_last_3d`. `forward()` converts
   `raw` to match. `train.py` calls it after `.to(device)` and before building the optimizer.
 - Only strides change: `state_dict` values are identical, so checkpoints stay compatible.
-- Overlay: `setup01/channels_last.toml`.
+- Overlay: `setup01/configs/train/channels_last.toml`.
 - Verified by `sbatch/ppp/tools/test_channels_last.py`. It builds the model twice from identical weights
   and compares fwd + loss + backward:
 
@@ -175,12 +180,79 @@ The H200 run warms up for two iterations (55 s, 16 s for cache fill and cuDNN au
 Note on reading `nvidia-smi` logs: the mean over the whole job (54%) includes data staging and startup.
 Average only over the training window.
 
+## Why H200 is faster than L40S (same batch size, fewer CPUs)
+
+Short answer: the step is GPU-bound. The H200 runs the fp16 3D convolutions ~2.7× faster and has ~5.5×
+the memory bandwidth. CPUs only feed data, and on both GPUs the data was ready before the GPU needed it
+(ThreadedPrefetch wait 0.00 s). So fewer CPUs cost nothing as long as the pipeline keeps up, and fp16 raw
+transport is what makes it keep up on 16 CPUs.
+
+### CPU count doesn't set the speed
+
+- Wait for the next batch was 0.00 s on both GPUs, so more CPUs can't speed up the step.
+- Required supply: L40S ~8 samples/s (bs18 / 2.18 s); H200 ~27 samples/s (bs18 / 0.658 s). Workers spend
+  ~0.07 s per sample, about 2 cores of real work. That is why 14 workers on 16 CPUs ran at ~74% load.
+- L40S was over-provisioned anyway: job 20330947 used 55 CPU-h over 24 h on 32 cores (~2.3 cores busy;
+  see [`ppp_h200_gpu_util.md`](ppp_h200_gpu_util.md)).
+- The real supply limit is the single main process that unpickles and stacks each batch. It is limited
+  by bytes, not cores. fp16 raw cut Stack from 0.60 s to 0.13 s. Not oversubscribing CPUs matters too:
+  16 workers on 16 CPUs gave 11.1 samples/s, 12 workers gave 29.2.
+
+### Where the GPU time goes, and why H200 handles it better
+
+| Part of the step (L40S synthetic, bs18) | Share | Limited by |
+|---|---|---|
+| Convolution forward + backward (implicit GEMM) | ~51% of CUDA time in backward alone | tensor-core FLOPs |
+| cuDNN NCHW↔NHWC layout conversion | ~17% | memory bandwidth |
+| BCE loss + elementwise ops | ~8%+ | memory bandwidth |
+| `compute_affinities` (before fast_aff) | 0.187 s | host↔device syncs (latency) |
+
+| Spec (approximate) | L40S | H200 |
+|---|---|---|
+| Dense fp16 tensor throughput | ~362 TFLOPS | ~989 TFLOPS (~2.7×) |
+| Memory bandwidth | ~0.86 TB/s GDDR6 | ~4.8 TB/s HBM3e (~5.5×) |
+| SMs | 142 | 132 |
+
+The L40S has more SMs. The H200's edge is ~4× tensor-core work per SM per clock, plus HBM. The measured
+~2.7× per sample with fast_aff (84.8 vs 31.4 ms/sample) matches the compute ratio. Convolutions
+dominate; the bandwidth-bound parts shrink too.
+
+The other results fit this picture:
+- **bf16: no gain on L40S.** The fp16 tensor cores are already saturated, so L40S really is compute-bound.
+- **fast_aff: −27% on H200 vs −10% on L40S.** A host↔device sync costs the same fixed time on either GPU.
+  Once everything else is fast, the syncs are a bigger share of the step.
+- **channels_last: −5% on L40S, ~0 on H200.** It removes bandwidth-bound layout conversions, and those
+  are already cheap with HBM.
+- **Bigger batch on H200: no per-sample gain** (31.4 / 31.7 / 32.1 ms at bs18 / 36 / 63). The GPU is
+  already full at bs18. The extra memory (141 GB) is not a source of speed.
+
+### Part of the 3.3× real-data gap isn't hardware
+
+The headline 2.18 vs 0.658 s/iter compares runs that weren't set up the same way:
+
+| | L40S 21773195 | H200 21902285 |
+|---|---|---|
+| fast_aff | off (predates it) | on |
+| Raw transport | fp32 | fp16 |
+| Training data | `completely` + `1k_v1` | `1k_v1` only |
+| Synthetic → real gap | 1.69 → 2.18 s (+0.5 s, not explained) | 0.565 → 0.658 s (+0.09 s) |
+
+Like-for-like hardware ratio: synthetic base 1.696 / 0.771 = **2.2×**; with fast_aff on both,
+1.527 / 0.565 = **2.7×**. The rest of the 3.3× comes from fast_aff and fp16 transport, which only the H200
+run had, plus the unexplained L40S gap.
+
+**Hypothesis (not measured):** the +0.5 s on L40S is main-process overhead from fp32 transport. Stacking
+18 × 31 MiB (0.60 s of mostly Python work) runs in the prefetch thread. It can hold the GIL and compete
+for memory bandwidth with the training thread that launches GPU kernels, even though it "overlaps" the
+step. fp16 halves those bytes, and the gap shrank to 0.09 s on H200. To test: run a real-data L40S job
+with `fast_affinities` + `raw_transport_fp16` and compare its synthetic → real gap.
+
 ## How to run
 
 H200 synthetic profile:
 
 ```bash
-cd /scratch/wmz2007/neuroinfo_fruitfly/.claude/worktrees/ppp-noenc-speed
+cd /scratch/wmz2007/neuroinfo_fruitfly   # submit from the repo root
 RUN_AFF_TEST=0 VARIANTS="base fast_aff fast_aff+cl fast_aff+bs36" \
 EXTRA="--profile-variants base fast_aff+cl" \
 sbatch --account=torch_pr_61_tandon_advanced --partition=h200_public --time=01:30:00 \
@@ -204,14 +276,15 @@ H200 real-data smoke run (300 iterations):
   it should still keep up, but this is not measured.
 - `raw_transport_fp16` feeds the model raw at fp16 precision, which differs from the existing L40S runs.
   The earlier H200 setup in `ppp_h200_gpu_util.md` already used it.
-- The main checkout has an uncommitted decoder change in `torch_model.py` (`upsample_conv_first`,
-  `_ConvFirstSequential`) that this worktree lacks. Merge both when bringing this branch back. Noenc
-  doesn't use that code.
+- The decoder conv-first change in `torch_model.py` (`upsample_conv_first`, `_ConvFirstSequential`) is
+  still an **uncommitted** edit in the main checkout, re-applied on top of `01c946a`. It is not part of
+  this commit. Noenc doesn't use that code.
 
 ## Next to-dos
 
-1. **Commit and merge** the worktree changes into `main`, together with the main checkout's decoder
-   `upsample_conv_first` change.
+1. ~~Commit and merge the worktree changes into `main`~~ — done, `01c946a`. Still open: commit the
+   decoder `upsample_conv_first` change (with `sbatch/ppp/tools/test_decoder_upsample_equiv*`), and
+   remove the worktree once its 7 GB smoke-run experiment dir is no longer needed.
 2. **Stage 1 config:** noenc on `completely` + `1k_v1`, 200k iterations, val on `completely`, with the H200
    settings above. Check how two `train_datasets` are mixed (`oversample_complete`, `max_train_samples`).
 3. **Stage 2 config:** fine-tune from the stage-1 best checkpoint on `completely` only, another 200k

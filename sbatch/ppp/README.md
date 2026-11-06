@@ -22,5 +22,5 @@ Prep example:
 DATASETS=completely,partly,synth_vh sbatch sbatch/ppp/prep/prepare_fisbe_for_ppp_sbatch.sh
 ```
 
-Ops write-up: [`md_guides/ppp/ppp_overview.md`](../../md_guides/ppp/ppp_overview.md).
+Ops write-up: [`md_guides/ppp/ppp_overview.md`](../../md_guides/ppp/ppp_overview.md) (all PPP guides: [`md_guides/ppp/README.md`](../../md_guides/ppp/README.md)).
 Prep scripts: [`md_guides/ppp/ppp_prep.md`](../../md_guides/ppp/ppp_prep.md).

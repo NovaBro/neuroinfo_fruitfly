@@ -91,7 +91,7 @@ Checklist for a new dataset name `<name>`:
 
 | Piece | What to do |
 |-------|------------|
-| Overlay TOML | Copy [`datasets_test_himanshu.toml`](../../PatchPerPix/experiments/flylight/setups/setup01/datasets_test_himanshu.toml): set `test_datasets = ["<name>"]`, optional `max_test_samples` |
+| Overlay TOML | Copy [`datasets_test_himanshu.toml`](../../PatchPerPix/experiments/flylight/setups/setup01/configs/data/datasets_test_himanshu.toml): set `test_datasets = ["<name>"]`, optional `max_test_samples` |
 | `--datasets` + `--config` | Must match. `--datasets` sizes / indexes the SLURM array; the TOML drives `run_ppp` |
 | `KNOWN_DATASETS` | Add `"<name>"` to the frozenset in [`run_ppp.py`](../../PatchPerPix/experiments/run_ppp.py) |
 | Web / sample lists (optional) | `sample_list_per_split.txt`, [`web/server/services/sample_list.py`](../../web/server/services/sample_list.py), cleanup allowlists — only if you browse in the web app |

@@ -1,0 +1,369 @@
+# PPP training performance (L40S / H200, noenc / decoder)
+
+Current as of 2026-11-06. This merges four write-ups that are now archived in [`historical/`](historical/):
+
+| Date | Topic | Archived original |
+|---|---|---|
+| 2026-10-21 | H200 data handoff, fp16 raw transport (`our-noenc-cs`) | [`ppp_h200_gpu_util.md`](historical/ppp_h200_gpu_util.md) |
+| 2026-10-26 | Decoder affinity vectorization (`our-decoder-c1k_v1`) | [`PPP_TRAIN_SPEEDUP_GUIDE.md`](historical/PPP_TRAIN_SPEEDUP_GUIDE.md) |
+| 2026-10-29 | Decoder trilinear-upsample profile | (was only in session notes) |
+| 2026-11-05 | noenc step: `fast_affinities`, `channels_last`, L40S → H200 | [`ppp_noenc_train_speedup.md`](historical/ppp_noenc_train_speedup.md) |
+
+The earlier batch-handoff / `ThreadedPrefetch` fix is in
+[`historical/ppp_gpu_util_prefetch.md`](historical/ppp_gpu_util_prefetch.md).
+
+---
+
+## 1. Recommended settings
+
+| | noenc, L40S | noenc, H200 | decoder (`train_code`), H200 |
+|---|---|---|---|
+| Partition / CPUs | `l40s_public`, 32 | `h200_public`, **16** (hard cap per GPU) | `h200_public`, 16 |
+| `batch_size` | 18 | 18 | 30 |
+| `num_workers` | 28 | **14** | 12 |
+| `raw_transport_fp16` | optional (see §5 hypothesis) | **true** | true |
+| `fast_affinities` | true (preset default) | true (preset default) | n/a (decoder uses the vectorized code path) |
+| `channels_last` | optional, −5% | off (no gain) | off (slower) |
+| Measured | 2.18 s/iter (before `fast_affinities`) | **0.63–0.66 s/iter**, util ~89% | 5.34 s/iter, util ~94% |
+| 200k iterations | ~121 h | **~37 h** | ~12 days |
+
+How to get those settings:
+
+- **noenc on H200:** stack [`exp_v1_h200.toml`](../../PatchPerPix/experiments/flylight/setups/setup01/configs/exp/exp_v1_h200.toml)
+  on the preset. It sets 14 workers and fp16 raw, plus experiment_v1's 50k iterations / checkpoint every 2k /
+  snapshot every 25k. `raw_fp16.toml` alone is **not** enough on H200: it keeps the preset's 28 workers on 16 CPUs.
+
+  ```bash
+  ./sbatch/ppp/ppp_submit_train.sh our-noenc-c1k_v1 --base original_default.toml \
+    --config exp_v1_h200.toml --id <exp_id> \
+    --partition h200_public --cpus 16 --account torch_pr_61_tandon_advanced --time 48:00:00
+  ```
+
+- **decoder on H200:** the `our-decoder-c1k_v1*` presets already default to `h200_public`, 16 CPUs, bs30,
+  12 workers in `PRESET_TABLE`.
+- `h200_public` rejects more than 16 CPUs per GPU. `--cpus 32` (the train default) or 24 fails with
+  "partition 'h200_public' is not valid for this job". The noenc presets still default to L40S/32 CPUs, so
+  H200 launches need `--partition h200_public --cpus 16`.
+- The old `our-noenc-cs` H200 overlay (bs63, 12 workers, `cache_size = 128`, fp16) is archived as
+  `configs/archive/h200-noenc.toml`. Bigger batches give no per-sample gain (§5), so bs18 is the default now.
+- Experiments resumed with `-id` keep their saved `config.toml`, so they don't pick up new defaults such as
+  `fast_affinities`.
+
+---
+
+## 2. How to diagnose a slow step
+
+The training pipeline is:
+
+```text
+workers (gunpowder, PreCache, mp pipes) → main process: unpickle + Stack → ThreadedPrefetch → train thread: GPU step
+```
+
+Read the gunpowder profiling stats (every `profiling` iterations) in the train `.out`:
+
+| Symptom | Meaning |
+|---|---|
+| `ThreadedPrefetch` wait ≈ 0, `TorchTrainExt` ≈ batch time | GPU-bound. More CPUs or workers won't help. Profile the step (§6). |
+| `Stack` / `ThreadedPrefetch` large, batch time ≫ train time | Handoff-bound: bytes through the single main process (§3). |
+| Same s/sample on a faster GPU | Launch/sync-bound: Python loops or host↔device syncs in the step (§4). |
+| `memory.used` swings by 100 GB | Varying tensor shapes re-tune cuDNN workspaces (§4). |
+
+Rules of thumb:
+
+- Low CPU efficiency on one machine says nothing about whether the pipeline is CPU-bound on another. Look at
+  **per-sample cost × required rate** and at **bytes/s through the single consumer**.
+- Keep `num_workers` at roughly CPUs − 2 to CPUs − 4. Oversubscription hurts more than too few workers:
+  16 workers on 16 CPUs gave 11.1 samples/s, 12 workers gave 29.2.
+- Bigger batches don't raise supply. Supply is samples/s.
+- `nvidia-smi` logs (`gpu_log/ppp/gpu_usage_log_<exp_id>_<jobid>.csv`, named by exp id, not preset) include
+  data staging and startup. Average only over the training window: the H200 smoke run averaged 54% over the
+  whole job and ~89% while training.
+- Warm-up: the first 2–3 iterations are slow (cache fill, cuDNN autotune). Skip ~20 when timing.
+
+---
+
+## 3. Data handoff on H200 (`our-noenc-cs`, 2026-10-21)
+
+**Problem.** H200 caps jobs at 16 CPUs. The first H200 setup (bs63, 16 workers) ran at ~33% GPU util, while
+the L40S reference (32 CPUs, bs18) ran at 85%.
+
+**Diagnosis.**
+
+1. L40S was never CPU-bound: job 20330947 used 55 CPU-h over 24 h on 32 cores (~2.3 cores busy).
+2. Workers are cheap: ZarrSource 0.05 s and IntensityAugment 0.02 s per sample. At the 17.5 samples/s the
+   H200 can consume, that's ~3.5 cores of work.
+3. The handoff is the limit. One sample pickles to ~34.7 MiB (`RAW` float32 `(3,140,140,140)` is 31.4 MiB of
+   it), so a bs63 batch is ~2.2 GB per step through mp pipes into one process. `Stack` averaged 4.19 s
+   (max 14 s) ≈ 63 × 0.07 s.
+4. L40S hid the same cost: 18 × 0.07 = 1.3 s fits inside a 2.6 s step, overlapped by `ThreadedPrefetch`.
+5. 16 workers + main process + prefetch thread + train thread on 16 CPUs caused the 6–19 s stalls.
+
+**Fix.** `[training] raw_transport_fp16` (default false) in `train.py` casts `RAW` to float16 just before
+`gp.PreCache`. `torch_model.forward` starts with `raw = raw.float()`. Plus 12 workers and `cache_size = 128`
+(`cache_size = 400` held ~14 GB in flight for no benefit). `bench_ppp_dataloader.py` got a `--raw-fp16` flag.
+
+**Results.**
+
+| Workers | RAW | s/batch (max) | samples/s |
+|---|---|---|---|
+| 16 | fp32 | 9.58 (16.2) | 6.6 |
+| 16 | fp16 | 5.67 (8.5) | 11.1 |
+| 12 | fp16 | 2.16 (2.4) | 29.2 |
+
+Bench: bs63, `synth_vh`, 16 CPUs, no GPU work (jobs 20488811–13). The 45-min smoke train 20535976 reached
+**85.3%** util after startup. `Stack` dropped to 0.44 s (from 4.19), `ThreadedPrefetch` to 0.01 s (from 4.85).
+
+**Caveats.**
+
+- fp16 transport changes training inputs by ~1e-3 on values in [-1, 1] relative to fp32 L40S runs. Keep it in
+  mind when comparing final metrics across the two.
+- Bench pitfalls: `bench_ppp_dataloader_sbatch.sh` hardcodes partition `cs` and 32 CPUs (override on the
+  `sbatch` line); `h200_public` needs `--gres=gpu:1`, so the CPU-only bench holds an idle GPU; bench step C
+  re-runs with defaults (ignore it); the "handoff" line measures the uncast batch, so it never shows the fp16
+  savings. Node noise is large (6.6 vs 15.4 samples/s for the same config); trust orderings, not absolutes.
+- If util drops later: try 10 workers, `prefetch_batches = 3`, or shared-memory transport (not implemented).
+
+---
+
+## 4. Decoder: affinity vectorization (`our-decoder-c1k_v1`, 2026-10-26)
+
+**Problem.** On H200 (bs30, AMP, `add_affinities = "loss"`, `train_code = true`) training ran at ~10.0 s/iter
+(p10 8.2, p90 11.6), mean util ~60%, `memory.used` swinging 30–140 GB. Per-sample cost was the same as on L40S
+(0.34 s/sample for L40S bs22 job 21007371 and H200 bs30 job 20945953), so the faster GPU bought nothing.
+
+**Root cause.** `seg_to_affgraph_3d_multi_torch_code` (`PatchPerPix/PatchPerPix/util/train_util.py`) built
+ground-truth affinities for 1024 sampled foreground locations per batch element with two Python loops: one per
+location (30 × 1024 slices with GPU-tensor bounds, a host sync each) and one per edge (343 edges × ~10 tiny
+kernels). That is ~10⁵ syncs/launches per step. The memory swings were probably cuDNN re-tuning for varying
+decoder input shapes, since the sample count was `min(sample_cnt, n_fg)`.
+
+**Fix.**
+
+| File | Change |
+|---|---|
+| `PatchPerPix/PatchPerPix/util/train_util.py` | New `_seg_to_aff_patches_vectorized`: gathers only the centre and `nhood` voxels per patch in one advanced-indexing op, then `aff = any_C(center == off & center != 0) & fg[centre] & fg[offset]`. The 3D and 2D `*_torch_code` functions delegate to it. Output identical. |
+| `setup01/torch_model.py` | Sample exactly `sample_cnt` locations per element (with replacement), so decoder shapes are constant. Elements with zero foreground are still skipped. |
+| `setup01/train.py` | TF32 on for fp32 matmul/conv outside autocast. |
+| `configs/train/smoke_noval.toml` | `val_log_step = 2000`; stack after `smoke.toml` so validation doesn't distort timing. |
+| `sbatch/ppp/tools/test_affgraph_vectorized.py` | Randomized equivalence test vs the loop version (3D and 2D). Result: `3D ok (200, 343)`, `2D ok (200, 49)`. |
+
+The only semantic change is the fixed sample count: elements with fewer than 1024 foreground voxels now get
+1024 with-replacement samples. If the loss regresses, revert that first.
+
+**Results** (smoke job 21045488, 150 iterations, first 20 skipped):
+
+| | before (20945953) | after (21045488) |
+|---|---|---|
+| median s/iter | 10.07 | **5.34** (1.9×) |
+| p10 / p90 | 8.2 / 11.6 | 4.8 / 5.9 |
+| mean GPU util | ~60% | **~94%** |
+| `memory.used` | 30–140 GB, swinging | ~46–49 GB, flat |
+| loss at it 100 | 0.642 | 0.596 |
+
+### Decoder: what the remaining 5–6 s is (2026-10-29)
+
+Profiled with `profile_ppp_step.py` (job 21338403, synthetic inputs, H200, bs30, 140³, AMP): step 6.0 s =
+backward 3.7 + forward 2.3. The UNet forward is only 0.25 s; the **decoder forward is 2.08 s**, and
+`aten::upsample_trilinear3d` (+ backward) is **~85% of CUDA time**.
+
+Cause: funlib's `Upsample(mode="nearest")` actually builds `nn.Upsample(mode="trilinear")` + a 1×1 conv, and the
+decoder runs it on 30 × 1024 = 30,720 tiny patches (channels 128→64 and 64→1).
+
+Dead ends: `cudnn.benchmark` off (6.30 s), `channels_last` (6.52 s, slower), no-AMP at bs30 (CUDA illegal
+memory access), input 112 (fails valid-padding shape). bs16 = 3.23 s, so the step is linear in batch.
+
+**Fix, implemented but not landed:** `model.autoencoder.upsample_conv_first` in `torch_model.py`
+(`_ConvFirstSequential`) runs the 1×1 conv **before** the trilinear upsample. It is the same math with the same
+weights (interpolation weights sum to 1), so checkpoints stay compatible, and the second stage upsamples
+1 channel instead of 64.
+
+- Equivalence (`sbatch/ppp/tools/test_decoder_upsample_equiv.py`, job 21768764): fp32 max output diff 5.7e-6,
+  dW 1.2e-6; AMP output 1.2e-4, dW 4.5e-3 (output absmax 0.173).
+- Not enabled in any TOML yet, and the speed-up is **not measured**.
+- Still an uncommitted edit in `torch_model.py`, along with the two test scripts.
+- Alternative: switch autoencoder upsampling to `transposed_conv` (new weights, needs retraining).
+
+---
+
+## 5. noenc: the step is conv-bound (`our-noenc-c1k_v1`, 2026-11-05)
+
+Merged into `main` as `01c946a`.
+
+### Where the L40S step goes
+
+The real run 21773195 (L40S, bs18, 28 workers) ran at **2.18 s/iter**, util 85.5%. `ThreadedPrefetch` wait was
+0.00 s; `Stack` (0.60 s) overlapped the GPU step; validation/checkpoint/snapshot stalls were ~0.8%. Data loading
+was not the bottleneck on L40S. Don't re-chase it there.
+
+Synthetic step (job 21787759, L40S, bs18):
+
+| Section | s/step |
+|---|---|
+| backward | 0.984 |
+| UNet forward | 0.410 |
+| `compute_affinities` (GT targets) | 0.187 |
+| loss | 0.077 |
+| **total** | **1.689** |
+
+Kernel view: convolution backward ~51% of CUDA time; cuDNN NCHW↔NHWC layout conversion **~17%**;
+`binary_cross_entropy_with_logits` ~8%.
+
+### `training.fast_affinities` (exact, on in the noenc presets)
+
+`torch_model.seg_to_affgraph_3d_multi_torch_cropped` computes the noenc GT affinities directly on the cropped
+output region, slicing with Python ints instead of indexing a CUDA neighborhood tensor (removes ~12 syncs per
+edge) and skipping the zero-init and crop of the padded volume. It activates only for noenc + overlapping
+instances + 3D + `add_affinities = "loss"`.
+
+- Bit-identical to the old path: `sbatch/ppp/tools/test_fast_affinities.py` → "ALL EQUAL".
+- Affinity time 0.187 → 0.022 s (L40S), 0.234 → 0.030 s (H200).
+- `fast_affinities = true` in `our-noenc-c1k_v1.toml`, `our-noenc-c1k_v1_u8.toml`, `base1-noenc-c.toml`.
+
+### `training.channels_last` (optional, off by default)
+
+`UnetModelWrapper.use_channels_last()` stores 5D weights in `channels_last_3d`; `forward()` converts `raw` to
+match; `train.py` calls it after `.to(device)` and before building the optimizer. Only strides change, so
+checkpoints stay compatible. Overlay: `channels_last.toml`.
+
+| GPU | fp32 loss rel | fp32 grad rel | AMP fp16 grad rel |
+|---|---|---|---|
+| L40S | 0 | 2.1e-8 | 1.9e-4 |
+| H200 | 0 | 2.3e-7 | 3.4e-5 |
+
+(`sbatch/ppp/tools/test_channels_last.py`: same weights, fwd + loss + backward.)
+
+Effect on L40S: removes the layout-conversion kernels (~265 ms/step) but adds strided elementwise kernels (loss
+0.076 → 0.092 s, +4.4 GB peak memory). Net ~−5%. No gain on H200.
+
+### Synthetic step results (bs18 unless noted)
+
+| Variant | L40S s/step | L40S ms/sample | H200 s/step | H200 ms/sample |
+|---|---|---|---|---|
+| base | 1.696 | 94.2 | 0.771 | 42.8 |
+| cl | 1.624 | 90.2 | — | — |
+| fast_aff | 1.527 | 84.8 | 0.565 | 31.4 |
+| fast_aff+cl | 1.449 | 80.5 | 0.563 | 31.3 |
+| fast_aff, bs36 | — | — | 1.143 | 31.7 |
+| fast_aff+cl, bs36 | — | — | 1.145 | 31.8 |
+| fast_aff, bs63 | — | — | 2.024 | 32.1 |
+| fast_aff+cl, bs63 | — | — | 1.969 | 31.3 |
+
+H200 peak memory: 39 GB at bs18, 65 GB at bs36, 111 GB at bs63.
+
+Dead ends: bf16 autocast 1.724 s vs 1.689 (fp16 tensor cores already saturated); fp32 (no AMP) and bs24 OOM on
+L40S (bs18 peaks at 35.8 GB); bigger batch on H200 (flat ms/sample; bs63 × 200k iterations is 3.5× the samples).
+
+### Real data
+
+| | L40S (21773195) | H200 (21902285) |
+|---|---|---|
+| s/iter, steady state | 2.18 | **0.658** |
+| `TorchTrainExt` | 2.18 | 0.645 |
+| `ThreadedPrefetch` wait | 0.00 | 0.00 |
+| `Stack` | 0.60 s (fp32 raw) | 0.13 s (fp16 raw) |
+| Workers | 28 | 14 (~74% load) |
+| GPU util during training | 85.5% | ~89% |
+| Peak GPU memory | 35.8 GB | 41.7 GB |
+
+experiment_v1 EXP 2 (job 21975068, H200, `exp_v1_h200.toml`) trained at 0.63 s/iter, confirming the smoke run.
+
+### Why H200 is faster with fewer CPUs
+
+The step is GPU-bound, and on both GPUs the batch was ready before the GPU needed it. So CPUs only have to keep
+up. Required supply is ~8 samples/s on L40S and ~27 samples/s on H200; workers spend ~0.07 s per sample (about
+2 cores of work), which is why 14 workers on 16 CPUs ran at ~74% load. The real supply limit is the
+single-process unpickle + stack, which is bound by bytes, so fp16 raw is what lets 16 CPUs keep up.
+
+| Spec (approximate) | L40S | H200 |
+|---|---|---|
+| Dense fp16 tensor throughput | ~362 TFLOPS | ~989 TFLOPS (~2.7×) |
+| Memory bandwidth | ~0.86 TB/s GDDR6 | ~4.8 TB/s HBM3e (~5.5×) |
+| SMs | 142 | 132 |
+
+The measured 84.8 vs 31.4 ms/sample (2.7×, fast_aff on both) matches the compute ratio. The rest fits too:
+bf16 doesn't help (compute-bound); fast_aff saves −27% on H200 vs −10% on L40S (a sync costs the same fixed time
+on either GPU, so it's a bigger share of a faster step); channels_last helps only L40S (it removes
+bandwidth-bound work that HBM already makes cheap).
+
+The headline 3.3× (2.18 vs 0.658) is **not** all hardware. Like-for-like synthetic is 2.2× (base) or 2.7×
+(fast_aff). The H200 run also had fast_aff, fp16 raw and `1k_v1`-only data, and the L40S real step sits
+~0.5 s above its synthetic step (1.69 → 2.18) while the H200 gap is 0.09 s.
+
+**Hypothesis (not measured):** the extra 0.5 s on L40S is main-process overhead from fp32 transport. Stacking
+18 × 31 MiB runs in the prefetch thread, which can hold the GIL and compete for memory bandwidth with the thread
+launching kernels. Predicted L40S with fast_aff + fp16: 1.46–1.54 s/iter if true, ~1.95–2.0 if not. The test
+(jobs 22025056/57: `raw_fp16.toml` + `profile_noenc_completely_l40s.toml`, ± `channels_last.toml`) was cancelled
+before the 2026-11-06 meeting and still needs a rerun.
+
+---
+
+## 6. Tooling
+
+| Tool | Use |
+|---|---|
+| `sbatch/ppp/tools/profile_ppp_step.py` | Synthetic-input step profiler. Variants compose with `+` (`fast_aff`, `cl`, `bf16`, `no_amp`, `bsN`, `inN`), e.g. `fast_aff+cl+bs63`. Variant flags override the TOML, so `base` stays the reference. `--profile-variants` picks which get a torch.profiler table and chrome trace. Summary has an `ms/smp` column. |
+| `sbatch/ppp/tools/profile_ppp_step_noenc_sbatch.sh` | Runs `test_fast_affinities.py` (`RUN_AFF_TEST`) and `test_channels_last.py` (`RUN_CL_TEST`) first, then one process per variant (`VARIANTS`, logged to `<OUT_DIR>/variant_<v>.log`), then a combined table. Outputs: `metrics/ppp/profile_noenc/<job>/`. |
+| `sbatch/ppp/tools/profile_ppp_step_sbatch.sh` | Same for the decoder setup. |
+| `sbatch/ppp/tools/bench_ppp_dataloader.py` (+ `_sbatch.sh`) | Dataloader throughput without GPU work; `--raw-fp16`. See §3 caveats. |
+| `test_fast_affinities.py`, `test_channels_last.py`, `test_affgraph_vectorized.py`, `test_decoder_upsample_equiv.py` | Equivalence tests for each change above. |
+| Overlays `profile_noenc_l40s.toml`, `profile_noenc_completely_l40s.toml`, `profile_noenc_h200.toml` | 300 real iterations with no val/ckpt/snapshot noise (`_completely` trains on `completely`; `_h200` adds 14 workers + fp16). |
+| `smoke.toml` + `smoke_noval.toml` | Short smoke train without validation distorting timing. |
+| `ppp_job.sh` | When submitted from a worktree or copy (`SLURM_SUBMIT_DIR` contains `sbatch/ppp/ppp_job.sh`), runs that tree's code instead of the main checkout's. |
+
+H200 synthetic profile, from the repo root:
+
+```bash
+RUN_AFF_TEST=0 VARIANTS="base fast_aff fast_aff+cl fast_aff+bs36" \
+EXTRA="--profile-variants base fast_aff+cl" \
+sbatch --account=torch_pr_61_tandon_advanced --partition=h200_public --time=01:30:00 \
+  sbatch/ppp/tools/profile_ppp_step_noenc_sbatch.sh
+```
+
+H200 real-data smoke run (300 iterations):
+
+```bash
+./sbatch/ppp/ppp_submit_train.sh our-noenc-c1k_v1 --base original_default.toml \
+  --id prof-noenc-c1k_v1-h200 --config profile_noenc_h200.toml \
+  --partition h200_public --cpus 16 --account torch_pr_61_tandon_advanced --time 01:00:00
+```
+
+---
+
+## 7. Open follow-ups
+
+1. **Rerun the L40S fp16 test** (§5 hypothesis). If it holds, add fp16 raw to the L40S noenc presets.
+2. **Decoder `upsample_conv_first`:** commit it with its tests, measure the step with `profile_ppp_step.py`,
+   then enable it in the decoder presets.
+3. **Decoder leftovers:** the per-element `torch.nonzero` loop in `torch_model.forward` (~30 syncs/step);
+   re-choose `batch_size` once the step is GPU-bound.
+4. **channels_last on L40S:** convert head outputs back to contiguous before the loss to recover the extra
+   elementwise/loss cost (a few % at most).
+5. **Worktree cleanup:** `.claude/worktrees/ppp-noenc-speed` still holds the 7 GB smoke-run experiment dir
+   `metrics/ppp/prof-noenc-c1k_v1-h200`. Remove the worktree when it's no longer needed.
+6. **Long-run check on H200:** watch util around validation and checkpointing; the fp16 smoke runs never reached
+   a snapshot write.
+
+---
+
+## Job index
+
+| Job | GPU | What | Result |
+|---|---|---|---|
+| 20330947 | L40S | `our-noenc-cs` reference, 32 CPUs, bs18 | 85.2% util, 2.59 s/iter |
+| 20070698 | H200 | `our-noenc-cs` old H200 setup, bs63, 16 workers | 33.5% util; batch 6–19 s |
+| 20488811–13 | H200 | Dataloader bench fp32/w16, fp16/w16, fp16/w12 | 6.6 / 11.1 / 29.2 samples/s |
+| 20535976 | H200 | `our-noenc-cs` 45-min smoke with fp16 + 12 workers | 85.3% util |
+| 20945953 | H200 | `our-decoder-c1k_v1` before vectorization, bs30 | 10.07 s/iter, ~60% util |
+| 21007371 | L40S | `our-decoder-c1k_v1_u8`, bs22 | 7.5 s/iter |
+| 21045488 | H200 | Decoder smoke after vectorization | 5.34 s/iter, ~94% util |
+| 21338403 | H200 | Decoder synthetic profile | trilinear upsample ~85% of CUDA time |
+| 21768764 | H200 | Decoder `upsample_conv_first` equivalence | equal within fp tolerance |
+| 21773195 | L40S | `our-noenc-c1k_v1` real training, bs18, 28 workers | 2.18 s/iter, 85.5% util |
+| 21758017 | L40S | noenc real-data 300-it profile | ~2.3 s/iter |
+| 21787759 | L40S | noenc synthetic: base / fast_aff / bf16 / no_amp / bs24 | 1.689 → 1.510 s (fast_aff) |
+| 21867382 | L40S | noenc synthetic + channels_last test | fast_aff+cl 1.449 s |
+| 21867383 | H200 | noenc synthetic bs18/36/63 + channels_last test | 0.565 s at bs18; ~31 ms/sample at every bs |
+| 21902285 | H200 | noenc real-data 300-it smoke (`profile_noenc_h200.toml`) | **0.658 s/iter**, ~89% util |
+| 21975068 | H200 | experiment_v1 EXP 2 v1 n500 train | 0.63 s/iter |
+
+Logs: `sbatch/ppp/logs/<job_name>-<jobid>.out`. GPU logs: `gpu_log/ppp/`.

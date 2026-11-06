@@ -1,7 +1,8 @@
 # PPP labgraph (GPU patch-graph phase): fixing low GPU utilization
 
-Written 2026-10-22. Companion to [`ppp_overview.md`](ppp_overview.md) and
-[`ppp_h200_gpu_util.md`](ppp_h200_gpu_util.md) (same symptom, training side).
+Written 2026-10-22; status reviewed 2026-11-06. Companion to [`ppp_overview.md`](ppp_overview.md) §1
+(the labgraph stage) and [`ppp_train_performance.md`](ppp_train_performance.md) (same symptom, training side).
+The fixes below are on `main` and are the current label path.
 
 ## TL;DR
 
@@ -29,7 +30,7 @@ With these, blocks take **~3 s (empty) to ~5–7 s (with foreground)**.
 | 20622991_[0-6] | `our-noenc-cs` labgraph, test split, ckpt 34000, old code | 47–133 min per sample; mean GPU util 0.2–9.7%; task 1 (R14A02) **cancelled** |
 | 20666571_[0-6] | Same, with the fix (only R14A02 and VT011145 recomputed) | R14A02 **39.5 min** (256 blocks + 299 inter-block); VT011145 **27.8 min** (old: 47 min); others skipped in ~1 min |
 | 20666572_[0-6] | CPU label array on the new caches | R14A02 8 min, VT011145 6 min |
-| 20666580 | Evaluate, test split | running at time of writing |
+| 20666580 | Evaluate, test split | submitted after the label array |
 
 Utilization with the fix is still low (R14A02: mean 7.6%, 87% of samples at 0%; peak 21.5 GB GPU
 memory), but each sample now finishes in well under an hour, so the job no longer sits idle for
@@ -216,4 +217,5 @@ failing.
   shrink the copy.
 - `computeForegroundCover` / `thinOutForegroundCover` still loop in Python. They're ≤ 0.1 s on
   sparse blocks; check the logs on dense samples before optimizing them.
-- After the comparison passes, delete `_old_labgraph_20622991/`.
+- The comparison passed (see Verification), but `metrics/ppp/our-noenc-cs/test/_old_labgraph_20622991/`
+  still exists as of 2026-11-06. It can be deleted.

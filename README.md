@@ -81,7 +81,7 @@ echo "PID: $!"
 
 Architecture reference: [`PatchPerPix/CODEBASE.md`](PatchPerPix/CODEBASE.md).
 Current ops: [`md_guides/ppp/ppp_overview.md`](md_guides/ppp/ppp_overview.md)
-(archives: [`md_guides/ppp/historical/`](md_guides/ppp/historical/)).
+(index of all PPP guides: [`md_guides/ppp/README.md`](md_guides/ppp/README.md)).
 
 ### One-time setup
 
