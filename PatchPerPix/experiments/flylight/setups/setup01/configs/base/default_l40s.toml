@@ -1,3 +1,6 @@
+# BASE (noenc): FISBe/L40S base, completely-only, overwrite = true. Default DEFAULT_CONFIG of
+# ppp_job.sh / ppp_submit_test.sh when no --base is given.
+
 [general]
 logging = "INFO"
 debug = false

@@ -50,8 +50,8 @@ export CUDA_VISIBLE_DEVICES=0
 export PYTHONUNBUFFERED=1
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 python3 -u run_ppp.py --setup setup01 \
-  --config flylight/setups/setup01/original_default_train_code.toml \
-  --config flylight/setups/setup01/basic-ppp-decoder.toml \
+  --config flylight/setups/setup01/configs/base/original_default_train_code.toml \
+  --config flylight/setups/setup01/configs/presets/basic-ppp-decoder.toml \
   -d decode \
   --app flylight --root ../../metrics/ppp -id basic-ppp-decoder \
   --checkpoint 15000 \

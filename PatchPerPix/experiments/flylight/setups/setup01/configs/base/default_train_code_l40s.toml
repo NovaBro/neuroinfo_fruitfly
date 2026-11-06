@@ -1,23 +1,43 @@
+# BASE (PPP+dec): FISBe/L40S base with train_code = true and the autoencoder section.
+
 [general]
 logging = "INFO"
 debug = false
 overwrite = false
 
 [data]
-train_data = "/nrs/saalfeld/maisl/data/flylight/flylight_complete/train"
-val_data = "/nrs/saalfeld/maisl/data/flylight/flylight_complete/fold1"
-test_data = "/nrs/saalfeld/maisl/data/flylight/flylight_complete/fold2"
-overlap_csv_folder = "/nrs/saalfeld/maisl/data/flylight/flylight_complete/close_to_overlap_points"
-fg_csv_folder = "/nrs/saalfeld/maisl/data/flylight/flylight_complete/fg_points"
+# FISBe zarr volumes (run prepare_fisbe_for_ppp.py once before training)
+fisbe_root = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe"
+# Preferred: name folders under fisbe_root (each must contain train/val/test).
+# When set, train_data/val_data/test_data are derived as
+# {fisbe_root}/{first_dataset}/{split}. Inference outputs use {dataset}/{sample}.
+# Including a name with "partly" auto-enables add_partly / add_partly_val.
+train_datasets = ["completely"]
+val_datasets = ["completely"]
+test_datasets = ["completely"]
+# Opt-in multi-dataset examples:
+# test_datasets = ["completely", "synth_vh"]
+# train_datasets = ["completely", "partly"]
+# Absolute paths still work if train_datasets is omitted:
+train_data = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/train"
+val_data = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/val"
+test_data = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe/completely/test"
+overlap_csv_folder = ""
+fg_csv_folder = ""
 voxel_size = [ 1, 1, 1,]
 input_format = "zarr"
 num_channels = 3
 gt_key = "volumes/gt_instances_rm_5"
 raw_key = "volumes/raw_normalized"
+numinst_key = "volumes/gt_numinst"
+sample_mask_key = "volumes/gt_fg_rm_5"
 validate_on_train = false
 shift_intensity = false
 add_partly = false
-sample_fg_points = true
+sample_fg_points = false
+# Limit volumes for faster iteration during local debugging
+max_train_samples = 18
+max_val_samples = 10
 cross_val_folders = ["val_data", "test_data"]
 
 [model]
@@ -29,9 +49,9 @@ train_input_shape_same = [ 104, 104, 104,]
 test_input_shape_same = [ 104, 104, 104,]
 # train_input_shape_same = [64, 64, 64]
 # test_input_shape_same = [64, 64, 64]
-#or e.g. for v100:
 #test_input_shape_valid = [156, 156, 156]
 patchshape = [ 7, 7, 7,]
+# patchshape = [ 9, 9, 9,]
 patchstride = [ 1, 1, 1,]
 max_num_inst = 2
 fmap_inc_factors = [ 3, 3, 3,]
@@ -40,36 +60,68 @@ fmap_dec_factors = [ 1.2, 1.2, 1.2,]
 # fmap_dec_factors = [ 1.5, 1.5, 1.5,]
 downsample_factors = [ [ 2, 2, 2,], [ 2, 2, 2,], [ 2, 2, 2,],]
 activation = "relu"
-# val_padding = "same"
-# train_padding = "same"
 val_padding = "valid"
 train_padding = "valid"
 kernel_size = 3
 num_repetitions = 2
-upsampling = "trans_conv"
+upsampling = "transposed_conv"
 overlapping_inst = true
-train_code = false
+train_code = true
 patch_activation = "sigmoid"
+code_units = 176
+# code_units = 378
+autoencoder_chkpt = "this"
 network_style = "unet"
 num_fmaps = 20
+# num_fmaps = 30
 # network_style = "SwinUNETR"
 # num_fmaps = 24
+# decode_batch_size = 1024
+decode_batch_size = 800
+
+[model.autoencoder]
+train_net_name = "train_net"
+test_net_name = "test_net"
+# train_input_shape = [ 9, 9, 9,]
+# test_input_shape = [ 9, 9, 9,]
+# patchshape = [ 9, 9, 9,]
+train_input_shape = [ 7, 7, 7,]
+test_input_shape = [ 7, 7, 7,]
+patchshape = [ 7, 7, 7,]
+patchstride = [ 1, 1, 1,]
+network_type = "conv"
+activation = "relu"
+num_fmaps = [ 64, 128,]
+downsample_factors = [ [ 2, 2, 2,], [ 2, 2, 2],]
+upsampling = "nearest"
+kernel_size = 3
+num_repetitions = 2
+padding = "same"
+code_method = "conv1x1_b"
+code_activation = "sigmoid"
+code_fmaps = 22
+# code_fmaps = 14
+regularizer = "l2"
+regularizer_weight = 0.0001
+num_code_samples = 1024
 
 [preprocessing]
 clipmax = 1500
 
 [training]
-# val_log_step = 25
+# Interleaved val disabled locally: val zarrs + min_masked caused infinite RandomLocation loops
+val_log_step = 50
 len_epoch = 100
-batch_size = 2
+batch_size = 15
+# 15 - 30g
 num_gpus = 1
-num_workers = 4
-# lower cache size if torch_add_affinities is used, size barely matters, 5
+# num_workers=1 skips PreCache so the first batch returns immediately
+num_workers = 16
 cache_size = 40
-max_iterations = 400002
-checkpoints = 5000
-snapshots = 10000
-profiling = 1000
+max_iterations = 800
+checkpoints = 50 
+snapshots = 10
+profiling = 400
 probability_hue = 0.3
 hue_max_change = 0.5
 probability_permute = 0.5
@@ -78,19 +130,21 @@ use_auto_mixed_precision = true
 # "cpu" (with gunpowder), "torch" (on gpu with gunpowder) "loss" (in loss)
 add_affinities = "loss"
 mask_bg_weight = 0.01
-use_gt_extra = true
+use_gt_extra = false
 init_ssl = false
 oversample_complete = 3
 
 
 [prediction]
 output_format = "zarr"
-num_workers = 5
+num_workers = 16
 cache_size = 40
+batch_size = 16
 aff_key = "volumes/pred_affs"
+code_key = "volumes/pred_code"
 # fg_key = "volumes/pred_fg"
 numinst_key = "volumes/pred_numinst"
-mask_folder = "/nrs/saalfeld/maisl/ppp/setup16_191206/test/processed/400000"
+mask_folder = ""
 clean_mask = 600
 fg_thresh = 0.5
 overlap = [ 5, 5, 5,]
@@ -106,10 +160,11 @@ fc_threshold = [ 0.5,]
 # fc_threshold = [ 0.5, 0.8,]
 # numinst_threshs = [ [0.9, 0.1], [0.334, 0.334],]
 numinst_threshs = [ [0.9, 0.1],]
-checkpoints = [ 100000,]
+# checkpoints = [ 250, 500, 750, 1000, 1250, 1500, 1750, 2000]
+checkpoints = [0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600]
 
 [testing]
-num_workers = 5
+num_workers = 16
 
 [vote_instances]
 patch_threshold = 0.5
@@ -120,7 +175,7 @@ only_bb = true
 ignore_small_comps = 200
 num_parallel_samples = 1
 num_parallel_blocks = 1
-num_workers = 8
+num_workers = 16
 chunksize = [ 92, 92, 92,]
 sampling = 1.0
 debug = false
@@ -169,7 +224,7 @@ prob_based_consensus = false
 numinst_threshs = [ 0.9, 0.1,]
 
 [evaluation]
-num_workers = 5
+num_workers = 16
 from_scratch = false
 res_key = "vote_instances"
 metric = "general.avg_f1_cov_score"
@@ -178,10 +233,10 @@ assignment_strategy = "greedy"
 remove_small_components = 500
 keep_gt_shape = true
 evaluate_false_labels = true
-add_general_metrics = ["avg_gt_skel_coverage", "avg_f1_cov_score"]
+add_general_metrics = ["avg_gt_skel_coverage", "avg_f1_cov_score", "false_merge", "false_split"]
 add_multi_thresh_metrics = ["avg_tp_skel_coverage"]
 average_over_samples = false
-summary = [ "general.Num GT", "general.Num Pred", "general.avg_f1_cov_score", "confusion_matrix.avFscore", "general.avg_gt_skel_coverage", "confusion_matrix.th_0_5.avg_tp_skel_coverage",
+summary = [ "general.Num GT", "general.Num Pred", "general.avg_f1_cov_score", "confusion_matrix.avFscore", "confusion_matrix.avFscore19", "general.avg_gt_skel_coverage", "general.TP_05_rel", "general.avg_TP_05_cldice", "general.FM", "general.FS", "confusion_matrix.th_0_5.avg_tp_skel_coverage",
 "confusion_matrix.th_0_1.fscore", "confusion_matrix.th_0_2.fscore", "confusion_matrix.th_0_3.fscore", "confusion_matrix.th_0_4.fscore", "confusion_matrix.th_0_5.fscore", "confusion_matrix.th_0_6.fscore", "confusion_matrix.th_0_7.fscore", "confusion_matrix.th_0_8.fscore", "confusion_matrix.th_0_9.fscore",
 "confusion_matrix.th_0_5.AP_TP", "confusion_matrix.th_0_5.AP_FP",
 "confusion_matrix.th_0_5.AP_FN", "confusion_matrix.th_0_5.false_split",
@@ -203,12 +258,11 @@ optimizer = "Adam"
 lr = 0.0001
 
 [training.sampling]
-min_masked = 0.01
-# probability_fg = 0.7
-# probability_overlap = 0.3
+# 0.01 needs ~27k fg voxels per 140^3 crop; ball(5) opening leaves too few for FISBe
+min_masked = 0.0001
 probability_random = 0.05
-probability_fg = 0.7
-probability_overlap = 0.25
+probability_fg = 0.75
+probability_overlap = 0.0
 point_balance_radius_overlap = 3
 
 [postprocessing.watershed]

@@ -5,15 +5,8 @@
 
 # ---- presets (name|overlay|exp_id|train_cpus|train_mem|train_time|partition) ----
 PRESET_TABLE=(
-  "basic_8h|basic_8h.toml|ppp_basic_8h|16|192g|08:00:00|l40s_public"
-  "basic_long8h|basic_long8h.toml|ppp_basic_long8h|16|192g|08:00:00|l40s_public"
-  "basic_fmaps24|basic_fmaps24.toml|ppp_basic_fmaps24|32|192g|08:00:00|l40s_public"
-  "basic_fmaps24_400k|basic_fmaps24_400k.toml|ppp_basic_fmaps24_400k|32|192g|48:00:00|l40s_public"
-  "basic_fmaps24_400k_bs5_aug|basic_fmaps24_400k_bs5_aug.toml|ppp_basic_fmaps24_400k_bs5_aug|16|500g|48:00:00|h200_public"
-  "basic_fmaps24_400k_aug_cheap|basic_fmaps24_400k_aug_cheap.toml|ppp_basic_fmaps24_400k_aug_cheap|32|192g|48:00:00|l40s_public"
   "basic-ppp-noenc|basic-ppp-noenc.toml|basic-ppp-noenc|32|250g|08:00:00|l40s_public"
   "basic-ppp-noenc-cp|basic-ppp-noenc-cp.toml|basic-ppp-noenc-cp|32|250g|08:00:00|l40s_public"
-  "basic-ppp-noenc-cps|basic-ppp-noenc-cps.toml|basic-ppp-noenc-cps|32|250g|08:00:00|l40s_public"
   "basic-ppp-decoder|basic-ppp-decoder.toml|basic-ppp-decoder|32|250g|08:00:00|l40s_public"
   "base1-noenc-c|base1-noenc-c.toml|base1-noenc-c|32|250g|08:00:00|l40s_public"
   # "base1-noenc-c|base1-noenc-c.toml|base1-noenc-c|16|500g|08:00:00|h200_public"
@@ -40,7 +33,9 @@ preset_row() {
       return 0
     fi
   done
-  echo "Error: unknown preset '${name}' (basic_8h|basic_long8h|basic_fmaps24|basic_fmaps24_400k|basic_fmaps24_400k_bs5_aug|basic_fmaps24_400k_aug_cheap|basic-ppp-noenc|basic-ppp-noenc-cp|basic-ppp-noenc-cps|basic-ppp-decoder)" >&2
+  local names=() r
+  for r in "${PRESET_TABLE[@]}"; do names+=("${r%%|*}"); done
+  echo "Error: unknown preset '${name}' (known: ${names[*]})" >&2
   exit 1
 }
 

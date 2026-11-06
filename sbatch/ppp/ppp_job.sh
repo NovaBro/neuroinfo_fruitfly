@@ -13,7 +13,8 @@
 # Env (required unless noted):
 #   EXP_ID          -id under metrics/ppp/
 #   DO_TASKS        space- or +-separated -d tasks (train|predict|label|evaluate|…)
-#   CONFIGS         +-separated overlay basenames (e.g. basic_fmaps24.toml+vi_th_0_3.toml)
+#   CONFIGS         +-separated overlay basenames (e.g. our-noenc-c1k_v1.toml+vi_th_0_3.toml;
+#                   bare names, resolved under setup01/configs/ by ppp_config_path.py)
 #                   (spaces break SLURM --export; '+' matches DO_TASKS convention)
 # Optional:
 #   CKPT            --checkpoint N  (empty + non-train → --test-checkpoint last)
@@ -48,7 +49,8 @@
 #   PPP_ROOT        metrics root relative to experiments/ (default ../../metrics/ppp)
 #   DEFAULT_CONFIG  always prepended (default default_l40s.toml);
 #                   set by --base FILE.toml on either submitter
-#   SETUP_DIR       config dir under experiments/ (default flylight/setups/setup01)
+#   SETUP_DIR       setup dir under experiments/ (default flylight/setups/setup01);
+#                   config TOMLs are resolved under its configs/ by ppp_config_path.py
 #
 # Flow:
 #   1. Validate env; normalize DO_TASKS / CONFIGS; resolve SAMPLE (array or default).
@@ -96,6 +98,8 @@ NEEDS_DECODE="${NEEDS_DECODE:-0}"
 PPP_ROOT="${PPP_ROOT:-../../metrics/ppp}"
 DEFAULT_CONFIG="${DEFAULT_CONFIG:-default_l40s.toml}"
 SETUP_DIR="${SETUP_DIR:-flylight/setups/setup01}"
+# ppp_config_path.py resolves bare config names under ${SETUP_DIR}/configs/.
+export SETUP_DIR
 FISBE_PARENT="${FISBE_PARENT:-${REPO_ROOT}/fisbe}"
 # Completely root kept for legacy scripts; staging uses FISBE_PARENT/<dataset>/.
 FISBE_ROOT="${FISBE_ROOT:-${FISBE_PARENT}/completely}"
@@ -123,10 +127,10 @@ datasets_for() {
   fi
   local names="${CONFIGS//+/ }" c cfgs=()
   names="${names//,/ }"
-  [[ " ${names} " == *" ${DEFAULT_CONFIG} "* ]] \
-    || cfgs+=("PatchPerPix/experiments/${SETUP_DIR}/${DEFAULT_CONFIG}")
+  # Bare names; ppp_datasets.py resolves them under ${SETUP_DIR}/configs/.
+  [[ " ${names} " == *" ${DEFAULT_CONFIG} "* ]] || cfgs+=("${DEFAULT_CONFIG}")
   for c in ${names}; do
-    cfgs+=("PatchPerPix/experiments/${SETUP_DIR}/${c}")
+    cfgs+=("${c}")
   done
   python3 sbatch/ppp/ppp_datasets.py --split "$1" "${cfgs[@]}"
 }
@@ -138,10 +142,10 @@ list_array_samples() {
   local ds_override="${2:-}"
   local names="${CONFIGS//+/ }" c cfgs=()
   names="${names//,/ }"
-  [[ " ${names} " == *" ${DEFAULT_CONFIG} "* ]] \
-    || cfgs+=("PatchPerPix/experiments/${SETUP_DIR}/${DEFAULT_CONFIG}")
+  # Bare names; ppp_datasets.py resolves them under ${SETUP_DIR}/configs/.
+  [[ " ${names} " == *" ${DEFAULT_CONFIG} "* ]] || cfgs+=("${DEFAULT_CONFIG}")
   for c in ${names}; do
-    cfgs+=("PatchPerPix/experiments/${SETUP_DIR}/${c}")
+    cfgs+=("${c}")
   done
   local args=(--split "${split}" --list-samples --fisbe-root "${FISBE_PARENT}")
   local ds="${DATASETS:-${ds_override}}"
@@ -292,17 +296,22 @@ CFG_NAMES=(${CONFIGS_NORM})
 if [[ "${LABEL_RESUME}" == "1" ]]; then
   CFG_NAMES+=("label_resume.toml")
 fi
-CONFIG_ARGS=()
 have_default=0
 for c in "${CFG_NAMES[@]}"; do
   [[ "${c}" == "${DEFAULT_CONFIG}" ]] && have_default=1
 done
 if [[ "${have_default}" -eq 0 ]]; then
-  CONFIG_ARGS+=(--config "${SETUP_DIR}/${DEFAULT_CONFIG}")
+  CFG_NAMES=("${DEFAULT_CONFIG}" "${CFG_NAMES[@]}")
 fi
-for c in "${CFG_NAMES[@]}"; do
-  CONFIG_ARGS+=(--config "${SETUP_DIR}/${c}")
-done
+# Bare names → paths under ${SETUP_DIR}/configs/<role>/ (relative to experiments/,
+# where run_ppp.py runs). Fails the job here if any overlay is missing/ambiguous.
+CFG_PATHS="$(python3 sbatch/ppp/ppp_config_path.py \
+  --relative-to PatchPerPix/experiments "${CFG_NAMES[@]}")" \
+  || { echo "Error: could not resolve configs: ${CFG_NAMES[*]}" >&2; exit 1; }
+CONFIG_ARGS=()
+while IFS= read -r c; do
+  CONFIG_ARGS+=(--config "${c}")
+done <<< "${CFG_PATHS}"
 
 # Non-train: explicit --checkpoint N, else --test-checkpoint last.
 CKPT_ARGS=()

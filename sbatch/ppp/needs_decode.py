@@ -2,7 +2,7 @@
 """Print 1 if merged PPP TOMLs have train_code, else 0.
 
 Merges configs left-to-right (later wins), matching run_ppp.merge_dicts.
-Looks under PatchPerPix/experiments/flylight/setups/setup01/ for bare names.
+Bare names are resolved under setup01/configs/ (see ppp_config_path.py).
 
 Usage:
   python3 sbatch/ppp/needs_decode.py default_l40s.toml basic-ppp-decoder.toml
@@ -24,14 +24,7 @@ except ImportError:
         sys.exit(2)
 
 
-SETUP_DIR = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-    "PatchPerPix",
-    "experiments",
-    "flylight",
-    "setups",
-    "setup01",
-)
+from ppp_config_path import ConfigNotFound, resolve_path  # noqa: E402,F401
 
 
 def merge_dicts(sink, source):
@@ -53,21 +46,16 @@ def load_toml(path):
         return toml.load(f)
 
 
-def resolve_path(name):
-    if os.path.isabs(name) or os.path.sep in name:
-        return name
-    return os.path.join(SETUP_DIR, os.path.basename(name))
-
-
 def main(argv):
     if len(argv) < 2:
         print("Usage: needs_decode.py CONFIG.toml [CONFIG.toml …]", file=sys.stderr)
         return 2
     cfg = {}
     for name in argv[1:]:
-        path = resolve_path(name)
-        if not os.path.isfile(path):
-            print(f"Error: config not found: {path}", file=sys.stderr)
+        try:
+            path = resolve_path(name)
+        except ConfigNotFound as e:
+            print(f"Error: {e}", file=sys.stderr)
             return 2
         cfg = merge_dicts(cfg, load_toml(path))
     train_code = bool(

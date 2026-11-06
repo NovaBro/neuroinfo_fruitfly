@@ -1,5 +1,5 @@
 # VI sweep overlay: patch/fc = 0.5; softer ignore_small_comps while debugging.
-# Stack: default_l40s + basic_long8h + this + eval_rm0
+# Stack: <base> + <preset> + this + eval_rm200 (ppp_submit_test.sh: default --vi is vi_th_0_3; vi-sweep runs 0_3..0_7).
 [vote_instances]
 patch_threshold = 0.5
 fc_threshold = 0.5

@@ -1,3 +1,6 @@
+# BASE (PPP+dec, train_code = true): upstream setup01/default_train_code.toml, unchanged except this header.
+# Pair with presets/*decoder* overlays.
+
 [general]
 logging = "INFO"
 debug = false

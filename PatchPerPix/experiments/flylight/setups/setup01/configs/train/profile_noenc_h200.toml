@@ -1,6 +1,6 @@
 # Short real-data profiling overlay for H200 (stack last). Same as profile_noenc_l40s.toml (300 it, no
 # val/ckpt/snapshot noise) plus H200 data-pipeline settings: h200_public allows <=16 CPUs per GPU, so
-# 14 workers (vs 28 on L40S) and fp16 raw transport (as h200-noenc.toml) to halve the PreCache handoff.
+# 14 workers (vs 28 on L40S) and fp16 raw transport (as exp/exp_v1_h200.toml) to halve the PreCache handoff.
 # batch_size stays 18 (from our-noenc-c1k_v1.toml) so 200k its means the same as on L40S.
 # ./sbatch/ppp/ppp_submit_train.sh our-noenc-c1k_v1 --base original_default.toml \
 #   --id prof-noenc-c1k_v1-h200 --config profile_noenc_h200.toml \

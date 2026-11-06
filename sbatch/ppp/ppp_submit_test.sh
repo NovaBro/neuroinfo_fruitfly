@@ -6,9 +6,9 @@
 #   ./sbatch/ppp/ppp_submit_test.sh run base1-noenc-c --ckpt 400000 \
 #     --sample completely/R22C03-20180918_66_J2 --split val
 #   ./sbatch/ppp/ppp_submit_test.sh evaluate our-noenc-cs --split test --ckpt 400000
-#   ./sbatch/ppp/ppp_submit_test.sh ckpt-sweep basic_fmaps24 --ckpts 50000,60000,70000,80000
-#   ./sbatch/ppp/ppp_submit_test.sh vi-sweep basic_long8h --ckpt 30000
-#   ./sbatch/ppp/ppp_submit_test.sh --dry-run array basic_fmaps24 --ckpt 80000
+#   ./sbatch/ppp/ppp_submit_test.sh ckpt-sweep our-noenc-c1k_v1 --base original_default.toml --ckpts 50000,60000,70000,80000
+#   ./sbatch/ppp/ppp_submit_test.sh vi-sweep our-noenc-c1k_v1 --base original_default.toml --ckpt 50000
+#   ./sbatch/ppp/ppp_submit_test.sh --dry-run array our-noenc-c1k_v1 --base original_default.toml --ckpt 50000
 #
 # Outputs under metrics/ppp/<exp>/{val,test}/ matching --split (comma-capable).
 # array --stage all (default): GPU predict → [GPU decode if train_code] →
@@ -45,10 +45,10 @@ Modes:
                  → evaluate; decode inserted when train_code)
   vi-sweep       afterok chain over --overlays (default vi_th_0_3..0_7)
 
-Presets (= TOML stem): basic_8h | basic_long8h | basic_fmaps24 |
-         basic_fmaps24_400k | basic_fmaps24_400k_bs5_aug |
-         basic_fmaps24_400k_aug_cheap | basic-ppp-noenc | basic-ppp-noenc-cp | basic-ppp-noenc-cps |
-         basic-ppp-decoder | base1-noenc-c | our-noenc-cs | our-noenc-synth_vh_u8
+Presets (= TOML stem in setup01/configs/presets/; rows in ppp_submit_common.sh):
+         our-noenc-c1k_v1 | our-noenc-c1k_v1_u8 | our-decoder-c1k_v1 | our-decoder-c1k_v1_u8 |
+         our-noenc-cs | base1-noenc-c | base1-decoder-c |
+         basic-ppp-noenc | basic-ppp-noenc-cp | basic-ppp-decoder
 
 Flags:
   --id EXP_ID              Override experiment id (default from preset)
@@ -68,7 +68,7 @@ Flags:
   --vi FILE.toml           VI overlay (default vi_th_0_3.toml)
   --eval FILE.toml         Eval overlay (default eval_rm200.toml)
   --overlays A.toml,B.toml vi-sweep list
-  --base FILE.toml         Base config (default default_l40s.toml; under setup01)
+  --base FILE.toml         Base config (default default_l40s.toml; bare names resolve under setup01/configs/)
   --config FILE.toml       Extra overlay (repeatable)
   --do TASKS               Override -d for run (space or + separated)
   --time HH:MM:SS          Override walltime

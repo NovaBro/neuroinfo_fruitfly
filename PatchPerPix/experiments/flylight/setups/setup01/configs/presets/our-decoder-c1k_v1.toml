@@ -1,4 +1,4 @@
-# Overlay on original_default_train_code.toml + fmaps24 + 400k, all augs on but cheapened, L40S-friendly.
+# PRESET PPP+dec on original_default_train_code.toml: fmaps20, 400k, bs30; train 1k_v1, test 1k_v1.
 # Train: ./sbatch/ppp/ppp_submit_train.sh our-decoder-c1k_v1 --base original_default_train_code.toml --id our-decoder-c1k_v1 --time 12:00:00 --account torch_pr_61_tandon_advanced
 # Smoke Train: ./sbatch/ppp/ppp_submit_train.sh our-decoder-c1k_v1 --base original_default_train_code.toml --id our-decoder-c1k_v1-smoke --config smoke.toml --time 00:30:00 --account torch_pr_61_tandon_advanced
 # Optional: 

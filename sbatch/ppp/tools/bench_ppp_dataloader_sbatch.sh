@@ -39,19 +39,19 @@ run() {
   singularity exec --overlay env/ppp.ext3:ro --bind "${SLURM_TMPDIR}:${SLURM_TMPDIR}" "${SIF}" \
     /bin/bash -c "source /ext3/env.sh; conda activate ppp; cd PatchPerPix/experiments; $1"
 }
-# B/C config stack; override e.g. B_CONFIGS="--config ${SETUP}/original_default.toml --config ${SETUP}/our-noenc-cs.toml"
-B_CONFIGS="${B_CONFIGS:---config ${SETUP}/default_l40s.toml --config ${SETUP}/basic-ppp-noenc-cp.toml}"
+# B/C config stack; override e.g. B_CONFIGS="--config ${SETUP}/configs/base/original_default.toml --config ${SETUP}/configs/presets/our-noenc-cs.toml"
+B_CONFIGS="${B_CONFIGS:---config ${SETUP}/configs/base/default_l40s.toml --config ${SETUP}/configs/presets/basic-ppp-noenc-cp.toml}"
 BENCH="python -u ../../sbatch/ppp/tools/bench_ppp_dataloader.py --fisbe-root ${STAGE_ROOT}"
 
 if [[ "${PREFETCH_TEST:-0}" == 1 ]]; then
   echo "######## prefetch: basic_fmaps24_400k, simulated 3.5s GPU step"
-  run "${BENCH} --config ${SETUP}/default_l40s.toml --config ${SETUP}/basic_fmaps24_400k.toml \
+  run "${BENCH} --config ${SETUP}/configs/base/default_l40s.toml --config ${SETUP}/basic_fmaps24_400k.toml \
     --variants '' --prefetch 0 2 --simulate-step 3.5 --throughput-batches 20"
   exit 0
 fi
 
 [[ "${SKIP_A:-0}" == 1 ]] || { echo "######## A: basic_fmaps24_400k"
-run "${BENCH} --config ${SETUP}/default_l40s.toml --config ${SETUP}/basic_fmaps24_400k.toml"; }
+run "${BENCH} --config ${SETUP}/configs/base/default_l40s.toml --config ${SETUP}/basic_fmaps24_400k.toml"; }
 
 echo "######## B: basic-ppp-noenc-cp (completely+partly)"
 run "${BENCH} ${B_CONFIGS} --list-datasets ${LIST_DATASETS:-completely partly} ${B_ARGS:-}"

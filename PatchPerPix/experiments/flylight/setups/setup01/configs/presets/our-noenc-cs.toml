@@ -1,13 +1,12 @@
-# Overlay on original_default.toml + fmaps24 + 400k, soft augs (no elastic/overlay/hue).
-# Train on completely + partly + synth_vh (vh2308 synth_MCFO; grow with flylight/update_synth_vh.py). Requires prepared volumes,
+# PRESET noenc on original_default.toml: fmaps24, 400k, soft augs (no elastic/overlay/hue).
+# Train on synth_vh (vh2308 synth_MCFO; grow with flylight/update_synth_vh.py). Requires prepared volumes,
 # stage tars and fg point CSVs for each dataset:
 #   DATASETS=completely sbatch sbatch/ppp/prep/prepare_fisbe_for_ppp_sbatch.sh
 #   SPLITS=completely/train,completely/val,completely/test sbatch sbatch/ppp/prep/prepare_fg_points_sbatch.sh
 #   DATASETS=completely sbatch sbatch/ppp/prep/prepare_ppp_stage_tars_sbatch.sh
-# Train: ./sbatch/ppp/ppp_submit_train.sh base1-noenc-c --base original_default.toml --id base1-noenc-c --time 24:00:00
-# Exp id: --id base1-noenc-c
+# Train: ./sbatch/ppp/ppp_submit_train.sh our-noenc-cs --base original_default.toml --id our-noenc-cs --time 24:00:00
+# Exp id: --id our-noenc-cs
 # --account torch_pr_61_tandon_priority or torch_pr_61_tandon_advanced 
-# Test: ./sbatch/ppp/ppp_submit_test.sh array base1-noenc-c --ckpt 36000 --split test --base original_default.toml
 
 [data]
 # FISBe zarr volumes (run prepare_fisbe_for_ppp.py once before training)
@@ -16,9 +15,9 @@ fisbe_root = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe"
 # When set, train_data/val_data/test_data are derived as
 # {fisbe_root}/{first_dataset}/{split}. Inference outputs use {dataset}/{sample}.
 # Including a name with "partly" auto-enables add_partly / add_partly_val.
-train_datasets = ["completely"]
-val_datasets = ["completely"]
-test_datasets = ["completely"]
+train_datasets = ["synth_vh"]
+val_datasets = ["completely", "synth_vh"]
+test_datasets = ["completely", "synth_vh"]
 overlap_csv_folder = ""
 fg_csv_folder = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe/fg_points"
 numinst_key = "volumes/gt_numinst"
@@ -36,17 +35,25 @@ upsampling = "transposed_conv"
 train_code = false
 
 [training]
-# exact same gt_affs as the default path, computed pre-cropped without per-edge host
-# syncs (~0.17 s/step saved at bs18 L40S; verified by sbatch/ppp/tools/test_fast_affinities.py)
-fast_affinities = true
 val_log_step = 2000
 # l40s
 batch_size = 18
-num_workers = 28
-# h200
+num_workers = 32
+# l40s: 32 CPUs -> num_workers = 32 (85% GPU util, job 20330947; step 2.6 s == batch 2.6 s, ~2.3 cores busy)
+# h200: partition caps jobs at 16 CPUs. Not CPU-bound: per-sample worker work is ~0.1-0.2 s. The limit is
+# handoff bytes through PreCache's mp.Queue into the main process: 34.7 MiB/sample (RAW float32 = 31.4),
+# ~2.2 GB per bs=63 batch -> bench 4.1 s/batch vs 3.6 s GPU step; with the train thread + 16 workers on
+# 16 CPUs run.log showed 6-19 s waits (job 20070698, 33% util). Fix = fp16 RAW transport + fewer workers
+# + smaller cache. For h200 replace the l40s lines above with:
 # batch_size = 63
-# num_workers = 32
-# max_iterations = 400000
+# num_workers = 12
+# cache_size = 128
+# raw_transport_fp16 = true
+# (drop the later `cache_size = 400` line too). Target >= 20 samples/s supply vs 17.5/s GPU.
+# Verify with sbatch/ppp/tools/bench_ppp_dataloader.py --raw-fp16 --num-workers 12 --batch-size 63.
+# stacked batches held ready by ThreadedPrefetch (0 disables); default 2
+prefetch_batches = 2
+max_iterations = 400000
 checkpoints = 1000
 snapshots = 2000
 profiling = 500
@@ -54,14 +61,14 @@ probability_hue = 0
 cache_size = 400
 # Fisbe dataset incomplete I think. Missing file that tells which voxels are instances or not, outside of original fisbe label
 use_gt_extra = false
-oversample_complete = 3
+oversample_complete = 1
 mask_bg_weight = 0.01
 
 
 [prediction]
 batch_size = 36
 num_workers = 32
-cache_size = 300
+cache_size = 100
 mask_folder = ""
 # predict_no_gp runs under inference_mode+autocast, so large tiles fit.
 # wall time scales with the number of forward passes, i.e. with

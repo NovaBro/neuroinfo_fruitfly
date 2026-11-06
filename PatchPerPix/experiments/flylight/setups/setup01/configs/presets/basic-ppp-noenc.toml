@@ -1,17 +1,9 @@
-# Overlay on original_default.toml + fmaps24 + 400k, soft augs (no elastic/overlay/hue).
-# Train on completely + partly + synth_vh (vh2308 synth_MCFO; grow with flylight/update_synth_vh.py). Requires prepared volumes,
-# stage tars and fg point CSVs for each dataset:
-#   DATASETS=completely sbatch sbatch/ppp/prep/prepare_fisbe_for_ppp_sbatch.sh
-#   SPLITS=completely/train,completely/val,completely/test sbatch sbatch/ppp/prep/prepare_fg_points_sbatch.sh
-#   DATASETS=completely sbatch sbatch/ppp/prep/prepare_ppp_stage_tars_sbatch.sh
-# Train: ./sbatch/ppp/ppp_submit_train.sh our-noenc-c1k_v1 --base original_default.toml --id our-noenc-c1k_v1 --time 8:00:00
-# Smoke Train: ./sbatch/ppp/ppp_submit_train.sh our-noenc-c1k_v1 --base original_default.toml --id our-noenc-c1k_v1-smoke --config smoke.toml --time 00:30:00 --account torch_pr_61_tandon_advanced
-# Optional: 
-    # --id our-noenc-c1k_v1_u8-smoke 
-    # --config smoke.toml 
-    # --time 00:30:00
-    # --account torch_pr_61_tandon_advanced
-# Test ./sbatch/ppp/ppp_submit_test.sh array our-noenc-c1k_v1 --split test --ckpt  --base original_default.toml
+# PRESET noenc on original_default.toml: fmaps24, 400k, all augs on but cheapened, L40S-friendly.
+# Train: ./sbatch/ppp/ppp_submit_train.sh basic-ppp-noenc --base original_default.toml --id basic-ppp-noenc
+# Optional: --id basic-ppp-noenc-smoke --config smoke.toml --time 00:30:00
+# Exp id: --id basic-ppp-noenc
+# account: --account torch_pr_61_torch_priority
+# ./sbatch/ppp/ppp_submit_train.sh basic-ppp-noenc --base original_default.toml --id basic-ppp-noenc --time 24:00:00
 
 [data]
 # FISBe zarr volumes (run prepare_fisbe_for_ppp.py once before training)
@@ -20,49 +12,38 @@ fisbe_root = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe"
 # When set, train_data/val_data/test_data are derived as
 # {fisbe_root}/{first_dataset}/{split}. Inference outputs use {dataset}/{sample}.
 # Including a name with "partly" auto-enables add_partly / add_partly_val.
-train_datasets = ["1k_v1"]
+train_datasets = ["completely"]
 val_datasets = ["completely"]
 test_datasets = ["completely"]
 overlap_csv_folder = ""
-fg_csv_folder = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe/fg_points"
+fg_csv_folder = ""
 numinst_key = "volumes/gt_numinst"
 sample_mask_key = "volumes/gt_fg_rm_5"
 add_partly = false
-sample_fg_points = true
-max_train_samples = 1000
-max_val_samples = 1000
+sample_fg_points = false
+# Limit volumes for faster iteration during local debugging
+max_train_samples = 18
+max_val_samples = 10
 
 [model]
-num_fmaps = 20
+num_fmaps = 24
 train_input_shape_valid = [ 140, 140, 140,]
 test_input_shape_valid = [ 156, 156, 156,]
 upsampling = "transposed_conv"
 train_code = false
 
 [training]
-# exact same gt_affs as the default path, computed pre-cropped without per-edge host
-# syncs (~0.17 s/step saved at bs18 L40S; verified by sbatch/ppp/tools/test_fast_affinities.py)
-fast_affinities = true
 val_log_step = 2000
-# h200
-# batch_size = 63
-# num_workers = 12
-# cache_size = 300
-# l40s
 batch_size = 18
-num_workers = 28
-cache_size = 150
-prefetch_batches = 2
+num_workers = 32
 max_iterations = 400000
 checkpoints = 2000
-snapshots = 5000
+snapshots = 2000
 profiling = 2000
-probability_hue = 0
+probability_hue = 0.05
+cache_size = 300
+# Fisbe dataset incomplete I think. Missing file that tells which instances are missing in partly dataset
 use_gt_extra = false
-# Fisbe dataset incomplete I think. Missing file that tells which voxels are instances or not, outside of original fisbe label
-oversample_complete = 1
-mask_bg_weight = 0.01
-
 
 [prediction]
 batch_size = 36
@@ -99,12 +80,13 @@ lr = 0.0002
 
 [training.sampling]
 min_masked = 0.0001
-probability_random = 0.05
-probability_fg = 0.95
-probability_overlap = 0.0
-# No overlap_csv_folder, so probability_overlap = 0.0
-point_balance_radius_overlap = 3
 
-[training.augmentation]
-elastic = false
-overlay = false
+[training.augmentation.elastic]
+control_point_spacing = [40, 40, 40]
+jitter_sigma = [0.5, 0.5, 0.5]
+rotation_min = -15
+rotation_max = 15
+subsample = 8
+
+[training.augmentation.overlay]
+probability_overlay = 0.05

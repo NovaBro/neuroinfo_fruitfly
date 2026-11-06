@@ -25,7 +25,7 @@ OUT_DIR="${OUT_DIR:-metrics/ppp/profile_noenc/${SLURM_JOB_ID}}"
 mkdir -p "${OUT_DIR}"
 
 SETUP=flylight/setups/setup01
-CONFIGS="${CONFIGS:---config ${SETUP}/original_default.toml --config ${SETUP}/our-noenc-c1k_v1.toml}"
+CONFIGS="${CONFIGS:---config ${SETUP}/configs/base/original_default.toml --config ${SETUP}/configs/presets/our-noenc-c1k_v1.toml}"
 
 nvidia-smi --query-gpu=timestamp,name,utilization.gpu,memory.used --format=csv -l 1 \
   > "${OUT_DIR}/gpu_usage_log.csv" &

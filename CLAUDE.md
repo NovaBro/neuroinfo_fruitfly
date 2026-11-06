@@ -38,7 +38,7 @@ singularity exec --nv --overlay env/ppp.ext3:ro \
   /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
   /bin/bash -c 'source /ext3/env.sh; conda activate ppp; cd PatchPerPix/experiments/; \
     python3 -u run_ppp.py --setup setup01 \
-      --config flylight/setups/setup01/default_train_code_l40s.toml \
+      --config flylight/setups/setup01/configs/base/default_train_code_l40s.toml \
       -d train validate_checkpoints predict decode label evaluate \
       --app flylight --root ppp_experiments --test-checkpoint last'
 ```
@@ -67,7 +67,7 @@ TOML config sections, per-script function tables). Do not duplicate it here. Key
   `train validate_checkpoints predict decode label evaluate`. It dynamically imports
   `experiments/flylight/setups/setup01/{train,predict_no_gp,decode}.py` by naming convention.
 - Config is TOML; the active one is
-  `experiments/flylight/setups/setup01/default_train_code_l40s.toml`. Experiment outputs go under
+  `experiments/flylight/setups/setup01/configs/base/default_train_code_l40s.toml`. Experiment outputs go under
   `experiments/ppp_experiments/<exp_id>/` (gitignored), each with its own `config.toml`.
 - Resume / re-run a specific experiment with `-id ppp_experiments/<exp_id>` (optionally
   `--run_from_exp`, `--checkpoint <N>` or `--test-checkpoint last`).

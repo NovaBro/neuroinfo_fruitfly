@@ -1,0 +1,5 @@
+# Eval overlay: drop predicted components < 200 voxels before matching (base default 500).
+# Default --eval for ppp_submit_test.sh.
+[evaluation]
+remove_small_components = 200
+from_scratch = true

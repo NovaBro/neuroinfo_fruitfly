@@ -2,7 +2,7 @@
 """Print fisbe/ dataset names or sample IDs for a PPP split.
 
 Merges configs left-to-right (later wins), matching run_ppp.merge_dicts.
-Looks under PatchPerPix/experiments/flylight/setups/setup01/ for bare names.
+Bare names are resolved under setup01/configs/ (see ppp_config_path.py).
 
   train      train_datasets + val_datasets (staging extracts both tars;
              interleaved validation reads val_datasets)
@@ -29,7 +29,7 @@ import argparse
 import os
 import sys
 
-from needs_decode import load_toml, merge_dicts, resolve_path
+from needs_decode import ConfigNotFound, load_toml, merge_dicts, resolve_path
 
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 _DEFAULT_FISBE = os.path.join(_REPO_ROOT, "fisbe")
@@ -110,9 +110,10 @@ def main(argv):
     args = ap.parse_args(argv[1:])
     cfg = {}
     for name in args.configs:
-        path = resolve_path(name)
-        if not os.path.isfile(path):
-            print(f"Error: config not found: {path}", file=sys.stderr)
+        try:
+            path = resolve_path(name)
+        except ConfigNotFound as e:
+            print(f"Error: {e}", file=sys.stderr)
             return 2
         cfg = merge_dicts(cfg, load_toml(path))
 

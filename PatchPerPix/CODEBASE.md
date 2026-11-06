@@ -9,7 +9,7 @@ The repository has two top-level areas:
 | `PatchPerPix/` (Python package) | Instance assembly, evaluation, visualization, shared utilities |
 | `experiments/` | Experiment orchestration (`run_ppp.py`) and dataset-specific training/inference code |
 
-Configuration is driven by **TOML files** (e.g. `experiments/flylight/setups/setup01/default_train_code_l40s.toml`). The main entry point never hard-codes hyperparameters; it loads config and dynamically imports setup scripts.
+Configuration is driven by **TOML files** (e.g. `experiments/flylight/setups/setup01/configs/base/default_train_code_l40s.toml`). The main entry point never hard-codes hyperparameters; it loads config and dynamically imports setup scripts.
 
 ---
 
@@ -542,7 +542,7 @@ From `experiments/`:
 python run_ppp.py \
   --app flylight \
   --setup setup01 \
-  --config flylight/setups/setup01/default_train_code_l40s.toml \
+  --config flylight/setups/setup01/configs/base/default_train_code_l40s.toml \
   --root ppp_experiments \
   --do train validate_checkpoints predict decode label evaluate
 ```

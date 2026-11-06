@@ -20,7 +20,7 @@ cd /scratch/wmz2007/neuroinfo_fruitfly
 mkdir -p metrics/ppp/profile
 
 SETUP=flylight/setups/setup01
-CONFIGS="${CONFIGS:---config ${SETUP}/original_default_train_code.toml --config ${SETUP}/our-decoder-c1k_v1.toml}"
+CONFIGS="${CONFIGS:---config ${SETUP}/configs/base/original_default_train_code.toml --config ${SETUP}/configs/presets/our-decoder-c1k_v1.toml}"
 
 # GPU-utilization logger (public partitions cancel low-util jobs; also audits this run)
 nvidia-smi --query-gpu=timestamp,name,utilization.gpu,memory.used --format=csv -l 1 \

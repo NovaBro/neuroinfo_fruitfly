@@ -1,10 +1,12 @@
-# Overlay on original_default.toml + fmaps24 + 400k, soft augs (no elastic/overlay/hue).
-# Train on completely + partly. Requires PPP-prepared partly volumes and stage tars:
-#   DATASETS=partly sbatch sbatch/ppp/prep/prepare_fisbe_for_ppp_sbatch.sh
-#   DATASETS=completely,partly sbatch sbatch/ppp/prep/prepare_ppp_stage_tars_sbatch.sh
-# Train: ./sbatch/ppp/ppp_submit_train.sh basic-ppp-noenc-cp --base original_default.toml --id basic-ppp-noenc-cp
-# Optional: --id basic-ppp-noenc-cp-smoke --config smoke.toml --time 00:30:00
-# Exp id: --id basic-ppp-noenc-cp
+# PRESET PPP+dec on original_default_train_code.toml: fmaps20, 400k, all augs on but cheapened, L40S-friendly.
+# Train: ./sbatch/ppp/ppp_submit_train.sh base1-decoder-c --base original_default_train_code.toml --id base1-decoder-c --time 08:00:00 --account torch_pr_61_general
+# Smoke Train: ./sbatch/ppp/ppp_submit_train.sh base1-decoder-c --base original_default_train_code.toml --id base1-decoder-c-smoke --config smoke.toml --time 00:30:00 --account torch_pr_61_tandon_advanced
+# Optional: 
+    # --id base1-decoder-c-smoke 
+    # --config smoke.toml 
+    # --time 00:30:00
+    # --account torch_pr_61_tandon_advanced
+# Test ./sbatch/ppp/ppp_submit_test.sh array base1-decoder-c --split test --ckpt 16000 --pct 4 --base original_default_train_code.toml
 
 [data]
 # FISBe zarr volumes (run prepare_fisbe_for_ppp.py once before training)
@@ -13,48 +15,56 @@ fisbe_root = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe"
 # When set, train_data/val_data/test_data are derived as
 # {fisbe_root}/{first_dataset}/{split}. Inference outputs use {dataset}/{sample}.
 # Including a name with "partly" auto-enables add_partly / add_partly_val.
-train_datasets = ["completely", "partly"]
-val_datasets = ["completely", "partly"]
-test_datasets = ["completely", "partly"]
+train_datasets = ["completely"]
+val_datasets = ["completely"]
+test_datasets = ["completely"]
 overlap_csv_folder = ""
-fg_csv_folder = ""
+fg_csv_folder = "/scratch/wmz2007/neuroinfo_fruitfly/fisbe/fg_points"
 numinst_key = "volumes/gt_numinst"
 sample_mask_key = "volumes/gt_fg_rm_5"
-add_partly = true
+add_partly = false
 sample_fg_points = true
-max_train_samples = 40
-max_val_samples = 20
+# Limit volumes for faster iteration during local debugging
+max_train_samples = 18
+max_val_samples = 10
 
 [model]
-num_fmaps = 24
+num_fmaps = 20
 train_input_shape_valid = [ 140, 140, 140,]
 test_input_shape_valid = [ 156, 156, 156,]
+train_code = true
 upsampling = "transposed_conv"
-train_code = false
+decode_batch_size = 1024
+
+[model.autoencoder]
+upsampling = "nearest"
 
 [training]
 val_log_step = 2000
-batch_size = 18
-num_workers = 32
+# H200
+# batch_size = 30
+# num_workers = 12
+# cache_size = 300
+# L40s
+batch_size = 22
+num_workers = 30
+cache_size = 150
+prefetch_batches = 2
 max_iterations = 400000
-checkpoints = 1000
-snapshots = 2000
-profiling = 1000
-probability_hue = 0
-cache_size = 100
-# Fisbe dataset incomplete I think. Missing file that tells which voxels are instances or not, outside of original fisbe label
+checkpoints = 2000
+snapshots = 5000
+profiling = 2000
+probability_hue = 0.05
 use_gt_extra = false
+# Fisbe dataset incomplete I think. Missing file that tells which instances are missing in partly dataset
+oversample_complete = 1
 mask_bg_weight = 0.01
 
-
 [prediction]
-batch_size = 36
+batch_size = 8
 num_workers = 32
-cache_size = 300
+cache_size = 200
 mask_folder = ""
-# predict_no_gp runs under inference_mode+autocast, so large tiles fit.
-# wall time scales with the number of forward passes, i.e. with
-# (volume / (test_input_shape_valid - 92)^3) / batch_size -- keep 
 
 [validation]
 checkpoints = [400000]
@@ -78,16 +88,25 @@ summary = [ "general.Num GT", "general.Num Pred", "general.avg_f1_cov_score", "c
 
 [optimizer.optimizer]
 optimizer = "Adam"
-lr = 0.0002
+# H200
+# lr = 0.00005
+# L40S
+lr = 0.00005
 
 [training.sampling]
 min_masked = 0.0001
-probability_random = 0.20
-probability_fg = 0.80
+probability_random = 0.05
+probability_fg = 0.95
 probability_overlap = 0.0
 # No overlap_csv_folder, so probability_overlap = 0.0
 point_balance_radius_overlap = 3
 
-[training.augmentation]
-elastic = false
-overlay = false
+[training.augmentation.elastic]
+control_point_spacing = [40, 40, 40]
+jitter_sigma = [0.5, 0.5, 0.5]
+rotation_min = -15
+rotation_max = 15
+subsample = 8
+
+[training.augmentation.overlay]
+probability_overlay = 0.05

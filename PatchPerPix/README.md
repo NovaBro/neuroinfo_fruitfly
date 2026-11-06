@@ -43,8 +43,7 @@ PATH=/usr/local/cuda/bin:$PATH CUDA_ROOT=/usr/local/cuda pip install -e .
      - `train.py`: trains the network
      - `predict_no_gp.py`: prediction after training
      - `decode.py`: if ppp+dec is used, decode the predicted patch encodings to the full patches
-     - `default.toml`: example configuration file
-	 - `default_train_code.toml`: example configuration file that uses ppp+dec
+     - `configs/`: TOML configs (see `configs/README.md`); upstream examples are `configs/base/original_default.toml` and `configs/base/original_default_train_code.toml` (ppp+dec)
 	 - `torch_loss.py`: auxiliary file for the loss computation
 	 - `torch_model.py`: auxiliary file for the torch model definition
 
@@ -61,7 +60,7 @@ The main script `run_ppp.py` (in the experiments folder) can be used to control 
 
 Example call:
 ```
-python run_ppp.py --setup setup01 --config flylight/setups/setup01/default_train_code.toml --do train validate_checkpoints predict decode label evaluate --app flylight --root ppp_experiments
+python run_ppp.py --setup setup01 --config flylight/setups/setup01/configs/base/original_default_train_code.toml --do train validate_checkpoints predict decode label evaluate --app flylight --root ppp_experiments
 ```
 
 With `--do TASK` you can set the sub-task that should be executed (or `all` for the whole pipeline), `--root PATH` sets the output directory, `--app APP` the experiment (e.g. flylight) and `--setup SETUP` the specific setup of that experiment (e.g. setup01).

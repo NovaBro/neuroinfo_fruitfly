@@ -4,7 +4,7 @@
 #
 #   ./sbatch/ppp/ppp_submit_train.sh our-noenc-cs \
 #     --base original_default.toml --id our-noenc-cs --time 24:00:00
-#   ./sbatch/ppp/ppp_submit_train.sh --dry-run basic_fmaps24
+#   ./sbatch/ppp/ppp_submit_train.sh --dry-run our-noenc-c1k_v1 --base original_default.toml
 #
 # Stages fisbe tars (STAGE_DATA=1) and runs -d train.
 # Inference is ./sbatch/ppp/ppp_submit_test.sh. To run inference after this
@@ -29,10 +29,10 @@ Usage:
 
 Starts one training job: stage data + -d train.
 
-Presets (= TOML stem): basic_8h | basic_long8h | basic_fmaps24 |
-         basic_fmaps24_400k | basic_fmaps24_400k_bs5_aug |
-         basic_fmaps24_400k_aug_cheap | basic-ppp-noenc | basic-ppp-noenc-cp | basic-ppp-noenc-cps |
-         basic-ppp-decoder | base1-noenc-c | our-noenc-cs | our-noenc-synth_vh_u8
+Presets (= TOML stem in setup01/configs/presets/; rows in ppp_submit_common.sh):
+         our-noenc-c1k_v1 | our-noenc-c1k_v1_u8 | our-decoder-c1k_v1 | our-decoder-c1k_v1_u8 |
+         our-noenc-cs | base1-noenc-c | base1-decoder-c |
+         basic-ppp-noenc | basic-ppp-noenc-cp | basic-ppp-decoder
 
 Flags:
   --id EXP_ID              Override experiment id (default from preset)

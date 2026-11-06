@@ -10,8 +10,8 @@ Also checks that the state_dict round-trips (checkpoints stay format-agnostic).
 
 Run inside the ppp container from PatchPerPix/experiments/ (GPU):
   python -u ../../sbatch/ppp/tools/test_channels_last.py \
-    --config flylight/setups/setup01/original_default.toml \
-    --config flylight/setups/setup01/our-noenc-c1k_v1.toml
+    --config flylight/setups/setup01/configs/base/original_default.toml \
+    --config flylight/setups/setup01/configs/presets/our-noenc-c1k_v1.toml
 """
 import argparse
 import copy

@@ -46,8 +46,6 @@ submit_run() {
     && ! do_tasks_has evaluate "${do_tasks}" \
     && ! do_tasks_has predict "${do_tasks}"; then
     wall="02:00:00"
-  elif [[ "${PRESET}" == "basic_long8h" || "${PRESET}" == "basic_8h" ]]; then
-    wall="02:00:00"
   fi
   if do_tasks_has predict "${do_tasks}" && ! do_tasks_has label "${do_tasks}"; then
     run_pred=1

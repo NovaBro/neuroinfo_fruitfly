@@ -1,9 +1,9 @@
-# Overlay on original_default.toml + fmaps24 + 400k, all augs on but cheapened, L40S-friendly.
-# Train: ./sbatch/ppp/ppp_submit_train.sh basic-ppp-noenc --base original_default.toml --id basic-ppp-noenc
-# Optional: --id basic-ppp-noenc-smoke --config smoke.toml --time 00:30:00
-# Exp id: --id basic-ppp-noenc
-# account: --account torch_pr_61_torch_priority
-# ./sbatch/ppp/ppp_submit_train.sh basic-ppp-noenc --base original_default.toml --id basic-ppp-noenc --time 24:00:00
+# PRESET PPP+dec on original_default_train_code.toml: fmaps24, 400k, all augs on but cheapened, L40S-friendly.
+# Train: ./sbatch/ppp/ppp_submit_train.sh basic-ppp-decoder --base original_default_train_code.toml --id basic-ppp-decoder
+# Optional: --id basic-ppp-decoder-smoke --config smoke.toml --time 00:30:00
+# Exp id: --id basic-ppp-decoder
+# account: --account torch_pr_61_tandon_priority
+# ./sbatch/ppp/ppp_submit_train.sh basic-ppp-decoder --base original_default_train_code.toml --id basic-ppp-decoder --time 24:00:00
 
 [data]
 # FISBe zarr volumes (run prepare_fisbe_for_ppp.py once before training)
@@ -29,30 +29,31 @@ max_val_samples = 10
 num_fmaps = 24
 train_input_shape_valid = [ 140, 140, 140,]
 test_input_shape_valid = [ 156, 156, 156,]
+train_code = true
 upsampling = "transposed_conv"
-train_code = false
+decode_batch_size = 1024
+
+[model.autoencoder]
+upsampling = "nearest"
 
 [training]
 val_log_step = 2000
-batch_size = 18
+batch_size = 22
 num_workers = 32
 max_iterations = 400000
 checkpoints = 2000
 snapshots = 2000
 profiling = 2000
 probability_hue = 0.05
+use_gt_extra = false
 cache_size = 300
 # Fisbe dataset incomplete I think. Missing file that tells which instances are missing in partly dataset
-use_gt_extra = false
 
 [prediction]
-batch_size = 36
+batch_size = 8
 num_workers = 32
-cache_size = 300
+cache_size = 200
 mask_folder = ""
-# predict_no_gp runs under inference_mode+autocast, so large tiles fit.
-# wall time scales with the number of forward passes, i.e. with
-# (volume / (test_input_shape_valid - 92)^3) / batch_size -- keep 
 
 [validation]
 checkpoints = [400000]
@@ -76,7 +77,7 @@ summary = [ "general.Num GT", "general.Num Pred", "general.avg_f1_cov_score", "c
 
 [optimizer.optimizer]
 optimizer = "Adam"
-lr = 0.0002
+lr = 0.00005
 
 [training.sampling]
 min_masked = 0.0001
@@ -90,3 +91,5 @@ subsample = 8
 
 [training.augmentation.overlay]
 probability_overlay = 0.05
+
+

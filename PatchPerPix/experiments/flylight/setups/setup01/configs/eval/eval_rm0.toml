@@ -1,0 +1,5 @@
+# Eval overlay: keep every predicted component (remove_small_components = 0); useful when
+# all predicted labels are tiny (e.g. smoke runs) and the base default 500 would drop them all.
+[evaluation]
+remove_small_components = 0
+from_scratch = true
