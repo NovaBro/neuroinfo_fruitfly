@@ -203,7 +203,18 @@ PatchPerPix/
 | `train_until(**config)` | Main training entry called by `run_ppp.py`; resumes from latest checkpoint; builds gunpowder pipeline, optimizer, validation hooks |
 | `get_sources(config, arrays, ...)` | Configures zarr/HDF data sources and augmentation providers for train/val |
 
-**Key dependencies:** `torch_model.UnetModelWrapper`, `torch_loss.LossWrapper`, `gunpowder`, `neurolight.gunpowder`, `PatchPerPix.util.normalize`, `get_latest_checkpoint`.
+**Key dependencies:** `torch_model.UnetModelWrapper`, `torch_loss.LossWrapper`, `validation.Validator`, `gunpowder`, `neurolight.gunpowder`, `PatchPerPix.util.normalize`, `get_latest_checkpoint`.
+
+**Validation during training** (`setup01/validation.py`): every `val_log_step` iterations (after the
+train step, so it lines up with checkpoints) `Validator.run` evaluates a **fixed** val subset
+(`val_num_batches` x `batch_size` crops, gunpowder seeds `val_seed + i`, cached in RAM when
+`val_cache_batches`) in eval mode with val padding. It writes `<exp>/train/val_metrics.csv` and a
+`Validation: iteration=N loss=… fg_dice=…` log line. Columns: loss/loss_patch/loss_fg, fg
+dice/iou/precision/recall, numinst_acc_fg, overlap precision/recall, aff acc/precision/recall/f1.
+This replaced gunpowder's `TrainValProvider` interleaving, which logged only to TensorBoard (missing in the
+overlay) and leaked a single-batch val loss into the `Train process` lines. Runs from before the change
+have those at `iteration % val_log_step == 2`, and `ppp_train_track.py` can split them off
+(`legacy_val_log_step`). Instance metrics stay in `-d validate_checkpoints`.
 
 ---
 

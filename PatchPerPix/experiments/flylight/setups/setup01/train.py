@@ -2,6 +2,7 @@
 
 Create model and train
 """
+import contextlib
 import logging
 import os
 import time
@@ -22,6 +23,7 @@ from . import torch_model
 from . import torch_loss
 from .random_hue import RandomHue
 from .threaded_prefetch import ThreadedPrefetch
+from .validation import Validator
 from PatchPerPix.util import (
     get_latest_checkpoint,
     normalize)
@@ -50,8 +52,8 @@ def train_until(**config):
             "Model has already been trained for %s iterations", trained_until)
         return
 
-    # check for validation
-    if not 'val_log_step' in config:
+    # check for validation (setup01/validation.py; 0/None disables)
+    if not config.get('val_log_step'):
         config['val_log_step'] = None
 
     add_affinities = config.get("add_affinities", "cpu")
@@ -263,6 +265,9 @@ def train_until(**config):
     # load data source and
     # choose augmentations depending on config
     augment = config.get("augmentation", {})
+    prefetch_node = (
+        ThreadedPrefetch(num_batches=config.get("prefetch_batches", 2))
+        if config.get("prefetch_batches", 2) > 0 else None)
     train_pipeline = (
         train_sources +
 
@@ -353,11 +358,12 @@ def train_until(**config):
         + gp.Stack(config["batch_size"]) +
 
         # unpickle + stack the next batch while the GPU trains on this one
-        (ThreadedPrefetch(num_batches=config.get("prefetch_batches", 2))
-         if config.get("prefetch_batches", 2) > 0 else gp.NoOp())
+        (prefetch_node if prefetch_node is not None else gp.NoOp())
     )
 
-    # set up optional validation path without augmentations
+    # set up optional validation path without augmentations.
+    # Yields single samples: no PreCache/Stack, both overwrite the request's
+    # random seed, and Validator needs seeded requests for a fixed val set.
     if config["val_log_step"] is not None:
         val_pipeline = (
             val_sources +
@@ -388,24 +394,10 @@ def train_until(**config):
                 multiple_labels=overlapping_inst,
                 torch=config.get("add_affinities", "cpu") == "torch",
                 dtype=np.float32)
-             if add_affinities in ["cpu", "torch"] else gp.NoOp()) +
-
-            (gp.PreCache(
-                cache_size=max(8, int(config.get("batch_size", 1))),
-                num_workers=max(1, min(4, int(config.get("num_workers", 1)))))
-             if config["num_workers"] > 1 else gp.NoOp())
-
-            + gp.Stack(config["batch_size"])
+             if add_affinities in ["cpu", "torch"] else gp.NoOp())
         )
 
-    if config["val_log_step"] is not None:
-        pipeline = (
-            (train_pipeline, val_pipeline) +
-            gp.TrainValProvider(
-                step=config["val_log_step"], init_step=trained_until)
-        )
-    else:
-        pipeline = train_pipeline
+    pipeline = train_pipeline
 
     inputs = {
         'raw': raw,
@@ -544,7 +536,8 @@ def train_until(**config):
             lr_scheduler=lr_scheduler,
             lr_schedule_per_epoch=lr_schedule_per_epoch,
             log_dir=os.path.join(config['output_folder'], ".."),
-            val_log_step=config.get("val_log_step"),
+            # validation runs outside the node (Validator below)
+            val_log_step=None,
             use_auto_mixed_precision=config.get("use_auto_mixed_precision", False),
             use_swa=config.get("use_swa"),
             swa_every_it=config.get("swa_every_it"),
@@ -578,22 +571,25 @@ def train_until(**config):
     nan_patience = config.get("nan_patience", 10)
     consecutive_nonfinite = 0
 
-    with gp.build(pipeline):
+    val_log_step = config["val_log_step"]
+
+    with contextlib.ExitStack() as build_stack:
+        build_stack.enter_context(gp.build(pipeline))
+        validator = None
+        if val_log_step is not None:
+            build_stack.enter_context(gp.build(val_pipeline))
+            validator = Validator(
+                model, config, val_pipeline, val_request,
+                inputs=inputs, outputs=outputs, loss_inputs=loss_inputs,
+                upstream_lock=(prefetch_node.lock
+                               if prefetch_node is not None else None))
 
         logger.info("Starting training...")
         with logging_redirect_tqdm():
             for i in tqdm(range(trained_until, config["max_iterations"]),
                           disable=None):
                 start = time.time()
-                if (val_request is not None and
-                    config.get("val_log_step") and
-                    i % config["val_log_step"] == 1):
-                    # print("val", val_request)
-                    with torch.no_grad():
-                        batch = pipeline.request_batch(val_request)
-                else:
-                    # print("train", request)
-                    batch = pipeline.request_batch(request)
+                batch = pipeline.request_batch(request)
                 time_of_iteration = time.time() - start
 
                 logger.info(
@@ -616,6 +612,11 @@ def train_until(**config):
                                 "training. Check lr, use_auto_mixed_precision "
                                 "and input data." % (
                                     consecutive_nonfinite, i+1))
+
+                # fixed-subset val loss + voxel metrics (val_metrics.csv);
+                # lines up with checkpoint iterations
+                if validator is not None and (i + 1) % val_log_step == 0:
+                    validator.run(i + 1)
 
 
 def get_sources(config, arrays, voxel_size, data_files, val=False, graphs=None):

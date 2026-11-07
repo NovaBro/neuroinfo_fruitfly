@@ -9,4 +9,5 @@ max_iterations = 150
 checkpoints = 50
 snapshots = 50
 val_log_step = 10
+val_num_batches = 2
 profiling = 10

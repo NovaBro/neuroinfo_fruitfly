@@ -1,0 +1,5 @@
+# Debug overlay (stack after smoke.toml): reload the val crops at every val point
+# instead of caching them. validation.py logs "validation: loaded N batches, checksum X"
+# per load. Identical checksums across val points = deterministic val subset.
+[training]
+val_cache_batches = false

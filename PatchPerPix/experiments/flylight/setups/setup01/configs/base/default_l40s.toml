@@ -72,6 +72,10 @@ clipmax = 1500
 
 [training]
 val_log_step = 25
+# validation.py: fixed val subset every val_log_step its -> <exp>/train/val_metrics.csv
+val_num_batches = 4      # batches of batch_size crops per val point
+val_seed = 0             # gunpowder request seeds val_seed + i (same crops every time / every run)
+val_cache_batches = true # load the val crops once and keep them in RAM
 len_epoch = 100
 batch_size = 1
 num_gpus = 1

@@ -46,6 +46,9 @@ Check how a stack resolves: `python3 sbatch/ppp/ppp_config_path.py NAME...`
 `datasets_test_1k_v1[_u8]_keep_completely.toml` (one-shot evaluate on completely + 1k_v1, only for `evaluate`).
 
 ### `train/`: run-length / speed overlays (stack last)
+Validation during training (`[training]` `val_log_step`, `val_num_batches`, `val_seed`,
+`val_cache_batches`; see `setup01/validation.py`) writes `<exp>/train/val_metrics.csv`. `val_nocache.toml` (debug): reload
+val crops every val point; identical `validation: loaded … checksum` lines = deterministic val set.
 `smoke.toml` (150 it) + `smoke_noval.toml`; `profile_noenc_{l40s,completely_l40s,h200}.toml` (300-it
 profiling); `channels_last.toml`; `raw_fp16.toml` (fp16 raw handoff).
 

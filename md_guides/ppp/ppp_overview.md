@@ -296,6 +296,19 @@ can hide over-fragmentation and inflate F1. Metric walkthrough: archived
   RandomLocation (long 0% GPU startup). `oversample_complete` multiplies mask-setup cost.
 - **GPU util:** public partitions cancel low-util jobs. `ppp_job.sh` backgrounds `nvidia-smi … -l 1` into
   `gpu_log/ppp/gpu_usage_log_<exp_id>_<jobid>.csv`. Don't put `@fork` on train.
+- **Train/val curves:** TensorBoard is not in the overlay, so curves come from text files. Train loss is the
+  `Train process: iteration=N loss=…` lines in `<exp>/run.log`. Every `val_log_step` iterations
+  (presets: 2000, so val points line up with checkpoints) `setup01/validation.py` evaluates a fixed val subset
+  (`val_num_batches` x `batch_size` crops, seeds `val_seed + i`, cached in RAM, ~5 s per val point after a ~1 min
+  first load) and appends to `<exp>/train/val_metrics.csv` plus a `Validation: iteration=N …` line in `run.log`.
+  Columns: `loss`/`loss_patch`/`loss_fg`; fg `dice`/`iou`/`precision`/`recall`; `numinst_acc_fg`;
+  `overlap_precision`/`overlap_recall`; `aff_acc`/`aff_precision`/`aff_recall`/`aff_f1` (on gt-fg voxels). These are
+  voxel-level only; instance metrics (avF1, C, FM, FS, …) still come from `-d validate_checkpoints`.
+  Plot with `ipynb/ppp_training_log_tracker.ipynb` or
+  `python PatchPerPix/experiments/ppp_train_track.py metrics/ppp/<exp>/run.log --val --val-plot out.png`.
+  Runs from before 2026-11-06 logged one random val batch as an ordinary `Train process` line at
+  `iteration % val_log_step == 2` (a spike in the train curve); pass `legacy_val_log_step=2000`
+  (`--legacy-val-log-step 2000`) to split those off.
 - **H200:** `h200_public` allows at most **16 CPUs per GPU**. For noenc, stack `exp_v1_h200.toml` (14 workers,
   fp16 raw) and pass `--partition h200_public --cpus 16`: 0.63–0.66 s/iter vs 2.18 on L40S.
 - **Speed numbers, settings per GPU, and how to diagnose a slow step:**

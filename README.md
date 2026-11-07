@@ -115,6 +115,15 @@ Active experiment roots are under `metrics/ppp/` (gitignored). Older runs may us
 
 Prefer **separate jobs** for train vs predict/label (do not `@fork` train with PreCache after CUDA init). See comments in `run_ppp.py` and the `sbatch/ppp/ppp_basic_*` scripts.
 
+### Training curves without TensorBoard
+
+TensorBoard is not installed in the `ppp` overlay, so the event files below are not written today. Train loss
+is parsed from `metrics/ppp/<exp>/run.log`. Validation loss and simple val metrics (fg dice/IoU/precision/recall,
+numinst/overlap accuracy, affinity F1) are written every `val_log_step` iterations to
+`metrics/ppp/<exp>/train/val_metrics.csv` by `PatchPerPix/experiments/flylight/setups/setup01/validation.py`.
+Plot both with `ipynb/ppp_training_log_tracker.ipynb` or `PatchPerPix/experiments/ppp_train_track.py --val`.
+Details: `md_guides/ppp/ppp_overview.md` §6.
+
 ### How to view (after tensorboard is in the overlay)
 
 Training writes TensorBoard event files under the experiment root, e.g.
