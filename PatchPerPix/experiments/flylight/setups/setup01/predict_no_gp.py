@@ -154,6 +154,24 @@ def predict(**config):
     if config['output_format'] != "zarr":
         raise NotImplementedError("Please use zarr as prediction output")
 
+    # [prediction] sparse_affs: keep the prod(patchshape)-channel affinities
+    # only where P(numinst >= 1) > sparse_affs_fg_thresh (zeros elsewhere) and
+    # never write all-zero chunks. vote_instances reads patches only at its
+    # foreground (numinst_threshs on the stored probabilities, e.g. p1 > 0.9
+    # or p2 > 0.1, both of which imply 1 - p0 > 0.1), so any threshold below
+    # the smallest numinst/fg threshold gives identical labels. Missing chunks
+    # read back as the fill value 0. Foreground is ~0.1-0.3% of voxels, so
+    # this skips almost all of the ~60 GB/volume compress + write + re-read.
+    sparse_affs = bool(config.get('sparse_affs', False))
+    sparse_thresh = float(config.get('sparse_affs_fg_thresh', 0.05))
+    if sparse_affs and train_code:
+        logger.warning("sparse_affs is only implemented for affinity "
+                       "(noenc) outputs; writing dense pred_code")
+        sparse_affs = False
+    if sparse_affs:
+        logger.info("sparse_affs: keeping %s where P(fg) > %s",
+                    code_aff_key, sparse_thresh)
+
     # add_partly_val = config.get("add_partly_val", False)
     # if add_partly_val:
     #     samples_partly = glob(
@@ -195,7 +213,11 @@ def predict(**config):
             f"(shape: {shape}, stride: {output_shape}, context: {context})")
         shifts = enumerate_shifts(shape_padded, input_shape, output_shape)
         out_zf = create_zarr_outputs(
-            config, sample, shape, chunksize, keys_channels)
+            config, sample, shape, chunksize, keys_channels,
+            sparse_keys=[code_aff_key] if sparse_affs else [])
+        if sparse_affs:
+            out_zf[code_aff_key].attrs['sparse_fg_thresh'] = sparse_thresh
+        n_tiles_written = 0
 
         raw_padded = np.pad(
             raw,
@@ -247,9 +269,23 @@ def predict(**config):
                 for b in range(len(chunks_batch)):
                     # output zarrs are float16 anyway; cast on-device so the
                     # device->host copy of the 343-channel tensor is halved
-                    code_affs = pred_code_affs[b].to(torch.float16).cpu().numpy()
-                    fgbg_numinst = \
-                        pred_fgbg_numinst[b].to(torch.float16).cpu().numpy()
+                    fgbg_t = pred_fgbg_numinst[b].to(torch.float16)
+                    code_t = pred_code_affs[b].to(torch.float16)
+                    if sparse_affs:
+                        # P(numinst >= 1) from the stored fp16 probabilities
+                        if fgbg_t.shape[0] > 1:
+                            fg_prob = 1.0 - fgbg_t[0].float()
+                        else:
+                            fg_prob = fgbg_t[0].float()
+                        keep = fg_prob > sparse_thresh
+                        if bool(keep.any()):
+                            code_affs = (code_t * keep.to(code_t.dtype)
+                                         ).cpu().numpy()
+                        else:
+                            code_affs = None   # tile is all background
+                    else:
+                        code_affs = code_t.cpu().numpy()
+                    fgbg_numinst = fgbg_t.cpu().numpy()
 
                     slices = slices_batch[b]
                     slices_global = [slices[0]]
@@ -264,12 +300,24 @@ def predict(**config):
                     logger.info("B%d: Slices global: %s, Slices local: %s",
                                 b, slices_global, slices_local)
 
-                    out_zf[code_aff_key][tuple(slices_global)] = \
-                        code_affs[tuple(slices_local)]
+                    if code_affs is not None:
+                        # tiles are output_shape-aligned and chunks are
+                        # output_shape // 2, so skipped tiles never leave
+                        # partially written chunks
+                        out_zf[code_aff_key][tuple(slices_global)] = \
+                            code_affs[tuple(slices_local)]
+                        n_tiles_written += 1
                     out_zf[fgbg_numinst_key][tuple(slices_global)] = \
                         fgbg_numinst[tuple(slices_local)]
 
             del raw_batch, pred_code_affs, pred_fgbg_numinst
+
+        # completion marker (check_prediction_complete.py): a sparse array has
+        # missing chunks by design, so chunk counting cannot tell complete
+        # from interrupted
+        out_zf[code_aff_key].attrs['predict_complete'] = True
+        logger.info("%s: wrote %s tiles of %s to %s",
+                    sample, n_tiles_written, len(shifts), code_aff_key)
 
 
     # if config.get("normalization"):
@@ -279,7 +327,8 @@ def predict(**config):
     #         raw, config["normalization"])
 
 
-def create_zarr_outputs(config, sample, shape, chunksize, keys_channels):
+def create_zarr_outputs(config, sample, shape, chunksize, keys_channels,
+                        sparse_keys=()):
     # open zarr file
     fn = os.path.join(config['output_folder'], sample + '.zarr')
     parent = os.path.dirname(fn)
@@ -288,15 +337,22 @@ def create_zarr_outputs(config, sample, shape, chunksize, keys_channels):
     logger.info("Creating output file: %s", fn)
     compressor = Blosc(cname='zstd', clevel=3, shuffle=Blosc.BITSHUFFLE)
     zf = zarr.open(fn, mode='w')
+    # Returns {key: zarr.Array} of the created arrays, not the group:
+    # write_empty_chunks is a property of the Array object (zarr v2 does not
+    # store it in .zarray), so re-fetching via zf[key] would reset it to True.
+    arrays = {}
     for key, ch in keys_channels.items():
-        zf.create(key,
-                  shape=[ch] + list(shape),
-                  chunks=[ch] + list(chunksize),
-                  compressor=compressor,
-                  dtype=np.float16)
-        zf[key].attrs['offset'] = [0, 0]
-        zf[key].attrs['resolution'] = config['voxel_size']
-    return zf
+        # sparse keys: all-zero chunks are not stored (read back as fill 0)
+        arrays[key] = zf.create(key,
+                                shape=[ch] + list(shape),
+                                chunks=[ch] + list(chunksize),
+                                compressor=compressor,
+                                dtype=np.float16,
+                                fill_value=0,
+                                write_empty_chunks=key not in sparse_keys)
+        arrays[key].attrs['offset'] = [0, 0]
+        arrays[key].attrs['resolution'] = config['voxel_size']
+    return arrays
 
 
 def enumerate_shifts(shape, input_shape, stride):

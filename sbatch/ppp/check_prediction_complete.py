@@ -7,6 +7,10 @@ predicted. An interrupted volume therefore still looks "already exists" to
 run_ppp and is silently skipped, leaving zeros in the unwritten region. This
 counts materialised chunks instead.
 
+Newer predictions carry attrs.predict_complete (written after the last tile);
+that marker is required for sparse outputs ([prediction] sparse_affs), which
+omit all-zero chunks by design.
+
 Tile size does not matter: the UNet is valid-padded, so every output voxel sees
 the same context no matter how the volume was tiled. A complete prediction is
 valid even if it was written with a different test_input_shape_valid.
@@ -38,6 +42,20 @@ if not os.path.exists(zarray):
     sys.exit(1)
 
 meta = json.load(open(zarray))
+
+# predict_no_gp.py sets attrs.predict_complete after the last tile. Sparse
+# outputs ([prediction] sparse_affs) skip all-zero chunks by design, so for
+# them the marker is the only valid signal; dense outputs from before the
+# marker existed fall back to counting chunks.
+zattrs_path = os.path.join(arr, ".zattrs")
+attrs = json.load(open(zattrs_path)) if os.path.exists(zattrs_path) else {}
+if attrs.get("predict_complete"):
+    report("predict_complete marker -> complete")
+    sys.exit(0)
+if "sparse_fg_thresh" in attrs:
+    report("sparse prediction without predict_complete marker -> incomplete")
+    sys.exit(1)
+
 expected = 1
 for size, chunk in zip(meta["shape"], meta["chunks"]):
     expected *= math.ceil(size / chunk)

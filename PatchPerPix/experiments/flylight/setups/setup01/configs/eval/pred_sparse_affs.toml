@@ -1,0 +1,8 @@
+# Sparse prediction output (noenc only): keep volumes/pred_affs only where P(numinst >= 1) > 0.05 and do not
+# store all-zero chunks. vote_instances only reads patches at its foreground (numinst_threshs [0.9, 0.1] =>
+# 1 - p0 > 0.1), so labels are unchanged while predict write / label read / disk drop by ~100x
+# (foreground is ~0.1-0.3% of voxels on 1k_v1.1). Pass on predict (and label/evaluate, harmless).
+# Keep sparse_affs_fg_thresh below the smallest numinst / fg threshold used at label time.
+[prediction]
+sparse_affs = true
+sparse_affs_fg_thresh = 0.05

@@ -144,7 +144,8 @@ submit_evaluate() {
     "${sample_kv}" \
     "${split_kv}" \
     "CKPT=${CKPT}")"
-  jid=$(sbatch_submit "${job_name}" "16" "04:00:00" "112g" "cs,cpu_short" "" "${export_csv}")
+  # EVAL_TIME / EVAL_MEM / EVAL_PARTITION (env) override the evaluate job resources.
+  jid=$(sbatch_submit "${job_name}" "16" "${EVAL_TIME:-04:00:00}" "${EVAL_MEM:-112g}" "${EVAL_PARTITION:-cs,cpu_short}" "" "${export_csv}")
   echo "evaluate=${jid} exp=${EXP_ID} split=${SPLIT:-both} both=${EVAL_BOTH_SPLITS} ckpt=${CKPT:-last}"
   LAST_ID="${jid}"
   EVAL_BOTH_SPLITS=0
@@ -284,15 +285,18 @@ submit_array_split() {
   [[ -n "${PART_OVR}" ]] && part="${PART_OVR}"
   [[ -n "${TIME_OVR}" ]] && wall="${TIME_OVR}"
 
+  # ARR_CPUS / ARR_MEM / ARR_PCT: per-call overrides (set by the caller for one
+  # array, e.g. the per-volume evaluate array); fall back to --cpus/--mem/--pct.
+  local pct="${ARR_PCT:-${PCT}}"
   local args=(
     --parsable
     --account="${ACCOUNT}"
     --job-name="${job_name}"
-    --cpus-per-task="${CPUS_OVR:-16}"
+    --cpus-per-task="${ARR_CPUS:-${CPUS_OVR:-16}}"
     --time="${wall}"
-    --mem="${MEM_OVR:-96g}"
+    --mem="${ARR_MEM:-${MEM_OVR:-96g}}"
     --partition="${part}"
-    --array="0-${last}%${PCT}"
+    --array="0-${last}%${pct}"
     --output="sbatch/ppp/logs/array/${PRESET}_${split}_%A_%a.out"
     --error="sbatch/ppp/logs/array/${PRESET}_${split}_%A_%a.err"
     --export="${export_csv}"
@@ -314,19 +318,59 @@ submit_array_split() {
   else
     arr_id=$(sbatch "${args[@]}")
   fi
-  echo "${split}: n=${n} datasets=${ds} array=0-${last}%${PCT} array_job=${arr_id} do=${do_tasks} part=${part} gres=${gres:-none}"
+  echo "${split}: n=${n} datasets=${ds} array=0-${last}%${pct} array_job=${arr_id} do=${do_tasks} part=${part} gres=${gres:-none}"
   LAST_ID="${arr_id}"
 
   if [[ "${DO_AGG}" -eq 1 ]]; then
-    DEP_ID="${arr_id}"
-    [[ "${DRY_RUN}" -eq 1 ]] && DEP_ID="DRYRUN_ARR"
+    local label_arr="${arr_id}"
+    [[ "${DRY_RUN}" -eq 1 ]] && label_arr="DRYRUN_ARR"
     local saved_split="${SPLIT}"
     SPLIT="${split}"
     SAMPLE_EXPLICIT=0
-    submit_evaluate
+    if [[ "${PER_VOLUME_EVAL:-1}" == "1" ]]; then
+      submit_eval_per_volume "${split}" "${label_arr}"
+    else
+      DEP_ID="${label_arr}"
+      submit_evaluate
+    fi
     SPLIT="${saved_split}"
     DEP_ID=""
   fi
+}
+
+submit_eval_per_volume() {
+  # Evaluate each volume as soon as its label task finishes (CPU array,
+  # aftercorr on the label array), then one merge evaluate that reuses the
+  # per-volume results (eval_resume.toml: from_scratch = false) to write
+  # summary.csv and strip the whole ckpt dir. The merge waits on the label array
+  # too (afterok:EVAL:LABEL), so a failed label task still leaves it
+  # DependencyNeverSatisfied, as before. Per-volume tasks strip their own
+  # pred_affs right after evaluating (ppp_job.sh, SAMPLE set by the array).
+  # Opt out: PER_VOLUME_EVAL=0 (single evaluate after the whole label array).
+  # Args: $1=split $2=label array job id
+  local sp="$1" label_arr="$2" cfgs eval_arr saved_extra
+  cfgs="$(configs_join "${OVERLAY}" "${VI_OVERLAY}" "${EVAL_OVERLAY}" "${EXTRA_CONFIGS[@]+"${EXTRA_CONFIGS[@]}"}")"
+  local saved_dep_type="${DEP_TYPE:-}" saved_agg="${DO_AGG}"
+  DO_AGG=0   # this array must not chain another evaluate
+  DEP_ID="${label_arr}"
+  DEP_TYPE="aftercorr"
+  ARR_CPUS="${EVAL_VOL_CPUS:-8}"
+  ARR_MEM="${EVAL_VOL_MEM:-64g}"
+  ARR_PCT="${EVAL_VOL_PCT:-20}"
+  submit_array_split "${sp}" "evaluate" "0" "0" \
+    "${cfgs}" "${EVAL_VOL_TIME:-02:00:00}" "${EVAL_PARTITION:-cs,cpu_short}" "" \
+    "ppp_${PRESET}_evalvol_${sp}" "0"
+  unset ARR_CPUS ARR_MEM ARR_PCT
+  eval_arr="${LAST_ID}"
+  [[ "${DRY_RUN}" -eq 1 ]] && eval_arr="DRYRUN_EVALVOL_${sp}"
+  DEP_TYPE="${saved_dep_type}"
+  DO_AGG="${saved_agg}"
+
+  saved_extra=("${EXTRA_CONFIGS[@]+"${EXTRA_CONFIGS[@]}"}")
+  EXTRA_CONFIGS+=("eval_resume.toml")
+  DEP_ID="${eval_arr}:${label_arr}"
+  submit_evaluate
+  EXTRA_CONFIGS=("${saved_extra[@]+"${saved_extra[@]}"}")
 }
 
 label_array_resources() {
@@ -343,8 +387,10 @@ submit_label_split() {
   # Blockwise vote_instances needs CUDA only for the per-/inter-block patch graph
   # (cached in <instanced>/<sample>.zarr); affGraphToInstances is CPU-only and
   # would idle the GPU (Greene low-util cancels). Task i of the CPU array waits
-  # only for GPU task i (aftercorr).
-  # Args: $1=split $2=dependency job id for the GPU phase ("" = none, afterok).
+  # only for GPU task i (aftercorr). The GPU phase itself also waits per task
+  # (aftercorr) on the predict/decode array, so volume i is labelled as soon as
+  # its own prediction exists instead of after the whole predict array.
+  # Args: $1=split $2=dependency array job id for the GPU phase ("" = none).
   local sp="$1" dep="$2" base_cfgs gpu_cfgs cpu_cfgs saved_agg="${DO_AGG}"
   base_cfgs="$(configs_join "${OVERLAY}" "${VI_OVERLAY}" "${EVAL_OVERLAY}" "${EXTRA_CONFIGS[@]+"${EXTRA_CONFIGS[@]}"}")"
   gpu_cfgs="$(configs_join "${base_cfgs}" "vi_split_gpu.toml")"
@@ -352,7 +398,7 @@ submit_label_split() {
 
   DO_AGG=0
   DEP_ID="${dep}"
-  DEP_TYPE="afterok"
+  DEP_TYPE="aftercorr"
   submit_array_split "${sp}" "label" "1" "0" \
     "${gpu_cfgs}" "04:00:00" "l40s_public" "gpu:1" "ppp_${PRESET}_labgraph_${sp}" "1"
 
@@ -430,7 +476,7 @@ submit_array_mode() {
         label_dep="${pred_id}"
         if [[ "${NEEDS_DECODE:-0}" == "1" ]]; then
           DEP_ID="${pred_id}"
-          DEP_TYPE="afterok"
+          DEP_TYPE="aftercorr"   # decode volume i once predict task i is done
           submit_array_split "${sp}" "decode" "0" "0" \
             "${decode_cfgs}" "02:00:00" "l40s_public" "gpu:1" "ppp_${PRESET}_decode_${sp}" "1"
           decode_id="${LAST_ID}"
@@ -441,7 +487,7 @@ submit_array_mode() {
         if [[ "${VI_GPU}" -eq 1 ]]; then
           label_array_resources
           DEP_ID="${label_dep}"
-          DEP_TYPE="afterok"
+          DEP_TYPE="aftercorr"
           submit_array_split "${sp}" "label" "1" "0" \
             "${label_cfgs}" "${wall}" "${part}" "${gres}" "ppp_${PRESET}_label_${sp}" "${need_gpu}"
         else

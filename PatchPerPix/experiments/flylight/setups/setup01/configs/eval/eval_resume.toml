@@ -1,0 +1,5 @@
+# Reuse per-volume evaluation results that already exist (only missing volumes are computed).
+# Appended automatically to the merge evaluate job after the per-volume evaluate array
+# (ppp_submit_test_lib.sh submit_eval_per_volume). Also usable by hand to finish a partly evaluated split.
+[evaluation]
+from_scratch = false
