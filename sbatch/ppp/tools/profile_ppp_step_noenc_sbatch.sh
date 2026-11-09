@@ -50,6 +50,16 @@ if [[ "${RUN_CL_TEST:-1}" == "1" ]]; then
     || echo "test_channels_last: FAILED (rc=$?)"
 fi
 
+# Numerical check for torch.compile of UNet + heads + loss (RUN_COMPILE_TEST=1 enables).
+if [[ "${RUN_COMPILE_TEST:-0}" == "1" ]]; then
+  singularity exec --nv --overlay env/ppp.ext3:ro \
+    /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
+    /bin/bash -c "source /ext3/env.sh; conda activate ppp; cd PatchPerPix/experiments; \
+      python -u ../../sbatch/ppp/tools/test_compile_equiv.py ${CONFIGS}" \
+    2>&1 | tee "${OUT_DIR}/test_compile_equiv.log"
+  echo "test_compile_equiv: rc=${PIPESTATUS[0]}"
+fi
+
 # One process per variant (a CUDA fault kills the context). Trace dir is relative to PatchPerPix/experiments.
 # Variants compose with "+": fast_aff, cl (channels_last), bf16, no_amp, bsN, inN (see profile_ppp_step.py).
 #   H200: VARIANTS="base fast_aff fast_aff+cl fast_aff+bs36 fast_aff+cl+bs36 fast_aff+bs63 fast_aff+cl+bs63" \

@@ -116,12 +116,21 @@ def build(config, device, args, sec):
     # same code path as train.py (weights here, raw converted in forward())
     model = model.use_channels_last()
 
-    for name, mod in [("unet", model.unet), ("head_code_affs", model.out_code_affs),
-                      ("head_numinst", model.out_fgbg_numinst)] + (
-            [("decoder", model.decoder)] if getattr(model, "decoder", None) else []):
+    # per-module forward timing hooks sync the GPU; they would break compiled graphs
+    hooked = [] if (args.compile or args.compile_all) else [
+        ("unet", model.unet), ("head_code_affs", model.out_code_affs),
+        ("head_numinst", model.out_fgbg_numinst)] + (
+            [("decoder", model.decoder)] if getattr(model, "decoder", None) else [])
+    for name, mod in hooked:
         pre, post = time_hook(sec, name)
         mod.register_forward_pre_hook(pre)
         mod.register_forward_hook(post)
+    if args.compile or args.compile_all:
+        model.unet = torch.compile(model.unet)
+        model.out_code_affs = torch.compile(model.out_code_affs)
+        model.out_fgbg_numinst = torch.compile(model.out_fgbg_numinst)
+    if args.compile_all:
+        loss = torch.compile(loss)
     orig_aff = model.compute_affinities
 
     def timed_aff(*a, **k):
@@ -131,6 +140,8 @@ def build(config, device, args, sec):
 
     opt_kwargs = {k: v for k, v in config["optimizer"].items()
                   if k not in ("optimizer", "loss")}
+    if args.fused_adam:
+        opt_kwargs["fused"] = True
     opt = getattr(torch.optim, config["optimizer"]["optimizer"])(
         model.parameters(), **opt_kwargs)
     return config, model, loss, opt, in_shape, out_shape
@@ -178,6 +189,152 @@ def train_step(model, loss, opt, scaler, inputs, amp, sec):
     return lo
 
 
+def _peak_tflops(args):
+    if args.peak_tflops:
+        return args.peak_tflops
+    gpu = torch.cuda.get_device_name(0)
+    return 362.0 if "L40S" in gpu else 989.0 if "H200" in gpu else None
+
+
+def _conv_flops(mod, inp, out):
+    """Multiply-add FLOPs (x2) of one conv forward pass."""
+    w = mod.weight
+    k = int(np.prod(w.shape[2:]))
+    if isinstance(mod, (torch.nn.ConvTranspose3d, torch.nn.ConvTranspose2d)):
+        return 2 * inp.numel() * w.shape[1] * k  # weight: (Cin, Cout/g, k...)
+    return 2 * out.numel() * (w.shape[1]) * k   # weight: (Cout, Cin/g, k...)
+
+
+def layer_bench(model, loss_mod, opt, scaler, inputs, amp, sec, step_s, args, reps=10):
+    """Time every UNet block and output head alone (fwd + bwd, CUDA events) at the
+    shapes they see in a real step, and count their conv FLOPs (D3/D4).
+
+    Blocks: unet.l_conv.i, unet.l_down.i, unet.r_up.h.i, unet.r_conv.h.i,
+    out_code_affs, out_fgbg_numinst. Each block's inputs are captured once from a
+    full step; for the bench they are re-created with the same requires_grad, so
+    backward includes the input-gradient path exactly where training has it.
+    """
+    import re
+    unet = getattr(model.unet, "_orig_mod", model.unet)
+    pat = re.compile(r"^(l_conv|l_down)\.\d+$|^(r_up|r_conv)\.\d+\.\d+$")
+    blocks = [(f"unet.{n}", m) for n, m in unet.named_modules() if pat.match(n)]
+    for name in ("out_code_affs", "out_fgbg_numinst"):
+        m = getattr(model, name)
+        blocks.append((name, getattr(m, "_orig_mod", m)))
+
+    captured = {}
+
+    def tmap(fn, x):
+        """Apply fn to every tensor inside nested lists/tuples/dicts."""
+        if torch.is_tensor(x):
+            return fn(x)
+        if isinstance(x, (list, tuple)):
+            return type(x)(tmap(fn, v) for v in x)
+        if isinstance(x, dict):
+            return {k: tmap(fn, v) for k, v in x.items()}
+        return x
+
+    def cap(name):
+        def hook(mod, a, kw, out):
+            if name not in captured:
+                # (detached value, requires_grad) per tensor, kept in the call structure
+                captured[name] = (tmap(lambda t: (t.detach(), t.requires_grad), list(a)),
+                                  tmap(lambda t: (t.detach(), t.requires_grad), kw))
+        return hook
+    hs = [m.register_forward_hook(cap(n), with_kwargs=True) for n, m in blocks]
+    sec.enabled = False
+    train_step(model, loss_mod, opt, scaler, inputs, amp, sec)
+    torch.cuda.synchronize()
+    for h in hs:
+        h.remove()
+
+    peak = _peak_tflops(args)
+    rows = []
+    for name, mod in blocks:
+        if name not in captured:
+            continue
+        a_spec, kw_spec = captured[name]
+        is_spec = lambda v: isinstance(v, tuple) and len(v) == 2 and torch.is_tensor(v[0]) \
+            and isinstance(v[1], bool)  # noqa: E731
+
+        def fresh(x):  # new leaf tensors with the captured requires_grad
+            if is_spec(x):
+                return x[0].clone().requires_grad_(x[1] and x[0].is_floating_point())
+            if isinstance(x, (list, tuple)):
+                return type(x)(fresh(v) for v in x)
+            if isinstance(x, dict):
+                return {k: fresh(v) for k, v in x.items()}
+            return x
+
+        def flat(x):
+            if is_spec(x):
+                return [x]
+            if isinstance(x, (list, tuple)):
+                return [s for v in x for s in flat(v)]
+            if isinstance(x, dict):
+                return [s for v in x.values() for s in flat(v)]
+            return []
+        specs = flat(a_spec) + flat(kw_spec)
+        rg = [r for _, r in specs]
+        flops = [0]
+
+        def cf(m, i, o):
+            flops[0] += _conv_flops(m, i[0], o)
+        convs = [c.register_forward_hook(cf) for c in mod.modules()
+                 if isinstance(c, (torch.nn.Conv3d, torch.nn.ConvTranspose3d,
+                                   torch.nn.Conv2d, torch.nn.ConvTranspose2d))]
+        args_ = fresh(a_spec)
+        kw = fresh(kw_spec)
+        has_params = any(p.requires_grad for p in mod.parameters())
+        ev = [torch.cuda.Event(enable_timing=True) for _ in range(3)]
+        fwd = bwd = 0.0
+        for it in range(reps + 2):
+            mod.zero_grad(set_to_none=True)
+            args_ = fresh(a_spec)  # fresh leaves every rep: no graph reuse
+            kw = fresh(kw_spec)
+            ev[0].record()
+            with torch.autocast("cuda", dtype=AMP_DTYPE, enabled=amp):
+                out = mod(*args_, **kw)
+            ev[1].record()
+            outs = [t for t in (out if isinstance(out, (tuple, list)) else [out])
+                    if torch.is_tensor(t) and t.requires_grad]
+            if outs:
+                torch.autograd.backward(outs, [torch.ones_like(t) for t in outs])
+            ev[2].record()
+            torch.cuda.synchronize()
+            if it == 0:
+                fl_fwd = flops[0]
+                for c in convs:
+                    c.remove()
+            if it >= 2:
+                fwd += ev[0].elapsed_time(ev[1]) / reps
+                bwd += ev[1].elapsed_time(ev[2]) / reps
+        # backward of a conv = data grad (if input needs grad) + weight grad, each ~ fwd FLOPs
+        n_bwd = (1 if has_params else 0) + (1 if any(rg) else 0)
+        total_fl = fl_fwd * (1 + n_bwd)
+        shape = tuple(specs[0][0].shape) if specs else ()
+        rows.append((name, shape, fwd, bwd, fl_fwd, total_fl))
+
+    tot_ms = sum(r[2] + r[3] for r in rows)
+    tot_fl = sum(r[5] for r in rows)
+    print(f"\n== layer bench ({torch.cuda.get_device_name(0)}; fwd+bwd per block in isolation, "
+          f"{reps} reps; peak {peak} TFLOPS)")
+    print(f"{'block':22s} {'input shape':28s} {'fwd ms':>7s} {'bwd ms':>7s} "
+          f"{'tot ms':>7s} {'share':>6s} {'GFLOP':>8s} {'TFLOPS':>7s} {'%peak':>6s}")
+    for name, shape, f, b, flf, flt in rows:
+        t = f + b
+        tf = flt / (t * 1e-3) / 1e12 if t > 0 and flt else 0.0
+        pk = f"{100 * tf / peak:5.1f}%" if peak and tf else "     -"
+        print(f"{name:22s} {str(shape):28s} {f:7.1f} {b:7.1f} {t:7.1f} "
+              f"{100 * t / tot_ms:5.1f}% {flt / 1e9:8.1f} {tf:7.1f} {pk}")
+    step_tf = tot_fl / step_s / 1e12
+    print(f"{'sum of blocks':22s} {'':28s} {'':7s} {'':7s} {tot_ms:7.1f} {'':6s} "
+          f"{tot_fl / 1e9:8.1f}")
+    print(f"full step {step_s * 1e3:.1f} ms: blocks {100 * tot_ms / (step_s * 1e3):.1f}% of it; "
+          f"model conv FLOPs / step time = {step_tf:.1f} TFLOPS"
+          + (f" = {100 * step_tf / peak:.1f}% of peak" if peak else ""))
+
+
 def run_variant(name, config, args, device, profile=False):
     sec = Sections()
     cfg, model, loss, opt, in_shape, out_shape = build(config, device, args, sec)
@@ -189,7 +346,12 @@ def run_variant(name, config, args, device, profile=False):
     torch.cuda.reset_peak_memory_stats()
 
     sec.enabled = False
-    for _ in range(args.warmup):
+    t_first = time.perf_counter()
+    train_step(model, loss, opt, scaler, inputs, amp, sec)
+    torch.cuda.synchronize()
+    t_first = time.perf_counter() - t_first
+    print(f"first step (includes compile / cudnn autotune): {t_first:.1f}s", flush=True)
+    for _ in range(max(args.warmup, 6 if (args.compile or args.compile_all) else 0) - 1):
         train_step(model, loss, opt, scaler, inputs, amp, sec)
     torch.cuda.synchronize()
 
@@ -222,6 +384,12 @@ def run_variant(name, config, args, device, profile=False):
                                         max_name_column_width=60))
 
     peak = torch.cuda.max_memory_allocated() / 2**20
+    if name in (args.layer_bench or []):
+        try:
+            layer_bench(model, loss, opt, scaler, inputs, amp, sec, step, args)
+        except Exception:  # keep the variant's timing even if the bench breaks
+            import traceback
+            traceback.print_exc()
     del model, loss, opt, inputs
     torch.cuda.empty_cache()
     return {"name": name, "step": step, "sections": sections, "peak_mib": peak,
@@ -250,6 +418,17 @@ def main():
     ap.add_argument("--conv-first", action="store_true",
                     help="autoencoder.upsample_conv_first (1x1 conv before trilinear)")
     ap.add_argument("--bf16", action="store_true")
+    ap.add_argument("--compile", action="store_true",
+                    help="torch.compile the UNet and both output heads")
+    ap.add_argument("--compile-all", action="store_true",
+                    help="--compile plus the loss module")
+    ap.add_argument("--fused-adam", action="store_true", help="optimizer fused=True")
+    ap.add_argument("--layer-bench", nargs="*", default=None,
+                    help="variants that also get a per-block fwd/bwd benchmark with "
+                         "conv FLOPs and achieved TFLOPS (D3/D4)")
+    ap.add_argument("--peak-tflops", type=float, default=None,
+                    help="dense fp16 tensor peak for %%-of-peak (default: L40S 362, "
+                         "H200 989, else none)")
     ap.add_argument("--fast-affinities", action="store_true",
                     help="training.fast_affinities (noenc gt affs pre-cropped, no host syncs)")
     args = ap.parse_args()
@@ -268,6 +447,9 @@ def main():
         "bs24": {"batch_size": 24},
         "bf16": {"bf16": True},
         "fast_aff": {"fast_affinities": True},
+        "compile": {"compile": True},
+        "compile_all": {"compile_all": True},
+        "fused_adam": {"fused_adam": True},
         "fast_aff_bf16": {"fast_affinities": True, "bf16": True},
         "fast_aff_bs24": {"fast_affinities": True, "batch_size": 24},
         "in112": {"input_shape": 112},
@@ -304,7 +486,8 @@ def main():
                                   "input_shape": None, "no_cudnn_benchmark": False,
                                   "no_amp": False, "channels_last": False,
                                   "conv_first": False, "bf16": False,
-                                  "fast_affinities": False,
+                                  "fast_affinities": False, "compile": False,
+                                  "compile_all": False, "fused_adam": False,
                                   **variant_overrides[v]})
         print(f"\n#### variant {v}", flush=True)
         global AMP_DTYPE

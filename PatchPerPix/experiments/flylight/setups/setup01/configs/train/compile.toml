@@ -1,0 +1,6 @@
+# torch.compile (Inductor) the UNet, both output heads and the loss (train.py _maybe_compile_model).
+# noenc only (ignored with a warning when train_code = true). First step compiles for ~1.5 min.
+# Synthetic L40S step: -13%; with channels_last.toml -18% (ppp_train_performance.md §5).
+# fp32-equivalent to eager (sbatch/ppp/tools/test_compile_equiv.py); checkpoints keep eager key names.
+[training]
+compile = true

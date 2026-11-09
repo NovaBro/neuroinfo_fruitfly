@@ -1,0 +1,4 @@
+# A/B overlay: turn OFF training.fast_affinities (on in the noenc presets) to time the old
+# per-edge GT-affinity path. Used by the L40S fp16 × fast_aff profile grid (ppp_train_performance.md §5).
+[training]
+fast_affinities = false

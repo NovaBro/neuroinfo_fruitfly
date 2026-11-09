@@ -310,7 +310,10 @@ can hide over-fragmentation and inflate F1. Metric walkthrough: archived
   `iteration % val_log_step == 2` (a spike in the train curve); pass `legacy_val_log_step=2000`
   (`--legacy-val-log-step 2000`) to split those off.
 - **H200:** `h200_public` allows at most **16 CPUs per GPU**. For noenc, stack `exp_v1_h200.toml` (14 workers,
-  fp16 raw) and pass `--partition h200_public --cpus 16`: 0.63–0.66 s/iter vs 2.18 on L40S.
+  fp16 raw) and pass `--partition h200_public --cpus 16`: 0.63–0.66 s/iter.
+- **L40S:** stack `compile.toml` (`torch.compile` of UNet + heads + loss, noenc only): 1.45 s/iter vs 1.63
+  eager (2.24 before `fast_affinities`). The first iteration compiles for ~2 min. `channels_last.toml` on top
+  gives 1.36 s/iter but peaks at 45.1 of 46.1 GB.
 - **Speed numbers, settings per GPU, and how to diagnose a slow step:**
   [`ppp_train_performance.md`](ppp_train_performance.md).
 

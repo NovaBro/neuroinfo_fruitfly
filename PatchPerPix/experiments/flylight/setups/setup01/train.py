@@ -31,6 +31,148 @@ from PatchPerPix.util import (
 logger = logging.getLogger(__name__)
 
 
+def _maybe_compile_model(model, config):
+    """training.compile = true: torch.compile (Inductor) the UNet and both output heads in
+    place; train_until compiles the loss module the same way. Returns True if enabled.
+
+    Measured on L40S (ppp_train_performance.md §5): synthetic step -13%, -18% with
+    channels_last; fp32 numerically equivalent (sbatch/ppp/tools/test_compile_equiv.py).
+    nn.Module.compile() keeps parameter names, so checkpoints stay loadable by eager
+    predict/resume. The first step compiles for ~1.5 min. Train and validation shapes
+    each get their own static graph (automatic dynamic shapes off, so the training
+    shape keeps its specialized kernels).
+    """
+    if not config.get("compile", False):
+        return False
+    if config.get("train_code"):
+        logger.warning("training.compile is only validated for noenc (train_code = false); "
+                       "ignoring it")
+        return False
+    import torch._dynamo
+    torch._dynamo.config.automatic_dynamic_shapes = False
+    model.unet.compile()
+    model.out_code_affs.compile()
+    model.out_fgbg_numinst.compile()
+    logger.info("training.compile: UNet, output heads and loss compiled (torch %s)",
+                torch.__version__)
+    return True
+
+
+def _iter_window(value):
+    """[first, last] (1-based, inclusive) from the TOML, or None."""
+    if not value:
+        return None
+    first, last = int(value[0]), int(value[1])
+    if last < first:
+        raise ValueError(f"iteration window {value}: last < first")
+    return first, last
+
+
+class _TrainDiagnostics:
+    """Opt-in per-iteration diagnostics for the training loop (off unless configured).
+
+    training.torch_trace_iters = [A, B]  torch.profiler (CPU + CUDA) over train iterations
+        A..B; writes <torch_trace_dir>/trace_iters_A-B.json (chrome://tracing / Perfetto)
+        and a key_averages table. Default dir: <output_folder>/torch_trace.
+    training.sync_debug_iters = [C, D]  torch.cuda.set_sync_debug_mode("warn") over
+        iterations C..D; every host<->device sync is attributed to its Python call stack
+        and written to <torch_trace_dir>/sync_sites_iters_C-D.txt (count per iteration).
+    Keep the two windows disjoint: sync tracking perturbs timing.
+    """
+
+    def __init__(self, config):
+        self.trace = _iter_window(config.get("torch_trace_iters"))
+        self.sync = _iter_window(config.get("sync_debug_iters"))
+        self.out_dir = config.get("torch_trace_dir") or os.path.join(
+            config["output_folder"], "torch_trace")
+        self._prof = None
+        self._iter_rf = None
+        self._cw = None
+        self._orig_showwarning = None
+        self._sync_sites = {}
+        if self.trace or self.sync:
+            os.makedirs(self.out_dir, exist_ok=True)
+            logger.info("train diagnostics: trace=%s sync=%s -> %s",
+                        self.trace, self.sync, os.path.abspath(self.out_dir))
+
+    # -- torch.profiler ---------------------------------------------------
+    def _start_trace(self):
+        acts = [torch.profiler.ProfilerActivity.CPU,
+                torch.profiler.ProfilerActivity.CUDA]
+        self._prof = torch.profiler.profile(activities=acts, record_shapes=False,
+                                            with_stack=False, profile_memory=False)
+        self._prof.start()
+
+    def _stop_trace(self):
+        torch.cuda.synchronize()
+        self._prof.stop()
+        a, b = self.trace
+        path = os.path.join(self.out_dir, f"trace_iters_{a}-{b}.json")
+        self._prof.export_chrome_trace(path)
+        table = self._prof.key_averages().table(
+            sort_by="cuda_time_total", row_limit=60)
+        with open(os.path.join(self.out_dir, f"ops_iters_{a}-{b}.txt"), "w") as f:
+            f.write(table)
+        logger.info("torch trace written: %s\n%s", path,
+                    "\n".join(table.splitlines()[:30]))
+        self._prof = None
+
+    # -- sync debug -------------------------------------------------------
+    def _on_warning(self, message, category, filename, lineno, file=None, line=None):
+        if "synchroniz" not in str(message):
+            return self._orig_showwarning(message, category, filename, lineno, file, line)
+        import traceback
+        frames = [fr for fr in traceback.extract_stack()[:-1]
+                  if "/warnings.py" not in fr.filename]
+        key = tuple(f"{fr.filename}:{fr.lineno} {fr.name}" for fr in frames[-8:])
+        self._sync_sites[key] = self._sync_sites.get(key, 0) + 1
+
+    def _start_sync(self):
+        import warnings
+        self._cw = warnings.catch_warnings()
+        self._cw.__enter__()
+        warnings.simplefilter("always")
+        self._orig_showwarning = warnings.showwarning
+        warnings.showwarning = self._on_warning
+        torch.cuda.set_sync_debug_mode("warn")
+
+    def _stop_sync(self):
+        torch.cuda.set_sync_debug_mode(0)
+        self._cw.__exit__(None, None, None)
+        self._cw = None
+        c, d = self.sync
+        n = d - c + 1
+        path = os.path.join(self.out_dir, f"sync_sites_iters_{c}-{d}.txt")
+        rows = sorted(self._sync_sites.items(), key=lambda kv: -kv[1])
+        with open(path, "w") as f:
+            f.write(f"# {sum(self._sync_sites.values())} syncs over {n} iterations, "
+                    f"{len(rows)} distinct call stacks (innermost last)\n")
+            for key, cnt in rows:
+                f.write(f"\n{cnt / n:8.1f} per iteration ({cnt} total)\n")
+                f.write("".join(f"    {k}\n" for k in key))
+        logger.info("sync sites written: %s (%d syncs / %d its, %d stacks)", path,
+                    sum(self._sync_sites.values()), n, len(rows))
+
+    # -- loop hooks -------------------------------------------------------
+    def before(self, it):
+        if self.trace and it == self.trace[0]:
+            self._start_trace()
+        if self.sync and it == self.sync[0]:
+            self._start_sync()
+        if self._prof is not None:
+            self._iter_rf = torch.profiler.record_function(f"train_iter_{it}")
+            self._iter_rf.__enter__()
+
+    def after(self, it):
+        if self._iter_rf is not None:
+            self._iter_rf.__exit__(None, None, None)
+            self._iter_rf = None
+        if self.trace and it == self.trace[1] and self._prof is not None:
+            self._stop_trace()
+        if self.sync and it == self.sync[1] and self._cw is not None:
+            self._stop_sync()
+
+
 def train_until(**config):
     """Main train function
 
@@ -145,6 +287,7 @@ def train_until(**config):
 
     logger.debug("Model: %s", model)
     model.train()
+    compile_on = _maybe_compile_model(model, config)
 
     voxel_size = gp.Coordinate(config["voxel_size"])
     is_3d = len(voxel_size) == 3
@@ -485,6 +628,8 @@ def train_until(**config):
     # create loss object
     loss = torch_loss.LossWrapper(
         config, current_step=trained_until)
+    if compile_on:
+        loss.compile()  # in place: state_dict keys unchanged
 
     # create optimizer
     opt_kwargs = {k: v for k,v in config["optimizer"].items()
@@ -570,6 +715,8 @@ def train_until(**config):
     # abort after this many consecutive non-finite losses (0 disables)
     nan_patience = config.get("nan_patience", 10)
     consecutive_nonfinite = 0
+    # Opt-in diagnostics (configs/train/trace_*.toml); no effect unless set.
+    diag = _TrainDiagnostics(config)
 
     val_log_step = config["val_log_step"]
 
@@ -589,7 +736,9 @@ def train_until(**config):
             for i in tqdm(range(trained_until, config["max_iterations"]),
                           disable=None):
                 start = time.time()
+                diag.before(i + 1)
                 batch = pipeline.request_batch(request)
+                diag.after(i + 1)
                 time_of_iteration = time.time() - start
 
                 logger.info(

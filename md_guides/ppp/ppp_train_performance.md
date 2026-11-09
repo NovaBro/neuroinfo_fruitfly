@@ -8,6 +8,7 @@ Current as of 2026-11-06. This merges four write-ups that are now archived in [`
 | 2026-10-26 | Decoder affinity vectorization (`our-decoder-c1k_v1`) | [`PPP_TRAIN_SPEEDUP_GUIDE.md`](historical/PPP_TRAIN_SPEEDUP_GUIDE.md) |
 | 2026-10-29 | Decoder trilinear-upsample profile | (was only in session notes) |
 | 2026-11-05 | noenc step: `fast_affinities`, `channels_last`, L40S → H200 | [`ppp_noenc_train_speedup.md`](historical/ppp_noenc_train_speedup.md) |
+| 2026-11-06 | L40S speed-up investigation: fp16 × fast_aff grid, trace, compile, layer bench (§6) | (written here) |
 
 The earlier batch-handoff / `ThreadedPrefetch` fix is in
 [`historical/ppp_gpu_util_prefetch.md`](historical/ppp_gpu_util_prefetch.md).
@@ -21,11 +22,12 @@ The earlier batch-handoff / `ThreadedPrefetch` fix is in
 | Partition / CPUs | `l40s_public`, 32 | `h200_public`, **16** (hard cap per GPU) | `h200_public`, 16 |
 | `batch_size` | 18 | 18 | 30 |
 | `num_workers` | 28 | **14** | 12 |
-| `raw_transport_fp16` | optional (see §5 hypothesis) | **true** | true |
+| `raw_transport_fp16` | optional, −3% (within noise; §6) | **true** | true |
 | `fast_affinities` | true (preset default) | true (preset default) | n/a (decoder uses the vectorized code path) |
-| `channels_last` | optional, −5% | off (no gain) | off (slower) |
-| Measured | 2.18 s/iter (before `fast_affinities`) | **0.63–0.66 s/iter**, util ~89% | 5.34 s/iter, util ~94% |
-| 200k iterations | ~121 h | **~37 h** | ~12 days |
+| `compile` (`compile.toml`) | **true**, −11% (§6) | not measured | n/a (noenc only) |
+| `channels_last` | optional with compile, −16% total, but peaks at 45.1 of 46.1 GB | off (no gain) | off (slower) |
+| Measured | **1.45 s/iter** with compile (1.63 without; 2.24 without fast_aff) | **0.63–0.66 s/iter**, util ~89% | 5.34 s/iter, util ~94% |
+| 200k iterations | ~80 h | **~37 h** | ~12 days |
 
 How to get those settings:
 
@@ -37,6 +39,14 @@ How to get those settings:
   ./sbatch/ppp/ppp_submit_train.sh our-noenc-c1k_v1 --base original_default.toml \
     --config exp_v1_h200.toml --id <exp_id> \
     --partition h200_public --cpus 16 --account torch_pr_61_tandon_advanced --time 48:00:00
+  ```
+
+- **noenc on L40S:** stack `compile.toml` (the presets don't set it yet). The first iteration compiles for
+  ~2 min. Add `channels_last.toml` only for runs that never need more memory (it leaves ~1 GB free).
+
+  ```bash
+  ./sbatch/ppp/ppp_submit_train.sh our-noenc-c1k_v1 --base original_default.toml \
+    --config compile.toml --id <exp_id> --account torch_pr_61_tandon_advanced --time 48:00:00
   ```
 
 - **decoder on H200:** the `our-decoder-c1k_v1*` presets already default to `h200_public`, 16 CPUs, bs30,
@@ -289,15 +299,124 @@ The headline 3.3× (2.18 vs 0.658) is **not** all hardware. Like-for-like synthe
 (fast_aff). The H200 run also had fast_aff, fp16 raw and `1k_v1`-only data, and the L40S real step sits
 ~0.5 s above its synthetic step (1.69 → 2.18) while the H200 gap is 0.09 s.
 
-**Hypothesis (not measured):** the extra 0.5 s on L40S is main-process overhead from fp32 transport. Stacking
+**Hypothesis:** the extra 0.5 s on L40S is main-process overhead from fp32 transport. Stacking
 18 × 31 MiB runs in the prefetch thread, which can hold the GIL and compete for memory bandwidth with the thread
-launching kernels. Predicted L40S with fast_aff + fp16: 1.46–1.54 s/iter if true, ~1.95–2.0 if not. The test
-(jobs 22025056/57: `raw_fp16.toml` + `profile_noenc_completely_l40s.toml`, ± `channels_last.toml`) was cancelled
-before the 2026-11-06 meeting and still needs a rerun.
+launching kernels. Predicted L40S with fast_aff + fp16: 1.46–1.54 s/iter if true, ~1.95–2.0 if not.
+Tested on 2026-11-06 (§6, step 1): partly right, and `fast_affinities` (not fp16) is what removes the gap.
+
+
+## 6. L40S speed-up investigation (2026-11-06)
+
+### Problem
+
+noenc training on L40S (`our-noenc-c1k_v1`, bs18, 28 workers) ran at **2.18–2.34 s/iter**, about 124 h per
+200k iterations, versus 0.66 s/iter on H200. Synthetic profiling (§5) put the GPU-only step at ~1.69 s, so
+~0.5 s/iter was unexplained. The open question from §5 was whether `raw_transport_fp16` and `fast_affinities`
+close that gap, and what else limits the L40S.
+
+### Diagnosis, step by step
+
+All real-data runs: `our-noenc-c1k_v1` on `original_default.toml` + `profile_noenc_l40s.toml` (300 it on
+`1k_v1`, no val/ckpt/snapshot), `l40s_public`, 32 CPUs, `torch_pr_61_tandon_advanced`. Steady-state s/iter =
+median of iterations 21–300 (`summarize_train_profile.py`). One job per arm, so different nodes: the same config
+has measured 2.18–2.34 s/iter across nodes, so treat differences under ~3% as noise.
+
+**Step 1: fast_aff × fp16 raw grid (real data).** Is the 0.5 s gap fp32 transport, the affinity syncs, or both?
+
+| Arm | Job | s/iter | vs base | `Stack` | prefetch wait | peak mem |
+|---|---|---|---|---|---|---|
+| base (fp32, old affinities; `no_fast_aff.toml`) | 22104455 | 2.240 | — | 0.40 s | 0.00 | 37.4 GB |
+| fp16 raw (`raw_fp16.toml`) | 22104466 | 2.053 | −8.4% | 0.23 s | 0.00 | 35.3 GB |
+| fast_aff | 22104461 | 1.673 | −25.3% | 0.24 s | 0.00 | 42.4 GB |
+| fast_aff + fp16 | 22104468 | 1.624 | −27.5% | 0.21 s | 0.00 | 42.2 GB |
+
+What it told us: `fast_affinities` is the big win on real data (−0.57 s/step, 3.3× its synthetic −0.17 s). The
+old path's ~12 host syncs per edge stall the kernel-launch thread, which on real data competes with the prefetch
+thread for the GIL. fp16 raw helps only while those syncs exist: −0.19 s alone, −0.05 s (noise) on top of
+fast_aff. The batch was always ready (prefetch wait 0.00). With fast_aff the real step is ~0.10 s above
+synthetic, the same gap as on H200.
+
+**Step 2: real-data trace, sync audit, clocks** (22110017, `trace_train.toml`: torch.profiler over iterations
+201–210, sync audit over 231–235; `analyze_torch_trace.py`). Where does the remaining 1.65 s go?
+
+- **GPU busy 98.8%** of the step; idle ~20 ms/iter. Feeding the GPU is no longer a problem.
+- **6 host syncs/iter**, all in gunpowder `TorchTrainExt`: 3 blocking H2D input copies (`torch_train.py:247`),
+  `if loss != 0.0`, the GradScaler inf check, `loss.cpu()`. The CPU waits there while the GPU is still busy,
+  so they cost nothing.
+- **H2D copy**: 335 MiB/iter at 8.9 GB/s (pageable, not pinned) = 39 ms/iter (2.4%) with no overlap.
+- **Power cap**: `clocks_event_reasons` = SW Power Cap in 198/202 training samples; mean SM clock 2136 of
+  2520 MHz (85%), 317 of 350 W. Per-card power behaviour is the likely source of the node-to-node spread.
+- **Kernel time**: conv 878 ms (56%), elementwise 368 ms (23.5%), cuDNN NCHW↔NHWC layout conversion 267 ms
+  (17%), reduce 34 ms. About 40% of the step is memory-bound non-conv work, the L40S's weak side.
+
+**Step 3: synthetic variants** (22110019, 22114572; `profile_ppp_step.py`, fast_aff + fp16 raw, bs18).
+Can compilation or layout remove the memory-bound 40%?
+
+| Variant | s/step | vs eager | peak mem | note |
+|---|---|---|---|---|
+| eager | 1.533 | — | 33.4 GiB | |
+| `+fused_adam` | 1.537 | 0% | | optimizer step is already 4 ms |
+| compile UNet + heads | 1.444 | −6% | | backward 0.98 → 0.95 s |
+| compile UNet + heads + loss | 1.333 | −13% | 32.8 GiB | loss 76 → 9 ms; elementwise 368 → ~166 ms (fused Triton) |
+| compile UNet + heads + channels_last | 1.380 | −10% | | uncompiled loss pays the cl penalty |
+| compile all + channels_last | 1.252 | −18% | 35.5 GiB | also removes the 267 ms of layout kernels |
+
+`test_compile_equiv.py` (22114572): fp32 loss/grad rel 7e-8, outputs identical; AMP fp16 grad rel 5.7e-3
+(reduction-order noise in the fused loss backward; loss rel 3.5e-7); no recompiles. **COMPILE OK.**
+
+**Step 4: layer bench** (22115735; each block alone, fwd + bwd, eager). Is the conv work itself efficient?
+Model conv FLOPs / step time = **85 TFLOPS = 23.5% of the 362 TFLOPS fp16 peak**.
+
+| Block | Input | ms | Share | TFLOPS | % peak |
+|---|---|---|---|---|---|
+| `r_conv.0.0` (top decoder level) | 332 ch @ 56³ | 615 | **46%** | 142 | 39% |
+| `l_conv.0` (first layer, 3 input ch) | 3 ch @ 140³ | 223 | **17%** | 10 | **2.8%** |
+| `r_conv.0.1` | 435 ch @ 32³ | 137 | 10% | 160 | 44% |
+| `r_up.0.0` (upsample + crop + concat) | 375 ch @ 28³ | 98 | 7% | 23 | 6% |
+| `l_conv.1` | 20 ch @ 68³ | 78 | 6% | 48 | 13% |
+| `r_conv.0.2` | 630 ch @ 20³ | 45 | 3% | 160 | 44% |
+| `out_code_affs` (343-ch head) | 312 ch @ 52³ | 39 | 3% | 41 | 11% |
+| everything else | | 100 | 7% | | |
+
+What it told us: `fmap_dec_factors = 1.2` (vs `fmap_inc_factors = 3`) keeps the decoder wide. The top decoder
+level convolves 332 → 312 channels at 56³ and holds **66% of the model's FLOPs** at ~40% of peak already, so
+the only big lever left there is a narrower decoder (a model change). The 3-channel first layer is 17% of the
+step at 2.8% efficiency: tensor cores pad 3 channels to 8 and its activations are bandwidth-bound.
+
+**Step 5: `training.compile` on real data** (new opt-in flag; 22118725/26/28, same batch of jobs):
+
+| Run | Job | s/iter | vs eager | peak GPU mem (nvidia-smi) | first iteration |
+|---|---|---|---|---|---|
+| eager (fast_aff + fp16) | 22118725 | 1.626 | — | 34.8 of 46.1 GB | |
+| `compile.toml` | 22118726 | **1.449** | **−10.9%** | 35.2 GB | 128 s (compile) |
+| `compile.toml` + `channels_last.toml` | 22118728 | **1.359** | **−16.4%** | **45.1 GB** | 117 s |
+
+All three runs were power-capped at a similar clock (2134–2173 MHz), so the gain is not a faster card. Logs show
+no recompiles or fallbacks. `train_net_checkpoint_0` from the compiled runs has the same 41 keys and shapes as
+the eager run (no `_orig_mod.` prefix), so compiled checkpoints resume and predict without the flag. The H200
+compile run (22118729) was cancelled before it started.
+
+### Fixes applied and result
+
+| Change | Where | Status | Real L40S effect |
+|---|---|---|---|
+| `fast_affinities` (exact GT affinities, no per-edge syncs) | `torch_model.py`; on in the noenc presets | default (since 2026-11-05) | 2.240 → 1.673 s/iter (−25%) |
+| `raw_transport_fp16` | `raw_fp16.toml` / `exp_v1_h200.toml` | optional on L40S | −3% on top of fast_aff (noise) |
+| **`training.compile`** (UNet + heads + loss, in place via `nn.Module.compile()`) | `train.py` `_maybe_compile_model`; overlay `configs/train/compile.toml` | **new, opt-in** (noenc only) | 1.626 → **1.449** s/iter (−10.9%) |
+| compile + `channels_last` | `compile.toml` + `channels_last.toml` | opt-in, **memory-tight** | 1.626 → 1.359 s/iter (−16.4%), 45.1 of 46.1 GB |
+
+Net: **2.24 → 1.45 s/iter (−35%, 1.55× throughput)** with fast_aff + fp16 + compile. 200k iterations go from
+~124 h to ~80 h (~76 h with channels_last as well).
+
+Ruled out (measured, no useful gain): fused Adam (0%), removing the remaining syncs (GPU already busy), more
+data workers or other data-path work (prefetch wait 0.00 in every arm).
+
+Left on the table: pinned + overlapped H2D (≤2.4%); a narrower decoder (largest lever, needs a quality
+comparison); compile on H200 (not measured).
 
 ---
 
-## 6. Tooling
+## 7. Tooling
 
 | Tool | Use |
 |---|---|
@@ -306,6 +425,13 @@ before the 2026-11-06 meeting and still needs a rerun.
 | `sbatch/ppp/tools/profile_ppp_step_sbatch.sh` | Same for the decoder setup. |
 | `sbatch/ppp/tools/bench_ppp_dataloader.py` (+ `_sbatch.sh`) | Dataloader throughput without GPU work; `--raw-fp16`. See §3 caveats. |
 | `test_fast_affinities.py`, `test_channels_last.py`, `test_affgraph_vectorized.py`, `test_decoder_upsample_equiv.py` | Equivalence tests for each change above. |
+| `sbatch/ppp/tools/summarize_train_profile.py JOBID...` | Steady-state s/iter (median/mean/p90, `--skip` warm-up), train-step time, GPU util and peak memory from a training job's log and `gpu_log/ppp/` CSV. |
+| `no_fast_aff.toml` | A/B overlay that turns `fast_affinities` off. |
+| `trace_train.toml` (+ `train.py` `_TrainDiagnostics`) | Real-data diagnostics: `training.torch_trace_iters = [A, B]` writes a torch.profiler chrome trace + op table, `training.sync_debug_iters = [C, D]` attributes every host sync to its Python stack. Output: `<exp>/train/torch_trace/`. Off unless set. |
+| `sbatch/ppp/tools/analyze_torch_trace.py TRACE [--whole]` | Per-iteration GPU busy/idle, largest idle gaps with the main-thread op running, H2D/DtoH time and bandwidth, sync calls, kernel time by category (conv / layout / elementwise / …), top kernels. `--whole` for `profile_ppp_step.py` traces. |
+| `profile_ppp_step.py` variants `compile`, `compile_all`, `fused_adam`; `--layer-bench VARIANT` | `torch.compile` of UNet + heads (`compile_all`: + loss); per-block fwd/bwd ms, conv GFLOP, TFLOPS and % of peak. |
+| `test_compile_equiv.py` (`RUN_COMPILE_TEST=1` in the noenc profile sbatch) | Eager vs compiled fwd + loss + backward from identical weights; fp32 hard check, AMP reported, recompile check. |
+| GPU logger in `ppp_job.sh` | Now also logs `clocks.sm`, `clocks.max.sm`, `power.draw`, `power.limit` and `clocks_event_reasons.active` (`0x4` = SW power cap). |
 | Overlays `profile_noenc_l40s.toml`, `profile_noenc_completely_l40s.toml`, `profile_noenc_h200.toml` | 300 real iterations with no val/ckpt/snapshot noise (`_completely` trains on `completely`; `_h200` adds 14 workers + fp16). |
 | `smoke.toml` + `smoke_noval.toml` | Short smoke train without validation distorting timing. |
 | `ppp_job.sh` | When submitted from a worktree or copy (`SLURM_SUBMIT_DIR` contains `sbatch/ppp/ppp_job.sh`), runs that tree's code instead of the main checkout's. |
@@ -329,9 +455,16 @@ H200 real-data smoke run (300 iterations):
 
 ---
 
-## 7. Open follow-ups
+## 8. Open follow-ups
 
-1. **Rerun the L40S fp16 test** (§5 hypothesis). If it holds, add fp16 raw to the L40S noenc presets.
+1. **L40S speed (§6), remaining:**
+   - Decide whether `compile = true` becomes the default in the noenc presets. It is opt-in for now; existing
+     experiments resumed with `-id` keep their saved config either way.
+   - Measure `compile.toml` on H200 (22118729 was cancelled) and in a long run that reaches validation
+     (156³ input, a second compiled graph) and checkpoint writes.
+   - Pin + overlap the H2D copy (pinned buffers, `non_blocking`, side stream in `ThreadedPrefetch`): ≤2.4%.
+   - Narrower decoder (`fmap_dec_factors`): top decoder level = 46% of the step, 66% of FLOPs. Quality experiment.
+   - Optionally add `raw_transport_fp16` to the L40S noenc presets so their inputs match H200 runs (speed-neutral).
 2. **Decoder `upsample_conv_first`:** commit it with its tests, measure the step with `profile_ppp_step.py`,
    then enable it in the decoder presets.
 3. **Decoder leftovers:** the per-element `torch.nonzero` loop in `torch_model.forward` (~30 syncs/step);
@@ -364,6 +497,18 @@ H200 real-data smoke run (300 iterations):
 | 21867382 | L40S | noenc synthetic + channels_last test | fast_aff+cl 1.449 s |
 | 21867383 | H200 | noenc synthetic bs18/36/63 + channels_last test | 0.565 s at bs18; ~31 ms/sample at every bs |
 | 21902285 | H200 | noenc real-data 300-it smoke (`profile_noenc_h200.toml`) | **0.658 s/iter**, ~89% util |
+| 22104455 | L40S | real 300-it grid: base (no fast_aff, fp32) | 2.240 s/iter |
+| 22104466 | L40S | real 300-it grid: fp16 raw | 2.053 s/iter |
+| 22104461 | L40S | real 300-it grid: fast_aff | 1.673 s/iter |
+| 22104468 | L40S | real 300-it grid: fast_aff + fp16 | **1.624 s/iter**, ~82% util |
+| 22110017 | L40S | real trace + sync audit + clocks (`trace_train.toml`) | GPU busy 98.8%; 6 syncs/iter; power-capped at 85% clock |
+| 22110019 | L40S | synthetic: fused_adam, compile, compile_all, compile+cl | compile_all −13% |
+| 22114572 | L40S | `test_compile_equiv` + compile_all ± cl | COMPILE OK; compile_all+cl **1.252 s** (−18%) |
+| 22115735 | L40S | layer bench (fast_aff) | 23.5% of fp16 peak; top decoder conv 46% of step |
+| 22118725 | L40S | real 300 it, eager (fast_aff + fp16) | 1.626 s/iter |
+| 22118726 | L40S | real 300 it, `compile.toml` | **1.449 s/iter** (−10.9%) |
+| 22118728 | L40S | real 300 it, `compile.toml` + `channels_last.toml` | 1.359 s/iter (−16.4%), 45.1 GB peak |
+| 22118729 | H200 | real 300 it, `compile.toml` | cancelled before start |
 | 21975068 | H200 | experiment_v1 EXP 2 v1 n500 train | 0.63 s/iter |
 
 Logs: `sbatch/ppp/logs/<job_name>-<jobid>.out`. GPU logs: `gpu_log/ppp/`.

@@ -23,13 +23,14 @@ Experiment plans and results live in [`md_guides/experiments/`](../experiments/)
 | [`ppp_overview.md`](ppp_overview.md) | Runbook: pipeline, launchers, presets, config stacking, eval protocol, train ops | 2026-11-06 |
 | [`ppp_prep.md`](ppp_prep.md) | Reference: every `sbatch/ppp/prep` script with its variables | 2026-10-25 |
 | [`ppp_new_dataset_inference.md`](ppp_new_dataset_inference.md) | Runbook: inference-only datasets | 2026-11-06 |
-| [`ppp_train_performance.md`](ppp_train_performance.md) | Findings: training speed on L40S/H200, noenc and decoder; recommended settings; profiling tools | 2026-11-06 |
+| [`ppp_train_performance.md`](ppp_train_performance.md) | Findings: training speed on L40S/H200, noenc and decoder; recommended settings; the 2026-11-06 L40S speed-up investigation (§6); profiling tools | 2026-11-06 |
 | [`ppp_labgraph_speedup.md`](ppp_labgraph_speedup.md) | Findings: labgraph GPU-util fix (device-memory consensus, kernel cache, vectorized pairs) | 2026-11-06 |
 
 ## Open work
 
-- Rerun the L40S fp16-raw speed test and decide whether L40S presets get `raw_transport_fp16`
-  ([`ppp_train_performance.md`](ppp_train_performance.md) §5, §7).
+- L40S speed-up follow-ups ([`ppp_train_performance.md`](ppp_train_performance.md) §6, §8): decide whether
+  `compile = true` becomes the noenc preset default, measure compile on H200 and in a long run, pin the H2D
+  copy (≤2.4%), and try a narrower decoder (quality experiment).
 - Commit and benchmark the decoder `upsample_conv_first` change (same doc, §4).
 - Make it easy to try different dataset combinations per experiment (data overlays under `configs/data/`,
   experiment overlays under `configs/exp/`). This was the goal of the removed `ppp_pipeline_update.md` stub.

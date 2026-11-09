@@ -357,9 +357,17 @@ elif [[ -n "${SLURM_JOB_ID:-}" ]]; then
 fi
 mkdir -p gpu_log/ppp
 if [[ "${CPU_JOB}" -eq 0 ]] && command -v nvidia-smi >/dev/null 2>&1; then
-  nvidia-smi \
-    --query-gpu=timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total \
-    --format=csv -l 3 \
+  # Base columns keep their positions; clock/power/throttle columns are appended when the
+  # driver knows the field names (clocks_event_reasons replaced clocks_throttle_reasons).
+  GPU_QUERY="timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total"
+  for extra in clocks_event_reasons.active clocks_throttle_reasons.active; do
+    if nvidia-smi --query-gpu="${GPU_QUERY},clocks.sm,clocks.max.sm,power.draw,power.limit,${extra}" \
+        --format=csv,noheader >/dev/null 2>&1; then
+      GPU_QUERY+=",clocks.sm,clocks.max.sm,power.draw,power.limit,${extra}"
+      break
+    fi
+  done
+  nvidia-smi --query-gpu="${GPU_QUERY}" --format=csv -l 3 \
     > "gpu_log/ppp/gpu_usage_log_${LOG_TAG}.csv" &
   GPU_LOGGER_PID=$!
 fi

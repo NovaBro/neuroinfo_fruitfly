@@ -1,0 +1,9 @@
+# Diagnostics overlay (stack after a profile_noenc_*.toml): torch.profiler trace of 10 steady-state
+# train iterations, then a separate sync-audit window (sync tracking perturbs timing, so the two don't
+# overlap). Output: <exp>/train/torch_trace/ (trace_iters_*.json, ops_iters_*.txt, sync_sites_iters_*.txt).
+# Analyze: python3 sbatch/ppp/tools/analyze_torch_trace.py <exp>/train/torch_trace/trace_iters_201-210.json
+# ./sbatch/ppp/ppp_submit_train.sh our-noenc-c1k_v1 --base original_default.toml --id prof-l40s-trace \
+#   --config profile_noenc_l40s.toml --config raw_fp16.toml --config trace_train.toml --time 01:30:00
+[training]
+torch_trace_iters = [201, 210]
+sync_debug_iters = [231, 235]
