@@ -1,0 +1,5 @@
+# OP-EXP 2 / 3 test: first 5 sorted 1k_v1.1 test volumes (user decision 2026-11-07, l40s_public queue full).
+# Stack after opexp_test_1k_v1.1.toml. OP-EXP 1 / 2.1 arms are rescored on the same 5 volumes from their
+# per-volume results (opexp.py read_scores n=5).
+[data]
+max_test_samples = 5

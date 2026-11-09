@@ -1,0 +1,3 @@
+# OP-EXP 2: noenc UNet base feature maps.
+[model]
+num_fmaps = 10

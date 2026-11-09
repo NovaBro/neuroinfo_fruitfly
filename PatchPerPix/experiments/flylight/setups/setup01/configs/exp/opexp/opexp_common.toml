@@ -1,0 +1,13 @@
+# OP-EXP (TODO.md "Optimization Experiments"): noenc on 1k_v1.1, n=500 train volumes, L40S.
+# Stack on preset our-noenc-c1k_v1.1 + base original_default.toml. Status: md_guides/experiments/opexp_status.md.
+# L40S speed settings from md_guides/ppp/ppp_train_performance.md §6: compile + fp16 raw (fast_affinities from preset).
+[data]
+max_train_samples = 500
+
+[training]
+max_iterations = 10000
+checkpoints = 2000
+# snapshots are ~6 GB each; none needed for these sweeps
+snapshots = 1000000
+raw_transport_fp16 = true
+compile = true

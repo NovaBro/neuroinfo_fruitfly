@@ -1,0 +1,10 @@
+# OP-EXP 1.5 / 2.4 / 3 test: first 10 sorted volumes of the 1k_v1.1 test split (user decision 2026-11-06).
+[data]
+test_datasets = ["1k_v1.1"]
+max_test_samples = 10
+
+# 10 volumes in parallel exceeded 112 GB and OOM-killed joblib workers -> evaluate hung
+# (opexp1-lr1e-4, job 22151813, 2026-11-07). 5 at a time; the driver also submits evaluate
+# with EVAL_MEM=240g on cs.
+[evaluation]
+num_workers = 5

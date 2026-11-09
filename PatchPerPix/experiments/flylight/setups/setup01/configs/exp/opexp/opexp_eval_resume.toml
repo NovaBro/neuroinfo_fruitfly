@@ -1,0 +1,3 @@
+# Re-run evaluate keeping per-volume results that already exist (only missing volumes are computed).
+[evaluation]
+from_scratch = false

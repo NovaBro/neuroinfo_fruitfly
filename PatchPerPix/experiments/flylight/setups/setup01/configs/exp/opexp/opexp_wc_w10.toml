@@ -1,0 +1,6 @@
+# OP-EXP 3: linear warmup over 0.10 of max_iterations to the optimizer lr, then cosine decay to 0
+# (train.py make_warmup_cosine). Stack after the lr overlay.
+[optimizer.lr_scheduler]
+lr_scheduler = "WarmupCosine"
+warmup_frac = 0.10
+min_lr_ratio = 0.0

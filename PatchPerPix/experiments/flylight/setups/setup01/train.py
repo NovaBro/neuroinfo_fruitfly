@@ -173,6 +173,49 @@ class _TrainDiagnostics:
             self._stop_sync()
 
 
+class _NullSummaryWriter:
+    """Falsy stand-in for TorchTrainExt.summary_writer when tensorboard is missing.
+
+    gunpowder guards its train-summary writes with ``if self.summary_writer``
+    but calls ``summary_writer.add_scalar("lr", ...)`` unguarded whenever an
+    lr_scheduler is set, which crashes with summary_writer = None (the ppp env
+    has no tensorboard). Falsy keeps the guarded paths skipped as before.
+    """
+
+    def __bool__(self):
+        return False
+
+    def add_scalar(self, *args, **kwargs):
+        pass
+
+
+def _with_null_writer(node):
+    if getattr(node, "summary_writer", None) is None:
+        node.summary_writer = _NullSummaryWriter()
+    return node
+
+
+class make_warmup_cosine:
+    """LambdaLR factor: linear warmup to 1, then cosine to min_ratio.
+
+    step is LambdaLR's step count (0 before the first optimizer step). The
+    factor at step s is applied to optimizer step s+1, so warmup reaches 1.0
+    at iteration warmup and never applies lr = 0.
+    """
+
+    def __init__(self, warmup, total, min_ratio=0.0):
+        self.warmup = max(0, int(warmup))
+        self.total = max(self.warmup + 1, int(total))
+        self.min_ratio = float(min_ratio)
+
+    def __call__(self, step):
+        if step < self.warmup:
+            return (step + 1) / self.warmup
+        prog = min(1.0, (step - self.warmup) / (self.total - self.warmup))
+        cos = 0.5 * (1.0 + np.cos(np.pi * prog))
+        return self.min_ratio + (1.0 - self.min_ratio) * cos
+
+
 def train_until(**config):
     """Main train function
 
@@ -642,7 +685,28 @@ def train_until(**config):
         'wd': config["optimizer"].get("weight_decay"),
     }
 
-    if config.get('lr_scheduler'):
+    if config.get('lr_scheduler') and \
+       config["lr_scheduler"]["lr_scheduler"] == "WarmupCosine":
+        # [optimizer.lr_scheduler] lr_scheduler = "WarmupCosine": linear warmup
+        # from ~0 to the optimizer lr (the peak) over warmup_iters, then cosine
+        # decay to min_lr_ratio * peak at total_iters (default max_iterations).
+        # Stepped once per iteration by TorchTrainExt; state is checkpointed.
+        sc = config["lr_scheduler"]
+        total = int(sc.get("total_iters", config["max_iterations"]))
+        if "warmup_iters" in sc:
+            warmup = int(sc["warmup_iters"])
+        else:
+            warmup = int(round(float(sc.get("warmup_frac", 0.05)) * total))
+        min_ratio = float(sc.get("min_lr_ratio", 0.0))
+        lr_scheduler = torch.optim.lr_scheduler.LambdaLR(
+            opt, lr_lambda=make_warmup_cosine(warmup, total, min_ratio))
+        lr_schedule_per_epoch = False
+        hparam_dict["lr_sched"] = "WarmupCosine"
+        hparam_dict["max_lr"] = opt.param_groups[0]["initial_lr"]
+        logger.info("lr scheduler WarmupCosine: peak %s, warmup %d, total %d, "
+                    "min_lr_ratio %s", hparam_dict["max_lr"], warmup, total,
+                    min_ratio)
+    elif config.get('lr_scheduler'):
         sched_kwargs = {k: v for k,v in config["lr_scheduler"].items()
                         if k != "lr_scheduler" and k != "lr_schedule_per_epoch"}
         lr_scheduler = getattr(
@@ -651,7 +715,7 @@ def train_until(**config):
         lr_schedule_per_epoch = config["lr_scheduler"].get(
             "lr_schedule_per_epoch", False)
         hparam_dict["lr_sched"] = config['lr_scheduler']["lr_scheduler"]
-        hparam_dict["max_lr"] = config['lr_scheduler']["max_lr"]
+        hparam_dict["max_lr"] = config['lr_scheduler'].get("max_lr")
     else:
         lr_scheduler = None
         lr_schedule_per_epoch = None
@@ -668,7 +732,7 @@ def train_until(**config):
     # and add training gunpowder node
     pipeline = (
         pipeline +
-        gp.TorchTrainExt(
+        _with_null_writer(gp.TorchTrainExt(
             model=model,
             loss=loss,
             optimizer=opt,
@@ -694,7 +758,7 @@ def train_until(**config):
             val_padding=config.get("val_padding"),
             hparam_dict=hparam_dict,
             init_ssl=config.get("init_ssl", False),
-            max_iterations=config["max_iterations"]) +
+            max_iterations=config["max_iterations"])) +
 
         gp.ApplyFun(key_to_fun,
                      every=config["snapshots"]) +
