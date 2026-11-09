@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Remove large prediction arrays from PPP processed zarrs, keeping pred_numinst.
+"""Remove prediction arrays from PPP processed zarrs after evaluate.
 
-By default strips volumes/pred_affs and volumes/pred_code on every sample.
+By default strips volumes/pred_affs, volumes/pred_code and volumes/pred_numinst
+on every sample (pred_numinst only matters to label and the web viewer's numinst
+overlay; use --arrays volumes/pred_affs,volumes/pred_code to keep it).
 Pass --keep-name to retain those arrays on listed samples (comma-separated).
 An empty keep list retains nothing. Unmatched names do not fall back to the
 first *.zarr.
@@ -30,7 +32,7 @@ import sys
 from pathlib import Path
 
 DEFAULT_KEEP = ""
-DEFAULT_ARRAYS = ("volumes/pred_affs", "volumes/pred_code")
+DEFAULT_ARRAYS = ("volumes/pred_affs", "volumes/pred_code", "volumes/pred_numinst")
 SPLITS = ("test", "val")
 
 

@@ -82,6 +82,8 @@ Flags:
   --force-predict          ckpt-sweep: always re-predict
   --keep-pred-affs         After evaluate, keep volumes/pred_affs (default: strip)
   --keep-pred-code         After evaluate, keep volumes/pred_code (default: strip)
+  --keep-pred-numinst      After evaluate, keep volumes/pred_numinst (default: strip;
+                           keep it to browse the numinst overlay in the web viewer)
   --dry-run                Print sbatch lines; do not submit
 
 Training: ./sbatch/ppp/ppp_submit_train.sh
@@ -93,6 +95,7 @@ DRY_RUN=0
 FORCE_PREDICT=0
 KEEP_PRED_AFFS=0
 KEEP_PRED_CODE=0
+KEEP_PRED_NUMINST=0
 DO_AGG=0
 VI_GPU=0
 SAMPLE_EXPLICIT=0
@@ -132,6 +135,7 @@ while [[ $# -gt 0 ]]; do
     --force-predict) FORCE_PREDICT=1; shift ;;
     --keep-pred-affs) KEEP_PRED_AFFS=1; shift ;;
     --keep-pred-code) KEEP_PRED_CODE=1; shift ;;
+    --keep-pred-numinst) KEEP_PRED_NUMINST=1; shift ;;
     --agg) DO_AGG=1; shift ;;
     --vi-gpu) VI_GPU=1; shift ;;
     --id)

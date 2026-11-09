@@ -42,6 +42,9 @@
 #                   every sample via strip_pred_affs.py)
 #   KEEP_PRED_CODE  1 → after evaluate, do not strip volumes/pred_code (default: strip
 #                   every sample via strip_pred_affs.py)
+#   KEEP_PRED_NUMINST 1 → after evaluate, do not strip volumes/pred_numinst (default: strip
+#                   every sample via strip_pred_affs.py; the web viewer's numinst overlay
+#                   needs it, so keep it for runs you want to browse there)
 #   KEEP_AFFS_SAMPLE comma-separated zarr names to retain (default empty: strip all)
 #   EVAL_BOTH_SPLITS 1 → evaluate val then test; write summary_val/test.csv and merge summary.csv
 #   NEED_GPU        0 → CPU job: skip --nv, GPU logger, CUDA_VISIBLE_DEVICES (default 1).
@@ -92,6 +95,7 @@ RUN_PRED_METRICS="${RUN_PRED_METRICS:-0}"
 LABEL_RESUME="${LABEL_RESUME:-0}"
 KEEP_PRED_AFFS="${KEEP_PRED_AFFS:-0}"
 KEEP_PRED_CODE="${KEEP_PRED_CODE:-0}"
+KEEP_PRED_NUMINST="${KEEP_PRED_NUMINST:-0}"
 EVAL_BOTH_SPLITS="${EVAL_BOTH_SPLITS:-0}"
 NEED_GPU="${NEED_GPU:-1}"
 NEEDS_DECODE="${NEEDS_DECODE:-0}"
@@ -767,12 +771,13 @@ if has_task predict && [[ "${RUN_PRED_METRICS}" == "1" ]]; then
   run_pred_metrics_if_requested
 fi
 
-# ---- post: strip pred_affs / pred_code ----
-# After evaluate, drop large prediction arrays to save space (keep pred_numinst).
+# ---- post: strip pred_affs / pred_code / pred_numinst ----
+# After evaluate, drop prediction arrays to save space and inodes. pred_numinst is
+# only read by label (before evaluate) and by the web viewer's numinst overlay.
 # KEEP_AFFS_SAMPLE, if set, retains those arrays on the named samples only.
 # Single-sample jobs only strip that sample. Full-split evaluate strips the
 # whole ckpt dir.
-# Opt out: KEEP_PRED_AFFS=1 and/or KEEP_PRED_CODE=1.
+# Opt out: KEEP_PRED_AFFS=1, KEEP_PRED_CODE=1 and/or KEEP_PRED_NUMINST=1.
 
 STRIP_ARRAYS=()
 if [[ "${KEEP_PRED_AFFS}" != "1" ]]; then
@@ -780,6 +785,9 @@ if [[ "${KEEP_PRED_AFFS}" != "1" ]]; then
 fi
 if [[ "${KEEP_PRED_CODE}" != "1" ]]; then
   STRIP_ARRAYS+=("volumes/pred_code")
+fi
+if [[ "${KEEP_PRED_NUMINST}" != "1" ]]; then
+  STRIP_ARRAYS+=("volumes/pred_numinst")
 fi
 
 if has_task evaluate && (( ${#STRIP_ARRAYS[@]} > 0 )); then
