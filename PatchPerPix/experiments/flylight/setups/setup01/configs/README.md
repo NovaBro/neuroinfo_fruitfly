@@ -34,6 +34,7 @@ Check how a stack resolves: `python3 sbatch/ppp/ppp_config_path.py NAME...`
 | file | model | train data |
 |---|---|---|
 | `our-noenc-c1k_v1.toml` | noenc fmaps20 bs18 | synthetic `1k_v1` (current, experiment_v1) |
+| `our-noenc-c1k_v1.1.toml` | noenc fmaps20 bs18 | synthetic `1k_v1.1` (1k_v1 + full-pool tissue maps, same split) |
 | `our-noenc-c1k_v1_u8.toml` | noenc fmaps24 bs18 | synthetic `1k_v1_u8` |
 | `our-decoder-c1k_v1.toml` / `_u8` | PPP+dec fmaps20 bs30 | `1k_v1` / `1k_v1_u8` |
 | `our-noenc-cs.toml` | noenc fmaps24 | `synth_vh` |
@@ -49,7 +50,7 @@ Check how a stack resolves: `python3 sbatch/ppp/ppp_config_path.py NAME...`
 Validation during training (`[training]` `val_log_step`, `val_num_batches`, `val_seed`,
 `val_cache_batches`; see `setup01/validation.py`) writes `<exp>/train/val_metrics.csv`. `val_nocache.toml` (debug): reload
 val crops every val point; identical `validation: loaded … checksum` lines = deterministic val set.
-`smoke.toml` (150 it) + `smoke_noval.toml`; `profile_noenc_{l40s,completely_l40s,h200}.toml` (300-it
+`smoke.toml` (150 it) + `smoke_noval.toml`; `no_fast_aff.toml` (A/B: fast_affinities off); `trace_train.toml` (torch.profiler trace + sync audit in a real run); `compile.toml` (torch.compile UNet + heads + loss, noenc; L40S −11%); `profile_noenc_{l40s,completely_l40s,h200}.toml` (300-it
 profiling); `channels_last.toml`; `raw_fp16.toml` (fp16 raw handoff).
 
 ### `exp/`: experiment-specific overlays

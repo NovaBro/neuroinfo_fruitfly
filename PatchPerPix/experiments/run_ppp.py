@@ -654,7 +654,7 @@ def ensure_legacy_data_paths(config):
 # Dataset folder names under fisbe/ and under processed|instanced|evaluated.
 KNOWN_DATASETS = frozenset({
     "completely", "partly", "synth_vh", "synth_vh_u8", "himanshu",
-    "1k_v1", "1k_v1_u8",
+    "1k_v1", "1k_v1_u8", "1k_v1.1", "1k_v1.1_u8",
 })
 
 

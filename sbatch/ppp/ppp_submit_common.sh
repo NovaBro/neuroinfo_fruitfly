@@ -19,6 +19,7 @@ PRESET_TABLE=(
   # "our-decoder-c1k_v1_u8|our-decoder-c1k_v1_u8.toml|our-decoder-c1k_v1_u8|32|250g|08:00:00|l40s_public"
   "our-decoder-c1k_v1_u8|our-decoder-c1k_v1_u8.toml|our-decoder-c1k_v1_u8|16|500g|08:00:00|h200_public"
   "our-noenc-c1k_v1|our-noenc-c1k_v1.toml|our-noenc-c1k_v1|32|250g|08:00:00|l40s_public"
+  "our-noenc-c1k_v1.1|our-noenc-c1k_v1.1.toml|our-noenc-c1k_v1.1|32|250g|08:00:00|l40s_public"
   # "our-noenc-c1k_v1|our-noenc-c1k_v1.toml|our-noenc-c1k_v1|16|500g|08:00:00|h200_public"
   "our-noenc-c1k_v1_u8|our-noenc-c1k_v1_u8.toml|our-noenc-c1k_v1_u8|32|250g|08:00:00|l40s_public"
   # "our-noenc-c1k_v1_u8|our-noenc-c1k_v1_u8.toml|our-noenc-c1k_v1_u8|16|500g|08:00:00|h200_public"
