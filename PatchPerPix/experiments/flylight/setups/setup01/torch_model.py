@@ -525,6 +525,16 @@ class UnetModelWrapper(torch.nn.Module):
         return tuple(outputs)
 
 
+class _ConvFirstSequential(torch.nn.Sequential):
+    """funlib Upsample(mode="nearest") builds Sequential(Upsample, Conv1x1).
+    A 1x1 conv is pointwise and trilinear weights sum to 1, so
+    conv(up(x)) == up(conv(x)). Same children/state_dict keys; the conv is
+    applied first, so interpolation runs on out_channels (e.g. 64 -> 1)."""
+
+    def forward(self, x):
+        return self[0](self[1](x))
+
+
 class Autoencoder(torch.nn.Module):
     def __init__(self, config):
         super().__init__()
@@ -579,14 +589,19 @@ class Autoencoder(torch.nn.Module):
         self.up = []
         self.up_conv = []
         for idx, nf in enumerate(list(reversed(config['num_fmaps']))[1:] + [1]):
-            self.up.append(
-                Upsample(config['downsample_factors'][-idx],
-                         mode=config['upsampling'],
-                         in_channels=nf_prev,
-                         out_channels=nf,
-                         activation=config['activation'],
-                         padding=config['padding'],
-                ))
+            up_mod = Upsample(config['downsample_factors'][-idx],
+                              mode=config['upsampling'],
+                              in_channels=nf_prev,
+                              out_channels=nf,
+                              activation=config['activation'],
+                              padding=config['padding'],
+                              )
+            if (config.get('upsample_conv_first', False)
+                    and config['upsampling'] == 'nearest'):
+                # exact same math/weights, 1x1 conv runs before the
+                # interpolation (on nf instead of nf_prev channels)
+                up_mod.up = _ConvFirstSequential(*up_mod.up)
+            self.up.append(up_mod)
             self.up_conv.append(
                 ConvPass(nf, nf, ks,
                          activation=None if nf == 1 else config['activation'],
