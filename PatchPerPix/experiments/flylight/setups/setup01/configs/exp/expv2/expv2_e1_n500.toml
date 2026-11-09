@@ -1,0 +1,3 @@
+# EXP 1.2: first 500 sorted 1k_v1.1 train volumes.
+[data]
+max_train_samples = 500

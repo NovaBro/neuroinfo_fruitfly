@@ -1,0 +1,12 @@
+# experiment_v2 EXP 1 (md_guides/experiments/experiment_v2.md), shared settings. Stack on preset
+# our-noenc-c1k_v1.1 + base original_default.toml. Best OP-EXP setup: FMAPs 15 (OP-EXP 2), lr 4e-4 (OP-EXP 1),
+# warmup + cosine (OP-EXP 3). L40S speed settings (ppp_train_performance.md §6): compile + fp16 raw
+# (+ fast_affinities from the preset). Status: md_guides/experiments/experiment_v2_exp1_status.md.
+[model]
+num_fmaps = 15
+
+[training]
+raw_transport_fp16 = true
+compile = true
+# snapshots are ~6 GB each; none needed
+snapshots = 1000000

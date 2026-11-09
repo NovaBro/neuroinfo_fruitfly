@@ -1,0 +1,19 @@
+# EXP 1.3 / 1.4 finetune on completely (18 train vols) from the best pretrain checkpoint N, seeded by
+# sbatch/ppp/expv2/seed_finetune_ckpt.py (fresh Adam + GradScaler). 6k its, peak lr 1e-4, 5% warmup + cosine
+# over N..N+6000 (user, 2026-11-08). The driver adds a generated overlay with max_iterations = N + 6000 and
+# start_iter = N. Checkpoint + val (completely val) every 1k; best checkpoint = lowest val loss.
+[data]
+train_datasets = ["completely"]
+val_datasets = ["completely"]
+
+[training]
+checkpoints = 1000
+val_log_step = 1000
+
+[optimizer.optimizer]
+lr = 0.0001
+
+[optimizer.lr_scheduler]
+lr_scheduler = "WarmupCosine"
+warmup_frac = 0.05
+min_lr_ratio = 0.0

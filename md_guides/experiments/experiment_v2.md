@@ -1,0 +1,43 @@
+## TODO (Top Priority) (Target Deadline Saturday 6PM, Sunday 6PM Latest):
+- [ ] Optimization Experiments:
+  - use just 1k_v1.1 dataset, n=500 train samples, noenc, tandon advanced account, l40s 
+  - Experiment Goal: Increase convergence speed and model performance
+  - [ ] OP-EXP 1: Find peak lr for lr scheduler, 30K Iterations, FMAPs=20, no lr scheduler
+    - Experiment Goals: Finding the highest valid learning rate for lr scheduler later in OP-EXP 3.
+    - [ ] OP-EXP 1.1: lr=0.0001 
+    - [ ] OP-EXP 1.2: lr=0.0004
+    - [ ] OP-EXP 1.3: lr=0.0008
+    - [ ] OP-EXP 1.4: lr=0.001
+    - [ ] OP-EXP 1.5: test each experiment's best validation model on 1k_v1.1 test split
+  - [ ] OP-EXP 2: Modifying noenc model's fmaps, 30K Iterations, choose best lr from OP-EXP 1.5
+    - Experiment Goals: See if we can get away with lower fmaps and save on compute costs
+    - [ ] OP-EXP 2.1: FMAPs=20 
+    - [ ] OP-EXP 2.2: FMAPs=15 
+    - [ ] OP-EXP 2.3: FMAPs=10
+    - [ ] OP-EXP 2.4: test each experiment's best validation model on 1k_v1.1 test split
+  - [ ] OP-EXP 3: Adding Learning Rate Scheduler, 60k iterations, choose best FMAPs from OP-EXP 2.4
+    - Experiment Goals: Find best learning rate scheduler setup
+    - [ ] OP-EXP 3.1: baseline, choose best from OP-EXP 1.5, no scheduler
+    - [ ] OP-EXP 3.2: linear warmup (5% total iterations, OP-EXP 1's largest valid lr) + cosine 
+    - [ ] OP-EXP 3.3: linear warmup (1% total iterations, OP-EXP 1's largest valid lr) + cosine 
+    - [ ] OP-EXP 3.4: linear warmup (10% total iterations, OP-EXP 1's largest valid lr) + cosine 
+    - [ ] OP-EXP 3.5: test each experiment's best validation model on 1k_v1.1 test split
+- [ ] Dataset Experiments
+  - Experiment Goals: We want to see the effect of scaling synthetic training data on the performance of patchperpix training. And finetuning on the real completely dataset
+  - Experiment Setup:
+    - Learning Rate Scheduler, 100k iterations, best setup from OP-EXP 3 (adjust with new total iteration if need be), best setup from OP-EXP 2, tandon general account, l40s
+  - [ ] EXP 1: 1k_v1.1 Dataset
+    - [ ] EXP 1.1: train on n=1000 samples
+    - [ ] EXP 1.2: train on n=500 samples
+    - [ ] EXP 1.3: take best from EXP 1.1 on 1k_v1.1 validation split and finetune on completely
+    - [ ] EXP 1.4: take best from EXP 1.2 on 1k_v1.1 validation split and finetune on completely
+    - [ ] EXP 1.5: take best from EXP 1.3 on completely validation split and test on completely
+    - [ ] EXP 1.6: take best from EXP 1.4 on completely validation split and test on completely
+  - [ ] EXP 2: SWC2IMG Dataset
+    - [ ] EXP 2.1: train on n=1000 samples
+    - [ ] EXP 2.2: train on n=500 samples
+    - [ ] EXP 2.3: take best from EXP 2.1 on SWC2IMG validation split and finetune on completely
+    - [ ] EXP 2.4: take best from EXP 2.2 on SWC2IMG validation split and finetune on completely
+    - [ ] EXP 2.5: take best from EXP 2.3 on completely validation split and test on completely
+    - [ ] EXP 2.6: take best from EXP 2.4 on completely validation split and test on completely
+- NOTE: When running L40s training and testing jobs, use md_guides/ppp/ppp_train_performance.md to get fastest l40s setup

@@ -203,12 +203,16 @@ class make_warmup_cosine:
     at iteration warmup and never applies lr = 0.
     """
 
-    def __init__(self, warmup, total, min_ratio=0.0):
+    def __init__(self, warmup, total, min_ratio=0.0, start=0):
+        # warmup / total are counted from ``start`` (the iteration a fine-tune
+        # resumes at); start = 0 for training from scratch.
         self.warmup = max(0, int(warmup))
         self.total = max(self.warmup + 1, int(total))
         self.min_ratio = float(min_ratio)
+        self.start = int(start)
 
     def __call__(self, step):
+        step = max(0, step - getattr(self, "start", 0))
         if step < self.warmup:
             return (step + 1) / self.warmup
         prog = min(1.0, (step - self.warmup) / (self.total - self.warmup))
@@ -692,20 +696,23 @@ def train_until(**config):
         # decay to min_lr_ratio * peak at total_iters (default max_iterations).
         # Stepped once per iteration by TorchTrainExt; state is checkpointed.
         sc = config["lr_scheduler"]
-        total = int(sc.get("total_iters", config["max_iterations"]))
+        # start_iter: fine-tunes resumed from a seeded checkpoint at iteration N
+        # (sbatch/ppp/expv2/seed_finetune_ckpt.py) schedule over N..max_iterations.
+        start = int(sc.get("start_iter", 0))
+        total = int(sc.get("total_iters", config["max_iterations"] - start))
         if "warmup_iters" in sc:
             warmup = int(sc["warmup_iters"])
         else:
             warmup = int(round(float(sc.get("warmup_frac", 0.05)) * total))
         min_ratio = float(sc.get("min_lr_ratio", 0.0))
         lr_scheduler = torch.optim.lr_scheduler.LambdaLR(
-            opt, lr_lambda=make_warmup_cosine(warmup, total, min_ratio))
+            opt, lr_lambda=make_warmup_cosine(warmup, total, min_ratio, start))
         lr_schedule_per_epoch = False
         hparam_dict["lr_sched"] = "WarmupCosine"
         hparam_dict["max_lr"] = opt.param_groups[0]["initial_lr"]
         logger.info("lr scheduler WarmupCosine: peak %s, warmup %d, total %d, "
-                    "min_lr_ratio %s", hparam_dict["max_lr"], warmup, total,
-                    min_ratio)
+                    "min_lr_ratio %s, start_iter %d", hparam_dict["max_lr"],
+                    warmup, total, min_ratio, start)
     elif config.get('lr_scheduler'):
         sched_kwargs = {k: v for k,v in config["lr_scheduler"].items()
                         if k != "lr_scheduler" and k != "lr_schedule_per_epoch"}
