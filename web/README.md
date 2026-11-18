@@ -21,7 +21,13 @@ For how a voxel becomes a pixel end-to-end — the server downsample/contrast pi
   `evaluate-instance-segmentation/assets/sample_list_per_split.txt` enumerates all
   seven. `himanshu` is raw-only (no `gt_instances`). `1k_v1` and `1k_v1_u8` keep
   `volumes/raw` and `volumes/gt_instances` as symlinks into SquashFS images; the
-  web job mounts those images read-only.
+  web job mounts those images read-only. `simple_v1` (synthetic tubes, section (9) of
+  the sample list) works the same way: `web.sh` mounts the parts in
+  `fisbe/simple_v1/source_sqf.txt` (20 images since rev 3; every array is inside them, there are
+  no `fisbe/sqf/simple_v1` shards any more). The sidebar lists val/test and the first 1,000 train
+  samples (section (9)); training samples are stored without confetti. Its raw
+  is 4-bit (0..15), so the display stretches [0, max] instead of percentiles whenever a
+  view's max is <= 15 (`services/volume_pipeline.py`).
 
 ## Running on NYU Greene (compute node — recommended)
 
@@ -148,12 +154,10 @@ volumes match biological shape (including Gen1 Z anisotropy).
 | `completely` / `partly` / synth fallback | `[0.44, 0.44, 0.44]` |
 | `himanshu` fallback | `[0.461122, 0.461122, 0.7]` (Gen1 default) |
 
-Himanshu regenerate (delete then first 10 stacks):
+Himanshu regenerate (wipe the output dir, then the first 10 stacks of the 63x set):
 
 ```bash
-DEL_JID=$(sbatch --parsable sbatch/ppp/prep/himanshu/delete_himanshu_zarrs_sbatch.sh)
-LIMIT=10 sbatch --dependency=afterok:${DEL_JID} \
-  sbatch/ppp/prep/himanshu/prepare_himanshu_for_ppp_sbatch.sh
+OBJECTIVE=63x NAME=himanshu CLEAN=1 LIMIT=10 sbatch sbatch/ppp/prep/himanshu/himanshu_sbatch.sh
 ```
 
 The **3D Viewer** tab loads downsampled raw data from FISBe Zarr and, when available, overlays predicted instances (`volume=predicted`) from the selected prediction set. BiaPy sets are loaded via [`ipynb/scripts/biapy.py`](../ipynb/scripts/biapy.py); PatchPerPix sets via [`server/services/ppp_loader.py`](server/services/ppp_loader.py). A dispatcher ([`server/services/predictions.py`](server/services/predictions.py)) routes each request to the right loader by the set's `source`. Drag or use arrow keys to rotate the view.

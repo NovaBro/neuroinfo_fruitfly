@@ -59,6 +59,8 @@ _DATASET_DIRS = frozenset({
     "1k_v1",
     "1k_v1_u8",
     "himanshu",
+    "himanshu_r044",
+    "simple_v1",
 })
 
 

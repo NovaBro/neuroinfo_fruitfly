@@ -19,6 +19,7 @@ import random
 import gunpowder as gp
 import neurolight.gunpowder as nl
 
+from . import lora
 from . import torch_model
 from . import torch_loss
 from .random_hue import RandomHue
@@ -189,6 +190,41 @@ class _NullSummaryWriter:
         pass
 
 
+class _TorchTrainWithGpuConfetti(gp.TorchTrainExt):
+    """TorchTrainExt that adds synthetic confetti (gpu_confetti.py) to the raw input on the
+    GPU right before the forward pass. Training batches only: the Validator calls the model
+    itself, and no gunpowder node is added, so validation crops are unchanged."""
+
+    def __init__(self, *args, gpu_confetti=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.gpu_confetti = gpu_confetti
+
+    def _get_model_output(self, device_inputs):
+        if self.gpu_confetti is not None and "raw" in device_inputs:
+            device_inputs["raw"] = self.gpu_confetti(
+                device_inputs["raw"], step=getattr(self, "current_step", 0))
+        return super()._get_model_output(device_inputs)
+
+
+def _make_gpu_confetti(config, augment):
+    """[training.augmentation.gpu_confetti] -> GpuConfetti or None. It adds confetti to every
+    training crop, so every train dataset must be in its `datasets` allowlist."""
+    cfg = augment.get("gpu_confetti")
+    if cfg is None or cfg is False:
+        return None
+    cfg = {} if cfg is True else dict(cfg)
+    allowed = list(cfg.get("datasets", ["simple_v1"]))
+    train_ds = list(config.get("train_datasets") or [])
+    if not train_ds or any(d not in allowed for d in train_ds):
+        raise ValueError(
+            "training.augmentation.gpu_confetti adds synthetic confetti to every training "
+            f"crop; train_datasets {train_ds} must only contain {allowed}")
+    from .gpu_confetti import GpuConfetti
+    gc = GpuConfetti(shift_intensity=config.get("shift_intensity", False), **cfg)
+    logger.info("training.augmentation.gpu_confetti: %s", gc.p)
+    return gc
+
+
 def _with_null_writer(node):
     if getattr(node, "summary_writer", None) is None:
         node.summary_writer = _NullSummaryWriter()
@@ -295,6 +331,11 @@ def train_until(**config):
 
     model = torch_model.UnetModelWrapper(config, device, trained_until)
     model.init_layers()
+    # training.lora (setup01/lora.py): load a plain seeded checkpoint, then wrap
+    # the UNet convs with adapters and freeze the rest. Before .to(device),
+    # channels_last and compile so the adapters follow them.
+    lora_on = lora.enabled(config)
+    lora_seed = lora.prepare(model, config, checkpoint_basename, trained_until)
     try:
         model = model.to(device)
     except RuntimeError as e:
@@ -455,6 +496,7 @@ def train_until(**config):
     # load data source and
     # choose augmentations depending on config
     augment = config.get("augmentation", {})
+    gpu_confetti = _make_gpu_confetti(config, augment)
     prefetch_node = (
         ThreadedPrefetch(num_batches=config.get("prefetch_batches", 2))
         if config.get("prefetch_batches", 2) > 0 else None)
@@ -554,8 +596,8 @@ def train_until(**config):
     # set up optional validation path without augmentations.
     # Yields single samples: no PreCache/Stack, both overwrite the request's
     # random seed, and Validator needs seeded requests for a fixed val set.
-    if config["val_log_step"] is not None:
-        val_pipeline = (
+    def _make_val_pipeline(val_sources, gt_max_num_inst_val):
+        return (
             val_sources +
 
             (gp.IntensityScaleShift(raw, 2, -1)
@@ -586,6 +628,16 @@ def train_until(**config):
                 dtype=np.float32)
              if add_affinities in ["cpu", "torch"] else gp.NoOp())
         )
+
+    extra_val_pipelines = {}
+    if config["val_log_step"] is not None:
+        val_pipeline = _make_val_pipeline(val_sources, gt_max_num_inst_val)
+        # [data] extra_val_datasets: one more fixed val set per dataset
+        # (run_ppp passes extra_val_files = {dataset: [files]}).
+        for ds, ds_files in (config.get("extra_val_files") or {}).items():
+            ds_sources, ds_gt_max = get_sources(
+                config, arrays, voxel_size, ds_files, val=True, graphs=graphs)
+            extra_val_pipelines[ds] = _make_val_pipeline(ds_sources, ds_gt_max)
 
     pipeline = train_pipeline
 
@@ -682,12 +734,15 @@ def train_until(**config):
     opt_kwargs = {k: v for k,v in config["optimizer"].items()
                   if k != "optimizer" and k != "loss"}
     opt = getattr(torch.optim, config["optimizer"]["optimizer"])(
-        model.parameters(), **opt_kwargs)
+        lora.trainable_parameters(model) if lora_on else model.parameters(),
+        **opt_kwargs)
 
     hparam_dict = {
         'opt': config["optimizer"]["optimizer"],
         'wd': config["optimizer"].get("weight_decay"),
     }
+    if lora_on:
+        hparam_dict['lora_rank'] = int(config["lora"].get("rank", 8))
 
     if config.get('lr_scheduler') and \
        config["lr_scheduler"]["lr_scheduler"] == "WarmupCosine":
@@ -727,6 +782,13 @@ def train_until(**config):
         lr_scheduler = None
         lr_schedule_per_epoch = None
 
+    # training.lora: TorchTrainExt loads the latest checkpoint strictly, so a
+    # plain seed is rewritten in LoRA form first (original kept as
+    # train_net_seed_prelora_<N>)
+    if lora_seed is not None:
+        lora.write_seed_checkpoint(lora_seed, model, opt, lr_scheduler)
+        del lora_seed
+
     # if new training, save initial state to disk
     if trained_until == 0:
         torch.save(
@@ -739,7 +801,8 @@ def train_until(**config):
     # and add training gunpowder node
     pipeline = (
         pipeline +
-        _with_null_writer(gp.TorchTrainExt(
+        _with_null_writer(_TorchTrainWithGpuConfetti(
+            gpu_confetti=gpu_confetti,
             model=model,
             loss=loss,
             optimizer=opt,
@@ -794,6 +857,7 @@ def train_until(**config):
     with contextlib.ExitStack() as build_stack:
         build_stack.enter_context(gp.build(pipeline))
         validator = None
+        extra_validators = []
         if val_log_step is not None:
             build_stack.enter_context(gp.build(val_pipeline))
             validator = Validator(
@@ -801,6 +865,14 @@ def train_until(**config):
                 inputs=inputs, outputs=outputs, loss_inputs=loss_inputs,
                 upstream_lock=(prefetch_node.lock
                                if prefetch_node is not None else None))
+            for ds, ds_pipeline in extra_val_pipelines.items():
+                build_stack.enter_context(gp.build(ds_pipeline))
+                extra_validators.append(Validator(
+                    model, config, ds_pipeline, val_request,
+                    inputs=inputs, outputs=outputs, loss_inputs=loss_inputs,
+                    upstream_lock=(prefetch_node.lock
+                                   if prefetch_node is not None else None),
+                    name=ds))
 
         logger.info("Starting training...")
         with logging_redirect_tqdm():
@@ -837,6 +909,26 @@ def train_until(**config):
                 # lines up with checkpoint iterations
                 if validator is not None and (i + 1) % val_log_step == 0:
                     validator.run(i + 1)
+                    for extra in extra_validators:
+                        extra.run(i + 1)
+
+
+def _cast_raw_if_f16(file_source, raw, dtype, clipmax=None):
+    """float16 raw_normalized (prepare_fisbe_for_ppp.py --raw-dtype float16, SWC2IMG) -> float32 right after
+    the source: gunpowder's IntensityAugment asserts float32/64 raw.
+
+    Integer raw (simple_v1: uint8 0..15 stored once, with a 'clipmax' attr on the array; raw_normalized is a
+    link to it) -> float32 in [0, 1] by gp.Normalize(factor=1/clipmax), so no float copy is stored on disk.
+
+    float32 sources are returned unchanged -- no node, not even gp.NoOp: every node re-hashes the request's
+    random seed, so an extra node changes which crops the fixed val seeds draw (2026-11-10: a NoOp here moved
+    the completely-val crop checksum from 1.416670e+07 to 1.455185e+07 and made val losses incomparable
+    across runs)."""
+    if dtype == np.float16:
+        return file_source + gp.Cast(raw, dtype=np.float32)
+    if np.issubdtype(dtype, np.integer):
+        return file_source + gp.Normalize(raw, factor=1.0 / float(clipmax))
+    return file_source
 
 
 def get_sources(config, arrays, voxel_size, data_files, val=False, graphs=None):
@@ -939,6 +1031,7 @@ def get_sources(config, arrays, voxel_size, data_files, val=False, graphs=None):
         if config['input_format'] == "hdf":
             with h5py.File(fn, 'r') as f:
                 dtype = f[config["raw_key"]].dtype
+                raw_clipmax = None
                 num_inst = f['volumes/gt_instances'].shape[0]
         else: #if config['input_format'] == "zarr":
             f = zarr.open(fn, 'r')
@@ -956,11 +1049,20 @@ def get_sources(config, arrays, voxel_size, data_files, val=False, graphs=None):
                     f"{fn} missing {missing}. "
                     "Run flylight/prepare_fisbe_for_ppp.py first.")
             dtype = f[config["raw_key"]].dtype
+            raw_clipmax = f[config["raw_key"]].attrs.get("clipmax")
             num_inst = f['volumes/gt_instances'].shape[0]
             # get sample size for points roi
             sample_shape = f['volumes/gt_instances'].shape[1:]
 
-        assert dtype == np.float32, "please convert data to float32!"
+        # float16 raw_normalized (prepare_fisbe_for_ppp.py --raw-dtype float16,
+        # SWC2IMG) is fine: the model casts raw to float in forward().
+        if np.issubdtype(dtype, np.integer):
+            # integer-coded raw (simple_v1), scaled by its clipmax attr in _cast_raw_if_f16
+            assert raw_clipmax, (
+                f"{fn}: integer raw {config['raw_key']} ({dtype}) needs a 'clipmax' attr")
+        else:
+            assert dtype in (np.float32, np.float16), \
+                "please convert data to float32 (or float16)!"
         # limit_to_roi = gp.Roi(offset=ds.roi.offset, shape=ds.roi.shape)
         # logger.info("limiting to roi: %s", limit_to_roi)
         if overlapping_inst:
@@ -1046,6 +1148,7 @@ def get_sources(config, arrays, voxel_size, data_files, val=False, graphs=None):
                 file_source += gp.Cast(gt_numinst, dtype=np.int64)
             else:
                 file_source += gp.Cast(gt_fgbg, dtype=np.float32)
+            file_source = _cast_raw_if_f16(file_source, raw, dtype, raw_clipmax)
             sources_random.append(file_source)
 
         # get foreground source
@@ -1098,6 +1201,7 @@ def get_sources(config, arrays, voxel_size, data_files, val=False, graphs=None):
             file_source += gp.Cast(gt_numinst, dtype=np.int64)
         else:
             file_source += gp.Cast(gt_fgbg, dtype=np.float32)
+        file_source = _cast_raw_if_f16(file_source, raw, dtype, raw_clipmax)
         sources.append(file_source)
 
         # get close to overlap source
@@ -1138,6 +1242,7 @@ def get_sources(config, arrays, voxel_size, data_files, val=False, graphs=None):
                      use_gt_extra=config.get("use_gt_extra"))
                   if config.get("add_partly") else gp.NoOp())
             )
+            file_source = _cast_raw_if_f16(file_source, raw, dtype, raw_clipmax)
             sources_overlap.append(file_source)
 
     if overlapping_inst:

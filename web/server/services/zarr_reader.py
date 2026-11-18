@@ -43,6 +43,8 @@ _DEFAULT_VOXEL_SIZE_UM: dict[str, tuple[float, float, float]] = {
     "1k_v1": (0.44, 0.44, 0.44),
     "1k_v1_u8": (0.44, 0.44, 0.44),
     "himanshu": (0.461122, 0.461122, 0.7),
+    "himanshu_r044": (0.44, 0.44, 0.44),
+    "simple_v1": (0.44, 0.44, 0.44),
 }
 _FALLBACK_VOXEL_SIZE_UM = (0.44, 0.44, 0.44)
 

@@ -16,6 +16,8 @@ KNOWN_DATASETS = (
     "1k_v1",
     "1k_v1_u8",
     "himanshu",
+    "himanshu_r044",
+    "simple_v1",
 )
 
 # sample_list section headers → dataset folder name.
@@ -25,8 +27,10 @@ _SECTION_HEADERS = (
     ("(3) samples for synth_vh:", "synth_vh"),
     ("(4) samples for synth_vh_u8:", "synth_vh_u8"),
     ("(5) samples for himanshu:", "himanshu"),
+    ("(8) samples for himanshu_r044:", "himanshu_r044"),
     ("(6) samples for 1k_v1:", "1k_v1"),
     ("(7) samples for 1k_v1_u8:", "1k_v1_u8"),
+    ("(9) samples for simple_v1:", "simple_v1"),
 )
 
 

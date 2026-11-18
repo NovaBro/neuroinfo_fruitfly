@@ -29,8 +29,10 @@ sbatch/ppp/prep/
   pack_ppp_sqf_sbatch.sh             # large sqf-backed sets → fisbe/sqf/<dataset>/
   prepare_fg_points_sbatch.sh
   prepare_ppp_stage_tars_sbatch.sh
-  himanshu/                          # Gen1 MCFO → inference zarrs
+  himanshu/                          # split-line MCFO → inference zarrs
   synth/                             # vh2308 synth_MCFO → fisbe/synth_vh_u8
+  simple/                            # simple_v1 synthetic tubes → fisbe/sqf/simple_v1_src parts
+                                     #   (md_guides/dataset/simple_dataset_plan.md)
   fisbe/                             # completely/partly one-offs
 ```
 
@@ -60,10 +62,12 @@ then foreground points and stage tars when those apply. Himanshu does not: it wr
 
 ### `himanshu/`
 
+Dataset details (line list, selection rules, history): [`md_guides/dataset/himanshu.md`](../dataset/himanshu.md).
+
 | Script | Calls | Writes |
 |--------|--------|--------|
-| `prepare_himanshu_for_ppp_sbatch.sh` | `data_download_methods/prepare_himanshu_for_ppp.py` | `fisbe/himanshu/test/*.zarr` from aligned Gen1 MCFO `.h5j` stacks (brain and VNC). Three channels, `volumes/raw` and `volumes/raw_normalized`. Needs PyAV in the `ppp` overlay. |
-| `delete_himanshu_zarrs_sbatch.sh` | `find` + `rm` | Deletes everything inside `fisbe/himanshu/test/` (zarrs and sidecars such as `manifest.csv`) and leaves the directory. Run this on a compute node; the tree is many small chunk files. |
+| `himanshu_sbatch.sh` | `data_download_methods/download_mcfo.py` (host), then `data_download_methods/prepare_himanshu_for_ppp.py` (ppp container) | Downloads each line's own MCFO `.h5j` (lines + same-fly slide codes in `data_download_methods/himanshu_lines.tsv`, `OBJECTIVE=20x` by default) and writes `downloads/mcfo_manifest_<objective>.tsv`, then `fisbe/<NAME>/test/*.zarr` (default `himanshu_20x`) at the native voxel size: 3 channels, `volumes/raw` + `volumes/raw_normalized` (float16; lossless for the clip/1500 levels). Needs PyAV in the `ppp` overlay. |
+| `resample_himanshu_sbatch.sh` | `data_download_methods/resample_himanshu_zarr.py` | Optional: resamples prepared zarrs to an isotropic grid (`fisbe/himanshu` 63x → `fisbe/himanshu_r044`, 0.44 µm). |
 
 ### `synth/`
 
@@ -182,43 +186,31 @@ DATASETS=completely,partly,synth_vh sbatch sbatch/ppp/prep/prepare_ppp_stage_tar
 Do not build these tars for `1k_v1` or `1k_v1_u8`. Those datasets are read from
 `fisbe/sqf/<dataset>/*.sqf`.
 
-### `himanshu/prepare_himanshu_for_ppp_sbatch.sh`
+### `himanshu/himanshu_sbatch.sh`
 
-CPU, 4 cores, 64 GB, 24 hours, partition `cs`.
-
-Prerequisites: `downloads/hemidrivers.tsv` and the Gen1 stacks
-(`sbatch/data/s3_download_meta_sbatch.sh`, `s3_download_gen1_sbatch.sh`),
-and PyAV in the overlay (`sbatch sbatch/ppp/env/ppp_env_install_av_sbatch.sh`,
-exclusive `:rw` — no other PPP job on that overlay).
+CPU, 4 cores, 64 GB, 12 hours, partition `cs`. Download runs on the host
+(python3 + aws CLI); the convert step runs in the `ppp` container and needs PyAV
+(`sbatch sbatch/ppp/env/ppp_env_install_av_sbatch.sh`, exclusive `:rw` — no other
+PPP job on that overlay).
 
 | Variable | Default | Meaning |
 |----------|---------|---------|
-| `TSV` | `downloads/hemidrivers.tsv` | Sample table. |
-| `DOWNLOADS` | `downloads/Gen1 MCFO` | Stack root. |
-| `OUT` | `fisbe/himanshu/test` | Output directory. |
-| `CLIPMAX` | `1500` | Same normalization as FISBe prep. |
-| `OVERWRITE` | `0` | `1` rewrites zarrs that already exist. |
+| `OBJECTIVE` | `20x` | Objective of the MCFO image per line (`20x`, `63x`, `any`). |
+| `NAME` | `himanshu_${OBJECTIVE}` | Output dataset: `fisbe/${NAME}/test`. |
+| `LINES` | `data_download_methods/himanshu_lines.tsv` | `ss sex area slide_code` per line (blank = any). |
+| `STACK` | `unaligned` | `unaligned` (native), `gendered` or `unisex` (JRC2018-aligned). |
+| `STAGE` | `all` | `download`, `prep`, or `all`. |
+| `DRY_RUN` | `0` | `1`: write the manifest only (no stacks, no zarrs). |
 | `LIMIT` | all | Convert only the first N stacks (smoke). |
+| `CLEAN` | `0` | `1`: delete existing zarrs + `manifest.csv` in the output dir first. |
+| `OVERWRITE` | `0` | `1`: rewrite zarrs that already exist. |
+| `RAW_DTYPE` / `CLIPMAX` | `float16` / `1500` | `raw_normalized` dtype and clip level. |
 
 ```bash
-LIMIT=1 sbatch sbatch/ppp/prep/himanshu/prepare_himanshu_for_ppp_sbatch.sh
-
-sbatch --dependency=afterok:<gen1_jid>:<av_jid> \
-  sbatch/ppp/prep/himanshu/prepare_himanshu_for_ppp_sbatch.sh
-```
-
-### `himanshu/delete_himanshu_zarrs_sbatch.sh`
-
-CPU, 2 cores, 8 GB, 4 hours, partition `cs`. Exits 0 if `OUT` does not exist.
-
-| Variable | Default | Meaning |
-|----------|---------|---------|
-| `OUT` | `fisbe/himanshu/test` | Directory whose children are removed. |
-
-```bash
-DEL_JID=$(sbatch --parsable sbatch/ppp/prep/himanshu/delete_himanshu_zarrs_sbatch.sh)
-sbatch --dependency=afterok:${DEL_JID} \
-  sbatch/ppp/prep/himanshu/prepare_himanshu_for_ppp_sbatch.sh
+DRY_RUN=1 sbatch sbatch/ppp/prep/himanshu/himanshu_sbatch.sh   # picks + sizes
+LIMIT=1   sbatch sbatch/ppp/prep/himanshu/himanshu_sbatch.sh   # smoke
+sbatch sbatch/ppp/prep/himanshu/himanshu_sbatch.sh             # fisbe/himanshu_20x/test
+OBJECTIVE=63x NAME=himanshu CLEAN=1 sbatch sbatch/ppp/prep/himanshu/himanshu_sbatch.sh  # rebuild 63x
 ```
 
 ### `synth/build_synth_vh_sbatch.sh`

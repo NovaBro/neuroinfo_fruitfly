@@ -17,6 +17,7 @@ from numcodecs import Blosc
 import gunpowder as gp
 
 from . import torch_model
+from .lora import merge_lora_state_dict
 from PatchPerPix.util import (
     normalize)
 
@@ -92,13 +93,33 @@ def predict(**config):
         output_shape = config["test_input_shape_same"]
     model.eval()
 
+    # [model] test_same_margin = m (same padding only; experiment_v3): drop m
+    # voxels on each side of every tile's output, so only voxels with >= m
+    # voxels of real context are kept. output_shape becomes input - 2m and the
+    # valid-style context/tiling below overlaps the tiles by 2m (no seams at
+    # the zero-padded tile borders). 0 / unset = old behaviour.
+    same_margin = int(config.get("test_same_margin", 0) or 0)
+    if same_margin and config.get('val_padding') == 'same':
+        assert all(o == i for i, o in zip(input_shape, output_shape)), (
+            "test_same_margin expects a same-padding net (output == input), "
+            f"got {input_shape} -> {output_shape}")
+        output_shape = [int(o) - 2 * same_margin for o in output_shape]
+        assert all(o > 0 for o in output_shape), (
+            f"test_same_margin {same_margin} too large for {input_shape}")
+        logger.info("test_same_margin %d: keeping output %s of input %s",
+                    same_margin, output_shape, input_shape)
+    else:
+        same_margin = 0
+
     checkpoint = torch.load(config["checkpoint"], map_location=device)
     if config.get("use_swa"):
         logger.info("loading swa checkpoint")
         model = torch.optim.swa_utils.AveragedModel(model)
-        model.load_state_dict(checkpoint["swa_model_state_dict"])
+        model.load_state_dict(
+            merge_lora_state_dict(checkpoint["swa_model_state_dict"]))
     else: # "model_state_dict" in checkpoint:
-        model.load_state_dict(checkpoint["model_state_dict"])
+        model.load_state_dict(
+            merge_lora_state_dict(checkpoint["model_state_dict"]))
     # else:
     #     model.load_state_dict()
 
@@ -196,6 +217,11 @@ def predict(**config):
         else: # config['input_format'] == "zarr":
             in_f = zarr.open(fn, 'r')
             raw = in_f[raw_key]
+            if np.issubdtype(raw.dtype, np.integer):
+                # integer-coded raw (simple_v1: uint8 0..15, 'clipmax' attr), as train.py does
+                raw_clipmax = raw.attrs.get("clipmax")
+                assert raw_clipmax, f"{fn}: integer raw {raw_key} needs a 'clipmax' attr"
+                raw = np.asarray(raw, dtype=np.float32) / float(raw_clipmax)
 
         if raw.shape[0] != 1 and config["num_channels"] == 1:
             raw = np.reshape(raw, (1,) + raw.shape)
@@ -265,6 +291,11 @@ def predict(**config):
                     dtype=torch.float16,
                     enabled=(device.type == "cuda")):
                 pred_code_affs, pred_fgbg_numinst = model(raw=raw_batch)
+                if same_margin:
+                    crop = (Ellipsis,) + (
+                        slice(same_margin, -same_margin),) * len(shape)
+                    pred_code_affs = pred_code_affs[crop]
+                    pred_fgbg_numinst = pred_fgbg_numinst[crop]
 
                 for b in range(len(chunks_batch)):
                     # output zarrs are float16 anyway; cast on-device so the

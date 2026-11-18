@@ -14,6 +14,10 @@ _DISPLAY_PCT_LOW = 1.0
 _DISPLAY_PCT_HIGH = 99.5
 _DISPLAY_GAMMA = 0.72
 _LABEL_COLOR_SEED = 42
+# Low-bit data (simple_v1 raw is 4-bit, 0..15) has only a few levels, so the 1st
+# percentile of non-zero voxels *is* the dimmest level and would map whole neurons to
+# black. At or below this max, stretch [0, max] instead of percentiles.
+_LOW_BIT_MAX = 15.0
 
 
 def enhance_display_values(data: np.ndarray) -> np.ndarray:
@@ -21,6 +25,10 @@ def enhance_display_values(data: np.ndarray) -> np.ndarray:
     values = data.astype(np.float32)
     if not np.any(values > 0):
         return np.zeros_like(values)
+
+    v_max = float(values.max())
+    if v_max <= _LOW_BIT_MAX:
+        return np.power(np.clip(values / v_max, 0.0, 1.0), _DISPLAY_GAMMA)
 
     sample = values[values > 0] if np.count_nonzero(values) > 256 else values.ravel()
     p_low, p_high = np.percentile(sample, [_DISPLAY_PCT_LOW, _DISPLAY_PCT_HIGH])

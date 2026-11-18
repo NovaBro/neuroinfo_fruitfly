@@ -11,6 +11,8 @@ const DATASET_ORDER: Dataset[] = [
   "1k_v1",
   "1k_v1_u8",
   "himanshu",
+  "himanshu_r044",
+  "simple_v1",
 ];
 
 interface SampleBrowserProps {

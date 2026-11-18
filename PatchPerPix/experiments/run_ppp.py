@@ -653,8 +653,9 @@ def ensure_legacy_data_paths(config):
 
 # Dataset folder names under fisbe/ and under processed|instanced|evaluated.
 KNOWN_DATASETS = frozenset({
-    "completely", "partly", "synth_vh", "synth_vh_u8", "himanshu",
+    "completely", "partly", "synth_vh", "synth_vh_u8", "himanshu", "himanshu_r044", "himanshu_20x",
     "1k_v1", "1k_v1_u8", "1k_v1.1", "1k_v1.1_u8",
+    "swc2img_1k_v1", "simple_v1",
 })
 
 
@@ -786,6 +787,19 @@ def train(args, config, train_folder):
 
     data_files = get_list_train_files(config)
     val_files = get_list_train_files(config, val=True)
+    # [data] extra_val_datasets = ["completely", ...]: one more train-time val set per
+    # dataset (its <dataset>/val split, same max_val_samples unless
+    # max_extra_val_samples is set). setup01 writes each to val_metrics_<dataset>.csv;
+    # val_metrics.csv (val_datasets) stays the selection metric.
+    extra_val_files = {}
+    for ds in config['data'].get('extra_val_datasets') or []:
+        cfg_ds = deepcopy(config)
+        cfg_ds['data']['val_datasets'] = [ds]
+        if config['data'].get('max_extra_val_samples') is not None:
+            cfg_ds['data']['max_val_samples'] = config['data']['max_extra_val_samples']
+        extra_val_files[ds] = get_list_train_files(cfg_ds, val=True)
+        if not extra_val_files[ds]:
+            raise ValueError("extra_val_datasets: no val files for %s" % ds)
     if args.run_from_exp:
         train_fn = runpy.run_path(
             os.path.join(config['base'], 'train.py'))['train_until']
@@ -801,6 +815,7 @@ def train(args, config, train_folder):
              output_folder=train_folder,
              data_files=data_files,
              val_files=val_files,
+             extra_val_files=extra_val_files,
              **config['data'],
              **config['model'],
              **config['training'],
@@ -813,18 +828,28 @@ def get_list_train_files(config, val=False):
     fmt = config['data']['input_format']
     files = []
 
+    # [data] max_train_samples_per_dataset = { "1k_v1.1" = 36 }: training only, first N sorted files of that
+    # dataset (max_train_samples caps the combined sorted list, where e.g. every 1k_v1.1 path sorts before every
+    # completely path). Datasets not listed are not capped here.
+    per_ds_cap = {} if val else dict(config['data'].get('max_train_samples_per_dataset') or {})
     if uses_dataset_lists(config, split):
         for dataset, data in resolve_split_dirs(config, split):
             if not os.path.isdir(data):
                 raise missing_dataset_dir(config, split, dataset, data)
             if 'folds' in config['training']:
-                files.extend(glob(os.path.join(
+                ds_files = glob(os.path.join(
                     data + "_folds" + config['training']['folds'],
-                    "*." + fmt)))
+                    "*." + fmt))
             elif config['data'].get('sub_folders', False):
-                files.extend(glob(os.path.join(data, "*", "*." + fmt)))
+                ds_files = glob(os.path.join(data, "*", "*." + fmt))
             else:
-                files.extend(glob(os.path.join(data, "*." + fmt)))
+                ds_files = glob(os.path.join(data, "*." + fmt))
+            if dataset in per_ds_cap:
+                ds_files = sorted(ds_files)
+                logger.info("limiting training files of %s to %s of %s",
+                            dataset, per_ds_cap[dataset], len(ds_files))
+                ds_files = ds_files[:int(per_ds_cap[dataset])]
+            files.extend(ds_files)
     else:
         data = config['data']['val_data' if val else 'train_data']
         if os.path.isfile(data):
