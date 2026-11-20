@@ -55,6 +55,12 @@ submit from `/scratch/wmz2007/neuroinfo_fruitfly`, not from inside `sbatch/`.
 
 ## PatchPerPix
 
+**On hold since 2026-11-20.** The code stays here, but the PPP data and results moved to
+`/archive/wmz2007/ppp/` (see its `README.md`; `/archive` is only mounted on `dtn011`/`dtn012`).
+`metrics/ppp_summaries/` keeps the run summaries and `env/ppp.ext3` stays. The PPP-prepared shards
+(`fisbe/sqf/1k_v1.1`, `swc2img_1k_v1`), simple_v1 and the `raw_normalized` arrays in completely/partly were
+deleted — regenerate them before resuming.
+
 `PatchPerPix/CODEBASE.md` is the authoritative architecture reference (pipeline, file call-graph,
 TOML config sections, per-script function tables). Do not duplicate it here. Key facts to know up front:
 
