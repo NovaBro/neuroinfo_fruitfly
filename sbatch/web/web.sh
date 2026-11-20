@@ -52,24 +52,24 @@ for _name in 1k_v1 1k_v1_u8; do
     echo "warning: not mounting missing ${_sqf} (${_name} volumes will not open)" >&2
   fi
 done
-# simple_v1 (synthetic tubes): raw + gt_instances live in the source parts listed in
-# fisbe/simple_v1/source_sqf.txt (mount at /simple_v1); the PPP arrays are symlinks into
-# fisbe/sqf/simple_v1/*.sqf (mount at /synth_MCFO/simple_v1_ppp). Mounting both lets
-# local staging copy whole zarrs. 14 images in total.
-if [[ -f fisbe/simple_v1/source_sqf.txt ]]; then
+# simple_v1 / simple_v2 (synthetic tubes): every array of a sample lives in the SquashFS parts listed in
+# fisbe/<dataset>/source_sqf.txt (mount at /<dataset>); fisbe/sqf/<dataset>/*.sqf only exists for the old
+# PPP-prep layout. 20 parts per dataset.
+for _ds in simple_v1 simple_v2; do
+  [[ -f "fisbe/${_ds}/source_sqf.txt" ]] || continue
   while read -r _sqf; do
     [[ -z "${_sqf}" || "${_sqf}" == \#* ]] && continue
     if [[ -f "${_sqf}" ]]; then
       DATA_OVERLAY_ARGS+=(--overlay "${_sqf}:ro")
     else
-      echo "warning: missing simple_v1 part ${_sqf}" >&2
+      echo "warning: missing ${_ds} part ${_sqf}" >&2
     fi
-  done < fisbe/simple_v1/source_sqf.txt
-  for _sqf in fisbe/sqf/simple_v1/*.sqf; do
+  done < "fisbe/${_ds}/source_sqf.txt"
+  for _sqf in "fisbe/sqf/${_ds}/"*.sqf; do
     [[ -f "${_sqf}" ]] && DATA_OVERLAY_ARGS+=(--overlay "${_sqf}:ro")
   done
-  echo "simple_v1: ${#DATA_OVERLAY_ARGS[@]} overlay args so far (incl. 1k_v1*)"
-fi
+  echo "${_ds}: ${#DATA_OVERLAY_ARGS[@]} overlay args so far"
+done
 
 singularity exec "${DATA_OVERLAY_ARGS[@]}" --overlay "${OVERLAY}:ro" "${SIF}" /bin/bash -c "
   source /ext3/env.sh

@@ -13,6 +13,7 @@ const DATASET_ORDER: Dataset[] = [
   "himanshu",
   "himanshu_r044",
   "simple_v1",
+  "simple_v2",
 ];
 
 interface SampleBrowserProps {
@@ -56,22 +57,19 @@ export function SampleBrowser({
   return (
     <div className="sample-browser">
       {datasets.length > 1 && (
-        <div className="sample-browser__tabs sample-browser__tabs--dataset">
-          {datasets.map((dataset) => (
-            <button
-              key={dataset}
-              type="button"
-              className={
-                activeDataset === dataset
-                  ? "sample-browser__tab sample-browser__tab--active"
-                  : "sample-browser__tab"
-              }
-              onClick={() => setActiveDataset(dataset)}
-            >
-              {dataset}
-            </button>
-          ))}
-        </div>
+        <label className="sample-browser__dataset">
+          <span className="sample-browser__dataset-label">Dataset</span>
+          <select
+            value={activeDataset}
+            onChange={(e) => setActiveDataset(e.target.value as Dataset)}
+          >
+            {datasets.map((dataset) => (
+              <option key={dataset} value={dataset}>
+                {dataset}
+              </option>
+            ))}
+          </select>
+        </label>
       )}
 
       <div className="sample-browser__tabs">

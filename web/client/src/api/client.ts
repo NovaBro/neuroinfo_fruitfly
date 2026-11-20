@@ -9,7 +9,8 @@ export type Dataset =
   | "1k_v1_u8"
   | "himanshu"
   | "himanshu_r044"
-  | "simple_v1";
+  | "simple_v1"
+  | "simple_v2";
 
 /** Sidebar / API selection key (bare stem + dataset). */
 export interface SampleRef {

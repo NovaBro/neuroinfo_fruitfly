@@ -75,7 +75,7 @@ export function VolumeViewer3D({
   const cameraSync = cameraSyncRef.current;
   const [linkViews, setLinkViews] = useState(true);
   const [vtkReady, setVtkReady] = useState(false);
-  const [channel, setChannel] = useState<ChannelParam>(0);
+  const [channel, setChannel] = useState<ChannelParam>("all");
   const [channelGains, setChannelGains] = useState<ChannelGains>(
     DEFAULT_CHANNEL_GAINS,
   );
@@ -177,7 +177,7 @@ export function VolumeViewer3D({
   }, [cameraSync, linkViews]);
 
   useEffect(() => {
-    setChannel(0);
+    setChannel("all");
     setChannelGains(DEFAULT_CHANNEL_GAINS);
     setBrightness(DEFAULT_BRIGHTNESS);
     setContrast(DEFAULT_CONTRAST);

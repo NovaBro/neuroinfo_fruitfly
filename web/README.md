@@ -25,7 +25,8 @@ For how a voxel becomes a pixel end-to-end — the server downsample/contrast pi
   the sample list) works the same way: `web.sh` mounts the parts in
   `fisbe/simple_v1/source_sqf.txt` (20 images since rev 3; every array is inside them, there are
   no `fisbe/sqf/simple_v1` shards any more). The sidebar lists val/test and the first 1,000 train
-  samples (section (9)); training samples are stored without confetti. Its raw
+  samples (section (9)); training samples are stored without confetti. `simple_v2` (section (10)) is mounted the same way
+  (another 20 images, 40 in total). Its raw
   is 4-bit (0..15), so the display stretches [0, max] instead of percentiles whenever a
   view's max is <= 15 (`services/volume_pipeline.py`).
 

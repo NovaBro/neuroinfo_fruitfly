@@ -45,6 +45,7 @@ const DEFAULT_GROUP_ORDER: AggregateGroupKey[] = [
   "test/1k_v1",
   "test/1k_v1_u8",
   "test/himanshu",
+  "test/himanshu_r044",
   "val/completely",
   "val/partly",
   "val/synth_vh",
@@ -52,6 +53,7 @@ const DEFAULT_GROUP_ORDER: AggregateGroupKey[] = [
   "val/1k_v1",
   "val/1k_v1_u8",
   "val/himanshu",
+  "val/himanshu_r044",
 ];
 
 function groupTitle(key: string): string {

@@ -64,7 +64,7 @@ export function OrthoSliceViewer({
   dataset,
   meta,
 }: OrthoSliceViewerProps) {
-  const [channel, setChannel] = useState<ChannelParam>(0);
+  const [channel, setChannel] = useState<ChannelParam>("all");
   const [channelGains, setChannelGains] = useState<ChannelGains>(
     DEFAULT_CHANNEL_GAINS,
   );
