@@ -1,12 +1,12 @@
 # EXP 1.1 / 1.2 pretrain on 1k_v1.1 (n=1000 -> all 796 train vols; stack expv2_e1_n500.toml for 1.2).
-# 28k its (user, 2026-11-08: 28k pretrain + 6k finetune to finish by 9 AM), peak lr 4e-4,
+# 20k its, 8 h limit (user, 2026-11-08 21:10: cut from 28k because of queue waits; 6k finetune), peak lr 4e-4,
 # 10% linear warmup + cosine (OP-EXP 3.4). Checkpoint + train-time val every 2k on 1k_v1.1 val;
 # best checkpoint = lowest val loss.
 [data]
 val_datasets = ["1k_v1.1"]
 
 [training]
-max_iterations = 28000
+max_iterations = 20000
 checkpoints = 2000
 val_log_step = 2000
 
