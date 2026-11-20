@@ -1,0 +1,4 @@
+split,sample,channel,label_id,voxels,n_cc,largest_frac
+train,R38F04-20181005_63_G5.zarr,0,1,7283,1,1.0
+train,R38F04-20181005_63_G5.zarr,1,2,4440,1,1.0
+train,R38F04-20181005_63_G5.zarr,2,3,461093,2,0.9993125031175923
