@@ -29,7 +29,7 @@ DEFAULT_FIJI_APP = "/home/william-zheng/Downloads/Fiji.app"
 
 # Default directory for skeleton/projection outputs. Lives at the project root
 # (the parent of this package) so the source `downloads/` tree (populated by
-# s3_download_fast.sh) is never modified by the skeletonization pipeline.
+# data_download_methods/download_mcfo.py) is never modified by the skeletonization pipeline.
 DEFAULT_OUTPUT_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "skeletons"
 )

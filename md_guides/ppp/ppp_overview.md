@@ -211,8 +211,8 @@ The submitters call these themselves. Run one by hand only for the checks below.
 | [`strip_pred_affs.py`](../../sbatch/ppp/strip_pred_affs.py) | Deletes `volumes/pred_affs` and `volumes/pred_code` after evaluate (keeps `pred_numinst` and two named keep-samples). |
 
 ```bash
-python3 sbatch/ppp/ppp_datasets.py --split test --count --datasets himanshu \
-  original_default.toml datasets_test_himanshu.toml
+python3 sbatch/ppp/ppp_datasets.py --split test --count --datasets himanshu_20x \
+  original_default.toml datasets_test_himanshu_20x.toml
 
 python3 sbatch/ppp/strip_pred_affs.py \
   --root metrics/ppp --exp <exp_id> --split test --ckpt <N> --dry-run

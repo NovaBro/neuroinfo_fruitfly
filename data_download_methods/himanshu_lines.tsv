@@ -1,0 +1,31 @@
+# Himanshu test set: 20 split lines from elife-98405 Cell type lines.csv (Adult rows, CSV order),
+# 2x2 sex x image area (f/m x brain/vnc), 5 lines per cell. slide_code pins one fly per line that
+# has a 3-colour (sssr) MCFO image at BOTH 20x and 63x for that sex/area: same specimen at both objectives.
+# Selection rules and history: md_guides/dataset/himanshu.md
+# Read by data_download_methods/download_mcfo.py. Columns: ss, sex (f|m|any),
+# area (brain|vnc|any), slide_code (blank = any). Blank or missing columns = no filter.
+ss	sex	area	slide_code
+# cell f_brain (2026-11-17: replaced SS00043 SS00078 SS00090 SS00098 SS00191; their 20x is 1-colour)
+SS02195	f	brain	20160603_20_E3
+SS02718	f	brain	20151223_23_D3
+SS04778	f	brain	20160120_21_G1
+SS27853	f	brain	20160715_21_C2
+SS47398	f	brain	20200918_20_A5
+# cell f_vnc
+SS31997	f	vnc	20170217_20_A1
+SS34781	f	vnc	20170331_23_A1
+SS42475	f	vnc	20190426_27_B2
+SS49779	f	vnc	20191018_20_H4
+SS53435	f	vnc	20190329_20_E1
+# cell m_brain
+SS51895	m	brain	20190517_22_E2
+SS57939	m	brain	20190524_24_A4
+SS31259	m	brain	20170616_24_C2
+SS37231	m	brain	20170420_20_A3
+SS37233	m	brain	20170420_19_A6
+# cell m_vnc
+SS33343	m	vnc	20190215_24_D1
+SS44255	m	vnc	20190419_22_D1
+SS46225	m	vnc	20190404_25_A1
+SS46730	m	vnc	20180914_19_B3
+SS47847	m	vnc	20190405_23_E1

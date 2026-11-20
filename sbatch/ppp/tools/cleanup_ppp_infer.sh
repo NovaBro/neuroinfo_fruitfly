@@ -38,7 +38,7 @@ With --purge-legacy-sample-logs (standalone; does not delete processed/):
 
 With --purge-flat-outputs (standalone; keeps nested {dataset}/ trees):
   flat *.zarr / *.hdf / *_vote_instances*.toml under processed|instanced|
-  evaluated whose parent dir is not completely|partly|synth_vh|synth_vh_u8|himanshu|1k_v1|1k_v1_u8 (covers
+  evaluated whose parent dir is not completely|partly|synth_vh|synth_vh_u8|himanshu|himanshu_r044|himanshu_20x|1k_v1|1k_v1_u8 (covers
   pure-flat leaves and flats beside a dataset dir).
 
 Never touches:
@@ -108,7 +108,7 @@ TARGETS=()
 
 collect_flat_outputs() {
   # Purge flat *.zarr / *.hdf / *_vote_instances*.toml under stage_root when
-  # the immediate parent is not a known dataset dir (completely|partly|synth_vh|synth_vh_u8|himanshu|1k_v1|1k_v1_u8).
+  # the immediate parent is not a known dataset dir (completely|partly|synth_vh|synth_vh_u8|himanshu|himanshu_r044|himanshu_20x|1k_v1|1k_v1_u8).
   # Covers pure-flat param leaves and flats beside a namespaced dataset dir.
   # Prune into *.zarr so we do not walk store internals.
   local stage_root="$1"
@@ -117,7 +117,7 @@ collect_flat_outputs() {
   while IFS= read -r -d '' p; do
     parent="$(basename "$(dirname "${p}")")"
     case "${parent}" in
-      completely|partly|synth_vh|synth_vh_u8|himanshu|1k_v1|1k_v1_u8) continue ;;
+      completely|partly|synth_vh|synth_vh_u8|himanshu|himanshu_r044|himanshu_20x|1k_v1|1k_v1_u8) continue ;;
     esac
     TARGETS+=("${p}")
   done < <(find "${stage_root}" \

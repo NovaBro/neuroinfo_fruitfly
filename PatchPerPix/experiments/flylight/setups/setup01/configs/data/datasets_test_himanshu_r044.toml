@@ -1,0 +1,10 @@
+# Himanshu split-line MCFO resampled to the FISBe voxel size (0.44 um isotropic) — test-only
+# inference (no GT / no evaluate). Volumes: fisbe/himanshu_r044/test (resample_himanshu_zarr.py).
+# Use with matching --datasets and --no-eval on array:
+#   ./sbatch/ppp/ppp_submit_test.sh array <preset> --split test --ckpt N \
+#     --datasets himanshu_r044 --config datasets_test_himanshu_r044.toml \
+#     --stage all --no-eval
+# No max_test_samples: all volumes run.
+
+[data]
+test_datasets = ["himanshu_r044"]

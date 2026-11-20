@@ -61,4 +61,4 @@ singularity exec --fakeroot \
     echo "install done"
   '
 
-echo "Next: sbatch sbatch/ppp/prep/himanshu/prepare_himanshu_for_ppp_sbatch.sh"
+echo "Next: sbatch sbatch/ppp/prep/himanshu/himanshu_sbatch.sh"

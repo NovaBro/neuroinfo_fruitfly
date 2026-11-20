@@ -1,0 +1,11 @@
+# Himanshu split-line MCFO, 20x objective, native voxel size (0.52x0.52x1.0 um; SS47398 0.59) —
+# test-only inference (no GT / no evaluate, no rm1500 filter). Details: md_guides/dataset/himanshu.md
+# Volumes: fisbe/himanshu_20x/test (sbatch/ppp/prep/himanshu/himanshu_sbatch.sh).
+# Use with matching --datasets and --no-eval on array:
+#   ./sbatch/ppp/ppp_submit_test.sh array <preset> --split test --ckpt N \
+#     --datasets himanshu_20x --config datasets_test_himanshu_20x.toml \
+#     --stage all --no-eval
+# No max_test_samples: all volumes run.
+
+[data]
+test_datasets = ["himanshu_20x"]

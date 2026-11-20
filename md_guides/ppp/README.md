@@ -12,6 +12,7 @@ Experiment plans and results live in [`md_guides/experiments/`](../experiments/)
 | Train, run inference, evaluate, pick a preset, chain checkpoints, fine-tune | [`ppp_overview.md`](ppp_overview.md) |
 | Prepare or refresh a dataset under `fisbe/` (PPP arrays, FG points, stage tars, sqf packing, synth builds) | [`ppp_prep.md`](ppp_prep.md) |
 | Run a trained model on new data that has no GT (e.g. himanshu) | [`ppp_new_dataset_inference.md`](ppp_new_dataset_inference.md) |
+| Look up what the Himanshu dataset is (lines, flies, voxel sizes, build, decisions) | [`../dataset/himanshu.md`](../dataset/himanshu.md) |
 | Choose GPU / batch / worker settings, or find out why training is slow | [`ppp_train_performance.md`](ppp_train_performance.md) |
 | Track train/val loss and simple val metrics during training (`val_metrics.csv`) | [`ppp_overview.md`](ppp_overview.md) §6 |
 | Understand or debug the GPU labgraph (patch-graph) stage | [`ppp_labgraph_speedup.md`](ppp_labgraph_speedup.md) |
