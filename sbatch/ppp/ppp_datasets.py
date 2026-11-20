@@ -4,8 +4,9 @@
 Merges configs left-to-right (later wins), matching run_ppp.merge_dicts.
 Bare names are resolved under setup01/configs/ (see ppp_config_path.py).
 
-  train      train_datasets + val_datasets (staging extracts both tars;
-             interleaved validation reads val_datasets)
+  train      train_datasets + val_datasets + extra_val_datasets (staging extracts the tars;
+             train-time validation reads val_datasets and each extra_val_datasets entry,
+             so ppp_job.sh must mount their images too)
   val/test   <split>_datasets, else train_datasets (run_ppp.dataset_lists)
 
 Legacy configs without train_datasets print 'completely'.
@@ -19,9 +20,9 @@ Default mode prints '+'-joined dataset names (DATASETS format).
 Usage:
   python3 sbatch/ppp/ppp_datasets.py --split train default_l40s.toml basic-ppp-noenc-cp.toml
   python3 sbatch/ppp/ppp_datasets.py --split test --list-samples \\
-    default_l40s.toml datasets_test_himanshu.toml
-  python3 sbatch/ppp/ppp_datasets.py --split test --count --datasets himanshu \\
-    default_l40s.toml datasets_test_himanshu.toml
+    default_l40s.toml datasets_test_himanshu_20x.toml
+  python3 sbatch/ppp/ppp_datasets.py --split test --count --datasets himanshu_20x \\
+    default_l40s.toml datasets_test_himanshu_20x.toml
 """
 from __future__ import annotations
 
@@ -41,7 +42,8 @@ def datasets_for_split(cfg, split):
     if not train:
         return ["completely"]
     if split == "train":
-        names = train + list(data.get("val_datasets") or train)
+        names = (train + list(data.get("val_datasets") or train)
+                 + list(data.get("extra_val_datasets") or []))
     else:
         names = list(data.get("%s_datasets" % split) or train)
     return list(dict.fromkeys(names))

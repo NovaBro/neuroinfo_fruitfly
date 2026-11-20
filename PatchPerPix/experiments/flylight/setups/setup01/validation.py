@@ -223,7 +223,10 @@ class Validator:
     """
 
     def __init__(self, model, config, val_pipeline, val_request, inputs,
-                 outputs, loss_inputs, upstream_lock=None):
+                 outputs, loss_inputs, upstream_lock=None, name=None):
+        # name: extra val set ([data] extra_val_datasets) -> val_metrics_<name>.csv
+        # and "Validation[<name>]:" log lines; None = the main val set.
+        self.name = name
         self.model = model
         self.config = config
         self.pipeline = val_pipeline
@@ -252,13 +255,16 @@ class Validator:
         # separate instance so the train loss's step counter is untouched
         self.loss = torch_loss.LossWrapper(config).to(self.device)
 
-        self.csv_path = os.path.join(config["output_folder"], "val_metrics.csv")
+        suffix = f"_{name}" if name else ""
+        self.csv_path = os.path.join(config["output_folder"],
+                                     f"val_metrics{suffix}.csv")
+        self.log_prefix = f"Validation[{name}]: " if name else "Validation: "
         self._cached = None
         self.summary_writer = None
         try:
             from torch.utils import tensorboard
             self.summary_writer = tensorboard.SummaryWriter(
-                os.path.join(config["output_folder"], "..", "validate"))
+                os.path.join(config["output_folder"], "..", f"validate{suffix}"))
         except ImportError:
             pass
 
@@ -390,7 +396,7 @@ class Validator:
 
     # -- output -----------------------------------------------------------
     def _write(self, row):
-        logger.info("Validation: " + " ".join(
+        logger.info(self.log_prefix + " ".join(
             f"{k}={row[k]}" if k in ("iteration", "n_samples")
             else f"{k}={row[k]:.6g}" for k in CSV_COLUMNS))
 
