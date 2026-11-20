@@ -24,6 +24,14 @@ def get_args():
     parser.add_argument("--run-id", default=0, type=str)
     parser.add_argument("--split", default='test', help="Either train, test, or val", type=str)
     parser.add_argument(
+        "--gt-root",
+        default=None,
+        type=str,
+        help="GT folder of {stem}.zarr volumes (absolute, or relative to the repo root). "
+        "Default: fisbe/completely/{split}. For synth: fisbe/1k_v1_u8/test "
+        "(needs the 1k_v1_u8.sqf overlay mounted).",
+    )
+    parser.add_argument(
         "--from-scratch",
         action="store_true",
         default=False,
@@ -77,7 +85,8 @@ def main(args:argparse.Namespace):
     config_name = args.config_name
     job_name = args.job_name
     run_id = args.run_id
-    gt_root = ROOT_DIR / f"fisbe/completely/{args.split}"
+    gt_root = ROOT_DIR / (args.gt_root or f"fisbe/completely/{args.split}")
+    print(f"gt_root: {gt_root}")
 
     print(f"config_name: {config_name}")
     print(f"run_id: {run_id}")
@@ -139,6 +148,10 @@ def main(args:argparse.Namespace):
         res_file_name = res_file.name
         res_file = res_file.as_posix()
         gt_file_path = (gt_root / res_file_name).as_posix()
+        gt_arr = Path(gt_file_path) / "volumes" / "gt_instances"
+        assert gt_arr.exists(), (
+            f"GT array not found/resolvable: {gt_arr} (broken symlink? mount 1k_v1_u8.sqf for synth GT)"
+        )
         # print("res_file_path:", zarr_file_path)
         print("res_file_name:", res_file_name)
         print("res_file_path:", res_file)

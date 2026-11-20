@@ -28,7 +28,7 @@ def get_args():
         '-m',
         '--mode',
         default='train',
-        help='Control config state, train or testing or preprocessing'
+        help='Control config state: preprocessing, train, test, predict (GPU raw predictions only) or postprocess (CPU, reuses predictions)'
     )
     parser.add_argument(
         '--job-name',
@@ -75,11 +75,27 @@ def apply_mode_overrides(cfg, mode):
     if mode == 'train':
         cfg['TRAIN']['ENABLE'] = True
         cfg['TEST']['ENABLE'] = False
-        cfg['MODEL']['LOAD_CHECKPOINT'] = False
+        # Keep a YAML LOAD_CHECKPOINT only when an explicit PATHS.CHECKPOINT_FILE is set
+        # (staged fine-tuning); otherwise train from scratch as before.
+        if not (cfg.get('PATHS') or {}).get('CHECKPOINT_FILE'):
+            cfg['MODEL']['LOAD_CHECKPOINT'] = False
     elif mode == 'test':
         cfg['TRAIN']['ENABLE'] = False
         cfg['TEST']['ENABLE'] = True
         cfg['MODEL']['LOAD_CHECKPOINT'] = True
+    elif mode in ('predict', 'postprocess'):
+        # Split test: 'predict' (GPU) writes raw predictions only; 'postprocess' (CPU) reuses them.
+        cfg['TRAIN']['ENABLE'] = False
+        cfg['TEST']['ENABLE'] = True
+        cfg['MODEL']['LOAD_CHECKPOINT'] = True
+        by_chunks = cfg['TEST'].setdefault('BY_CHUNKS', {})
+        if mode == 'predict':
+            by_chunks['PHASES'] = ['prediction']
+            by_chunks['SAVE_OUT_TIF'] = False  # raw TIFF would just double the disk use
+            cfg['TEST']['REUSE_PREDICTIONS'] = False
+        else:
+            by_chunks['PHASES'] = ['instance_creation']
+            cfg['TEST']['REUSE_PREDICTIONS'] = True
     else:
         raise ValueError(f'Unknown mode for overrides: {mode!r}')
 
@@ -87,7 +103,7 @@ def apply_mode_overrides(cfg, mode):
         f'Mode overrides ({mode}): '
         f'TRAIN.ENABLE={cfg["TRAIN"]["ENABLE"]}, '
         f'TEST.ENABLE={cfg["TEST"]["ENABLE"]}, '
-        f'MODEL.LOAD_CHECKPOINT={cfg["MODEL"]["LOAD_CHECKPOINT"]}'
+        f'MODEL.LOAD_CHECKPOINT={cfg["MODEL"].get("LOAD_CHECKPOINT")}'
     )
     return cfg
 
@@ -194,7 +210,7 @@ def main():
             )
             biapy.train()
 
-        case 'test':
+        case 'test' | 'predict' | 'postprocess':
             biapy = BiaPy(
                 config=cfg,
                 result_dir=RESULT_DIR.as_posix(),
@@ -208,7 +224,7 @@ def main():
         case _:
             raise ValueError(
                 f'Unknown mode {args.mode!r}; '
-                f'expected preprocessing, train, or test'
+                f'expected preprocessing, train, test, predict, or postprocess'
             )
 
 

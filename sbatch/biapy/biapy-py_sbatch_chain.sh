@@ -23,11 +23,11 @@ set -euo pipefail
 
 # Print help to stderr and exit with failure.
 usage() {
-  echo "Usage: $0 [-j JOB_NAME] [-r RUN_ID] [--dependency SPEC] <stem> <preprocessing|train|test> [preprocessing|train|test]..." >&2
+  echo "Usage: $0 [-j JOB_NAME] [-r RUN_ID] [--dependency SPEC] <stem> <preprocessing|train|test|predict|postprocess> [mode]..." >&2
   echo "  Stem is the YAML basename under biapy_work_folder/configs/ (e.g. biapy-v1-channel-rot)." >&2
   echo "  Resolves to biapy_work_folder/configs/\${stem}.yaml for all modes." >&2
-  echo "  Modes (1–3, no duplicates): preprocessing, train, test." >&2
-  echo "  Chain order: preprocessing → train → test (afterok)." >&2
+  echo "  Modes (no duplicates): preprocessing, train, test, predict (GPU raw predictions), postprocess (CPU, reuses predictions)." >&2
+  echo "  Chain order: preprocessing → train → test → predict → postprocess (afterok)." >&2
   echo "  -j, --job-name   BiaPy/SLURM job-name override (default: stem)" >&2
   echo "  -r, --run-id     BiaPy --run-id (default: 0)" >&2
   echo "  --dependency SPEC  sbatch --dependency for the first job (job id → afterok:ID; or full SPEC)" >&2
@@ -108,7 +108,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Require stem + 1 to 3 modes (e.g. train, or preprocessing train test).
-if [[ ${#positionals[@]} -lt 2 || ${#positionals[@]} -gt 4 ]]; then
+if [[ ${#positionals[@]} -lt 2 || ${#positionals[@]} -gt 6 ]]; then
   usage
 fi
 
@@ -122,6 +122,8 @@ modes_raw=("${positionals[@]:1}")
 do_preprocessing=0
 do_train=0
 do_test=0
+do_predict=0
+do_postprocess=0
 for mode in "${modes_raw[@]}"; do
   case "$mode" in
     preprocessing)
@@ -145,8 +147,22 @@ for mode in "${modes_raw[@]}"; do
       fi
       do_test=1
       ;;
+    predict)
+      if [[ "$do_predict" -eq 1 ]]; then
+        echo "Error: duplicate mode 'predict'" >&2
+        exit 1
+      fi
+      do_predict=1
+      ;;
+    postprocess)
+      if [[ "$do_postprocess" -eq 1 ]]; then
+        echo "Error: duplicate mode 'postprocess'" >&2
+        exit 1
+      fi
+      do_postprocess=1
+      ;;
     *)
-      echo "Error: unknown mode '$mode' (expected preprocessing, train, or test)" >&2
+      echo "Error: unknown mode '$mode' (expected preprocessing, train, test, predict, or postprocess)" >&2
       usage
       ;;
   esac
@@ -255,4 +271,45 @@ if [[ "$do_test" -eq 1 ]]; then
   else
     echo "Submitted test job ${job_id} (config=${config_file}, job-name=${slurm_name_base}, run-id=${run_id})"
   fi
+fi
+
+# Submit predict (optional): GPU-only raw predictions (BiaPy test with PHASES=[prediction]).
+if [[ "$do_predict" -eq 1 ]]; then
+  sbatch_args=(
+    --parsable
+    --job-name="${slurm_name_base}-r${run_id}-predict"
+    --cpus-per-task=8
+    --time=4:00:00
+    --mem=128g
+    --gres=gpu:1
+    --constraint='l40s|h100'
+  )
+  if [[ -n "$prev_id" ]]; then
+    sbatch_args+=(--dependency="afterok:${prev_id}")
+  elif [[ -n "$dependency" ]]; then
+    sbatch_args+=(--dependency="${dependency}")
+  fi
+  job_id=$(sbatch "${sbatch_args[@]}" "$SBATCH_SCRIPT" "$config_file" "predict" "$job_name" "$run_id")
+  echo "Submitted predict job ${job_id} (config=${config_file}, job-name=${slurm_name_base}, run-id=${run_id}${prev_id:+, dependency=afterok:${prev_id}})"
+  prev_id="$job_id"
+fi
+
+# Submit postprocess (optional): CPU-only (cpu_short rejects --mem>=128g and caps walltime at 6h), reuses the raw predictions written by predict/test.
+if [[ "$do_postprocess" -eq 1 ]]; then
+  sbatch_args=(
+    --parsable
+    --job-name="${slurm_name_base}-r${run_id}-postprocess"
+    --partition=cs,cpu_short
+    --cpus-per-task=16
+    --time=06:00:00
+    --mem=64g
+  )
+  if [[ -n "$prev_id" ]]; then
+    sbatch_args+=(--dependency="afterok:${prev_id}")
+  elif [[ -n "$dependency" ]]; then
+    sbatch_args+=(--dependency="${dependency}")
+  fi
+  job_id=$(sbatch "${sbatch_args[@]}" "$SBATCH_SCRIPT" "$config_file" "postprocess" "$job_name" "$run_id")
+  echo "Submitted postprocess job ${job_id} (config=${config_file}, job-name=${slurm_name_base}, run-id=${run_id}${prev_id:+, dependency=afterok:${prev_id}})"
+  prev_id="$job_id"
 fi

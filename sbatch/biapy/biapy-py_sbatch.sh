@@ -47,7 +47,7 @@ cleanup() {
   fi
 }
 trap cleanup EXIT
-if [[ "$mode" == "train" || "$mode" == "test" ]]; then
+if [[ "$mode" == "train" || "$mode" == "test" || "$mode" == "predict" ]]; then
   mkdir -p gpu_log/biapy
   nohup nvidia-smi --query-gpu=timestamp,name,temperature.gpu,utilization.gpu,utilization.memory,memory.used,memory.total --format=csv -l 3 > "gpu_log/biapy/gpu_biapy-py_${job_name}_${mode}_${SLURM_JOB_ID}.csv" &
   GPU_LOGGER_PID=$!
@@ -224,7 +224,7 @@ fi
 # LD_PRELOAD conda libstdc++ so scipy's CXXABI_1.3.15 requirement is met
 # without putting all of $CONDA_PREFIX/lib on LD_LIBRARY_PATH (breaks CUDA).
 singularity_args=(exec)
-if [[ "$mode" == "train" || "$mode" == "test" ]]; then
+if [[ "$mode" == "train" || "$mode" == "test" || "$mode" == "predict" ]]; then
   singularity_args+=(--nv)
 fi
 if [[ -n "$BIAPY_STAGE_ROOT" ]]; then
