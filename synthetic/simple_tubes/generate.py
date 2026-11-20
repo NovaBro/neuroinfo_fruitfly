@@ -38,6 +38,21 @@ CLIPMAX = 15                      # 4-bit raw
 SPATIAL_CHUNKS = (64, 64, 64)     # as prepare_fisbe_for_ppp.py
 ALIASES = {"raw_normalized": "raw", "gt_instances_rm_5": "gt_instances"}
 
+# Parameter presets on top of the GeometryParams / RenderParams defaults (= simple_v1 rev 3).
+# simple_v2 (user, 2026-11-19): wider brightness (base level 3-15, +-2 per branch, drift along the
+# cable), thickness (root radius log-uniform 1-5 voxels, taper 0-50 %, floor 1), length (4-60 control
+# points, 8-24 voxels apart) and branching (per-neuron factor 0.1-3x on the child counts, depth 5,
+# 20-90 degrees). md_guides/dataset/simple_dataset_plan.md.
+PRESETS = {
+    "simple_v1": ({}, {}),
+    "simple_v2": (
+        dict(step_len=(8.0, 24.0), root_points=(4, 60), child_lambda=(2.5, 1.5, 0.8, 0.4, 0.2),
+             branch_angle_deg=(20.0, 90.0), root_radius=(1.0, 5.0), root_radius_log=True,
+             taper=(0.0, 0.5), radius_floor=1.0, branchiness=(0.1, 3.0)),
+        dict(level=(3, 15), branch_level_offset=2, drift_levels=(0.0, 1.5),
+             drift_period=(50.0, 200.0), level_floor=1)),
+}
+
 
 @functools.lru_cache(maxsize=None)
 def ppp_module(name: str):
@@ -65,11 +80,15 @@ def _params(args, split):
     shape = tuple(int(v) for v in args.shape.split(","))
     if len(shape) != 3:
         raise ValueError(f"--shape needs Z,Y,X, got {args.shape!r}")
-    gp = GeometryParams(shape=shape, spline=args.spline,
-                        root_radius=_pair(args.root_radius),
-                        radius_floor=args.radius_floor)
-    rp = RenderParams(neurons=_pair(args.neurons, int), noise=not args.no_noise,
-                      confetti=split in _splits(args.confetti_splits))
+    geo, ren = (dict(d) for d in PRESETS[args.preset])
+    if args.root_radius:
+        geo["root_radius"] = _pair(args.root_radius)
+    if args.radius_floor is not None:
+        geo["radius_floor"] = args.radius_floor
+    if args.neurons:
+        ren["neurons"] = _pair(args.neurons, int)
+    gp = GeometryParams(shape=shape, spline=args.spline, **geo)
+    rp = RenderParams(noise=not args.no_noise, confetti=split in _splits(args.confetti_splits), **ren)
     return gp, rp
 
 
@@ -99,7 +118,8 @@ def write_sample(sample: dict, out_dir: str, meta_dir: str | None, counts, mip=T
             "shape": list(shape),
             "params": sample["params"],
             "noise": sample["noise"],
-            "instances": [{k: inst[k] for k in ("label", "colour", "level", "voxels")}
+            "instances": [{k: inst[k] for k in ("label", "colour", "level", "level_min", "level_max",
+                                                 "voxels") if k in inst}
                           for inst in sample["instances"]],
         },
     })
@@ -265,15 +285,17 @@ def main(argv=None):
     r.add_argument("--seed", type=int, default=0, help="base seed; sample seed = seed*1e6 + index")
     r.add_argument("--splits", default="800,100,100", help="train,val,test counts")
     r.add_argument("--shape", default="400,600,600", help="volume Z,Y,X")
-    r.add_argument("--neurons", default="10,30", help="neurons per volume, inclusive")
+    r.add_argument("--preset", default="simple_v1", choices=sorted(PRESETS),
+                   help="parameter preset (geometry + brightness); flags below override it")
+    r.add_argument("--neurons", default=None, help="neurons per volume, inclusive (preset: 10,30)")
     r.add_argument("--no-noise", action="store_true",
                    help="tubes only: no haze, distractor blobs or confetti")
     r.add_argument("--confetti-splits", default="train,val,test",
                    help="splits that get baked confetti; train usually gets it on the GPU "
                         "instead ([training.augmentation.gpu_confetti])")
     r.add_argument("--mip-splits", default="train,val,test", help="splits that get a MIP png")
-    r.add_argument("--root-radius", default="1.5,3.0")
-    r.add_argument("--radius-floor", type=float, default=1.5)
+    r.add_argument("--root-radius", default=None, help="lo,hi voxels (preset: 1.5,3.0 / v2 1,5)")
+    r.add_argument("--radius-floor", type=float, default=None)
     r.add_argument("--spline", default="catmull-rom", choices=["catmull-rom", "bspline"])
     r.add_argument("--workers", type=int, default=1)
     r.add_argument("--verify", action="store_true", help="run verify.py checks on each zarr")

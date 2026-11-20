@@ -41,6 +41,9 @@ class GeometryParams:
     taper: tuple = (0.1, 0.3)               # linear radius loss along a branch
     radius_floor: float = 1.5               # PPP prep opening (radius 1) erodes thinner tubes
     deep_margin: float = 1.0                # "inside" for truncation/attach = this deep
+    # simple_v2 additions; the defaults reproduce simple_v1 exactly (no extra random draws)
+    root_radius_log: bool = False           # draw the root radius log-uniformly in root_radius
+    branchiness: tuple = None               # per-neuron factor on child_lambda, log-uniform (lo, hi)
 
 
 @dataclass
@@ -76,9 +79,10 @@ class Branch:
 class Neuron:
     start_kind: str                       # "face" or "interior"
     branches: list = field(default_factory=list)
+    branchiness: float = 1.0              # factor on child_lambda (simple_v2)
 
     def to_json(self) -> dict:
-        return {"start_kind": self.start_kind,
+        return {"start_kind": self.start_kind, "branchiness": round(self.branchiness, 4),
                 "branches": [b.to_json() for b in self.branches]}
 
 
@@ -266,18 +270,26 @@ def build_neuron(rng: np.random.Generator, P: GeometryParams) -> Neuron | None:
         kind = "interior"
     k_root = int(rng.integers(P.root_points[0], P.root_points[1] + 1))
     control = random_walk(p0, d0, k_root, P, rng, turn_first=True)
-    r0 = float(rng.uniform(*P.root_radius))
+    if P.root_radius_log:
+        lo, hi = P.root_radius
+        r0 = float(np.exp(rng.uniform(np.log(lo), np.log(hi))))
+    else:
+        r0 = float(rng.uniform(*P.root_radius))
     root = _make_branch(control, r0, P, rng, branch_id=0, parent_id=-1, order=0,
                         t_parent=float("nan"))
     if root is None:
         return None
-    neuron = Neuron(start_kind=kind, branches=[root])
+    factor = 1.0
+    if P.branchiness:
+        lo, hi = P.branchiness
+        factor = float(np.exp(rng.uniform(np.log(lo), np.log(hi))))
+    neuron = Neuron(start_kind=kind, branches=[root], branchiness=factor)
     queue = [root]
     while queue:
         parent = queue.pop(0)
         if parent.order >= len(P.child_lambda):
             continue
-        n_children = int(rng.poisson(P.child_lambda[parent.order]))
+        n_children = int(rng.poisson(P.child_lambda[parent.order] * factor))
         used: list = []
         for _ in range(n_children):
             i = _pick_attach(parent, used, P, rng)

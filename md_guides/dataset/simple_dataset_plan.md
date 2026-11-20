@@ -10,7 +10,7 @@ Revisions, same name and paths:
 - **Rev 2** (2026-11-17): 400×600×600, 10–30 bushier neurons, dim Perlin haze, dim
   distractor blobs, bright and dark confetti (§3.8), 1,000 samples through PPP prep/pack
   (~130 MB/sample). Replaced by rev 3.
-- **Rev 3** (2026-11-17, current): same images, **50,000 / 100 / 100** samples in a compact
+- **Rev 3** (2026-11-17, `simple_v1` today): same images, **50,000 / 100 / 100** samples in a compact
   self-contained layout (~3.4 MB/sample, §2/§5). Train samples are stored without
   confetti; training adds it on the GPU each step. Val/test keep it baked. Plan file:
   `~/.claude/plans/make-plan-for-implementation-cheerful-eagle.md`.
@@ -398,3 +398,41 @@ baselines) will be planned in a separate doc.
   `fisbe/fg_points/simple_v1_dry`, `configs/exp/dsexp/dsexp_simple_v1_dry.toml`,
   `metrics/ppp/simple-v1-dry-smoke`; relaunch the web viewer.
 
+
+---
+
+## 9. simple_v2 (2026-11-19)
+
+User request: a greater range of brightness, thickness, length and branching. Built as a **new dataset
+`simple_v2`** next to `simple_v1` (experiment_v4 keeps using simple_v1). Everything else as rev 3:
+400×600×600, 50,000 / 100 / 100, 4-bit raw, MCFO colours, haze + blobs baked, confetti baked only in val/test
+(GPU confetti in training), same self-contained SquashFS layout.
+
+`python -m synthetic.simple_tubes.generate render --preset simple_v2 ...` (`generate.py PRESETS`). New
+parameters default to the simple_v1 values and draw no extra random numbers when off, so simple_v1 still
+regenerates byte for byte (checked: `verify --regen` on tube_00007 and tube_50003).
+
+| | simple_v1 (rev 3) | simple_v2 |
+|---|---|---|
+| Neuron brightness | one level per neuron, U{10..15} | base U{3..15}; each branch + U{−2..2}; sinusoidal drift along the cable (amplitude 0–1.5 levels, period 50–200 voxels); clipped to 1–15; per voxel = max over the branches covering it |
+| Root radius | U(1.5, 3.0), floor 1.5 | log-uniform 1.0–5.0, floor 1.0 |
+| Taper along a branch | 10–30 % | 0–50 % |
+| Root length | 10–30 control points, 12–20 voxels apart | 4–60 points, 8–24 voxels apart |
+| Branching | λ = 2.5 / 1.5 / 0.8 / 0.3 (max depth 4) | per-neuron factor log-uniform 0.1–3× on λ = 2.5 / 1.5 / 0.8 / 0.4 / 0.2 (max depth 5) |
+| Branch angle | 30–75° | 20–90° |
+
+- `verify.py`: with varied brightness only the neuron's minimum level is guaranteed on its voxels
+  (`level_min` / `level_max` per instance in the zarr attrs); exact equality is left to `--regen`.
+- Radius-1 tubes are partly removed from `gt_fg_rm_5` by its radius-1 opening, so the thinnest neurons get
+  fewer fg points (sampling only; the GT keeps them).
+- Neurons can end up near level 1 everywhere, as dim as the haze: intended ("dim neurons reach the haze").
+
+**Full-size test** (job 23791375, 32 volumes, 16 workers): 32/32 verified, 30–37 s per volume (as v1); neuron
+voxels 0.05–0.33 % of the volume (median 0.17 %); branches per neuron median 4, p90 56, max 409; root radius
+1.00–4.99; levels 1–15; ~10 MB per train sample before packing (block-rounded `du`).
+
+**Build:** `DATASET=simple_v2 SBATCH_ACCOUNT=torch_pr_61_tandon_advanced sbatch
+sbatch/ppp/prep/simple/generate_simple_sbatch.sh` (2026-11-19 21:41): submitter 23791579, array 23791709
+(20 parts). Wired up: `configs/exp/dsexp/dsexp_simple_v2.toml` (GPU confetti allowlist simple_v2),
+`run_ppp.py KNOWN_DATASETS`, section (10) of the eval sample list, the web viewer (tab + mounts; `web.sh` now
+loops over simple_v1 / simple_v2, 40 SquashFS images).

@@ -1,0 +1,17 @@
+# Train and validate on simple_v2: simple_v1 (rev 3) with wider brightness (base level 3-15, +-2 per branch,
+# drift along the cable), thickness (radius 1-5 voxels), length and branching (per-neuron factors). 4-bit raw,
+# 3-channel MCFO colours, 400x600x600, haze + blobs baked, confetti on the GPU. Splits 50,000 / 100 / 100.
+# Built by sbatch/ppp/prep/simple/generate_simple_sbatch.sh: every zarr is self-contained in the SquashFS
+# parts listed in fisbe/simple_v2/source_sqf.txt (mounted at /simple_v2); no prepare/pack/fg-points job.
+# raw is uint8 with a clipmax=15 attr; train.py / predict_no_gp.py scale it to [0, 1] on read
+# (raw_normalized and gt_instances_rm_5 are links to raw and gt_instances).
+# Train samples are stored WITHOUT confetti; it is added on the GPU each step (gpu_confetti below).
+# Val/test samples have it baked in. Pair with dsexp_pre.toml for completely as extra val.
+[data]
+train_datasets = ["simple_v2"]
+val_datasets = ["simple_v2"]
+
+# setup01/gpu_confetti.py; defaults = generator values (densities 1e-5..2e-3 spots/voxel, levels 8-15 / 0-1).
+# Refuses to run if train_datasets has anything outside `datasets` (real data must not get confetti).
+[training.augmentation.gpu_confetti]
+datasets = ["simple_v2"]

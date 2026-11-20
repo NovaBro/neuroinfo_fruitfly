@@ -17,6 +17,7 @@
 #      PARTS (20) SEED (0) OVERWRITE (0: skip parts that exist) WORKERS (cpus-per-task)
 #      CONFETTI_SPLITS (val,test: train gets confetti on the GPU in training)
 #      MIP_SPLITS (val,test)
+#      PRESET (default: DATASET; simple_v1 | simple_v2, see generate.py PRESETS; set it for dry-run names)
 #SBATCH --job-name=simple_tubes_gen
 #SBATCH --account=torch_pr_61_general
 #SBATCH --partition=cs
@@ -37,6 +38,7 @@ SPLITS="${SPLITS:-50000,100,100}"
 PARTS="${PARTS:-20}"
 CONFETTI_SPLITS="${CONFETTI_SPLITS:-val,test}"
 MIP_SPLITS="${MIP_SPLITS:-val,test}"
+PRESET="${PRESET:-${DATASET}}"
 SEED="${SEED:-0}"
 OVERWRITE="${OVERWRITE:-0}"
 WORKERS="${WORKERS:-${SLURM_CPUS_PER_TASK:-4}}"
@@ -89,7 +91,7 @@ if [[ -z "${SLURM_ARRAY_TASK_ID:-}" ]]; then
       --sources ${PART_SQFS[*]} ${skel_extra}"
   echo "Submitting array 0-$((PARTS - 1)) for ${TOTAL} samples (${SPLITS})"
   # SPLITS holds commas, which --export=VAR=... would split, so export and pass ALL.
-  export DATASET TOTAL SPLITS PARTS SEED OVERWRITE CONFETTI_SPLITS MIP_SPLITS
+  export DATASET TOTAL SPLITS PARTS SEED OVERWRITE CONFETTI_SPLITS MIP_SPLITS PRESET
   sbatch --array="0-$((PARTS - 1))" --export=ALL \
     sbatch/ppp/prep/simple/generate_simple_sbatch.sh
   exit 0
@@ -119,7 +121,7 @@ rm -rf "${PACK}"
 mkdir -p "${PACK}/${DATASET}"
 
 in_container --bind "${SLURM_TMPDIR}:${SLURM_TMPDIR}" -- \
-  "python -u -m synthetic.simple_tubes.generate render --dataset ${DATASET} \
+  "python -u -m synthetic.simple_tubes.generate render --dataset ${DATASET} --preset ${PRESET} \
      --out ${PACK}/${DATASET} --meta-out ${PACK}/${DATASET}/meta \
      --fg-out ${PACK}/${DATASET}/fg_points \
      --confetti-splits ${CONFETTI_SPLITS} --mip-splits ${MIP_SPLITS} \

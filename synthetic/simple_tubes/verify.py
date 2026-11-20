@@ -94,7 +94,10 @@ def verify_zarr(zpath: str, meta_dir: str | None = None, regen: bool = False,
             regen_sample = None
 
     raw_flat = raw.reshape(3, -1)
-    expected = None if noise_on else np.zeros_like(raw_flat)
+    # simple_v2 varies brightness per branch / along the cable: only the neuron's minimum level is
+    # guaranteed on its voxels, and exact equality is left to --regen
+    varied = any("level_min" in i for i in inst)
+    expected = None if (noise_on or varied) else np.zeros_like(raw_flat)
     count = np.zeros(shape, dtype=np.uint8)
     for n in range(N):
         chan = gt_a[n]
@@ -110,7 +113,7 @@ def verify_zarr(zpath: str, meta_dir: str | None = None, regen: bool = False,
         n_cc = count_components(flat, shape)
         if n_cc != 1:
             bad.append(f"gt[{n}] has {n_cc} 26-connected pieces, want 1")
-        level = inst[n]["level"]
+        level = inst[n].get("level_min", inst[n]["level"])
         for ch in range(3):
             if not inst[n]["colour"][ch]:
                 continue
@@ -121,8 +124,12 @@ def verify_zarr(zpath: str, meta_dir: str | None = None, regen: bool = False,
                     bad.append(f"gt[{n}] ch{ch}: {wrong} voxels below level {level}"
                                + (f" and above the dark-confetti level {dark_max}"
                                   if confetti_on else " (no confetti baked)"))
-            else:
+            elif expected is not None:
                 expected[ch, flat] = np.maximum(expected[ch, flat], level)
+            else:
+                wrong = int((v < level).sum())
+                if wrong:
+                    bad.append(f"gt[{n}] ch{ch}: {wrong} voxels below its minimum level {level}")
         if sk is not None:
             key = f"instance_{n + 1:03d}"
             if key not in sk:

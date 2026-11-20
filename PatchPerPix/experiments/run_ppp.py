@@ -655,7 +655,7 @@ def ensure_legacy_data_paths(config):
 KNOWN_DATASETS = frozenset({
     "completely", "partly", "synth_vh", "synth_vh_u8", "himanshu", "himanshu_r044", "himanshu_20x",
     "1k_v1", "1k_v1_u8", "1k_v1.1", "1k_v1.1_u8",
-    "swc2img_1k_v1", "simple_v1",
+    "swc2img_1k_v1", "simple_v1", "simple_v2",
 })
 
 

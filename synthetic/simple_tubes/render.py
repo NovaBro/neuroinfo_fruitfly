@@ -29,13 +29,22 @@ class RenderParams:
     max_tries: int = 20
     noise: bool = True          # haze, distractor blobs, confetti (noise.py)
     confetti: bool = True       # bake confetti (False for train: added on the GPU in training)
+    # simple_v2 brightness variation; the defaults reproduce simple_v1 (one level per neuron)
+    branch_level_offset: int = 0         # each branch: neuron level + U{-k..k}
+    drift_levels: tuple = (0.0, 0.0)     # along-cable sinusoidal drift amplitude (levels), per branch
+    drift_period: tuple = (50.0, 200.0)  # drift wavelength (voxels of arc length), per branch
+    level_floor: int = 1                 # varied levels are clipped to [level_floor, 15]
+
+    @property
+    def varied(self):
+        return self.branch_level_offset > 0 or self.drift_levels[1] > 0
 
 
 def sample_seed(base_seed: int, index: int) -> int:
     return base_seed * 1_000_000 + index
 
 
-def rasterize_branch(points: np.ndarray, radius: np.ndarray, shape) -> np.ndarray:
+def rasterize_branch(points: np.ndarray, radius: np.ndarray, shape, return_index=False):
     """Flat indices of voxels whose centre lies within radius[i] of the nearest
     centreline point i (exact sub-voxel distance to the resampled centreline).
 
@@ -45,27 +54,62 @@ def rasterize_branch(points: np.ndarray, radius: np.ndarray, shape) -> np.ndarra
     shp = np.asarray(shape, dtype=np.int64)
     r_max = float(radius.max())
     reach = np.all((points > -0.5 - r_max - 1) & (points < shp - 0.5 + r_max + 1), axis=1)
+    empty = np.empty(0, dtype=np.int64)
     if not reach.any():
-        return np.empty(0, dtype=np.int64)
+        return (empty, empty) if return_index else empty
     pts, rad = points[reach], radius[reach]
     off = ball_offsets(int(math.ceil(r_max)))
     base = np.unique(np.rint(pts).astype(np.int64), axis=0)
     cand = (base[:, None, :] + off[None, :, :]).reshape(-1, 3)
     cand = cand[np.all((cand >= 0) & (cand < shp), axis=1)]
     if len(cand) == 0:
-        return np.empty(0, dtype=np.int64)
+        return (empty, empty) if return_index else empty
     flat = np.unique(flat_index(cand, shape))
     coords = np.stack(np.unravel_index(flat, tuple(shape)), axis=1).astype(np.float64)
     d, idx = cKDTree(pts).query(coords, k=1, distance_upper_bound=r_max + 1e-9)
     hit = np.isfinite(d)
     inside = np.zeros(len(flat), dtype=bool)
     inside[hit] = d[hit] <= rad[idx[hit]] + 1e-9
+    if return_index:   # nearest centreline point of each voxel, as an index into `points`
+        return flat[inside], np.nonzero(reach)[0][idx[inside]]
     return flat[inside]
 
 
-def rasterize_neuron(neuron: Neuron, shape) -> np.ndarray:
+def rasterize_neuron(neuron: Neuron, shape, keep_parts=False):
+    """Union of the branch tubes (sorted flat indices). keep_parts: also return each branch's
+    (flat, nearest point index), for per-voxel brightness."""
+    if keep_parts:
+        parts = [rasterize_branch(b.points, b.radius, shape, True) for b in neuron.branches]
+        flat = np.unique(np.concatenate([f for f, _ in parts])) if parts else np.empty(0, np.int64)
+        return flat, parts
     parts = [rasterize_branch(b.points, b.radius, shape) for b in neuron.branches]
     return np.unique(np.concatenate(parts)) if parts else np.empty(0, dtype=np.int64)
+
+
+def branch_levels(neuron: Neuron, base: int, rp: RenderParams, rng, step: float):
+    """Per-point 4-bit level of every branch: base + branch offset + sinusoidal drift along the
+    cable, rounded and clipped to [level_floor, 15]. Returns (levels per branch, json per branch)."""
+    levels, info = [], []
+    for b in neuron.branches:
+        k = rp.branch_level_offset
+        off = int(rng.integers(-k, k + 1)) if k else 0
+        amp = float(rng.uniform(*rp.drift_levels))
+        period = float(rng.uniform(*rp.drift_period))
+        phase = float(rng.uniform(0.0, 2 * math.pi))
+        s = np.arange(len(b.points)) * step
+        lv = base + off + amp * np.sin(2 * math.pi * s / period + phase)
+        levels.append(np.clip(np.rint(lv), rp.level_floor, 15).astype(np.uint8))
+        info.append({"offset": off, "drift_amp": round(amp, 3), "drift_period": round(period, 1)})
+    return levels, info
+
+
+def voxel_levels(flat, parts, levels):
+    """Level of each voxel in `flat`: max over the branches covering it (nearest point's level)."""
+    out = np.zeros(len(flat), dtype=np.uint8)
+    for (fb, ib), lv in zip(parts, levels):
+        if len(fb):
+            np.maximum.at(out, np.searchsorted(flat, fb), lv[ib])
+    return out
 
 
 def skeleton_voxels(neuron: Neuron, shape) -> np.ndarray:
@@ -101,15 +145,18 @@ def make_sample(index: int, base_seed: int = 0, gp: GeometryParams | None = None
         for _ in range(rp.max_tries):
             neuron = build_neuron(rng, gp)
             if neuron is not None:
-                flat = rasterize_neuron(neuron, shape)
+                if rp.varied:
+                    flat, parts = rasterize_neuron(neuron, shape, keep_parts=True)
+                else:
+                    flat, parts = rasterize_neuron(neuron, shape), None
                 if flat.size >= rp.min_voxels:
-                    accepted = (neuron, flat)
+                    accepted = (neuron, flat, parts)
                     break
             redraws += 1
         if accepted is None:
             skipped += 1
             continue
-        neuron, flat = accepted
+        neuron, flat, parts = accepted
         n_cc = count_components(flat, shape)
         if n_cc != 1:
             raise RuntimeError(
@@ -117,7 +164,11 @@ def make_sample(index: int, base_seed: int = 0, gp: GeometryParams | None = None
                 "26-connected pieces; truncation should make this impossible (generator bug)")
         colour = COLOURS[int(rng.integers(len(COLOURS)))]
         level = int(rng.integers(rp.level[0], rp.level[1] + 1))
-        instances.append({"neuron": neuron, "flat": flat, "colour": colour, "level": level})
+        inst = {"neuron": neuron, "flat": flat, "colour": colour, "level": level}
+        if rp.varied:
+            lv, inst["branch_levels"] = branch_levels(neuron, level, rp, rng, gp.resample_step)
+            inst["vox_level"] = voxel_levels(flat, parts, lv)
+        instances.append(inst)
     if not instances:
         raise RuntimeError(f"sample {index} (seed {seed}): no neuron passed the size check")
 
@@ -129,9 +180,10 @@ def make_sample(index: int, base_seed: int = 0, gp: GeometryParams | None = None
     raw_flat = raw.reshape(3, -1)
     for inst in instances:
         flat = inst["flat"]
+        value = inst.get("vox_level", inst["level"])
         for ch in range(3):
             if inst["colour"][ch]:
-                raw_flat[ch, flat] = np.maximum(raw_flat[ch, flat], inst["level"])
+                raw_flat[ch, flat] = np.maximum(raw_flat[ch, flat], value)
     if rp.noise:
         noise_info["confetti"] = noise.confetti(raw, nrng, npar) if rp.confetti else None
 
@@ -144,6 +196,8 @@ def make_sample(index: int, base_seed: int = 0, gp: GeometryParams | None = None
             "colour": list(inst["colour"]),
             "level": inst["level"],
             "voxels": int(inst["flat"].size),
+            **({"level_min": int(inst["vox_level"].min()), "level_max": int(inst["vox_level"].max()),
+                "branch_levels": inst["branch_levels"]} if "vox_level" in inst else {}),
             **neuron.to_json(),
         })
         skeletons[f"instance_{n + 1:03d}"] = skeleton_voxels(neuron, shape)
