@@ -67,7 +67,7 @@ TEST_PCT = 5          # all volumes of a 5-volume test at once
 MAX_RETRIES = 1
 # evaluate: the merge job only reuses per-volume results; per-volume tasks get EVAL_VOL_MEM each
 # (10 vols in one 112g job OOM-hung on 2026-11-07; cs has no per-user mem cap)
-EVAL_ENV = {"EVAL_MEM": "64g", "EVAL_PARTITION": "cs", "EVAL_TIME": "02:00:00",
+EVAL_ENV = {"EVAL_MEM": "96g", "EVAL_PARTITION": "cs", "EVAL_TIME": "02:00:00",
             "EVAL_VOL_MEM": "96g", "EVAL_VOL_TIME": "03:00:00"}
 
 LRS = [("1e-4", 0.0001), ("4e-4", 0.0004), ("8e-4", 0.0008), ("1e-3", 0.001)]

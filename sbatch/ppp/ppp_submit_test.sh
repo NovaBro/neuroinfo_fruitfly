@@ -64,6 +64,9 @@ Flags:
   --stage all|predict|decode|label|legacy   array stage (default all)
   --pct K                  Array concurrency %K (default 2)
   --agg                    After --stage legacy: CPU evaluate afterok
+  --no-eval                array --stage all|label: do not chain evaluate after the
+                           label array (no-GT inference, e.g. himanshu). Labels stay;
+                           pred_affs are not stripped (run strip_pred_affs.py by hand)
   --vi-gpu                 array label stage: one GPU job (no GPU/CPU split)
   --vi FILE.toml           VI overlay (default vi_th_0_3.toml)
   --eval FILE.toml         Eval overlay (default eval_rm200.toml)
@@ -97,6 +100,7 @@ KEEP_PRED_AFFS=0
 KEEP_PRED_CODE=0
 KEEP_PRED_NUMINST=0
 DO_AGG=0
+NO_EVAL=0
 VI_GPU=0
 SAMPLE_EXPLICIT=0
 SPLIT_EXPLICIT=0
@@ -137,6 +141,7 @@ while [[ $# -gt 0 ]]; do
     --keep-pred-code) KEEP_PRED_CODE=1; shift ;;
     --keep-pred-numinst) KEEP_PRED_NUMINST=1; shift ;;
     --agg) DO_AGG=1; shift ;;
+    --no-eval) NO_EVAL=1; shift ;;
     --vi-gpu) VI_GPU=1; shift ;;
     --id)
       [[ $# -ge 2 ]] || { echo "Error: $1 needs a value" >&2; exit 1; }
@@ -251,6 +256,14 @@ fi
 # Bare array with no --stage → all (preferred pipeline).
 if [[ "${MODE}" == "array" && -z "${STAGE}" ]]; then
   STAGE="all"
+fi
+
+if [[ "${NO_EVAL}" -eq 1 && "${DO_AGG}" -eq 1 ]]; then
+  echo "Error: --no-eval and --agg are mutually exclusive" >&2
+  exit 1
+fi
+if [[ "${NO_EVAL}" -eq 1 && "${MODE}" != "array" ]]; then
+  echo "Warning: --no-eval only applies to array mode (ignored for mode=${MODE})" >&2
 fi
 
 # --agg only meaningful for legacy GPU predict+label array.

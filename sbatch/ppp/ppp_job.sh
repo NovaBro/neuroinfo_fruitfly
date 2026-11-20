@@ -608,11 +608,20 @@ if has_task label && ! has_task predict && ! has_task decode; then
     exit 1
   fi
   PRED_ZARR="$(processed_sample_zarr "${CKPT}" "${SAMPLE}")"
-  if [[ ! -d "${PRED_ZARR}/volumes/pred_affs" ]]; then
+  # Resubmitted label array (LABEL_RESUME=1, overwrite=false): a volume whose
+  # instance labels already exist was evaluated and had pred_affs stripped;
+  # run_ppp skips it, so do not require pred_affs.
+  _done_hdf=""
+  if [[ "${LABEL_RESUME}" == "1" ]]; then
+    _done_hdf="$(find "${REPO_ROOT}/metrics/ppp/${EXP_ID}/${PROCESSED_SPLIT:-test}/instanced/${CKPT}" \
+      -path "*/${SAMPLE}.hdf" -print -quit 2>/dev/null || true)"
+  fi
+  if [[ -n "${_done_hdf}" ]]; then
+    echo "label resume: ${_done_hdf} exists; not requiring pred_affs for ${SAMPLE}"
+  elif [[ ! -d "${PRED_ZARR}/volumes/pred_affs" ]]; then
     echo "Error: missing pred_affs for label: ${PRED_ZARR}/volumes/pred_affs" >&2
     exit 1
-  fi
-  if ! python3 sbatch/ppp/check_prediction_complete.py -q "${PRED_ZARR}"; then
+  elif ! python3 sbatch/ppp/check_prediction_complete.py -q "${PRED_ZARR}"; then
     echo "Error: incomplete pred_affs for label: ${PRED_ZARR}" >&2
     exit 1
   fi

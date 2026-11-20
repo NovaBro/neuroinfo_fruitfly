@@ -145,7 +145,8 @@ submit_evaluate() {
     "${split_kv}" \
     "CKPT=${CKPT}")"
   # EVAL_TIME / EVAL_MEM / EVAL_PARTITION (env) override the evaluate job resources.
-  jid=$(sbatch_submit "${job_name}" "16" "${EVAL_TIME:-04:00:00}" "${EVAL_MEM:-112g}" "${EVAL_PARTITION:-cs,cpu_short}" "" "${export_csv}")
+  # Memory default 96g (user 2026-11-09): 64g evaluate jobs over 7 completely test volumes hit the cap and stalled.
+  jid=$(sbatch_submit "${job_name}" "16" "${EVAL_TIME:-04:00:00}" "${EVAL_MEM:-96g}" "${EVAL_PARTITION:-cs,cpu_short}" "" "${export_csv}")
   echo "evaluate=${jid} exp=${EXP_ID} split=${SPLIT:-both} both=${EVAL_BOTH_SPLITS} ckpt=${CKPT:-last}"
   LAST_ID="${jid}"
   EVAL_BOTH_SPLITS=0
@@ -355,10 +356,10 @@ submit_eval_per_volume() {
   DEP_ID="${label_arr}"
   DEP_TYPE="aftercorr"
   ARR_CPUS="${EVAL_VOL_CPUS:-8}"
-  ARR_MEM="${EVAL_VOL_MEM:-64g}"
+  ARR_MEM="${EVAL_VOL_MEM:-96g}"  # default 96g for evaluation jobs (user 2026-11-09)
   ARR_PCT="${EVAL_VOL_PCT:-20}"
   submit_array_split "${sp}" "evaluate" "0" "0" \
-    "${cfgs}" "${EVAL_VOL_TIME:-02:00:00}" "${EVAL_PARTITION:-cs,cpu_short}" "" \
+    "${cfgs}" "${EVAL_VOL_TIME:-01:00:00}" "${EVAL_PARTITION:-cs,cpu_short}" "" \
     "ppp_${PRESET}_evalvol_${sp}" "0"
   unset ARR_CPUS ARR_MEM ARR_PCT
   eval_arr="${LAST_ID}"
@@ -369,7 +370,8 @@ submit_eval_per_volume() {
   saved_extra=("${EXTRA_CONFIGS[@]+"${EXTRA_CONFIGS[@]}"}")
   EXTRA_CONFIGS+=("eval_resume.toml")
   DEP_ID="${eval_arr}:${label_arr}"
-  submit_evaluate
+  # Merge only (per-volume results already exist): shorter default than a full evaluate.
+  EVAL_TIME="${EVAL_TIME:-01:30:00}" submit_evaluate
   EXTRA_CONFIGS=("${saved_extra[@]+"${saved_extra[@]}"}")
 }
 
@@ -399,15 +401,19 @@ submit_label_split() {
   DO_AGG=0
   DEP_ID="${dep}"
   DEP_TYPE="aftercorr"
+  # Test walltimes are >=1.8x the observed max (v1.1 sparse test, Nov 2026: pred 33 min,
+  # labgraph 36, label 11, evalvol 25, merge eval 40); short limits fit backfill gaps.
+  # (experiment_v2 EXP 1, 2026-11-09: labgraph asked 4 h, ran 9-16 min, and queued ~3 h.)
+  # LABGRAPH_TIME (env) overrides the GPU labgraph walltime.
   submit_array_split "${sp}" "label" "1" "0" \
-    "${gpu_cfgs}" "04:00:00" "l40s_public" "gpu:1" "ppp_${PRESET}_labgraph_${sp}" "1"
+    "${gpu_cfgs}" "${LABGRAPH_TIME:-01:30:00}" "l40s_public" "gpu:1" "ppp_${PRESET}_labgraph_${sp}" "1"
 
   DO_AGG="${saved_agg}"
   DEP_ID="${LAST_ID}"
   [[ "${DRY_RUN}" -eq 1 ]] && DEP_ID="DRYRUN_LABGRAPH_${sp}"
   DEP_TYPE="aftercorr"
   submit_array_split "${sp}" "label" "1" "0" \
-    "${cpu_cfgs}" "04:00:00" "cs,cpu_short" "" "ppp_${PRESET}_label_${sp}" "0"
+    "${cpu_cfgs}" "01:00:00" "cs,cpu_short" "" "ppp_${PRESET}_label_${sp}" "0"
   DEP_TYPE=""
   DEP_ID=""
 }
@@ -438,7 +444,7 @@ submit_array_mode() {
       for sp in "${splits_list[@]}"; do
         DEP_ID=""
         submit_array_split "${sp}" "predict" "0" "1" \
-          "${pred_cfgs}" "02:00:00" "l40s_public" "gpu:1" "ppp_${PRESET}_pred_${sp}" "1"
+          "${pred_cfgs}" "01:00:00" "l40s_public" "gpu:1" "ppp_${PRESET}_pred_${sp}" "1"
       done
       ;;
     decode)
@@ -451,7 +457,7 @@ submit_array_mode() {
       done
       ;;
     label)
-      DO_AGG=1
+      DO_AGG=$(( ${NO_EVAL:-0} == 1 ? 0 : 1 ))   # --no-eval: no evaluate after label
       for sp in "${splits_list[@]}"; do
         if [[ "${VI_GPU}" -eq 1 ]]; then
           label_array_resources
@@ -470,7 +476,7 @@ submit_array_mode() {
         DO_AGG=0
         DEP_ID=""
         submit_array_split "${sp}" "predict" "0" "1" \
-          "${pred_cfgs}" "02:00:00" "l40s_public" "gpu:1" "ppp_${PRESET}_pred_${sp}" "1"
+          "${pred_cfgs}" "01:00:00" "l40s_public" "gpu:1" "ppp_${PRESET}_pred_${sp}" "1"
         pred_id="${LAST_ID}"
         [[ "${DRY_RUN}" -eq 1 ]] && pred_id="DRYRUN_PRED_${sp}"
         label_dep="${pred_id}"
@@ -483,7 +489,7 @@ submit_array_mode() {
           [[ "${DRY_RUN}" -eq 1 ]] && decode_id="DRYRUN_DECODE_${sp}"
           label_dep="${decode_id}"
         fi
-        DO_AGG=1
+        DO_AGG=$(( ${NO_EVAL:-0} == 1 ? 0 : 1 ))   # --no-eval: no evaluate after label
         if [[ "${VI_GPU}" -eq 1 ]]; then
           label_array_resources
           DEP_ID="${label_dep}"
