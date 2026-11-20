@@ -1,0 +1,7 @@
+# Dataset Experiments EXP 1.1 / 1.2 (user 2026-11-09, replaces the 16 h / 55k variant): 10 h job limit with the
+# iteration count matched to it. expv2-e1.1/1.2 (same model, L40S, compile + fp16 raw): 0.965 s/it steady, ~13 min
+# startup + val caching (+ ~4 min for the completely val set): 35k its ~= 9.65 h (~20 min margin). Checkpoints are only
+# saved at multiples of 5k, so 35k is the largest that fits (40k ~= 11 h). Stack after dsexp_pre.toml.
+# WarmupCosine warmup = 10% of 35k = 3.5k its.
+[training]
+max_iterations = 35000

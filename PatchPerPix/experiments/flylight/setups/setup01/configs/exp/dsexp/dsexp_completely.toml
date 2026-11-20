@@ -1,0 +1,7 @@
+# Dataset Experiments EXP 0 (baseline_v1_*): train from scratch on completely (18 train vols), validate on
+# completely val (all 5; the plan's "n=7" is the test split's size). No extra val set (it would duplicate val).
+# Stack after dsexp_pre.toml (+ dsexp_10h.toml: 35k its / 10 h, user 2026-11-09).
+[data]
+train_datasets = ["completely"]
+val_datasets = ["completely"]
+extra_val_datasets = []

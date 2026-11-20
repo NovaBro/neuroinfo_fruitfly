@@ -1,0 +1,5 @@
+# Dataset Experiments EXP 1 (vince-data_*): train and validate on 1k_v1.1 (the preset validates on completely).
+# 1k_v1.1 splits: train 796 / val 109 / test 95 volumes (disjoint brain ids).
+[data]
+train_datasets = ["1k_v1.1"]
+val_datasets = ["1k_v1.1"]

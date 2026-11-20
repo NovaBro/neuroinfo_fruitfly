@@ -1,0 +1,24 @@
+# Dataset Experiments finetune (EXP 1.3/1.4, 2.3/2.4; md_guides/experiments/experiment_v2.md): finetune the best
+# pretrain checkpoint (lowest val loss on the synthetic val set) on completely for 6k its, peak lr 5e-5, 10% linear
+# warmup + cosine. Stack: base + preset + expv2_e1_common.toml + this + dsexp_ft_<dataset>.toml + a generated
+# overlay (max_iterations = N + 6000, start_iter = N), with the checkpoint seeded by
+# sbatch/ppp/expv2/seed_finetune_ckpt.py (fresh Adam).
+# Validation (user 2026-11-10: both sets in pretraining and finetuning): completely val (5 vols) = val_metrics.csv,
+# the selection metric for the finetune (plan EXP 1.5 / 2.5); the pretraining dataset's val set (same first 5 vols
+# as in pretraining) = val_metrics_<dataset>.csv via extra_val_datasets in dsexp_ft_<dataset>.toml.
+[data]
+train_datasets = ["completely"]
+val_datasets = ["completely"]
+max_val_samples = 5
+
+[training]
+checkpoints = 1000
+val_log_step = 1000
+
+[optimizer.optimizer]
+lr = 5e-5
+
+[optimizer.lr_scheduler]
+lr_scheduler = "WarmupCosine"
+warmup_frac = 0.10
+min_lr_ratio = 0.0

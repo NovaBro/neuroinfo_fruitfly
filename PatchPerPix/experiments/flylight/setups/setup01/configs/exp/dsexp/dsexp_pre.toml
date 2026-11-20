@@ -1,0 +1,23 @@
+# experiment_v2 Dataset Experiments (md_guides/experiments/experiment_v2.md), pretraining EXP 1.1/1.2/2.1/2.2.
+# Stack: base original_default.toml + preset our-noenc-c1k_v1.1 + expv2_e1_common.toml (FMAPs 15, compile,
+# fp16 raw) + this [+ expv2_e1_n500.toml for n=500] [+ dsexp_swc2img.toml for EXP 2].
+# User 2026-11-09: 50k its or 20 h (job time limit), whichever comes first; checkpoint + val every 5k;
+# peak lr 4e-4 with 10% linear warmup + cosine. Validation on the dataset's own val split (first 5
+# volumes) = val_metrics.csv (best checkpoint = lowest val loss) plus completely val (5 volumes) =
+# val_metrics_completely.csv (extra_val_datasets).
+[data]
+max_val_samples = 5
+extra_val_datasets = ["completely"]
+
+[training]
+max_iterations = 50000
+checkpoints = 5000
+val_log_step = 5000
+
+[optimizer.optimizer]
+lr = 0.0004
+
+[optimizer.lr_scheduler]
+lr_scheduler = "WarmupCosine"
+warmup_frac = 0.10
+min_lr_ratio = 0.0

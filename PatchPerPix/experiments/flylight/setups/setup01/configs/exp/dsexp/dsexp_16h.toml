@@ -1,0 +1,6 @@
+# Dataset Experiments EXP 1.1 / 1.2 (user 2026-11-09): 16 h job limit with the iteration count matched to it.
+# expv2-e1.1/1.2 (same model, L40S, compile + fp16 raw): 0.965 s/it steady, ~13 min startup + val caching;
+# 55k its ~= 15.0 h (+ second val set), ~1 h margin; 60k (~16.4 h) would not fit. Stack after dsexp_pre.toml
+# (which sets 50k for the 20 h variant); WarmupCosine warmup = 10% of 55k = 5.5k its.
+[training]
+max_iterations = 55000

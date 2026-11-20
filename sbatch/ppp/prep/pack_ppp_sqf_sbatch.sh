@@ -5,6 +5,13 @@
 #   DATASETS=1k_v1 sbatch sbatch/ppp/prep/pack_ppp_sqf_sbatch.sh
 #   CLIPMAX=255 DATASETS=1k_v1_u8 sbatch sbatch/ppp/prep/pack_ppp_sqf_sbatch.sh
 #   BATCH=40 OVERWRITE=1 DATASETS=1k_v1 sbatch sbatch/ppp/prep/pack_ppp_sqf_sbatch.sh
+#   PLAIN_SRC=1 SUBTRACT_MEDIAN=1 DATASETS=swc2img_1k_v1 sbatch sbatch/ppp/prep/pack_ppp_sqf_sbatch.sh
+# PLAIN_SRC=1: volumes/raw + gt_instances are symlinks outside /synth_MCFO (no ${SQF_ROOT}/<dataset>.sqf).
+#   Source images listed in fisbe/<dataset>/source_sqf.txt (one .sqf per line) are mounted read-only;
+#   SWC2IMG: skeleton + list from sbatch/ppp/prep/synth/build_swc2img_skeleton.py.
+# SUBTRACT_MEDIAN=1: prepare_fisbe_for_ppp.py --subtract-median (SWC2IMG ~2,500 render pedestal).
+# RAW_DTYPE=float16: store raw_normalized as float16 (prepare_fisbe_for_ppp.py --raw-dtype).
+# SPLITS="train val": only pack these splits (default "train val test").
 # Rebuild skeletons first if fisbe/<dataset> is missing:
 #   SQF=/scratch/vh2308/data/synth_MCFO/1k_v1.sqf \
 #     sbatch sbatch/ppp/prep/synth/build_synth_from_sqf_sbatch.sh
@@ -26,6 +33,10 @@ DATASETS="${DATASETS:-}"
 BATCH="${BATCH:-40}"
 OVERWRITE="${OVERWRITE:-0}"
 CLIPMAX="${CLIPMAX:-1500}"
+PLAIN_SRC="${PLAIN_SRC:-0}"
+SUBTRACT_MEDIAN="${SUBTRACT_MEDIAN:-0}"
+RAW_DTYPE="${RAW_DTYPE:-float32}"
+SPLITS="${SPLITS:-train val test}"
 SQF_ROOT="/scratch/vh2308/data/synth_MCFO"
 SIF="/share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif"
 REPO_ROOT="/scratch/wmz2007/neuroinfo_fruitfly"
@@ -59,7 +70,7 @@ fi
 # Flat sample list: "split name.zarr", train then val then test, each sorted.
 list_dataset_samples() {
   local ds="$1" split d z
-  for split in train val test; do
+  for split in ${SPLITS}; do
     d="${REPO_ROOT}/fisbe/${ds}/${split}"
     [[ -d "${d}" ]] || continue
     for z in "${d}/"*.zarr; do
@@ -91,7 +102,7 @@ plant_symlinks() {
 }
 
 if [[ -z "${SLURM_ARRAY_TASK_ID:-}" ]]; then
-  if [[ ! -f "${SQF_ROOT}/${DATASETS}.sqf" ]]; then
+  if [[ "${PLAIN_SRC}" != "1" && ! -f "${SQF_ROOT}/${DATASETS}.sqf" ]]; then
     echo "missing source image ${SQF_ROOT}/${DATASETS}.sqf" >&2
     exit 1
   fi
@@ -105,7 +116,7 @@ if [[ -z "${SLURM_ARRAY_TASK_ID:-}" ]]; then
   n_batches=$(( (n + BATCH - 1) / BATCH ))
   echo "Submitting array 0-$((n_batches - 1)) for ${n} samples (BATCH=${BATCH})"
   sbatch --array="0-$((n_batches - 1))" \
-    --export=ALL,DATASETS="${DATASETS}",CLIPMAX="${CLIPMAX}",BATCH="${BATCH}",OVERWRITE="${OVERWRITE}" \
+    --export=ALL,DATASETS="${DATASETS}",CLIPMAX="${CLIPMAX}",BATCH="${BATCH}",OVERWRITE="${OVERWRITE}",PLAIN_SRC="${PLAIN_SRC}",SUBTRACT_MEDIAN="${SUBTRACT_MEDIAN}",RAW_DTYPE="${RAW_DTYPE}",SPLITS="${SPLITS}" \
     sbatch/ppp/prep/pack_ppp_sqf_sbatch.sh
   exit 0
 fi
@@ -116,10 +127,26 @@ if [[ -z "${SLURM_TMPDIR:-}" ]]; then
 fi
 
 SRC_SQF="${SQF_ROOT}/${DATASETS}.sqf"
-if [[ ! -f "${SRC_SQF}" ]]; then
+SRC_OVERLAY=(--overlay "${SRC_SQF}:ro")
+SRC_CHECK="if [[ ! -d /synth_MCFO/${DATASETS}/samples ]]; then echo \"missing /synth_MCFO/${DATASETS}/samples\" >&2; exit 1; fi;"
+if [[ "${PLAIN_SRC}" == "1" ]]; then
+  SRC_OVERLAY=()
+  SRC_CHECK=""
+  SRC_LIST="${REPO_ROOT}/fisbe/${DATASETS}/source_sqf.txt"
+  if [[ -f "${SRC_LIST}" ]]; then
+    while read -r _sqf; do
+      [[ -z "${_sqf}" || "${_sqf}" == \#* ]] && continue
+      SRC_OVERLAY+=(--overlay "$(realpath -e "${_sqf}"):ro")
+    done < "${SRC_LIST}"
+    echo "source overlays from ${SRC_LIST}: ${SRC_OVERLAY[*]}"
+  fi
+elif [[ ! -f "${SRC_SQF}" ]]; then
   echo "missing source image ${SRC_SQF}" >&2
   exit 1
 fi
+PREP_EXTRA=""
+[[ "${SUBTRACT_MEDIAN}" == "1" ]] && PREP_EXTRA="--subtract-median"
+PREP_EXTRA="${PREP_EXTRA} --raw-dtype ${RAW_DTYPE}"
 
 mapfile -t ALL_SAMPLES < <(list_dataset_samples "${DATASETS}")
 start=$(( SLURM_ARRAY_TASK_ID * BATCH ))
@@ -173,16 +200,14 @@ done
 
 singularity exec \
   --overlay env/ppp.ext3:ro \
-  --overlay "${SRC_SQF}:ro" \
+  "${SRC_OVERLAY[@]}" \
   --bind "${SLURM_TMPDIR}:${SLURM_TMPDIR}" \
   "${SIF}" \
   /bin/bash -c "source /ext3/env.sh; conda activate ppp; \
-    if [[ ! -d /synth_MCFO/${DATASETS}/samples ]]; then \
-      echo \"missing /synth_MCFO/${DATASETS}/samples\" >&2; exit 1; \
-    fi; \
+    ${SRC_CHECK} \
     python -u PatchPerPix/experiments/flylight/prepare_fisbe_for_ppp.py \
       --fisbe-root ${WORK} --opening-radius 1 --datasets ${DATASETS} \
-      --clipmax ${CLIPMAX} --overwrite"
+      --clipmax ${CLIPMAX} --overwrite ${PREP_EXTRA}"
 
 for (( i = start; i < end; i++ )); do
   read -r split name <<< "${ALL_SAMPLES[$i]}"

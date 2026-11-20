@@ -1,0 +1,3 @@
+# EXP 1.3/1.4 finetune (vince-data_*): also validate on the 1k_v1.1 val set (first 5 vols, as in pretraining).
+[data]
+extra_val_datasets = ["1k_v1.1"]

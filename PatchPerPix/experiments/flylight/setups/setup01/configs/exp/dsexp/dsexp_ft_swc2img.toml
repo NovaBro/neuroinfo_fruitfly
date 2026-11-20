@@ -1,0 +1,4 @@
+# EXP 2.3/2.4 finetune (gaurav-data_*): also validate on the SWC2IMG val set (first 5 vols, as in pretraining).
+# ppp_datasets.py lists extra_val_datasets for train jobs, so ppp_job.sh mounts the SWC2IMG source parts + shards.
+[data]
+extra_val_datasets = ["swc2img_1k_v1"]

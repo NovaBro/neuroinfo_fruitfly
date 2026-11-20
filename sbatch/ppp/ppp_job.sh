@@ -467,6 +467,23 @@ resolve_data_overlays() {
         echo "SQF=${sqf} mount=/synth_MCFO/${name}"
       done
     done
+    # fisbe/<dataset>/source_sqf.txt: source images whose raw/gt_instances the
+    # skeleton links into (outside /synth_MCFO, e.g. SWC2IMG's 4 parts that
+    # mount at /swc2img_1k_v1). Training reads volumes/gt_instances' shape.
+    src_list="${FISBE_PARENT}/${ds}/source_sqf.txt"
+    if [[ -f "${src_list}" ]]; then
+      while read -r sqf; do
+        [[ -z "${sqf}" || "${sqf}" == \#* ]] && continue
+        if ! sqf="$(realpath -e "${sqf}")"; then
+          echo "error: source image listed in ${src_list} not found" >&2
+          exit 1
+        fi
+        [[ -n "${mounted[${sqf}]:-}" ]] && continue
+        mounted["${sqf}"]=1
+        DATA_OVERLAY_ARGS+=(--overlay "${sqf}:ro")
+        echo "SRC_SQF=${sqf} (${src_list})"
+      done < "${src_list}"
+    fi
     need_ppp=0
     for split in train val test; do
       for arr in "${PPP_LINK_ARRAYS[@]}"; do

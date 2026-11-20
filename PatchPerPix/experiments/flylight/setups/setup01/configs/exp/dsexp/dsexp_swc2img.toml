@@ -1,0 +1,9 @@
+# Dataset Experiments EXP 2 (gaurav-data_*): train and validate on SWC2IMG renders of the 1k_v1 brains.
+# fisbe/swc2img_1k_v1 built by sbatch/ppp/prep/synth/build_swc2img_skeleton.py (same per-brain split as
+# 1k_v1.1: train 788 / val 105 / test 93 of 986 renders) and packed with
+#   PLAIN_SRC=1 SUBTRACT_MEDIAN=1 RAW_DTYPE=float16 SPLITS="train val" DATASETS=swc2img_1k_v1 \
+#     sbatch sbatch/ppp/prep/pack_ppp_sqf_sbatch.sh
+# raw_normalized = clip(raw - per-channel median, 0, 1500) / 1500 (user 2026-11-09), stored float16.
+[data]
+train_datasets = ["swc2img_1k_v1"]
+val_datasets = ["swc2img_1k_v1"]

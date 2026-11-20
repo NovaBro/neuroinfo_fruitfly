@@ -1,0 +1,7 @@
+# Smoke test for the extra val set (extra_val_datasets): stack last on a dsexp run.
+[training]
+max_iterations = 40
+checkpoints = 20
+val_log_step = 20
+val_num_batches = 1
+profiling = 10
