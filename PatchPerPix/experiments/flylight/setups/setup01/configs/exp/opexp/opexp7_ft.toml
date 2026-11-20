@@ -1,0 +1,6 @@
+# experiment_v2 OP-EXP 7 (md_guides/experiments/experiment_v2.md): LoRA fine-tuning on completely + a 1k_v1.1 subset.
+# Stack after opexp6_ft.toml (completely val n=5 selects the ckpt, 1k_v1.1 val n=5 extra). The per-arm overlay from
+# sbatch/ppp/opexp/opexp7.py caps 1k_v1.1 with [data] max_train_samples_per_dataset (first N sorted: 18 / 36 / 72).
+# Mixing (user 2026-11-11): uniform per volume, so the real-data share is 18 / (18 + N) = 50% / 33% / 20%.
+[data]
+train_datasets = ["completely", "1k_v1.1"]

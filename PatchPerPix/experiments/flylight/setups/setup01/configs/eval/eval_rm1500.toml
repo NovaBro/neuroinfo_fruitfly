@@ -1,0 +1,5 @@
+# Eval overlay: drop predicted components < 1500 voxels before matching (base default 500).
+# experiment_v2 OP-EXP 5 sweep (500 / 1000 / 1500; eval_rm200 is the default --eval).
+[evaluation]
+remove_small_components = 1500
+from_scratch = true

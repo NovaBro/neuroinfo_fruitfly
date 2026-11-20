@@ -1,0 +1,7 @@
+# experiment_v2 OP-EXP 4 (md_guides/experiments/experiment_v2.md): fine-tune hyperparameters.
+# Stack after expv2_e1_common.toml + expv2_e1_ft.toml (completely train/val, ckpt + val every 1k,
+# WarmupCosine). OP-EXP 4 differs from EXP 1.3 in the warmup (10% instead of 5%) and the peak lr,
+# which the driver (sbatch/ppp/opexp/opexp45.py) sets per arm in a generated overlay
+# (opexp4_ft_<exp>.toml: lr, max_iterations = N + 6000, start_iter = N).
+[optimizer.lr_scheduler]
+warmup_frac = 0.10

@@ -1,0 +1,9 @@
+# experiment_v2 OP-EXP 6 (md_guides/experiments/experiment_v2.md): LoRA fine-tuning hyperparameter search.
+# Stack: expv2_e1_common.toml + expv2_e1_ft.toml (completely train/val, ckpt + val every 1k, WarmupCosine) +
+# opexp4_ft.toml (10% warmup) + this + a generated per-arm overlay from sbatch/ppp/opexp/opexp6.py
+# ([training.lora] rank/alpha, peak lr, max_iterations = N + 6000, start_iter = N) + eval_rm1500.toml (test).
+# Validation (user 2026-11-10: both sets during finetuning): completely val (all 5 vols) = val_metrics.csv,
+# the checkpoint-selection metric; 1k_v1.1 val (first 5 vols, as in the pretraining) = val_metrics_1k_v1.1.csv.
+[data]
+max_val_samples = 5
+extra_val_datasets = ["1k_v1.1"]
