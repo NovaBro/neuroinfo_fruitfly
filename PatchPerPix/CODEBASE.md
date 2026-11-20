@@ -92,6 +92,7 @@ For the `flylight` app, these resolve to `experiments/flylight/setups/setup01/*.
 | `train.py` | Builds **gunpowder** data pipelines; calls `torch_model.UnetModelWrapper` and `torch_loss.LossWrapper` |
 | `torch_model.py` | U-Net from `funlib.learn.torch`; optional code head + decoder (`Autoencoder`); affinity generation via `PatchPerPix.util.train_util` |
 | `torch_loss.py` | Masked CE/BCE losses for affinities, codes, numinst |
+| `lora.py` | Optional LoRA fine-tuning (`[training.lora]`): wraps UNet convs, freezes the rest, converts seeded checkpoints; `merge_lora_state_dict` used by predict/decode |
 | `PatchPerPix.util.train_util` | `normalize`, checkpoint helpers, `seg_to_affgraph_*` for on-the-fly GT affinities |
 
 ### 4. Inference stack (`predict_no_gp.py` → `decode.py`)
@@ -215,6 +216,18 @@ This replaced gunpowder's `TrainValProvider` interleaving, which logged only to 
 overlay) and leaked a single-batch val loss into the `Train process` lines. Runs from before the change
 have those at `iteration % val_log_step == 2`, and `ppp_train_track.py` can split them off
 (`legacy_val_log_step`). Instance metrics stay in `-d validate_checkpoints`.
+
+**LoRA fine-tuning** (`setup01/lora.py`, `[training.lora]` → `config["lora"]`, overlay
+`configs/train/lora_r8.toml`; noenc only): `lora.prepare()` runs right after `init_layers()`. It
+loads a plain seeded checkpoint (`sbatch/ppp/expv2/seed_finetune_ckpt.py`) and wraps the targeted UNet
+convs (`l_conv`/`r_conv`, optionally `r_up`) in place as `LoRAConv3d`/`LoRAConvTranspose3d`
+(`y = conv(x) + alpha/r · B(A(x))`, B zero-initialised), then freezes everything except the adapters
+and, by default, the output heads. The optimizer gets only trainable params. Because
+`TorchTrainExt.start()` loads the latest checkpoint strictly, `lora.write_seed_checkpoint()` rewrites
+the plain seed in LoRA form before the pipeline starts (original kept as `train_net_seed_prelora_<N>`).
+Base `weight`/`bias` keep their state_dict names, so `predict_no_gp.py` and `decode.py` call
+`merge_lora_state_dict()` to fold `B·A` into the weights and load into the plain model. Tests:
+`sbatch/ppp/tools/test_lora.py`.
 
 ---
 

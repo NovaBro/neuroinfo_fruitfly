@@ -1,0 +1,22 @@
+# LoRA fine-tune overlay (setup01/lora.py). Stack after a fine-tune exp overlay, e.g.
+#   ... --config expv2_e1_ft.toml --config lora_r8.toml
+#
+# Rank-8 adapters on the UNet encoder (l_conv) and decoder (r_conv) 3x3x3 convs; the two output
+# heads stay fully trainable; every other weight is frozen. Expv2 model (fmaps 15): 0.69M trainable
+# of 24.1M (0.76M with "r_up"; measured by sbatch/ppp/tools/test_lora.py).
+#
+# Needs a seeded pretrain checkpoint in <exp>/train (sbatch/ppp/expv2/seed_finetune_ckpt.py). On
+# first start train.py rewrites that seed in LoRA form; the original stays as
+# train_net_seed_prelora_<N>. The seed script's --lr is the peak lr actually used (train.py warns
+# if [optimizer.optimizer] lr differs). LoRA usually wants a higher peak than full fine-tuning
+# (1e-4), e.g. 5e-4 to 1e-3: set both together in the exp overlay / driver.
+#
+# predict/decode fold the adapters into the conv weights when loading, so test configs need no
+# LoRA section.
+[training.lora]
+enabled = true
+rank = 8
+alpha = 8.0                      # update scale = alpha / rank
+targets = ["l_conv", "r_conv"]   # add "r_up" to also adapt the transposed-conv upsamplers
+train_heads = true
+train_bias = false

@@ -1,0 +1,21 @@
+# LoRA smoke (150 its) on a checkpoint seeded at iteration 20000, e.g. expv2-e1.1-pre-n1000 @ 20000:
+#   python sbatch/ppp/expv2/seed_finetune_ckpt.py \
+#     --src metrics/ppp/expv2-e1.1-pre-n1000/train/train_net_checkpoint_20000 \
+#     --dst-dir metrics/ppp/lora-smoke/train --iteration 20000 --lr 5e-4 --warmup-frac 0.05 --ft-iters 150
+#   ./sbatch/ppp/ppp_submit_train.sh our-noenc-c1k_v1.1 --base original_default.toml --id lora-smoke \
+#     --config expv2_e1_common.toml --config expv2_e1_ft.toml --config lora_r8.toml \
+#     --config lora_smoke.toml --time 00:40:00
+# Checkpoints + val every 50 its; lr / start_iter match the seed command above.
+[training]
+max_iterations = 20150
+checkpoints = 50
+snapshots = 50
+val_log_step = 50
+val_num_batches = 2
+profiling = 10
+
+[optimizer.optimizer]
+lr = 0.0005
+
+[optimizer.lr_scheduler]
+start_iter = 20000

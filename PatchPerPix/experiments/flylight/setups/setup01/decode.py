@@ -9,6 +9,7 @@ import torch
 import zarr
 
 from . import torch_model
+from .lora import merge_lora_state_dict
 from PatchPerPix.visualize import visualize_patches
 
 logger = logging.getLogger(__name__)
@@ -232,9 +233,11 @@ def decode(**config):
     if config.get("use_swa"):
         logger.info("loading swa checkpoint")
         model = torch.optim.swa_utils.AveragedModel(model)
-        model.load_state_dict(checkpoint["swa_model_state_dict"])
+        model.load_state_dict(
+            merge_lora_state_dict(checkpoint["swa_model_state_dict"]))
     else:  # "model_state_dict" in checkpoint:
-        model.load_state_dict(checkpoint["model_state_dict"])
+        model.load_state_dict(
+            merge_lora_state_dict(checkpoint["model_state_dict"]))
 
     for idx, sample in enumerate(config['samples']):
         logger.info(
