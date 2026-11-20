@@ -1,0 +1,32 @@
+# experiment_v4 finetune 4.1F-4.4F: completely only (no data mixing), 6k its from the selected pretrain
+# checkpoint (driver writes max_iterations / start_iter), peak lr 5e-5, warmup 10 % + cosine, checkpoint + val
+# every 1k. Selection on completely val (val_metrics.csv); simple_v1 tracked as extra val.
+# LoRA on the encoder only: l_conv (incl. the bottleneck); decoder r_conv and upsamplers r_up stay frozen,
+# output heads trainable (setup01/lora.py). Do NOT stack dsexp_simple_v1.toml here (its gpu_confetti
+# section refuses completely as train data).
+[data]
+train_datasets = ["completely"]
+val_datasets = ["completely"]
+extra_val_datasets = ["simple_v1"]
+max_val_samples = 5
+lazy_sources = true          # same loading code as the pretrain arms (setup01/lazy_sources.py)
+
+[training]
+checkpoints = 1000
+val_log_step = 1000
+
+[training.lora]
+enabled = true
+rank = 4
+alpha = 4.0
+targets = ["l_conv"]
+train_heads = true
+train_bias = false
+
+[optimizer.optimizer]
+lr = 5e-5
+
+[optimizer.lr_scheduler]
+lr_scheduler = "WarmupCosine"
+warmup_frac = 0.10
+min_lr_ratio = 0.0

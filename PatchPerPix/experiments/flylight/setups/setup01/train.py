@@ -931,6 +931,86 @@ def _cast_raw_if_f16(file_source, raw, dtype, clipmax=None):
     return file_source
 
 
+def _lazy_train_sources(config, arrays, voxel_size, data_files, graphs):
+    """[data] lazy_sources = true, training only (lazy_sources.py): the same per-file chains as
+    get_sources below (overlapping instances, fg-point sampling, zarr), built on first use instead of
+    all at startup. Returns (source, gt_max_num_inst) like get_sources.
+
+    gt_max_num_inst (gt_instances channels to pad to) comes from [data] lazy_max_num_inst when set
+    (simple_v1: 30 by construction), else from a scan of every file's shape (fine for small sets)."""
+    from .lazy_sources import LazyRandomSource
+
+    unsupported = [k for k, bad in (
+        ("input_format != zarr", config['input_format'] != "zarr"),
+        ("overlapping_inst = false", not config.get('overlapping_inst')),
+        ("sample_fg_points = false", not config.get("sample_fg_points", False)),
+        ("add_partly", bool(config.get("add_partly"))),
+        ("probability_overlap > 0", config["sampling"].get("probability_overlap", 0) > 0),
+    ) if bad]
+    if unsupported:
+        raise NotImplementedError(f"lazy_sources does not support: {', '.join(unsupported)}")
+
+    raw, gt_instances, gt_numinst = arrays['raw'], arrays['gt_instances'], arrays['gt_numinst']
+    gt_fg_points = graphs["gt_fg_points"]
+    fg_csv_folder = config["fg_csv_folder"]
+    max_num_inst = config.get("lazy_max_num_inst")
+    if max_num_inst is None:
+        max_num_inst = max(zarr.open(fn, 'r')['volumes/gt_instances'].shape[0] for fn in data_files)
+    max_num_inst = int(max_num_inst)
+
+    def make_chain(fn, fg):
+        f = zarr.open(fn, 'r')
+        dtype = f[config["raw_key"]].dtype
+        raw_clipmax = f[config["raw_key"]].attrs.get("clipmax")
+        num_inst, *sample_shape = f['volumes/gt_instances'].shape
+        if num_inst > max_num_inst:
+            raise ValueError(f"{fn}: {num_inst} instances > lazy_max_num_inst {max_num_inst}")
+        if np.issubdtype(dtype, np.integer):
+            assert raw_clipmax, f"{fn}: integer raw {config['raw_key']} ({dtype}) needs a 'clipmax' attr"
+        else:
+            assert dtype in (np.float32, np.float16), "please convert data to float32 (or float16)!"
+        datasets = {
+            raw: config["raw_key"],
+            gt_numinst: config.get('numinst_key', 'volumes/gt_numinst'),
+            gt_instances: config.get('gt_key', 'volumes/gt_instances'),
+        }
+        array_specs = {
+            raw: gp.ArraySpec(interpolatable=True, voxel_size=voxel_size),
+            gt_numinst: gp.ArraySpec(interpolatable=False, voxel_size=voxel_size),
+            gt_instances: gp.ArraySpec(interpolatable=False, voxel_size=voxel_size),
+        }
+        source = gp.ZarrSource(fn, datasets=datasets, array_specs=array_specs)
+        if fg:
+            dataset = os.path.basename(os.path.dirname(os.path.dirname(fn)))
+            fg_csv = os.path.join(fg_csv_folder, dataset, os.path.basename(fn).replace(".zarr", ".csv"))
+            if not os.path.exists(fg_csv):
+                raise FileNotFoundError(f"missing fg points CSV {fg_csv} for {fn}")
+            source = (source, gp.CsvPointsSource(
+                fg_csv, gt_fg_points, gp.GraphSpec(roi=gp.Roi(offset=[0, 0, 0], shape=sample_shape)),
+                ndims=3)) + gp.MergeProvider()
+            location = gp.RandomLocation(
+                ensure_nonempty=gt_fg_points,
+                point_balance_radius=config["sampling"]["point_balance_radius_overlap"],
+                copy_roi_from=gt_instances)
+        else:
+            location = gp.RandomLocation()
+        chain = (source + gp.Pad(raw, None) + gp.Pad(gt_instances, (70, 70, 70)) +
+                 gp.Pad(gt_numinst, (70, 70, 70)) + location + gp.NoOp() +
+                 gp.Cast(gt_numinst, dtype=np.int64))
+        return _cast_raw_if_f16(chain, raw, dtype, raw_clipmax)
+
+    cache = int(config.get("lazy_cache_size", 32))
+    parts = [LazyRandomSource(data_files, lambda fn: make_chain(fn, True), cache, "fg")]
+    probs = [config["sampling"]["probability_fg"]]
+    if config["sampling"].get("probability_random", 0) > 0:
+        parts.append(LazyRandomSource(data_files, lambda fn: make_chain(fn, False), cache, "random"))
+        probs.append(config["sampling"]["probability_random"])
+    logger.info("lazy_sources: %d training files, gt_max_num_inst %d, parts %s (p %s)",
+                len(data_files), max_num_inst, [p.label for p in parts], probs)
+    source = parts[0] if len(parts) == 1 else tuple(parts) + gp.RandomProvider(probabilities=probs)
+    return source, max_num_inst
+
+
 def get_sources(config, arrays, voxel_size, data_files, val=False, graphs=None):
     """Create gunpowder source nodes for each data source in config
 
@@ -943,6 +1023,8 @@ def get_sources(config, arrays, voxel_size, data_files, val=False, graphs=None):
     data_files:
         List of files to load
     """
+    if not val and config.get("lazy_sources"):
+        return _lazy_train_sources(config, arrays, voxel_size, data_files, graphs)
 
     overlapping_inst = config.get('overlapping_inst')
     sample_fg_points = config.get("sample_fg_points", False)

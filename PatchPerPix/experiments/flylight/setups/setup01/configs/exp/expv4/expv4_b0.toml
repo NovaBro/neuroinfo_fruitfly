@@ -1,0 +1,6 @@
+# experiment_v4 baseline 4.0: no pretraining, train on completely (18 volumes) from scratch with the stage-1
+# schedule (expv4_pre.toml). Selection on completely val (val_metrics.csv); simple_v1 tracked as extra val.
+[data]
+train_datasets = ["completely"]
+val_datasets = ["completely"]
+extra_val_datasets = ["simple_v1"]

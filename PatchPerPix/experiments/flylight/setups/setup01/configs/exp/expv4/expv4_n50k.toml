@@ -1,0 +1,8 @@
+# experiment_v4 pretrain arm: first 50000 simple_v1 train samples (sorted, nested subsets: tube_00000 ...).
+# Stack after dsexp_simple_v1.toml (train/val simple_v1 + GPU confetti); completely is the extra val set
+# that selects the checkpoint (val_metrics_completely.csv).
+[data]
+max_train_samples = 50000
+extra_val_datasets = ["completely"]
+# gt_instances channels to pad to (simple_v1 has 10-30 neurons per volume); avoids a 50k-file scan
+lazy_max_num_inst = 30

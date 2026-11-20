@@ -1,0 +1,7 @@
+# experiment_v4 Phase 0 smoke (stack last): 40 its, checkpoint + val every 20, one val batch per set.
+[training]
+max_iterations = 40
+checkpoints = 20
+val_log_step = 20
+val_num_batches = 1
+profiling = 10

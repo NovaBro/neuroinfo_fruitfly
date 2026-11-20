@@ -1,0 +1,4 @@
+# experiment_v4 test on simple_v1: first 5 test volumes (tube_50100-50104). Use with --eval eval_rm500.toml.
+[data]
+test_datasets = ["simple_v1"]
+max_test_samples = 5

@@ -1,0 +1,10 @@
+# TEMPORARY Phase 0 finetune smoke overlay (delete after): 40 its from expv4-smoke-n1k @ 40.
+[training]
+max_iterations = 80
+checkpoints = 20
+val_log_step = 20
+val_num_batches = 1
+profiling = 10
+
+[optimizer.lr_scheduler]
+start_iter = 40

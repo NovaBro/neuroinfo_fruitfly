@@ -1,0 +1,3 @@
+# experiment_v4 test on completely: all 7 test volumes. Use with --eval eval_rm1500.toml.
+[data]
+test_datasets = ["completely"]

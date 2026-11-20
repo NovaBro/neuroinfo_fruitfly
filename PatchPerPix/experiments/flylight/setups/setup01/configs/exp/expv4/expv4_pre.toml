@@ -1,0 +1,20 @@
+# experiment_v4 stage 1 (pretrain arms 4.1-4.4 and baseline 4.0), md_guides/experiments/experiment_v4.md:
+# 50k its, peak lr 4e-4, linear warmup 10 % + cosine to 0, checkpoint + val every 2.5k, 5 volumes per val set.
+[data]
+max_val_samples = 5
+# training sources built on first use (setup01/lazy_sources.py): N = 50k took ~85-90 min to start otherwise.
+# Same sampling (uniform over files); validation sources are unaffected. Used by every expv4 run.
+lazy_sources = true
+
+[training]
+max_iterations = 50000
+checkpoints = 2500
+val_log_step = 2500
+
+[optimizer.optimizer]
+lr = 0.0004
+
+[optimizer.lr_scheduler]
+lr_scheduler = "WarmupCosine"
+warmup_frac = 0.10
+min_lr_ratio = 0.0
