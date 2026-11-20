@@ -43,7 +43,7 @@ Check how a stack resolves: `python3 sbatch/ppp/ppp_config_path.py NAME...`
 
 ### `data/`: dataset-selection overlays
 `datasets_completely_partly.toml` (train/val/test on completely + partly),
-`datasets_test_himanshu.toml` (MCFO test-only inference),
+`datasets_test_himanshu_20x.toml` / `datasets_test_himanshu_r044.toml` (Himanshu MCFO test-only inference: native 20x / 63x resampled to 0.44 µm),
 `datasets_test_1k_v1[_u8]_keep_completely.toml` (one-shot evaluate on completely + 1k_v1, only for `evaluate`).
 
 ### `train/`: run-length / speed overlays (stack last)
@@ -52,10 +52,18 @@ Validation during training (`[training]` `val_log_step`, `val_num_batches`, `val
 val crops every val point; identical `validation: loaded … checksum` lines = deterministic val set.
 `smoke.toml` (150 it) + `smoke_noval.toml`; `no_fast_aff.toml` (A/B: fast_affinities off); `trace_train.toml` (torch.profiler trace + sync audit in a real run); `compile.toml` (torch.compile UNet + heads + loss, noenc; L40S −11%); `profile_noenc_{l40s,completely_l40s,h200}.toml` (300-it
 profiling); `channels_last.toml`; `raw_fp16.toml` (fp16 raw handoff).
+`lora_r8.toml`: LoRA fine-tune (`[training.lora]`, `setup01/lora.py`); stack after a fine-tune exp overlay on a
+checkpoint seeded by `sbatch/ppp/expv2/seed_finetune_ckpt.py` (rewritten in LoRA form on first start, original kept as
+`train_net_seed_prelora_<N>`). predict/decode merge the adapters on load, so test stacks need no LoRA section.
 
 ### `exp/`: experiment-specific overlays
 `exp_v1_h200.toml` (experiment_v1 H200 settings: 50k it, ckpt 2k, 14 workers, fp16 raw),
-`exp_v1_n500.toml` (EXP 2: first 500 train volumes). `sbatch/ppp/exp_v1_finetune.sh` writes its generated
+`exp_v1_n500.toml` (EXP 2: first 500 train volumes).
+`expv3/` (experiment_v3, `md_guides/experiments/experiment_v3.md`): `expv3_s6d2w{64,32}.toml` (6-stage same-padding
+U-Net from the Sci Rep 2025 U-Net benchmark), which must be followed by a shape overlay (`expv3_crop128_bs2.toml` /
+`expv3_crop160_bs1.toml`; torch.compile limits bs × crop³ to < 6.26 M). Also `expv3_pre.toml` (pretrain schedule),
+`expv3_predict*.toml` (test tiles + `test_same_margin`), `expv3_smoke.toml`, and driver-generated `expv3_len_*` /
+`expv3_ft_*`. `sbatch/ppp/exp_v1_finetune.sh` writes its generated
 `exp3_ft_<src>_<ckpt>.toml` fine-tune overlays here (note: `--dry-run` writes the overlay too).
 
 ### `vi/`: vote_instances / label overlays

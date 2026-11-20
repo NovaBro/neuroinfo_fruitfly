@@ -1,0 +1,11 @@
+# experiment_v3 P3 smoke only: 160^3, batch size 2, torch.compile off (Inductor cannot compile the loss at this
+# size, see expv3_crop160_bs1.toml). Measures whether the eager loss fits in L40S memory and its speed.
+[model]
+train_input_shape_same = [160, 160, 160]
+test_input_shape_same = [160, 160, 160]
+
+[training]
+batch_size = 2
+val_num_batches = 36
+cache_size = 40
+compile = false

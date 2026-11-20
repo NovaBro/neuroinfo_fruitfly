@@ -1,0 +1,10 @@
+# experiment_v3 test / predict stack (stack last): same-padding net predicted on 224^3 tiles, keeping the
+# central 160^3 of each (test_same_margin = 32 per side; predict_no_gp.py). Tiles overlap by 64 voxels, so no
+# kept voxel was computed against the zero padding at a tile border. Batch size 1 (the 343-channel head output
+# alone is ~7.7 GB fp16 per 224^3 tile). Tune in P2.
+[model]
+test_input_shape_same = [224, 224, 224]
+test_same_margin = 32
+
+[prediction]
+batch_size = 1

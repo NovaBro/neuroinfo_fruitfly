@@ -1,0 +1,16 @@
+# experiment_v3 W32 arm (EXP 3.4-3.6): S6 D2 W32, the paper's guideline width for 2-10 classes
+# (Table 1: 60.08 M params, 0.88 TFLOPs at 128^3). Same as expv3_s6d2w64.toml apart from the widths:
+# encoder 32/64/128/256/512/512, decoder 512/256/128/64/32. Crop / batch size from a shape overlay
+# (expv3_crop160_bs1.toml or expv3_crop128_bs2.toml), as for W64.
+[model]
+num_fmaps = 32
+fmap_inc_factors = [2, 2, 2, 2, 1]
+fmap_dec_factors = [2, 2, 2, 2, 1]
+downsample_factors = [[2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2]]
+num_repetitions = 2
+kernel_size = 3
+train_padding = "same"
+val_padding = "same"
+
+[prediction]
+batch_size = 1

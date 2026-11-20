@@ -1,0 +1,14 @@
+# experiment_v3 shape overlay: 128^3 same-padding crops, batch size 2 (4.19 M loss voxels / it), the paper's
+# regime (nnU-Net bs 2; Table 1 FLOPs at 128^3). Stack after expv3_s6d2w{64,32}.toml.
+# Constraint: training.compile (Inductor) fails to compile the loss kernel once the 343-channel patch output
+# has >= 2^31 elements (smoke 23537164: int64/uint32 indexing error at 2 x 160^3 x 343 = 2.81e9), so with compile
+# batch_size x crop^3 must stay < 6.26 M voxels. The eager loss is a full-size elementwise BCE as well.
+[model]
+train_input_shape_same = [128, 128, 128]
+test_input_shape_same = [128, 128, 128]
+
+[training]
+batch_size = 2
+# 36 x bs2 = 72 val crops
+val_num_batches = 36
+cache_size = 40

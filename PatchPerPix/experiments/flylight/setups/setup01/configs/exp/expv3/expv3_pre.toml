@@ -1,0 +1,25 @@
+# experiment_v3 pretraining (EXP 3.1 / 3.4). Stack: base original_default.toml + preset our-noenc-c1k_v1.1 +
+# expv2_e1_common.toml + expv3_s6d2w{64,32}.toml + this [+ a driver-generated length overlay].
+# Train on all 796 1k_v1.1 train volumes (preset max_train_samples = 1000). Validation on completely val
+# (5 vols) = val_metrics.csv = the selection metric (lowest loss; user 2026-11-17); 1k_v1.1 val (first 5 vols)
+# = val_metrics_1k_v1.1.csv (extra, logged only). Checkpoint + val every 2.5k (user 2026-11-17).
+# Peak lr 4e-4, 10% linear warmup + cosine to 0.
+[data]
+train_datasets = ["1k_v1.1"]
+val_datasets = ["completely"]
+extra_val_datasets = ["1k_v1.1"]
+max_val_samples = 5
+
+[training]
+# placeholder (plan target); the driver's generated overlay sets the length chosen after the P3 smoke
+max_iterations = 75000
+checkpoints = 2500
+val_log_step = 2500
+
+[optimizer.optimizer]
+lr = 0.0004
+
+[optimizer.lr_scheduler]
+lr_scheduler = "WarmupCosine"
+warmup_frac = 0.10
+min_lr_ratio = 0.0

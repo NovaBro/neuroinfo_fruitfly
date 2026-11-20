@@ -1,0 +1,19 @@
+# experiment_v3 (md_guides/experiments/experiment_v3.md): S6 D2 W64 U-Net from Huang et al., Sci Rep 2025
+# ("Revisiting model scaling with a U-net benchmark", papers/s41598-025-15617-1.pdf, Table 1: 97.39 M params).
+# Stack after expv2_e1_common.toml (overrides its num_fmaps = 15). 6 stages = 5 downsamplings, 2 convs per stage,
+# channels double per stage capped at 512: encoder 64/128/256/512/512/512, decoder 512/512/256/128/64.
+# Same padding: a 6-stage valid net needs >= 380^3 input (completely is only 345 deep). Crops must be a multiple
+# of 32. Crop / batch size live in a shape overlay that every stack must include after this file
+# (expv3_crop160_bs1.toml or expv3_crop128_bs2.toml; P3 smoke picks one); test tiles from expv3_predict.toml.
+[model]
+num_fmaps = 64
+fmap_inc_factors = [2, 2, 2, 1, 1]
+fmap_dec_factors = [2, 2, 2, 1, 1]
+downsample_factors = [[2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2]]
+num_repetitions = 2
+kernel_size = 3
+train_padding = "same"
+val_padding = "same"
+
+[prediction]
+batch_size = 1

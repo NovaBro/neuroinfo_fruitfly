@@ -1,0 +1,8 @@
+# experiment_v3 P2 seam check only: abutting 160^3 same-padding tiles (no margin; the old same-padding path).
+# Output tiles 160^3 on the same grid as expv3_predict.toml (224^3, margin 32) and expv3_predict_m48.toml.
+[model]
+test_input_shape_same = [160, 160, 160]
+test_same_margin = 0
+
+[prediction]
+batch_size = 1

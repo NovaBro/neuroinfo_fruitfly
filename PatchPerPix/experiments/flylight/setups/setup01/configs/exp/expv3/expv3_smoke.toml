@@ -1,0 +1,9 @@
+# experiment_v3 P3 smoke / profile (stack last, after expv3_pre.toml + a variant overlay): 300 its for steady
+# s/it, peak GPU memory and a finite loss; one val pass (both val sets, same padding) and one checkpoint at 300
+# (used to smoke-test predict -> label -> evaluate with test_same_margin).
+[training]
+max_iterations = 300
+checkpoints = 300
+snapshots = 1000000
+val_log_step = 300
+profiling = 20
