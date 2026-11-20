@@ -1,0 +1,17 @@
+# Val decode-tuning grid for sbatch/nnunet/nnunet_decode_eval_sbatch.sh (one array task per line).
+# <name> <ckpt: final|best> <mode: cc|contact> <t_fg> <t_c> <min_core>
+# Scored on fisbe/completely/val (5 volumes, 21 neurons) at rm1500; pick the best MEAN S, then freeze it for test.
+final_cc_t03         final cc      0.3 0.5 0
+final_cc_t04         final cc      0.4 0.5 0
+final_cc_t05         final cc      0.5 0.5 0
+final_cc_t06         final cc      0.6 0.5 0
+final_ct_f04_c03_m20 final contact 0.4 0.3 20
+final_ct_f04_c05_m20 final contact 0.4 0.5 20
+final_ct_f05_c03_m20 final contact 0.5 0.3 20
+final_ct_f05_c05_m20 final contact 0.5 0.5 20
+final_ct_f05_c05_m100 final contact 0.5 0.5 100
+final_ct_f05_c07_m20 final contact 0.5 0.7 20
+best_cc_t04          best  cc      0.4 0.5 0
+best_cc_t05          best  cc      0.5 0.5 0
+best_ct_f05_c03_m20  best  contact 0.5 0.3 20
+best_ct_f05_c05_m20  best  contact 0.5 0.5 20

@@ -27,12 +27,14 @@ __pycache__
 BiaPy-novabro/
 Skeleton-Recall/
 vesselFM/
+nnUNet/
 
 # Scratch GPU util dumps (tracked archive under gpu_log/archeive_* stays)
 gpu_usage_log_*.csv
 gpu_log/ppp/
 gpu_log/biapy/
 gpu_log/vesselfm/
+gpu_log/nnunet/
 sbatch/biapy
 sbatch/**/*.err
 sbatch/**/*.out
